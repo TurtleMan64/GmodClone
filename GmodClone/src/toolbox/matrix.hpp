@@ -4,7 +4,7 @@
 class Vector3f;
 
 #include <math.h>
-#include "vector.h"
+#include "vector.hpp"
 
 
 class Matrix4f

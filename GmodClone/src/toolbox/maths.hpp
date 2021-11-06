@@ -8,7 +8,7 @@ class Triangle3D;
 
 #include <random>
 #include <chrono>
-#include "matrix.h"
+#include "matrix.hpp"
 
 class Maths
 {

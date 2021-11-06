@@ -1,12 +1,12 @@
 #include <glad/glad.h>
 
-#include "entity.h"
-#include "../models/models.h"
-#include "../toolbox/vector.h"
-#include "../toolbox/maths.h"
-#include "../main/main.h"
-#include "../collision/collisionmodel.h"
-#include "../models/models.h"
+#include "entity.hpp"
+#include "../models/models.hpp"
+#include "../toolbox/vector.hpp"
+#include "../toolbox/maths.hpp"
+#include "../main/main.hpp"
+#include "../collision/collisionmodel.hpp"
+#include "../models/models.hpp"
 
 #include <list>
 #include <iostream>

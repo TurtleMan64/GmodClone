@@ -1,14 +1,14 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
-#include "renderEngine.h"
-#include "../entities/entity.h"
-#include "../shaders/shaderprogram.h"
-#include "../toolbox/matrix.h"
-#include "../toolbox/vector.h"
-#include "../toolbox/maths.h"
-#include "../models/models.h"
-#include "../main/main.h"
+#include "renderEngine.hpp"
+#include "../entities/entity.hpp"
+#include "../shaders/shaderprogram.hpp"
+#include "../toolbox/matrix.hpp"
+#include "../toolbox/vector.hpp"
+#include "../toolbox/maths.hpp"
+#include "../models/models.hpp"
+#include "../main/main.hpp"
 
 #include <iostream>
 #include <unordered_map>

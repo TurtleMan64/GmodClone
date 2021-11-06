@@ -4,8 +4,8 @@
 class TexturedModel;
 
 #include <list>
-#include "entity.h"
-#include "../toolbox/vector.h"
+#include "entity.hpp"
+#include "../toolbox/vector.hpp"
 
 class Ball : public Entity
 {
@@ -14,18 +14,11 @@ private:
 
     Vector3f vel;
 
-    bool onGround = false;
-
     const float gravityForce = 0.588f*60;
-
-    Vector3f groundNormal;
-
-    //const float friction = 0.6f;
 
     const float DRAG_AIR = 0.4f;
 
     const float bounceAmount = 0.85f; //85% of relative vertical speed retain after bounce
-    const float bounceThreshold = 0.5f; 
 
 public:
     Ball(Vector3f pos, Vector3f vel);

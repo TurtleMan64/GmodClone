@@ -148,6 +148,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\audio\AudioMaster.cpp" />
+    <ClCompile Include="src\audio\AudioPlayer.cpp" />
+    <ClCompile Include="src\audio\Source.cpp" />
     <ClCompile Include="src\collision\CollisionChecker.cpp" />
     <ClCompile Include="src\collision\CollisionModel.cpp" />
     <ClCompile Include="src\collision\QuadTreeNode.cpp" />
@@ -180,31 +183,34 @@
     <ClCompile Include="src\toolbox\Vector.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\collision\collisionchecker.h" />
-    <ClInclude Include="src\collision\collisionmodel.h" />
-    <ClInclude Include="src\collision\quadtreenode.h" />
-    <ClInclude Include="src\collision\triangle3d.h" />
-    <ClInclude Include="src\entities\ball.h" />
-    <ClInclude Include="src\entities\player.h" />
-    <ClInclude Include="src\entities\camera.h" />
-    <ClInclude Include="src\entities\dummy.h" />
-    <ClInclude Include="src\entities\entity.h" />
-    <ClInclude Include="src\entities\human.h" />
-    <ClInclude Include="src\entities\light.h" />
-    <ClInclude Include="src\loader\fakeTexture.h" />
-    <ClInclude Include="src\loader\objloader.h" />
-    <ClInclude Include="src\loader\vertex.h" />
-    <ClInclude Include="src\main\main.h" />
-    <ClInclude Include="src\models\models.h" />
-    <ClInclude Include="src\renderEngine\renderEngine.h" />
-    <ClInclude Include="src\shaders\shaderprogram.h" />
-    <ClInclude Include="src\textures\modeltexture.h" />
-    <ClInclude Include="src\toolbox\getline.h" />
-    <ClInclude Include="src\toolbox\input.h" />
-    <ClInclude Include="src\toolbox\maths.h" />
-    <ClInclude Include="src\toolbox\matrix.h" />
-    <ClInclude Include="src\toolbox\split.h" />
-    <ClInclude Include="src\toolbox\vector.h" />
+    <ClInclude Include="src\audio\audiomaster.hpp" />
+    <ClInclude Include="src\audio\audioplayer.hpp" />
+    <ClInclude Include="src\audio\source.hpp" />
+    <ClInclude Include="src\collision\collisionchecker.hpp" />
+    <ClInclude Include="src\collision\collisionmodel.hpp" />
+    <ClInclude Include="src\collision\quadtreenode.hpp" />
+    <ClInclude Include="src\collision\triangle3d.hpp" />
+    <ClInclude Include="src\entities\ball.hpp" />
+    <ClInclude Include="src\entities\player.hpp" />
+    <ClInclude Include="src\entities\camera.hpp" />
+    <ClInclude Include="src\entities\dummy.hpp" />
+    <ClInclude Include="src\entities\entity.hpp" />
+    <ClInclude Include="src\entities\human.hpp" />
+    <ClInclude Include="src\entities\light.hpp" />
+    <ClInclude Include="src\loader\fakeTexture.hpp" />
+    <ClInclude Include="src\loader\objloader.hpp" />
+    <ClInclude Include="src\loader\vertex.hpp" />
+    <ClInclude Include="src\main\main.hpp" />
+    <ClInclude Include="src\models\models.hpp" />
+    <ClInclude Include="src\renderEngine\renderEngine.hpp" />
+    <ClInclude Include="src\shaders\shaderprogram.hpp" />
+    <ClInclude Include="src\textures\modeltexture.hpp" />
+    <ClInclude Include="src\toolbox\getline.hpp" />
+    <ClInclude Include="src\toolbox\input.hpp" />
+    <ClInclude Include="src\toolbox\maths.hpp" />
+    <ClInclude Include="src\toolbox\matrix.hpp" />
+    <ClInclude Include="src\toolbox\split.hpp" />
+    <ClInclude Include="src\toolbox\vector.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

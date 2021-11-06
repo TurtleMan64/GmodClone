@@ -16,7 +16,7 @@ class ShadowMapMasterRenderer2;
 #include <list>
 #include <vector>
 #include <unordered_map>
-#include "../models/models.h"
+#include "../models/models.hpp"
 
 
 //DisplayManager

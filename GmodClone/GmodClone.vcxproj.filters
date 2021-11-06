@@ -40,6 +40,9 @@
     <Filter Include="Source Files\toolbox">
       <UniqueIdentifier>{95b9cd69-ccd7-469a-8ff5-1cbf6daf56f6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\audio">
+      <UniqueIdentifier>{6903f970-e984-42f2-bf34-1bb517522070}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\glad.c">
@@ -132,82 +135,100 @@
     <ClCompile Include="src\entities\Ball.cpp">
       <Filter>Source Files\entities</Filter>
     </ClCompile>
+    <ClCompile Include="src\audio\AudioMaster.cpp">
+      <Filter>Source Files\audio</Filter>
+    </ClCompile>
+    <ClCompile Include="src\audio\AudioPlayer.cpp">
+      <Filter>Source Files\audio</Filter>
+    </ClCompile>
+    <ClCompile Include="src\audio\Source.cpp">
+      <Filter>Source Files\audio</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\toolbox\getline.h">
+    <ClInclude Include="src\toolbox\getline.hpp">
       <Filter>Source Files\toolbox</Filter>
     </ClInclude>
-    <ClInclude Include="src\toolbox\input.h">
+    <ClInclude Include="src\toolbox\input.hpp">
       <Filter>Source Files\toolbox</Filter>
     </ClInclude>
-    <ClInclude Include="src\toolbox\maths.h">
+    <ClInclude Include="src\toolbox\maths.hpp">
       <Filter>Source Files\toolbox</Filter>
     </ClInclude>
-    <ClInclude Include="src\toolbox\matrix.h">
+    <ClInclude Include="src\toolbox\matrix.hpp">
       <Filter>Source Files\toolbox</Filter>
     </ClInclude>
-    <ClInclude Include="src\toolbox\split.h">
+    <ClInclude Include="src\toolbox\split.hpp">
       <Filter>Source Files\toolbox</Filter>
     </ClInclude>
-    <ClInclude Include="src\toolbox\vector.h">
+    <ClInclude Include="src\toolbox\vector.hpp">
       <Filter>Source Files\toolbox</Filter>
     </ClInclude>
-    <ClInclude Include="src\textures\modeltexture.h">
+    <ClInclude Include="src\textures\modeltexture.hpp">
       <Filter>Source Files\textures</Filter>
     </ClInclude>
-    <ClInclude Include="src\shaders\shaderprogram.h">
+    <ClInclude Include="src\shaders\shaderprogram.hpp">
       <Filter>Source Files\shaders</Filter>
     </ClInclude>
-    <ClInclude Include="src\renderEngine\renderEngine.h">
+    <ClInclude Include="src\renderEngine\renderEngine.hpp">
       <Filter>Source Files\renderEngine</Filter>
     </ClInclude>
-    <ClInclude Include="src\models\models.h">
+    <ClInclude Include="src\models\models.hpp">
       <Filter>Source Files\models</Filter>
     </ClInclude>
-    <ClInclude Include="src\main\main.h">
+    <ClInclude Include="src\main\main.hpp">
       <Filter>Source Files\main</Filter>
     </ClInclude>
-    <ClInclude Include="src\loader\fakeTexture.h">
+    <ClInclude Include="src\loader\fakeTexture.hpp">
       <Filter>Source Files\loader</Filter>
     </ClInclude>
-    <ClInclude Include="src\loader\objloader.h">
+    <ClInclude Include="src\loader\objloader.hpp">
       <Filter>Source Files\loader</Filter>
     </ClInclude>
-    <ClInclude Include="src\loader\vertex.h">
+    <ClInclude Include="src\loader\vertex.hpp">
       <Filter>Source Files\loader</Filter>
     </ClInclude>
-    <ClInclude Include="src\entities\camera.h">
+    <ClInclude Include="src\entities\camera.hpp">
       <Filter>Source Files\entities</Filter>
     </ClInclude>
-    <ClInclude Include="src\entities\dummy.h">
+    <ClInclude Include="src\entities\dummy.hpp">
       <Filter>Source Files\entities</Filter>
     </ClInclude>
-    <ClInclude Include="src\entities\entity.h">
+    <ClInclude Include="src\entities\entity.hpp">
       <Filter>Source Files\entities</Filter>
     </ClInclude>
-    <ClInclude Include="src\entities\light.h">
+    <ClInclude Include="src\entities\light.hpp">
       <Filter>Source Files\entities</Filter>
     </ClInclude>
-    <ClInclude Include="src\collision\collisionchecker.h">
+    <ClInclude Include="src\collision\collisionchecker.hpp">
       <Filter>Source Files\collision</Filter>
     </ClInclude>
-    <ClInclude Include="src\collision\collisionmodel.h">
+    <ClInclude Include="src\collision\collisionmodel.hpp">
       <Filter>Source Files\collision</Filter>
     </ClInclude>
-    <ClInclude Include="src\collision\quadtreenode.h">
+    <ClInclude Include="src\collision\quadtreenode.hpp">
       <Filter>Source Files\collision</Filter>
     </ClInclude>
-    <ClInclude Include="src\collision\triangle3d.h">
+    <ClInclude Include="src\collision\triangle3d.hpp">
       <Filter>Source Files\collision</Filter>
     </ClInclude>
-    <ClInclude Include="src\entities\human.h">
+    <ClInclude Include="src\entities\human.hpp">
       <Filter>Source Files\entities</Filter>
     </ClInclude>
-    <ClInclude Include="src\entities\player.h">
+    <ClInclude Include="src\entities\player.hpp">
       <Filter>Source Files\entities</Filter>
     </ClInclude>
-    <ClInclude Include="src\entities\ball.h">
+    <ClInclude Include="src\entities\ball.hpp">
       <Filter>Source Files\entities</Filter>
+    </ClInclude>
+    <ClInclude Include="src\audio\audiomaster.hpp">
+      <Filter>Source Files\audio</Filter>
+    </ClInclude>
+    <ClInclude Include="src\audio\audioplayer.hpp">
+      <Filter>Source Files\audio</Filter>
+    </ClInclude>
+    <ClInclude Include="src\audio\source.hpp">
+      <Filter>Source Files\audio</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

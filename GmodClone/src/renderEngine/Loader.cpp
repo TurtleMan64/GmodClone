@@ -10,11 +10,11 @@
 #include <cmath>
 #include <cstring>
 
-#include "renderEngine.h"
-#include "../main/main.h"
+#include "renderEngine.hpp"
+#include "../main/main.hpp"
 
-#include "../models/models.h"
-#include "../toolbox/getline.h"
+#include "../models/models.hpp"
+#include "../toolbox/getline.hpp"
 
 std::list<GLuint> Loader::vaos;
 std::list<GLuint> Loader::vbos;

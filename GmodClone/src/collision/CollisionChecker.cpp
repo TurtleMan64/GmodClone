@@ -1,9 +1,9 @@
 #include <vector>
 #include <algorithm>
 
-#include "collisionchecker.h"
-#include "triangle3d.h"
-#include "../toolbox/maths.h"
+#include "collisionchecker.hpp"
+#include "triangle3d.hpp"
+#include "../toolbox/maths.hpp"
 
 Vector3f CollisionChecker::collidePosition;
 Triangle3D* CollisionChecker::collideTriangle;

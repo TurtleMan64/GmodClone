@@ -1,7 +1,7 @@
 #ifndef CAMERA_H
 #define CAMERA_H
 
-#include "../toolbox/vector.h"
+#include "../toolbox/vector.hpp"
 
 class Camera
 {

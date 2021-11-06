@@ -1,7 +1,7 @@
 #include <glad/glad.h>
 
 #include <string>
-#include "fakeTexture.h"
+#include "fakeTexture.hpp"
 
 FakeTexture::FakeTexture()
 {

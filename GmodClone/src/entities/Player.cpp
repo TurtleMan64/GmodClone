@@ -2,15 +2,15 @@
 #include <set>
 #include <GLFW/glfw3.h>
 
-#include "../toolbox/vector.h"
-#include "player.h"
-#include "../collision/collisionchecker.h"
-#include "../collision/triangle3d.h"
-#include "../toolbox/input.h"
-#include "../main/main.h"
-#include "../toolbox/maths.h"
-#include "camera.h"
-#include "ball.h"
+#include "../toolbox/vector.hpp"
+#include "player.hpp"
+#include "../collision/collisionchecker.hpp"
+#include "../collision/triangle3d.hpp"
+#include "../toolbox/input.hpp"
+#include "../main/main.hpp"
+#include "../toolbox/maths.hpp"
+#include "camera.hpp"
+#include "ball.hpp"
 
 extern float dt;
 
@@ -190,8 +190,6 @@ void Player::step()
 
                 //move along the new plane
                 vel = Maths::projectOntoPlane(&vel, &directionToMove);
-                //hitAny = true;
-                //collisionResults.insert(result.tri);
             }
             else
             {
@@ -249,7 +247,7 @@ void Player::step()
         //printf("%f\n", vel.length());
         if (vel.length() > 10.0f/36.7816091954f)
         {
-            vel = Maths::applyDrag(&vel, -(sameness*DRAG_GROUND), dt); //Slow vel down due to friction on ground
+            vel = Maths::applyDrag(&vel, -sameness*DRAG_GROUND, dt); //Slow vel down due to friction on ground
         }
         else
         {
@@ -268,7 +266,7 @@ void Player::step()
     {
         float ySpd = vel.y;
         vel.y = 0;
-        vel = Maths::applyDrag(&vel, -(DRAG_AIR), dt); //Slow vel down due air drag, but just horizontally
+        vel = Maths::applyDrag(&vel, -DRAG_AIR, dt); //Slow vel down due air drag, but just horizontally
         vel.y = ySpd;
     }
 
@@ -288,16 +286,22 @@ float Player::getPushValueGround(float deltaTime)
 {
     double fps = 1/deltaTime;
 
-    if (Input::inputs.INPUT_ACTION3)
+    double val;
+
+    if (Input::inputs.INPUT_ACTION3) //Running
     {
-        return (float)(66.56795 + (17926930.0 - 66.56795)/(1.0 + pow(fps/0.00004730095, 1.080826)));
+        val = 66.56795 + (17926930.0 - 66.56795)/(1.0 + pow(fps/0.00004730095, 1.080826));
+    }
+    else //Walking
+    {
+        val = 44.35799 + (17431400.0 - 44.35799)/(1.0 + pow(fps/0.00002812362, 1.065912));
     }
 
-    double val = (44.35799 + (17431400.0 - 44.35799)/(1.0 + pow(fps/0.00002812362, 1.065912)));
     if (isCrouching)
     {
         val = val/2;
     }
+
     return (float)val;
 }
 
@@ -349,15 +353,17 @@ void Player::updateCamera()
     }
     camDir.normalize();
 
-    Vector3f eye(&position);
-    if (!isCrouching && slideTimer <= 0.0f)
+    if (isCrouching || slideTimer > 0.0f)
     {
-        eye.y += HUMAN_HEIGHT - 0.01f; //put the eye at the top of the sphere (1.74m from feet)
+        eyeHeightSmooth  = Maths::approach(eyeHeightSmooth, HUMAN_HEIGHT/2 - 0.07f, 12.0f, dt);
     }
     else
     {
-        eye.y += HUMAN_HEIGHT/2 - 0.01f;
+        eyeHeightSmooth  = Maths::approach(eyeHeightSmooth, HUMAN_HEIGHT - 0.07f, 12.0f, dt);
     }
+
+    Vector3f eye(&position);
+    eye.y += eyeHeightSmooth;
 
     Vector3f target(&eye);
     target = target + camDir;

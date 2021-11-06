@@ -1,11 +1,11 @@
 #include <glad/glad.h>
 
-#include "../models/models.h"
-#include "../toolbox/vector.h"
-#include "camera.h"
-#include "../toolbox/input.h"
-#include "../toolbox/maths.h"
-#include "../main/main.h"
+#include "../models/models.hpp"
+#include "../toolbox/vector.hpp"
+#include "camera.hpp"
+#include "../toolbox/input.hpp"
+#include "../toolbox/maths.hpp"
+#include "../main/main.hpp"
 
 #include <cmath>
 

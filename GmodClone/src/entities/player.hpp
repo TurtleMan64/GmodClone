@@ -4,8 +4,8 @@
 class TexturedModel;
 
 #include <list>
-#include "entity.h"
-#include "../toolbox/vector.h"
+#include "entity.hpp"
+#include "../toolbox/vector.hpp"
 
 class Player : public Entity
 {
@@ -34,6 +34,8 @@ private:
     Vector3f storedWallNormal;
 
     const float HUMAN_HEIGHT = 1.74f; //1.74 meters
+
+    float eyeHeightSmooth = HUMAN_HEIGHT;
 
     const float COLLISION_RADIUS = HUMAN_HEIGHT/4; //collision is 2 spheres 
 

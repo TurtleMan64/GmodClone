@@ -4,8 +4,8 @@
 class TexturedModel;
 
 #include <list>
-#include "entity.h"
-#include "../toolbox/vector.h"
+#include "entity.hpp"
+#include "../toolbox/vector.hpp"
 
 class Human : public Entity
 {

@@ -5,8 +5,8 @@ class TexturedModel;
 class CollisionModel;
 
 #include <list>
-#include "../toolbox/vector.h"
-#include "../toolbox/matrix.h"
+#include "../toolbox/vector.hpp"
+#include "../toolbox/matrix.hpp"
 #include <string>
 
 

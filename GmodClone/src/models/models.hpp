@@ -5,7 +5,7 @@
 
 #include <list>
 
-#include "../textures/modeltexture.h"
+#include "../textures/modeltexture.hpp"
 
 class RawModel
 {

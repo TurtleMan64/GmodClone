@@ -11,8 +11,8 @@ class QuadTreeNode;
 #include <unordered_map>
 #include <vector>
 #include <stdio.h>
-#include "../textures/modeltexture.h"
-#include "../toolbox/vector.h"
+#include "../textures/modeltexture.hpp"
+#include "../toolbox/vector.hpp"
 
 class ObjLoader
 {

@@ -2,7 +2,7 @@
 #define TRIANGLE3D_H
 
 #include <math.h>
-#include "../toolbox/vector.h"
+#include "../toolbox/vector.hpp"
 
 
 class Triangle3D

@@ -1,12 +1,12 @@
 #include <cmath>
 #include <list>
 
-#include "triangle3d.h"
-#include "../toolbox/vector.h"
-#include "collisionmodel.h"
-#include "../main/main.h"
-#include "quadtreenode.h"
-#include "../toolbox/maths.h"
+#include "triangle3d.hpp"
+#include "../toolbox/vector.hpp"
+#include "collisionmodel.hpp"
+#include "../main/main.hpp"
+#include "quadtreenode.hpp"
+#include "../toolbox/maths.hpp"
 
 
 CollisionModel::CollisionModel()

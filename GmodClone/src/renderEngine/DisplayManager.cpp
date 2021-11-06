@@ -8,11 +8,11 @@
 #include <string>
 #include <cstring>
 
-#include "renderEngine.h"
-#include "../toolbox/input.h"
-#include "../main/main.h"
-#include "../toolbox/split.h"
-#include "../toolbox/getline.h"
+#include "renderEngine.hpp"
+#include "../toolbox/input.hpp"
+#include "../main/main.hpp"
+#include "../toolbox/split.hpp"
+#include "../toolbox/getline.hpp"
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void window_close_callback(GLFWwindow* window);

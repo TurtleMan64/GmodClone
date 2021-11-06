@@ -1,7 +1,7 @@
 #ifndef VERTEX_H
 #define VERTEX_H
 
-#include "../toolbox/vector.h"
+#include "../toolbox/vector.hpp"
 
 class Vertex
 {

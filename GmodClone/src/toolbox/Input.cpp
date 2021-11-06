@@ -3,7 +3,7 @@
 #ifdef _WIN32
 #include <GLFW/glfw3.h>
 #else
-#include "/usr/include/GLFW/glfw3.h"
+#include "/usr/include/GLFW/glfw3.hpp"
 #endif
 
 #include <iostream>
@@ -13,16 +13,16 @@
 #include <cstring>
 #include <algorithm>
 
-#include "input.h"
-#include "../main/main.h"
-#include "../entities/camera.h"
-#include "maths.h"
-#include "../toolbox/split.h"
-#include "../toolbox/getline.h"
+#include "input.hpp"
+#include "../main/main.hpp"
+#include "../entities/camera.hpp"
+#include "maths.hpp"
+#include "../toolbox/split.hpp"
+#include "../toolbox/getline.hpp"
 #include <random>
 #include <chrono>
-#include "../renderEngine/renderEngine.h"
-#include "../entities/player.h"
+#include "../renderEngine/renderEngine.hpp"
+#include "../entities/player.hpp"
 
 #ifdef DEV_MODE
 #include <iostream>

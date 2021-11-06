@@ -3,9 +3,9 @@
 #include <vector>
 #include <unordered_set>
 
-#include "modeltexture.h"
-#include "../renderEngine/renderEngine.h"
-#include "../toolbox/maths.h"
+#include "modeltexture.hpp"
+#include "../renderEngine/renderEngine.hpp"
+#include "../toolbox/maths.hpp"
 
 std::unordered_set<ModelTexture*> ModelTexture::animatedTextureReferences;
 

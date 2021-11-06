@@ -1,7 +1,7 @@
 #ifndef LIGHT_H
 #define LIGHT_H
 
-#include "../toolbox/vector.h"
+#include "../toolbox/vector.hpp"
 
 class Light
 {

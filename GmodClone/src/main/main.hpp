@@ -14,7 +14,7 @@ class Player;
 #include <unordered_map>
 #include <unordered_set>
 #include <utility>
-#include "../toolbox/vector.h"
+#include "../toolbox/vector.hpp"
 
 #define STATE_PAUSED 0
 #define STATE_RUNNING 1

@@ -2,8 +2,8 @@
 
 #include <list>
 
-#include "models.h"
-#include "../renderEngine/renderEngine.h"
+#include "models.hpp"
+#include "../renderEngine/renderEngine.hpp"
 
 RawModel::RawModel()
 {

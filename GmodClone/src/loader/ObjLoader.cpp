@@ -7,19 +7,19 @@
 #include <unordered_map>
 #include <list>
 
-#include "../collision/collisionmodel.h"
-#include "objLoader.h"
-#include "../models/models.h"
-#include "../renderEngine/renderEngine.h"
-#include "../toolbox/vector.h"
-#include "vertex.h"
-#include "../main/main.h"
-#include "../toolbox/split.h"
-#include "../toolbox/getline.h"
-#include "../collision/triangle3d.h"
-#include "fakeTexture.h"
-#include "../collision/quadtreenode.h"
-#include "../toolbox/maths.h"
+#include "../collision/collisionmodel.hpp"
+#include "objLoader.hpp"
+#include "../models/models.hpp"
+#include "../renderEngine/renderEngine.hpp"
+#include "../toolbox/vector.hpp"
+#include "vertex.hpp"
+#include "../main/main.hpp"
+#include "../toolbox/split.hpp"
+#include "../toolbox/getline.hpp"
+#include "../collision/triangle3d.hpp"
+#include "fakeTexture.hpp"
+#include "../collision/quadtreenode.hpp"
+#include "../toolbox/maths.hpp"
 
 int ObjLoader::ObjLoader::loadModel(std::list<TexturedModel*>* models, std::string filePath, std::string fileName)
 {

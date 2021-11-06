@@ -1,8 +1,8 @@
 #include <list>
 
-#include "human.h"
-#include "../main/main.h"
-#include "../loader/objloader.h"
+#include "human.hpp"
+#include "../main/main.hpp"
+#include "../loader/objloader.hpp"
 
 std::list<TexturedModel*> Human::models;
 

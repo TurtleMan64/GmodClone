@@ -1,15 +1,15 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
-#include "../entities/light.h"
-#include "../entities/camera.h"
-#include "../shaders/shaderprogram.h"
-#include "../entities/entity.h"
-#include "../models/models.h"
-#include "renderEngine.h"
-#include "../toolbox/maths.h"
-#include "../toolbox/matrix.h"
-#include "../main/main.h"
+#include "../entities/light.hpp"
+#include "../entities/camera.hpp"
+#include "../shaders/shaderprogram.hpp"
+#include "../entities/entity.hpp"
+#include "../models/models.hpp"
+#include "renderEngine.hpp"
+#include "../toolbox/maths.hpp"
+#include "../toolbox/matrix.hpp"
+#include "../main/main.hpp"
 
 #include <iostream>
 #include <list>
@@ -31,8 +31,8 @@ Matrix4f* projectionMatrix = nullptr;
 
 float VFOV_BASE = 60; //Vertical fov
 float VFOV_ADDITION = 0; //additional fov due to the vehicle going fast
-const float NEAR_PLANE = 0.1f; //0.5
-const float FAR_PLANE = 4000; //15000
+const float NEAR_PLANE = 0.05f; //0.5
+const float FAR_PLANE = 3000.0f; //15000
 
 float RED = 0.9f;
 float GREEN = 0.95f;

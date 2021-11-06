@@ -2,7 +2,7 @@
 #define MODELTEXTURES_H
 
 #include <glad/glad.h>
-#include "../toolbox/vector.h"
+#include "../toolbox/vector.hpp"
 #include <vector>
 #include <unordered_set>
 

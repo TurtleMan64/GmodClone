@@ -4,7 +4,7 @@
 class Triangle3D;
 
 #include <vector>
-#include "../toolbox/vector.h"
+#include "../toolbox/vector.hpp"
 
 class CollisionResult
 {

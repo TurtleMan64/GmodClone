@@ -4,7 +4,7 @@
 class TexturedModel;
 
 #include <list>
-#include "entity.h"
+#include "entity.hpp"
 
 class Dummy : public Entity
 {
