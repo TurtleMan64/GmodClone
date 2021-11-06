@@ -1,0 +1,7 @@
+# Material Count: 1
+
+newmtl ShaderfxShader2
+Ns 20.000000
+Ni 0.3
+map_Kd soccerball_ao.png
+

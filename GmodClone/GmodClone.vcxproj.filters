@@ -1,0 +1,213 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Source Files\collision">
+      <UniqueIdentifier>{a2e0b439-9020-460a-96d0-7358f80965ca}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\entities">
+      <UniqueIdentifier>{86e5f140-5c11-4fcc-8645-7ffcb65d4dd4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\loader">
+      <UniqueIdentifier>{94ac6fe6-c599-4232-8ad8-30546bcc6526}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\main">
+      <UniqueIdentifier>{e1702722-b251-4621-a180-415e3b7f9d23}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\models">
+      <UniqueIdentifier>{fdabc9ec-95b8-49d5-9e86-d51e5addb463}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\renderEngine">
+      <UniqueIdentifier>{92f978e5-884c-4293-affa-82f27688b20a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\shaders">
+      <UniqueIdentifier>{cf7d995a-ac54-4e93-88ad-b8a3987d42a0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\textures">
+      <UniqueIdentifier>{2ce84d7d-a93c-46e1-8510-3d4339e18237}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\toolbox">
+      <UniqueIdentifier>{95b9cd69-ccd7-469a-8ff5-1cbf6daf56f6}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\glad.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\toolbox\Getline.cpp">
+      <Filter>Source Files\toolbox</Filter>
+    </ClCompile>
+    <ClCompile Include="src\toolbox\Input.cpp">
+      <Filter>Source Files\toolbox</Filter>
+    </ClCompile>
+    <ClCompile Include="src\toolbox\Maths.cpp">
+      <Filter>Source Files\toolbox</Filter>
+    </ClCompile>
+    <ClCompile Include="src\toolbox\Matrix.cpp">
+      <Filter>Source Files\toolbox</Filter>
+    </ClCompile>
+    <ClCompile Include="src\toolbox\Split.cpp">
+      <Filter>Source Files\toolbox</Filter>
+    </ClCompile>
+    <ClCompile Include="src\toolbox\Vector.cpp">
+      <Filter>Source Files\toolbox</Filter>
+    </ClCompile>
+    <ClCompile Include="src\textures\ModelTexture.cpp">
+      <Filter>Source Files\textures</Filter>
+    </ClCompile>
+    <ClCompile Include="src\shaders\ShaderProgram.cpp">
+      <Filter>Source Files\shaders</Filter>
+    </ClCompile>
+    <ClCompile Include="src\renderEngine\DisplayManager.cpp">
+      <Filter>Source Files\renderEngine</Filter>
+    </ClCompile>
+    <ClCompile Include="src\renderEngine\Loader.cpp">
+      <Filter>Source Files\renderEngine</Filter>
+    </ClCompile>
+    <ClCompile Include="src\renderEngine\MasterRenderer.cpp">
+      <Filter>Source Files\renderEngine</Filter>
+    </ClCompile>
+    <ClCompile Include="src\renderEngine\Renderer.cpp">
+      <Filter>Source Files\renderEngine</Filter>
+    </ClCompile>
+    <ClCompile Include="src\models\RawModel.cpp">
+      <Filter>Source Files\models</Filter>
+    </ClCompile>
+    <ClCompile Include="src\models\TexturedModel.cpp">
+      <Filter>Source Files\models</Filter>
+    </ClCompile>
+    <ClCompile Include="src\main\Main.cpp">
+      <Filter>Source Files\main</Filter>
+    </ClCompile>
+    <ClCompile Include="src\loader\FakeTexture.cpp">
+      <Filter>Source Files\loader</Filter>
+    </ClCompile>
+    <ClCompile Include="src\loader\ObjLoader.cpp">
+      <Filter>Source Files\loader</Filter>
+    </ClCompile>
+    <ClCompile Include="src\loader\Vertex.cpp">
+      <Filter>Source Files\loader</Filter>
+    </ClCompile>
+    <ClCompile Include="src\entities\Camera.cpp">
+      <Filter>Source Files\entities</Filter>
+    </ClCompile>
+    <ClCompile Include="src\entities\Dummy.cpp">
+      <Filter>Source Files\entities</Filter>
+    </ClCompile>
+    <ClCompile Include="src\entities\Entity.cpp">
+      <Filter>Source Files\entities</Filter>
+    </ClCompile>
+    <ClCompile Include="src\entities\Light.cpp">
+      <Filter>Source Files\entities</Filter>
+    </ClCompile>
+    <ClCompile Include="src\collision\CollisionChecker.cpp">
+      <Filter>Source Files\collision</Filter>
+    </ClCompile>
+    <ClCompile Include="src\collision\CollisionModel.cpp">
+      <Filter>Source Files\collision</Filter>
+    </ClCompile>
+    <ClCompile Include="src\collision\QuadTreeNode.cpp">
+      <Filter>Source Files\collision</Filter>
+    </ClCompile>
+    <ClCompile Include="src\collision\Triangle3D.cpp">
+      <Filter>Source Files\collision</Filter>
+    </ClCompile>
+    <ClCompile Include="src\entities\Human.cpp">
+      <Filter>Source Files\entities</Filter>
+    </ClCompile>
+    <ClCompile Include="src\entities\Player.cpp">
+      <Filter>Source Files\entities</Filter>
+    </ClCompile>
+    <ClCompile Include="src\entities\Ball.cpp">
+      <Filter>Source Files\entities</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\toolbox\getline.h">
+      <Filter>Source Files\toolbox</Filter>
+    </ClInclude>
+    <ClInclude Include="src\toolbox\input.h">
+      <Filter>Source Files\toolbox</Filter>
+    </ClInclude>
+    <ClInclude Include="src\toolbox\maths.h">
+      <Filter>Source Files\toolbox</Filter>
+    </ClInclude>
+    <ClInclude Include="src\toolbox\matrix.h">
+      <Filter>Source Files\toolbox</Filter>
+    </ClInclude>
+    <ClInclude Include="src\toolbox\split.h">
+      <Filter>Source Files\toolbox</Filter>
+    </ClInclude>
+    <ClInclude Include="src\toolbox\vector.h">
+      <Filter>Source Files\toolbox</Filter>
+    </ClInclude>
+    <ClInclude Include="src\textures\modeltexture.h">
+      <Filter>Source Files\textures</Filter>
+    </ClInclude>
+    <ClInclude Include="src\shaders\shaderprogram.h">
+      <Filter>Source Files\shaders</Filter>
+    </ClInclude>
+    <ClInclude Include="src\renderEngine\renderEngine.h">
+      <Filter>Source Files\renderEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="src\models\models.h">
+      <Filter>Source Files\models</Filter>
+    </ClInclude>
+    <ClInclude Include="src\main\main.h">
+      <Filter>Source Files\main</Filter>
+    </ClInclude>
+    <ClInclude Include="src\loader\fakeTexture.h">
+      <Filter>Source Files\loader</Filter>
+    </ClInclude>
+    <ClInclude Include="src\loader\objloader.h">
+      <Filter>Source Files\loader</Filter>
+    </ClInclude>
+    <ClInclude Include="src\loader\vertex.h">
+      <Filter>Source Files\loader</Filter>
+    </ClInclude>
+    <ClInclude Include="src\entities\camera.h">
+      <Filter>Source Files\entities</Filter>
+    </ClInclude>
+    <ClInclude Include="src\entities\dummy.h">
+      <Filter>Source Files\entities</Filter>
+    </ClInclude>
+    <ClInclude Include="src\entities\entity.h">
+      <Filter>Source Files\entities</Filter>
+    </ClInclude>
+    <ClInclude Include="src\entities\light.h">
+      <Filter>Source Files\entities</Filter>
+    </ClInclude>
+    <ClInclude Include="src\collision\collisionchecker.h">
+      <Filter>Source Files\collision</Filter>
+    </ClInclude>
+    <ClInclude Include="src\collision\collisionmodel.h">
+      <Filter>Source Files\collision</Filter>
+    </ClInclude>
+    <ClInclude Include="src\collision\quadtreenode.h">
+      <Filter>Source Files\collision</Filter>
+    </ClInclude>
+    <ClInclude Include="src\collision\triangle3d.h">
+      <Filter>Source Files\collision</Filter>
+    </ClInclude>
+    <ClInclude Include="src\entities\human.h">
+      <Filter>Source Files\entities</Filter>
+    </ClInclude>
+    <ClInclude Include="src\entities\player.h">
+      <Filter>Source Files\entities</Filter>
+    </ClInclude>
+    <ClInclude Include="src\entities\ball.h">
+      <Filter>Source Files\entities</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
