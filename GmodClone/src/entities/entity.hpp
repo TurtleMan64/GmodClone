@@ -9,14 +9,17 @@ class CollisionModel;
 #include "../toolbox/matrix.hpp"
 #include <string>
 
-
 class Entity
 {
 public:
+    std::string name = "Default";
     Vector3f position;
-    float rotX, rotY, rotZ, rotRoll;
-    float scale;
-    bool visible;
+    float rotX    = 0.0f;
+    float rotY    = 0.0f;
+    float rotZ    = 0.0f;
+    float rotRoll = 0.0f;
+    float scale   = 1.0f;
+    bool visible  = true;
     Vector3f baseColour;
     float baseAlpha = 1.0f;
     Matrix4f transformationMatrix;

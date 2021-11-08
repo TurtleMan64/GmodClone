@@ -2,6 +2,7 @@
 #define BALL_H
 
 class TexturedModel;
+class Source;
 
 #include <list>
 #include "entity.hpp"
@@ -13,6 +14,8 @@ private:
     static std::list<TexturedModel*> models;
 
     Vector3f vel;
+
+    Source* src = nullptr;
 
     const float gravityForce = 0.588f*60;
 

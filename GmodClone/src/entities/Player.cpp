@@ -11,6 +11,7 @@
 #include "../toolbox/maths.hpp"
 #include "camera.hpp"
 #include "ball.hpp"
+#include "../audio/audioplayer.hpp"
 
 extern float dt;
 
@@ -18,9 +19,10 @@ Player::Player(std::list<TexturedModel*>* models)
 {
     myModels = models;
     scale = 0.5f;
-    position.set(0, 10, 0);
+    position.set(77.327835f, 1.313488f, -14.730497f);
     vel.set(0.000001f, 0, 0);
     groundNormal.set(0, 1, 0);
+    lastGroundNormal.set(0, 1, 0);
     wallNormal.set(1, 0, 0);
     camDir.set(0, 0, -1);
     visible = false;
@@ -32,16 +34,53 @@ void Player::step()
 
     updateCamera();
 
-    // Crouching
-    if (Input::inputs.INPUT_ACTION2 && slideTimer < 0.0f)
+    // Sliding
+    float slideTimerBefore = slideTimer;
+    slideTimer-=dt;
+    if (Input::inputs.INPUT_ACTION4 && !Input::inputs.INPUT_PREVIOUS_ACTION4)
     {
-        if (!isCrouching)
+        if (timeSinceOnGround <= AIR_JUMP_TOLERANCE && !isCrouching && vel.lengthSquared() > SLIDE_SPEED_REQUIRED*SLIDE_SPEED_REQUIRED && slideTimer <= -SLIDE_TIMER_COOLDOWN)
         {
-            //CollisionResult result = CollisionChecker::checkCollision(position.x, position.y + COLLISION_RADIUS*3, position.z, COLLISION_RADIUS);
-            //if (!result.hit)
+            AudioPlayer::play(1, nullptr);
+            slideTimer = SLIDE_TIMER_DURATION;
+            storedSlideSpeed = vel.length() + SLIDE_SPEED_ADDITION;
+            vel = Maths::projectOntoPlane(&vel, &groundNormal);
+        }
+    }
+
+    // If holding crouch after slide is done, start crouching
+    if (slideTimer <= 0.0f && slideTimerBefore > 0.0f && Input::inputs.INPUT_ACTION4)
+    {
+        isCrouching = true;
+    }
+
+    // If you are in the air, cancel slide
+    if (timeSinceOnGround > AIR_JUMP_TOLERANCE)
+    {
+        if (slideTimer > 0.0f && Input::inputs.INPUT_ACTION4)
+        {
+            isCrouching = true;
+        }
+
+        slideTimer = -SLIDE_TIMER_COOLDOWN;
+    }
+
+    // When sliding, maintain speed
+    if (slideTimer > 0.0f)
+    {
+        vel.setLength(storedSlideSpeed);
+    }
+
+    // Crouching
+    if (Input::inputs.INPUT_ACTION4)
+    {
+        if ((slideTimer < 0.0f && vel.lengthSquared() < SLIDE_SPEED_REQUIRED*SLIDE_SPEED_REQUIRED) || (!onGround && slideTimer < 0.0f))
+        {
+            if (!isCrouching)
             {
                 isCrouching = true;
-                //position.y += COLLISION_RADIUS*2;
+                position.y += COLLISION_RADIUS*2;
+                eyeHeightSmooth -= COLLISION_RADIUS*2;
             }
         }
     }
@@ -54,52 +93,42 @@ void Player::step()
             {
                 isCrouching = false;
 
-                //determine if we move the player back down ( so they cant get infinite height by spamming crouch
-                //result = CollisionChecker::checkCollision(position.x, (position.y + COLLISION_RADIUS)-0.1f, position.z, COLLISION_RADIUS);
-                //if (!result.hit)
+                if (!onGround)
                 {
-                    //position.y -= COLLISION_RADIUS*2;
+                    //determine if we move the player back down ( so they cant get infinite height by spamming crouch
+                    float distanceToFloor = -1.0f;
+                    const int NUM_ITERATIONS = 200; //can probably reduce this, but makes things possibly choppier
+                    for (int i = 0; i < NUM_ITERATIONS; i++)
+                    {
+                        float yOff = i*COLLISION_RADIUS*(2.0f/NUM_ITERATIONS);
+                        result = CollisionChecker::checkCollision(position.x, (position.y + COLLISION_RADIUS) - yOff, position.z, COLLISION_RADIUS);
+                        if (result.hit)
+                        {
+                            distanceToFloor = yOff;
+                            break;
+                        }
+                    }
+
+                    if (distanceToFloor < 0.0f)
+                    {
+                        position.y -= COLLISION_RADIUS*2;
+                        eyeHeightSmooth += COLLISION_RADIUS*2;
+                    }
+                    else
+                    {
+                        position.y -= distanceToFloor;
+                        eyeHeightSmooth += distanceToFloor;
+                    }
                 }
             }
         }
     }
 
-    // Sliding
-    slideTimer-=dt;
-    if (Input::inputs.INPUT_ACTION4 && !Input::inputs.INPUT_PREVIOUS_ACTION4)
-    {
-        if (onGround && !isCrouching && vel.lengthSquared() > SLIDE_SPEED_REQUIRED*SLIDE_SPEED_REQUIRED && slideTimer < -SLIDE_TIMER_COOLDOWN)
-        {
-            slideTimer = SLIDE_TIMER_DURATION;
-            storedSlideSpeed = vel.length() + SLIDE_SPEED_ADDITION;
-        }
-        //else if (onGround && slideTimer >= 0.0f)
-        //{
-        //    slideTimer = 0.0f;
-        //}
-    }
-
-    if (!onGround)
-    {
-        slideTimer = -SLIDE_TIMER_COOLDOWN;
-    }
-
-    if (slideTimer > 0.0f)
-    {
-        vel.setLength(storedSlideSpeed);
-    }
-
-    //printf("slideTimer = %f\n", slideTimer);
-
     // Player direction input
+    if (slideTimer < 0.0f)
     {
         float stickAngle = atan2f(Input::inputs.INPUT_Y, Input::inputs.INPUT_X) - Maths::PI/2; //angle you are holding on the stick, with 0 being up
         float stickRadius = sqrtf(Input::inputs.INPUT_X*Input::inputs.INPUT_X + Input::inputs.INPUT_Y*Input::inputs.INPUT_Y);
-
-        if (slideTimer > 0.0f)
-        {
-            stickRadius = 0.0f;
-        }
 
         Vector3f dirForward = Maths::projectOntoPlane(&camDir, &yAxis);
         dirForward.setLength(stickRadius);
@@ -120,9 +149,11 @@ void Player::step()
     vel = vel + yAxis.scaleCopy(FORCE_GRAVITY*dt);
 
     // Normal Jump
-    if (Input::inputs.INPUT_ACTION1 && !Input::inputs.INPUT_PREVIOUS_ACTION1 && onGround)
+    if (Input::inputs.INPUT_ACTION1 && !Input::inputs.INPUT_PREVIOUS_ACTION1 && timeSinceOnGround <= AIR_JUMP_TOLERANCE)
     {
-        vel = vel + groundNormal.scaleCopy(JUMP_SPEED);
+        AudioPlayer::play(36, nullptr);
+        vel = vel + lastGroundNormal.scaleCopy(JUMP_SPEED);
+        timeSinceOnGround = AIR_JUMP_TOLERANCE + 0.0001f;
     }
 
     // Wall Jumping
@@ -135,6 +166,7 @@ void Player::step()
 
     if (!onGround && wallJumpTimer >= 0.0f && Input::inputs.INPUT_ACTION1 && !Input::inputs.INPUT_PREVIOUS_ACTION1)
     {
+        AudioPlayer::play(50, nullptr);
         vel = vel + storedWallNormal.scaleCopy(WALL_JUMP_SPEED_HORIZONTAL);
         vel.y += WALL_JUMP_SPEED_VERTICAL;
         wallJumpTimer = -1.0f;
@@ -143,7 +175,9 @@ void Player::step()
     position = position + vel.scaleCopy(dt);
 
     bool hitAny = false;
-    std::unordered_set<Triangle3D*> collisionResults;
+    std::vector<Triangle3D*> collisionResults;
+
+    Vector3f velBefore = vel;
 
     //bottom sphere collision
     for (int c = 0; c < 20; c++)
@@ -163,7 +197,7 @@ void Player::step()
             //move along the new plane
             vel = Maths::projectOntoPlane(&vel, &directionToMove);
             hitAny = true;
-            collisionResults.insert(result.tri);
+            collisionResults.push_back(result.tri);
         }
         else
         {
@@ -198,9 +232,11 @@ void Player::step()
         }
     }
 
+    bool onGroundBefore = onGround;
     onGround = false;
     isTouchingWall = false;
     //bool bounced = false;
+    bool touchedAWall = false;
     if (hitAny)
     {
         isTouchingWall = true;
@@ -208,7 +244,7 @@ void Player::step()
         Vector3f normalGroundSum;
         Vector3f normalWallSum;
 
-        for (auto tri : collisionResults)
+        for (Triangle3D* tri : collisionResults)
         {
             if (tri->normal.y > 0.5f) //dont add walls into this calculation, since we use it to determine jump direction.
             {
@@ -219,8 +255,7 @@ void Player::step()
             else
             {
                 normalWallSum = normalWallSum + tri->normal;
-
-                slideTimer = 0.0f;
+                touchedAWall = true;
             }
         }
 
@@ -231,25 +266,73 @@ void Player::step()
         wallNormal = normalWallSum;
     }
 
-    //printf("isTouchingWall = %d\n", isTouchingWall);
+    // End the slide if contact with wall is too direct
+    if (touchedAWall && slideTimer > 0.0f)
+    {
+        Vector3f velNorm = velBefore;
+        velNorm.normalize();
+
+        if (velNorm.dot(&wallNormal) < -0.6f)
+        {
+            slideTimer = 0.0f;
+
+            if (Input::inputs.INPUT_ACTION4)
+            {
+                isCrouching = true;
+            }
+        }
+    }
+
+    //Calculate landing on the ground
+    if (!onGroundBefore && onGround)
+    {
+        Vector3f ouchness = Maths::projectAlongLine(&velBefore, &groundNormal);
+
+        if (ouchness.lengthSquared() > 14.0f*14.0f)
+        {
+            AudioPlayer::play(51, nullptr);
+        }
+        else if (ouchness.lengthSquared() > 4.0f*4.0f)
+        {
+            AudioPlayer::play(49, nullptr);
+        }
+    }
 
     if (onGround)
     {
-        //Vector3f flat = Maths::projectOntoPlane(&vel, &relativeUp);
-        //Vector3f up = Maths::projectAlongLine(&vel, &relativeUp);
-        //flat = Maths::applyDrag(&flat, -friction, dt); //Slow vel down due to friction
-        //vel = flat + up;
-        //vel = Maths::applyDrag(&vel, -friction, dt); //Slow vel down due to friction
-        Vector3f gravityDir(0, -1, 0);
-        float sameness = fabsf(groundNormal.dot(&gravityDir));
-        //sameness = 1.0f;
-        //printf("%f\n", sameness);
-        //printf("%f\n", vel.length());
-        if (vel.length() > 10.0f/36.7816091954f)
+        timeSinceOnGround = 0.0f;
+        lastGroundNormal = groundNormal;
+    }
+    else
+    {
+        timeSinceOnGround+=dt;
+    }
+
+    // Footstep sounds
+    if (timeSinceOnGround <= 0.02f && slideTimer < 0.0f)
+    {
+        float stepTimerBefore = stepTimer;
+        stepTimer+=vel.length()*dt;
+
+        if (stepTimerBefore < 2.0f && stepTimer >= 2.0f)
         {
+            stepTimer-=2.0f;
+            AudioPlayer::play(36 + (int)(Maths::random()*4), nullptr);
+        }
+    }
+
+    if (onGround)
+    {
+        if (vel.length() > 10.0f/36.7816091954f) //If going fast, slow down from drag equation
+        {
+            Vector3f gravityDir(0, -1, 0);
+            //float sameness = fabsf(groundNormal.dot(&gravityDir));
+            //printf("ground normal = %f %f %f\n", groundNormal.x, groundNormal.y, groundNormal.z);
+            //printf("sameness = %f\n", sameness);
+            float sameness = 1.0f;
             vel = Maths::applyDrag(&vel, -sameness*DRAG_GROUND, dt); //Slow vel down due to friction on ground
         }
-        else
+        else //If going slow, slow down from linear equation
         {
             float down = 60*dt*(10.0f/36.7816091954f);
             if (vel.length() < down)
@@ -278,6 +361,11 @@ void Player::step()
         b->position.y += HUMAN_HEIGHT;
         Global::addEntity(b);
     }
+
+    printf("position previous frame = %f %f %f\n", position.x, position.y, position.z);
+
+    //printf("\n");
+
     
     updateTransformationMatrix();
 }

@@ -45,6 +45,8 @@
 #include "../collision/collisionmodel.hpp"
 #include "../entities/player.hpp"
 #include "../entities/human.hpp"
+#include "../audio/audiomaster.hpp"
+#include "../audio/audioplayer.hpp"
 #ifdef _WIN32
 #include <windows.h>
 #include <tchar.h>
@@ -84,36 +86,11 @@ Fbo* Global::gameMultisampleFbo = nullptr;
 Fbo* Global::gameOutputFbo = nullptr;
 Fbo* Global::gameOutputFbo2 = nullptr;
 
-bool Global::debugDisplay = false;
-bool Global::frozen = false;
-bool Global::step = false;
-
-bool Global::useHighQualityWater = true;
-unsigned Global::HQWaterReflectionWidth = 1280;
-unsigned Global::HQWaterReflectionHeight = 720;
-unsigned Global::HQWaterRefractionWidth = 1280;
-unsigned Global::HQWaterRefractionHeight = 720;
-
 bool Global::renderParticles = true;
-
-bool Global::renderBloom = false;
 
 bool Global::framerateUnlock = false;
 
 bool Global::useFullscreen = false;
-
-bool Global::renderShadowsFar = false;
-bool Global::renderShadowsClose = false;
-int Global::shadowsFarQuality = 0;
-
-
-//extern bool INPUT_JUMP;
-//extern bool INPUT_ACTION;
-//extern bool INPUT_ACTION2;
-//
-//extern bool INPUT_PREVIOUS_JUMP;
-//extern bool INPUT_PREVIOUS_ACTION;
-//extern bool INPUT_PREVIOUS_ACTION2;
 
 extern unsigned int SCR_WIDTH;
 extern unsigned int SCR_HEIGHT;
@@ -160,40 +137,7 @@ int Global::currentCalculatedFPS = 0;
 int Global::renderCount = 0;
 int Global::displaySizeChanged = 0;
 
-Global::PlayableCharacter Global::currentCharacterType = Global::PlayableCharacter::Sonic;
-std::unordered_map<Global::PlayableCharacter, std::string> Global::characterNames;
-
-int Global::gameArcadeIndex = 0;
-std::vector<std::pair<int, Global::PlayableCharacter>> Global::gameArcadeLevelIds; //level ids and the character id
-
-std::vector<int> Global::gameLevelIdsSonic;
-std::vector<int> Global::gameLevelIdsTails;
-std::vector<int> Global::gameLevelIdsKnuckles;
-
-//std::list<std::string> Global::raceLog;
-bool Global::shouldLogRace = false;
-
-int Global::raceLogSize;
-
-bool Global::spawnAtCheckpoint = false;
-Vector3f Global::checkpointPlayerPos;
-Vector3f Global::checkpointPlayerDir;
-Vector3f Global::checkpointCamDir;
-float Global::checkpointTime = 0;
-
-bool Global::unlockedSonicDoll = true;
-bool Global::unlockedMechaSonic = true;
-bool Global::unlockedDage4 = true;
-bool Global::unlockedManiaSonic = true;
-bool Global::unlockedAmy = true;
-
-std::unordered_map<int, int> Global::stageNpcCounts;
-
 void increaseProcessPriority();
-
-void doListenThread();
-
-void listen();
 
 int main(int argc, char** argv)
 {
@@ -210,10 +154,6 @@ int main(int argc, char** argv)
         #endif
     }
 
-    #ifdef DEV_MODE
-    std::thread listenThread(doListenThread);
-    #endif
-
     increaseProcessPriority();
 
     Global::countNew = 0;
@@ -223,61 +163,7 @@ int main(int argc, char** argv)
 
     createDisplay();
 
-    Global::characterNames[Global::PlayableCharacter::Sonic] = "Sonic";
-    Global::characterNames[Global::PlayableCharacter::Tails] = "Tails";
-    Global::characterNames[Global::PlayableCharacter::Knuckles] = "Knuckles";
-
     Global::loadSaveData();
-
-    //The levels you play in arcade mode, in order
-    Global::gameArcadeLevelIds.push_back(std::make_pair(LVL_TUTORIAL,        Global::PlayableCharacter::Sonic));
-    Global::gameArcadeLevelIds.push_back(std::make_pair(LVL_METAL_HARBOR,    Global::PlayableCharacter::Knuckles));
-    Global::gameArcadeLevelIds.push_back(std::make_pair(LVL_RADICAL_HIGHWAY, Global::PlayableCharacter::Tails));
-    Global::gameArcadeLevelIds.push_back(std::make_pair(LVL_GREEN_FOREST,    Global::PlayableCharacter::Sonic));
-    Global::gameArcadeLevelIds.push_back(std::make_pair(LVL_SKY_RAIL,        Global::PlayableCharacter::Sonic));
-
-    Global::gameLevelIdsSonic.push_back(LVL_TUTORIAL);
-    Global::gameLevelIdsSonic.push_back(LVL_DRAGON_ROAD);
-    Global::gameLevelIdsSonic.push_back(LVL_GREEN_FOREST);
-    Global::gameLevelIdsSonic.push_back(LVL_METAL_HARBOR);
-    Global::gameLevelIdsSonic.push_back(LVL_SKY_RAIL);
-    Global::gameLevelIdsSonic.push_back(LVL_PYRAMID_CAVE);
-    Global::gameLevelIdsSonic.push_back(LVL_RADICAL_HIGHWAY);
-    Global::gameLevelIdsSonic.push_back(LVL_GREEN_HILL_ZONE);
-    Global::gameLevelIdsSonic.push_back(LVL_CITY_ESCAPE);
-    Global::gameLevelIdsSonic.push_back(LVL_WINDY_VALLEY);
-    Global::gameLevelIdsSonic.push_back(LVL_SEASIDE_HILL);
-    Global::gameLevelIdsSonic.push_back(LVL_FROG_FOREST);
-    Global::gameLevelIdsSonic.push_back(LVL_TEST);
-    Global::gameLevelIdsSonic.push_back(LVL_SPEED_HIGHWAY);
-    Global::gameLevelIdsSonic.push_back(LVL_SACRED_SKY);
-    Global::gameLevelIdsSonic.push_back(LVL_TWINKLE_CIRCUIT);
-
-    Global::gameLevelIdsTails.push_back(LVL_TUTORIAL);
-    Global::gameLevelIdsTails.push_back(LVL_GREEN_FOREST);
-    Global::gameLevelIdsTails.push_back(LVL_METAL_HARBOR);
-    Global::gameLevelIdsTails.push_back(LVL_PYRAMID_CAVE);
-    Global::gameLevelIdsTails.push_back(LVL_RADICAL_HIGHWAY);
-    Global::gameLevelIdsTails.push_back(LVL_GREEN_HILL_ZONE);
-    Global::gameLevelIdsTails.push_back(LVL_CITY_ESCAPE);
-    Global::gameLevelIdsTails.push_back(LVL_WINDY_VALLEY);
-    Global::gameLevelIdsTails.push_back(LVL_SEASIDE_HILL);
-    Global::gameLevelIdsTails.push_back(LVL_FROG_FOREST);
-    Global::gameLevelIdsTails.push_back(LVL_TEST);
-    Global::gameLevelIdsTails.push_back(LVL_SPEED_HIGHWAY);
-    Global::gameLevelIdsTails.push_back(LVL_SACRED_SKY);
-    Global::gameLevelIdsTails.push_back(LVL_CLOUD_TEMPLE);
-
-    Global::gameLevelIdsKnuckles.push_back(LVL_DRY_LAGOON);
-    Global::gameLevelIdsKnuckles.push_back(LVL_DELFINO_PLAZA);
-    Global::gameLevelIdsKnuckles.push_back(LVL_NOKI_BAY);
-
-    //create NPC list
-    Global::stageNpcCounts[LVL_SKY_RAIL] = 1;
-    Global::stageNpcCounts[LVL_DRY_LAGOON] = 1;
-    Global::stageNpcCounts[LVL_METAL_HARBOR] = 4;
-    Global::stageNpcCounts[LVL_RADICAL_HIGHWAY] = 5;
-    Global::stageNpcCounts[LVL_DRAGON_ROAD] = 7;
 
     #if !defined(DEV_MODE) && defined(_WIN32)
     FreeConsole();
@@ -291,12 +177,15 @@ int main(int argc, char** argv)
 
     Master_init();
 
-
+    AudioMaster::init();
+    AudioPlayer::loadSoundEffects();
 
 
     //This light never gets deleted.
     Light lightSun;
     Global::gameLightSun = &lightSun;
+    lightSun.direction.set(-0.2f, -1, -0.4f);
+    lightSun.direction.normalize();
 
     //This light never gets deleted.
     Light lightMoon;
@@ -323,10 +212,10 @@ int main(int argc, char** argv)
 
     std::list<std::unordered_set<Entity*>*> entityChunkedList;
 
-    std::string folder = "Waterworld";
+    std::string folder = "TestMap";
 
     std::list<TexturedModel*> modelsStage;
-    ObjLoader::loadModel(&modelsStage, "res/Models/" + folder + "/", "Waterworld");
+    ObjLoader::loadModel(&modelsStage, "res/Models/" + folder + "/", "TestMap");
     Dummy* entityStage = new Dummy(&modelsStage);
     Global::addEntity(entityStage);
 
@@ -335,9 +224,9 @@ int main(int argc, char** argv)
     Global::player = new Player(&modelsSphere);
     Global::addEntity(Global::player);
 
-    Global::addEntity(new Human(0, 0, 0));
+    Global::addEntity(new Human(72.076897f, 0.313516f, 23.235739f));
 
-    CollisionModel* cm = ObjLoader::loadCollisionModel("Models/" + folder + "/", "Waterworld");
+    CollisionModel* cm = ObjLoader::loadCollisionModel("Models/" + folder + "/", "TestMap");
     for (int i = 0; i < cm->triangles.size(); i++)
     {
         CollisionChecker::addTriangle(cm->triangles[i]);
@@ -351,10 +240,9 @@ int main(int argc, char** argv)
 
         timeNew = glfwGetTime();
 
-        #ifndef WIN32LOL
         //spin lock to meet the target fps, and gives extremely consistent dt's.
         // also of course uses a ton of cpu.
-        if (Global::gameState == STATE_RUNNING && Global::framerateUnlock)
+        if (Global::gameState == STATE_RUNNING && Global::framerateUnlock && Global::fpsLimit > 0.0f)
         {
             double dtFrameNeedsToTake = 1.0/((double)Global::fpsLimit);
             while ((timeNew - timeOld) < dtFrameNeedsToTake)
@@ -362,41 +250,6 @@ int main(int argc, char** argv)
                 timeNew = glfwGetTime();
             }
         }
-        #else
-        //another idea: windows only. if you put the thread/process into a above normal priority,
-        // and call Sleep, it will actually sleep and return pretty consistently close
-        // to the amount you slept for. in my testing, it would never sleep for more
-        // than 2 milliseconds longer than what it was given (max was 1.5323 ms more than
-        // the sleep amount). So, we can sleep for 2ms less than the time needed, and then
-        // busy wait loop for the remaining time.
-        // This actually works really well but also has the same problem as the busy wait loop,
-        // which is the video looks choppy at bad fps targets. For example, if you set the target to 
-        // 60fps on a 60fps monitor, then it looks fine. But, if you set the target to 90fps, then
-        // it looks very choppy.
-        // EDIT: Sleep no longer does this and always does like intervals of 16ms... so this is pointless now...
-        if (Global::gameState == STATE_RUNNING && Global::framerateUnlock)
-        {
-            if (Global::fpsLimit > 0.0f)
-            {
-                double dtFrameNeedsToTake = 1.0/((double)Global::fpsLimit);
-                timeNew = glfwGetTime();
-        
-                const double sleepBuffer = 0.00175; //sleep will hopefully never take longer than this to return
-                double sleepTime = (dtFrameNeedsToTake - (timeNew - timeOld)) - sleepBuffer;
-                int msToSleep = (int)(sleepTime*1000);
-                if (msToSleep >= 1)
-                {
-                    Sleep(msToSleep);
-                }
-        
-                timeNew = glfwGetTime();
-                while ((timeNew - timeOld) < dtFrameNeedsToTake)
-                {
-                    timeNew = glfwGetTime();
-                }
-            }
-        }
-        #endif
 
         dt = (float)(timeNew - timeOld);
         dt = std::fminf(dt, 0.04f); //Anything lower than 25fps will slow the gameplay down
@@ -423,6 +276,13 @@ int main(int argc, char** argv)
         {
             std::fprintf(stderr, "########  GL ERROR  ########\n");
             std::fprintf(stderr, "%d\n", err);
+        }
+        
+        ALenum err2 = alGetError();
+        if (err2 != AL_NO_ERROR)
+        {
+            std::fprintf(stderr, "########  AL ERROR  ########\n");
+            std::fprintf(stderr, "%d\n", err2);
         }
 
         //long double thisTime = std::time(0);
@@ -543,11 +403,6 @@ int main(int argc, char** argv)
                 //ParticleMaster::update(Global::gameCamera);
                 Global::gameClock+=dt;
 
-                if (Global::debugDisplay && Global::frozen)
-                {
-                    Global::gameState = STATE_DEBUG;
-                }
-
                 if (Global::gameIsRingMode)
                 {
                     if (Global::gameRingCount >= Global::gameRingTarget && Global::finishStageTimer < 0)
@@ -593,22 +448,16 @@ int main(int argc, char** argv)
                 }
 
                 Input::pollInputs();
-                if (Global::step)
-                {
-                    Global::gameState = STATE_RUNNING;
-                    Global::step = false;
-                }
-                
-                if (Global::debugDisplay == false || Global::frozen == false)
-                {
-                    Global::gameState = STATE_RUNNING;
-                }
                 break;
             }
 
             default:
                 break;
         }
+
+        Vector3f camVel = cam.vel.scaleCopy(0.016666f);
+        AudioMaster::updateListenerData(&cam.eye, &cam.target, &cam.up, &camVel);
+        AudioPlayer::setListenerIsUnderwater(false);
 
         //Global::menuManager.step();
 
@@ -698,10 +547,6 @@ int main(int argc, char** argv)
 
     Global::saveSaveData();
 
-    #ifdef DEV_MODE
-    listenThread.detach();
-    #endif
-
     Master_cleanUp();
     Loader::cleanUp();
     closeDisplay();
@@ -786,11 +631,6 @@ void increaseProcessPriority()
     #endif
 }
 
-void Global::checkErrorAL(const char* /*description*/)
-{
-
-}
-
 void Global::loadSaveData()
 {
     Global::gameSaveData.clear();
@@ -846,11 +686,6 @@ void Global::loadSaveData()
     }
 }
 
-void Global::saveGhostData()
-{
-   
-}
-
 void Global::saveSaveData()
 {
     #ifdef _WIN32
@@ -896,104 +731,6 @@ void Global::saveSaveData()
 void Global::saveConfigData()
 {
    
-}
-
-void Global::increaseRingCount(int /*rings*/)
-{
-
-}
-
-int Global::calculateRankAndUpdate()
-{
-  
-}
-
-void doListenThread()
-{
-#ifdef _WIN32
-    DWORD dwError;
-
-    if (!SetThreadPriority(GetCurrentThread(), THREAD_PRIORITY_BELOW_NORMAL))
-    {
-        dwError = GetLastError();
-        _tprintf(TEXT("Failed to enter above normal mode (%d)\n"), (int)dwError);
-    }
-#endif
-
-    listen();
-}
-
-//listen on stdin for coordinates
-void listen()
-{
-    int loop = 1;
-    std::string input;
-
-    while (loop == 1)
-    {
-        getlineSafe(std::cin, input);
-
-        if (input == "exit")
-        {
-            loop = 0;
-        }
-        else if (input.size() > 1)
-        {
-            fprintf(stdout, "input = '%s'\n", input.c_str());
-            //Global::gamePlayer->setGroundSpeed(0, 0);
-            //Global::gamePlayer->setxVelAir(0);
-            //Global::gamePlayer->setxVelAir(0);
-            //Global::gamePlayer->setyVel(0);
-            if (input.c_str()[0] == 'w')
-            {
-                const char* data = &input.c_str()[1];
-                Global::waterHeight = std::stof(data);
-            }
-            //if (input == "goff")
-            //{
-            //    Global::gamePlayer->setGravity(0);
-            //}
-            //else if (input == "gon")
-            //{
-            //    Global::gamePlayer->setGravity(0.08f);
-            //}
-            //else if (input.c_str()[0] == 'x')
-            //{
-            //    const char* data = &input.c_str()[1];
-            //    Global::gamePlayer->setX(std::stof(data));
-            //    Global::gamePlayer->setGravity(0);
-            //}
-            //else if (input.c_str()[0] == 'y')
-            //{
-            //    const char* data = &input.c_str()[1];
-            //    Global::gamePlayer->setY(std::stof(data));
-            //    Global::gamePlayer->setGravity(0);
-            //}
-            //else if (input.c_str()[0] == 'z')
-            //{
-            //    const char* data = &input.c_str()[1];
-            //    Global::gamePlayer->setZ(std::stof(data));
-            //    Global::gamePlayer->setGravity(0);
-            //}
-            //else
-            //{
-            //    char lineBuf[256];
-            //    memcpy(lineBuf, input.c_str(), input.size()+1);
-            //
-            //    int splitLength = 0;
-            //    char** lineSplit = split(lineBuf, ' ', &splitLength);
-            //
-            //    if (splitLength == 3)
-            //    {
-            //        Global::gamePlayer->setX(std::stof(lineSplit[0]));
-            //        Global::gamePlayer->setY(std::stof(lineSplit[1]));
-            //        Global::gamePlayer->setZ(std::stof(lineSplit[2]));
-            //        Global::gamePlayer->setGravity(0);
-            //    }
-            //    free(lineSplit);
-            //}
-        }
-    }
 }
 
 //Returns the index of 'gameChunkedEntities' for the (x, z) location

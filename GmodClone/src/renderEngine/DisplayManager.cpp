@@ -308,28 +308,28 @@ void loadGraphicsSettings()
                 {
                     if (strcmp(lineSplit[1], "on") == 0)
                     {
-                        Global::useHighQualityWater = true;
+                        //Global::useHighQualityWater = true;
                     }
                     else
                     {
-                        Global::useHighQualityWater = false;
+                        //Global::useHighQualityWater = false;
                     }
                 }
                 else if (strcmp(lineSplit[0], "HQ_Water_Reflection_Width") == 0)
                 {
-                    Global::HQWaterReflectionWidth = (unsigned)std::stoi(lineSplit[1], nullptr, 10);
+                    //Global::HQWaterReflectionWidth = (unsigned)std::stoi(lineSplit[1], nullptr, 10);
                 }
                 else if (strcmp(lineSplit[0], "HQ_Water_Reflection_Height") == 0)
                 {
-                    Global::HQWaterReflectionHeight = (unsigned)std::stoi(lineSplit[1], nullptr, 10);
+                    //Global::HQWaterReflectionHeight = (unsigned)std::stoi(lineSplit[1], nullptr, 10);
                 }
                 else if (strcmp(lineSplit[0], "HQ_Water_Refraction_Width") == 0)
                 {
-                    Global::HQWaterRefractionWidth = (unsigned)std::stoi(lineSplit[1], nullptr, 10);
+                    //Global::HQWaterRefractionWidth = (unsigned)std::stoi(lineSplit[1], nullptr, 10);
                 }
                 else if (strcmp(lineSplit[0], "HQ_Water_Refraction_Height") == 0)
                 {
-                    Global::HQWaterRefractionHeight = (unsigned)std::stoi(lineSplit[1], nullptr, 10);
+                    //Global::HQWaterRefractionHeight = (unsigned)std::stoi(lineSplit[1], nullptr, 10);
                 }
                 else if (strcmp(lineSplit[0], "FOV") == 0)
                 {
@@ -381,38 +381,38 @@ void loadGraphicsSettings()
                 {
                     if (strcmp(lineSplit[1], "on") == 0)
                     {
-                        Global::renderBloom = true;
+                        //Global::renderBloom = true;
                     }
                     else
                     {
-                        Global::renderBloom = false;
+                        //Global::renderBloom = false;
                     }
                 }
                 else if (strcmp(lineSplit[0], "Render_Shadows_Far") == 0)
                 {
                     if (strcmp(lineSplit[1], "on") == 0)
                     {
-                        Global::renderShadowsFar = true;
+                        //Global::renderShadowsFar = true;
                     }
                     else
                     {
-                        Global::renderShadowsFar = false;
+                        //Global::renderShadowsFar = false;
                     }
                 }
                 else if (strcmp(lineSplit[0], "Render_Shadows_Close") == 0)
                 {
                     if (strcmp(lineSplit[1], "on") == 0)
                     {
-                        Global::renderShadowsClose = true;
+                        //Global::renderShadowsClose = true;
                     }
                     else
                     {
-                        Global::renderShadowsClose = false;
+                        //Global::renderShadowsClose = false;
                     }
                 }
                 else if (strcmp(lineSplit[0], "Shadows_Far_Quality") == 0)
                 {
-                    Global::shadowsFarQuality = std::stoi(lineSplit[1], nullptr, 10);
+                    //Global::shadowsFarQuality = std::stoi(lineSplit[1], nullptr, 10);
                 }
             }
             free(lineSplit);

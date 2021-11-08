@@ -2,6 +2,7 @@
 
 #ifdef _WIN32
 #include <GLFW/glfw3.h>
+#include <Windows.h>
 #else
 #include "/usr/include/GLFW/glfw3.hpp"
 #endif
@@ -364,6 +365,11 @@ void Input::pollInputs()
         Input::inputs.INPUT_X = 1;
     }
 
+    if ((GetKeyState(VK_CAPITAL) & 1) != 0)
+    {
+        Input::inputs.INPUT_ACTION3 = true;
+    }
+
     /*
     if (glfwGetKey(window, GLFW_KEY_0) == GLFW_PRESS)
     {
@@ -374,7 +380,7 @@ void Input::pollInputs()
         SkyManager::increaseTimeOfDay(-0.5f);
     }
 
-    #ifdef DEV_MODE
+    ifdef DEV_MODE
     if (glfwGetKey(window, GLFW_KEY_J) == GLFW_PRESS)
     {
         if (Global::gameMainPlayer != nullptr)
@@ -385,9 +391,14 @@ void Input::pollInputs()
             Global::gameMainPlayer->vel.set(v->x, v->y+600*dt, v->z);
         }
     }
-    #endif
+    endif
     */
-
+    #ifdef DEV_MODE
+    if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS)
+    {
+        printf("%f %f %f\n", Global::player->position.x, Global::player->position.y, Global::player->position.z);
+    }
+    #endif
 
     #ifdef DEV_MODE
     if (Input::inputs.INPUT_LB && !Input::inputs.INPUT_PREVIOUS_LB)
@@ -438,7 +449,7 @@ void Input::pollInputs()
     }
     if (Input::inputs.INPUT_RB && !Input::inputs.INPUT_PREVIOUS_RB)
     {
-        Global::shouldLogRace = !Global::shouldLogRace;
+        //Global::shouldLogRace = !Global::shouldLogRace;
     }
     #endif
 

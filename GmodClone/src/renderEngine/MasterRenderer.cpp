@@ -54,76 +54,76 @@ extern unsigned int SCR_HEIGHT;
 
 void Master_init()
 {
-    if (Global::renderShadowsFar)
-    {
-        if (Global::renderShadowsClose)
-        {
-            if (Global::renderBloom)
-            {
-                switch (Global::shadowsFarQuality)
-                {
-                case 0:  shader = new ShaderProgram("res/Shaders/entity/vertexShaderShadowBoth.txt", "res/Shaders/entity/fragmentShaderShadow1BothBloom.txt");  break;
-                case 1:  shader = new ShaderProgram("res/Shaders/entity/vertexShaderShadowBoth.txt", "res/Shaders/entity/fragmentShaderShadow9BothBloom.txt");  break;
-                default: shader = new ShaderProgram("res/Shaders/entity/vertexShaderShadowBoth.txt", "res/Shaders/entity/fragmentShaderShadow25BothBloom.txt"); break;
-                }
-            }
-            else
-            {
-                switch (Global::shadowsFarQuality)
-                {
-                case 0:  shader = new ShaderProgram("res/Shaders/entity/vertexShaderShadowBoth.txt", "res/Shaders/entity/fragmentShaderShadow1Both.txt");  break;
-                case 1:  shader = new ShaderProgram("res/Shaders/entity/vertexShaderShadowBoth.txt", "res/Shaders/entity/fragmentShaderShadow9Both.txt");  break;
-                default: shader = new ShaderProgram("res/Shaders/entity/vertexShaderShadowBoth.txt", "res/Shaders/entity/fragmentShaderShadow25Both.txt"); break;
-                }
-            }
-        }
-        else
-        {
-            if (Global::renderBloom)
-            {
-                switch (Global::shadowsFarQuality)
-                {
-                case 0:  shader = new ShaderProgram("res/Shaders/entity/vertexShaderShadowFar.txt", "res/Shaders/entity/fragmentShaderShadow1FarBloom.txt");  break;
-                case 1:  shader = new ShaderProgram("res/Shaders/entity/vertexShaderShadowFar.txt", "res/Shaders/entity/fragmentShaderShadow9FarBloom.txt");  break;
-                default: shader = new ShaderProgram("res/Shaders/entity/vertexShaderShadowFar.txt", "res/Shaders/entity/fragmentShaderShadow25FarBloom.txt"); break;
-                }
-            }
-            else
-            {
-                switch (Global::shadowsFarQuality)
-                {
-                case 0:  shader = new ShaderProgram("res/Shaders/entity/vertexShaderShadowFar.txt", "res/Shaders/entity/fragmentShaderShadow1Far.txt");  break;
-                case 1:  shader = new ShaderProgram("res/Shaders/entity/vertexShaderShadowFar.txt", "res/Shaders/entity/fragmentShaderShadow9Far.txt");  break;
-                default: shader = new ShaderProgram("res/Shaders/entity/vertexShaderShadowFar.txt", "res/Shaders/entity/fragmentShaderShadow25Far.txt"); break;
-                }
-            }
-        }
-    }
-    else
-    {
-        if (Global::renderShadowsClose)
-        {
-            if (Global::renderBloom)
-            {
-                shader = new ShaderProgram("res/Shaders/entity/vertexShaderShadowClose.txt", "res/Shaders/entity/fragmentShaderShadowCloseBloom.txt");
-            }
-            else
-            {
-                shader = new ShaderProgram("res/Shaders/entity/vertexShaderShadowClose.txt", "res/Shaders/entity/fragmentShaderShadowClose.txt");
-            }
-        }
-        else
-        {
-            if (Global::renderBloom)
-            {
-                shader = new ShaderProgram("res/Shaders/entity/vertexShader.txt", "res/Shaders/entity/fragmentShaderBloom.txt");
-            }
-            else
+    //if (Global::renderShadowsFar)
+    //{
+    //    if (Global::renderShadowsClose)
+    //    {
+    //        if (Global::renderBloom)
+    //        {
+    //            switch (Global::shadowsFarQuality)
+    //            {
+    //            case 0:  shader = new ShaderProgram("res/Shaders/entity/vertexShaderShadowBoth.txt", "res/Shaders/entity/fragmentShaderShadow1BothBloom.txt");  break;
+    //            case 1:  shader = new ShaderProgram("res/Shaders/entity/vertexShaderShadowBoth.txt", "res/Shaders/entity/fragmentShaderShadow9BothBloom.txt");  break;
+    //            default: shader = new ShaderProgram("res/Shaders/entity/vertexShaderShadowBoth.txt", "res/Shaders/entity/fragmentShaderShadow25BothBloom.txt"); break;
+    //            }
+    //        }
+    //        else
+    //        {
+    //            switch (Global::shadowsFarQuality)
+    //            {
+    //            case 0:  shader = new ShaderProgram("res/Shaders/entity/vertexShaderShadowBoth.txt", "res/Shaders/entity/fragmentShaderShadow1Both.txt");  break;
+    //            case 1:  shader = new ShaderProgram("res/Shaders/entity/vertexShaderShadowBoth.txt", "res/Shaders/entity/fragmentShaderShadow9Both.txt");  break;
+    //            default: shader = new ShaderProgram("res/Shaders/entity/vertexShaderShadowBoth.txt", "res/Shaders/entity/fragmentShaderShadow25Both.txt"); break;
+    //            }
+    //        }
+    //    }
+    //    else
+    //    {
+    //        if (Global::renderBloom)
+    //        {
+    //            switch (Global::shadowsFarQuality)
+    //            {
+    //            case 0:  shader = new ShaderProgram("res/Shaders/entity/vertexShaderShadowFar.txt", "res/Shaders/entity/fragmentShaderShadow1FarBloom.txt");  break;
+    //            case 1:  shader = new ShaderProgram("res/Shaders/entity/vertexShaderShadowFar.txt", "res/Shaders/entity/fragmentShaderShadow9FarBloom.txt");  break;
+    //            default: shader = new ShaderProgram("res/Shaders/entity/vertexShaderShadowFar.txt", "res/Shaders/entity/fragmentShaderShadow25FarBloom.txt"); break;
+    //            }
+    //        }
+    //        else
+    //        {
+    //            switch (Global::shadowsFarQuality)
+    //            {
+    //            case 0:  shader = new ShaderProgram("res/Shaders/entity/vertexShaderShadowFar.txt", "res/Shaders/entity/fragmentShaderShadow1Far.txt");  break;
+    //            case 1:  shader = new ShaderProgram("res/Shaders/entity/vertexShaderShadowFar.txt", "res/Shaders/entity/fragmentShaderShadow9Far.txt");  break;
+    //            default: shader = new ShaderProgram("res/Shaders/entity/vertexShaderShadowFar.txt", "res/Shaders/entity/fragmentShaderShadow25Far.txt"); break;
+    //            }
+    //        }
+    //    }
+    //}
+    //else
+    //{
+    //    if (Global::renderShadowsClose)
+    //    {
+    //        if (Global::renderBloom)
+    //        {
+    //            shader = new ShaderProgram("res/Shaders/entity/vertexShaderShadowClose.txt", "res/Shaders/entity/fragmentShaderShadowCloseBloom.txt");
+    //        }
+    //        else
+    //        {
+    //            shader = new ShaderProgram("res/Shaders/entity/vertexShaderShadowClose.txt", "res/Shaders/entity/fragmentShaderShadowClose.txt");
+    //        }
+    //    }
+    //    else
+    //    {
+    //        if (Global::renderBloom)
+    //        {
+    //            shader = new ShaderProgram("res/Shaders/entity/vertexShader.txt", "res/Shaders/entity/fragmentShaderBloom.txt");
+    //        }
+    //        else
             {
                 shader = new ShaderProgram("res/Shaders/entity/vertexShader.txt", "res/Shaders/entity/fragmentShader.txt");
             }
-        }
-    }
+    //    }
+    //}
     INCR_NEW("ShaderProgram");
 
     projectionMatrix = new Matrix4f; INCR_NEW("Matrix4f");
@@ -461,11 +461,11 @@ ShadowMapMasterRenderer2* Master_getShadowRenderer2()
 
 void Master_renderShadowMaps(Light* /*sun*/)
 {
-    if (Global::renderShadowsFar)
+    //if (Global::renderShadowsFar)
     {
         //shadowMapRenderer->render(&entitiesMap, sun);
     }
-    if (Global::renderShadowsClose)
+    //if (Global::renderShadowsClose)
     {
         //shadowMapRenderer2->render(&entitiesMap, sun);
     }

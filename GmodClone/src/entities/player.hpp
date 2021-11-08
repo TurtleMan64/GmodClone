@@ -22,7 +22,9 @@ private:
 
     bool isCrouching = false;
 
-    const float SLIDE_SPEED_REQUIRED = 2.0f;
+    float stepTimer = 0.0f;
+
+    const float SLIDE_SPEED_REQUIRED = 4.0f;
     const float SLIDE_TIMER_DURATION = 0.666f;
     const float SLIDE_TIMER_COOLDOWN = 0.3f;
     const float SLIDE_SPEED_ADDITION = 4.0f;
@@ -54,6 +56,11 @@ private:
     const float DRAG_AIR = 1.0;
 
     const float JUMP_SPEED = 200.0f/36.7816091954f;
+
+    //for stored jumps
+    float timeSinceOnGround = 0.0f;
+    Vector3f lastGroundNormal;
+    const float AIR_JUMP_TOLERANCE = 0.02f;
 
     const float WALL_JUMP_SPEED_VERTICAL = 4.0f;
 

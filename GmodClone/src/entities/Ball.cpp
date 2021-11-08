@@ -8,6 +8,8 @@
 #include "../main/main.hpp"
 #include "../toolbox/maths.hpp"
 #include "../loader/objloader.hpp"
+#include "../audio/audioplayer.hpp"
+#include "../audio/source.hpp"
 
 std::list<TexturedModel*> Ball::models;
 
@@ -24,6 +26,8 @@ Ball::Ball(Vector3f pos, Vector3f vel)
     position = pos;
     this->vel = vel;
     visible = true;
+
+    //src = AudioPlayer::play(12, &position, 1.0f, true);
 }
 
 void Ball::step()
@@ -47,6 +51,11 @@ void Ball::step()
 
         Vector3f bounceUp = Maths::projectAlongLine(&velBounce, &directionToMove);
 
+        if (bounceUp.lengthSquared() > 1*1)
+        {
+            AudioPlayer::play(12, &position);
+        }
+
         bounceUp.scale(1 - bounceAmount);
         vel = velBounce - bounceUp;
     }
@@ -57,6 +66,12 @@ void Ball::step()
     rotP.y = 0;
     rotZ -= 150*rotP.length()*dt;
     rotY = Maths::toDegrees(atan2f(-vel.z, vel.x));
+
+    //if (src != nullptr)
+    //{
+        //src->setPosition(position.x, position.y, position.z);
+        //src->setVelocity(vel.x, vel.y, vel.z);
+    //}
 
     updateTransformationMatrix();
 }

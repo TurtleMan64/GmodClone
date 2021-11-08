@@ -1,5 +1,6 @@
 #include <AL/al.h>
 #include <AL/efx.h>
+#include <AL/alext.h>
 
 #include "source.hpp"
 #include "../main/main.hpp"
@@ -9,14 +10,22 @@ ALuint Source::filterLowpass = AL_NONE;
 Source::Source(float rolloff, float referencedist, float max)
 {
     alGenSources(1, &sourceId);
-    alSourcef(sourceId, AL_ROLLOFF_FACTOR, rolloff);
-    alSourcef(sourceId, AL_REFERENCE_DISTANCE, referencedist);
-    alSourcef(sourceId, AL_MAX_DISTANCE, max);
 
     //Background music shouldn't pan in 3D space
     if (rolloff == 0)
     {
-        alSourcei(sourceId, AL_SOURCE_RELATIVE, AL_TRUE);
+        //alSourcei(sourceId, AL_SOURCE_RELATIVE, AL_TRUE);
+        //alSource3f(sourceId, AL_POSITION, 0.0f, 0.0f, 0.0f);
+       // alSource3f(sourceId, AL_VELOCITY, 0.0f, 0.0f, 0.0f);
+        //alSourcei(sourceId, AL_DIRECT_CHANNELS_SOFT, 1);
+        alSourcef(sourceId, AL_REFERENCE_DISTANCE, 100000000.0f);
+        alSourcef(sourceId, AL_MAX_DISTANCE, 1000000000.0f);
+    }
+    else
+    {
+        alSourcef(sourceId, AL_ROLLOFF_FACTOR, rolloff);
+        alSourcef(sourceId, AL_REFERENCE_DISTANCE, referencedist);
+        alSourcef(sourceId, AL_MAX_DISTANCE, max);
     }
 
     bufferId = AL_NONE;

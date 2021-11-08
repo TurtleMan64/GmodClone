@@ -29,13 +29,11 @@
 
 ALCdevice*  AudioMaster::device = nullptr;
 ALCcontext* AudioMaster::context = nullptr;
-
+Vector3f AudioMaster::spotInFrontOfListener;
+Vector3f AudioMaster::listenerVelCopy;
 
 void AudioMaster::init()
 {
-    alDistanceModel(AL_LINEAR_DISTANCE_CLAMPED);
-    alListenerf(AL_GAIN, 0.1f);
-
     AudioMaster::device = alcOpenDevice(nullptr);
     if (AudioMaster::device == nullptr)
     {
@@ -86,6 +84,9 @@ void AudioMaster::init()
 
     Source::filterLowpass = filterLowpass;
 
+    alDistanceModel(AL_LINEAR_DISTANCE_CLAMPED);
+    alListenerf(AL_GAIN, 1.0f);
+
     AudioPlayer::loadSettings();
     AudioPlayer::createSources();
     AudioPlayer::loadSoundEffects();
@@ -118,6 +119,16 @@ void AudioMaster::updateListenerData(Vector3f* eye, Vector3f* target, Vector3f* 
     alListenerfv(AL_POSITION,    listenerPos);
     alListenerfv(AL_VELOCITY,    listenerVel);
     alListenerfv(AL_ORIENTATION, listenerOri);
+
+    AudioMaster::spotInFrontOfListener.set(eye->x + at.x, eye->y + at.y, eye->z + at.z);
+    AudioMaster::listenerVelCopy.set(listenerVel[0], listenerVel[1], listenerVel[2]);
+
+    for (int i = 7; i < 14; i++)
+    {
+        Source* src = AudioPlayer::getSource(i);
+        src->setPosition(spotInFrontOfListener.x, spotInFrontOfListener.y, spotInFrontOfListener.z);
+        src->setVelocity(listenerVel[0], listenerVel[1], listenerVel[2]);
+    }
 }
 
 ALuint AudioMaster::loadOGG(const char* fileName)
@@ -190,6 +201,146 @@ ALuint AudioMaster::loadOGG(const char* fileName)
     buf.shrink_to_fit();
 
     return buffer;
+}
+
+ALuint AudioMaster::loadWAV(const char* fileName)
+{
+    #ifdef _WIN32
+	FILE* fp = nullptr;
+	errno_t e = fopen_s(&fp, fileName, "rb");
+
+	if (fp == nullptr || e != 0)
+	{
+		fprintf(stdout, "Error when trying to open '%s'\n", fileName);
+		return AL_NONE;
+	}
+
+	char type[4];
+	int size, chunkSize;
+	short formatType, channels;
+	int sampleRate, avgBytesPerSec;
+	short bytesPerSample, bitsPerSample;
+	int dataSize;
+
+	fread(type, sizeof(char), 4, fp);
+	if (type[0] != 'R' ||
+		type[1] != 'I' ||
+		type[2] != 'F' ||
+		type[3] != 'F')
+	{
+		fprintf(stderr, "No RIFF\n");
+		fclose(fp);
+		return 0;
+	}
+
+	fread(&size, sizeof(int), 1, fp);
+	fread(type, sizeof(char), 4, fp);
+	if (type[0] != 'W' ||
+		type[1] != 'A' ||
+		type[2] != 'V' ||
+		type[3] != 'E')
+	{
+		fprintf(stderr, "not WAVE\n");
+		fclose(fp);
+		return 0;
+	}
+
+	fread(type, sizeof(char), 4, fp);
+	if (type[0] != 'f' ||
+		type[1] != 'm' ||
+		type[2] != 't' ||
+		type[3] != ' ')
+	{
+		fprintf(stderr, "not fmt\n");
+		fclose(fp);
+		return 0;
+	}
+
+	fread(&chunkSize,      sizeof(int  ), 1, fp);
+	fread(&formatType,     sizeof(short), 1, fp);
+	fread(&channels,       sizeof(short), 1, fp);
+	fread(&sampleRate,     sizeof(int  ), 1, fp);
+	fread(&avgBytesPerSec, sizeof(int  ), 1, fp);
+	fread(&bytesPerSample, sizeof(short), 1, fp);
+	fread(&bitsPerSample,  sizeof(short), 1, fp);
+
+	fread(type, sizeof(char), 4, fp);
+	if (type[0] != 'd' ||
+		type[1] != 'a' ||
+		type[2] != 't' ||
+		type[3] != 'a')
+	{
+		fprintf(stderr, "Missing DATA\n");
+		fclose(fp);
+		return 0;
+	}
+
+	fread(&dataSize, sizeof(int), 1, fp);
+
+	unsigned char* buf = new unsigned char[dataSize]; INCR_NEW("UNSIGNED_CHAR_ARRARY");
+	fread(buf, sizeof(char), dataSize, fp);
+
+
+
+	ALuint buffer;
+	ALuint frequency = sampleRate;
+	ALenum format = 0;
+
+	alGenBuffers(1, &buffer);
+
+	switch (bitsPerSample)
+	{
+	case 8:
+		switch (channels)
+		{
+		case 1:
+			format = AL_FORMAT_MONO8;
+            //printf("MONO 8\n");
+			break;
+
+		case 2:
+			format = AL_FORMAT_STEREO8;
+            //printf("STER 8\n");
+			break;
+
+		default:
+			fprintf(stderr, "unknown sound format\n");
+		}
+		break;
+
+	case 16:
+		switch (channels)
+		{
+		case 1:
+			format = AL_FORMAT_MONO16;
+            //printf("MONO 16\n");
+			break;
+
+		case 2:
+			format = AL_FORMAT_STEREO16;
+            //printf("STER 16\n");
+			break;
+
+		default:
+			fprintf(stderr, "unknown sound format\n");
+		}
+		break;
+
+	default:
+		fprintf(stderr, "unknown sound format\n");
+		break;
+	}
+
+	alBufferData(buffer, format, buf, dataSize, frequency);
+
+	delete[] buf; INCR_DEL("UNSIGNED_CHAR_ARRARY");
+
+	fclose(fp);
+
+	return buffer;
+    #else
+    return AL_NONE;
+    #endif
 }
 
 void AudioMaster::cleanUp()

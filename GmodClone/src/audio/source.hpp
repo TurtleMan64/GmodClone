@@ -6,8 +6,8 @@
 class Source
 {
 private:
-    ALuint sourceId;
-    ALuint bufferId; //Buffer that we are going to play
+    ALuint sourceId = AL_NONE;
+    ALuint bufferId = AL_NONE; //Buffer that we are going to play
 
 public:
     static ALuint filterLowpass;

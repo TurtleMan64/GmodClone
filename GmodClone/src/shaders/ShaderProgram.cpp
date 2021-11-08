@@ -138,10 +138,10 @@ void ShaderProgram::loadFogBottomThickness(float thickness)
 
 void ShaderProgram::bindAttributes()
 {
-    if (Global::renderBloom)
+    //if (Global::renderBloom)
     {
-        bindFragOutput(0, "out_Colour");
-        bindFragOutput(1, "out_BrightColour");
+        //bindFragOutput(0, "out_Colour");
+        //bindFragOutput(1, "out_BrightColour");
     }
 
     bindAttribute(0, "position");
@@ -242,18 +242,18 @@ void ShaderProgram::loadClipPlaneBehind(float clipX, float clipY, float clipZ, f
 
 void ShaderProgram::connectTextureUnits()
 {
-    if (Global::renderShadowsFar || Global::renderShadowsClose)
+    //if (Global::renderShadowsFar || Global::renderShadowsClose)
     {
-        if (Global::renderShadowsFar)
+        //if (Global::renderShadowsFar)
         {
-            loadInt(location_shadowMapFar, 5);
+            //loadInt(location_shadowMapFar, 5);
         }
-        if (Global::renderShadowsClose)
+        //if (Global::renderShadowsClose)
         {
-            loadInt(location_shadowMapClose, 6);
+            //loadInt(location_shadowMapClose, 6);
         }
 
-        loadInt(location_randomMap, 7);
+        //loadInt(location_randomMap, 7);
     }
 
     loadInt(location_textureSampler2, 1);

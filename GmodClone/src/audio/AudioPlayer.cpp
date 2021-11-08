@@ -22,80 +22,58 @@ bool AudioPlayer::listenerIsUnderwater = false;
 
 void AudioPlayer::loadSoundEffects()
 {
-    AudioPlayer::buffersSFX.push_back(AudioMaster::loadOGG("res/Audio/SFX/General/BigDestroy.ogg"));           //0
-    AudioPlayer::buffersSFX.push_back(AudioMaster::loadOGG("res/Audio/SFX/General/Dashpad.ogg"));              //1
-    AudioPlayer::buffersSFX.push_back(AudioMaster::loadOGG("res/Audio/SFX/General/Goal.ogg"));                 //2
-    AudioPlayer::buffersSFX.push_back(AudioMaster::loadOGG("res/Audio/SFX/General/ItemCapsule.ogg"));          //3
-    AudioPlayer::buffersSFX.push_back(AudioMaster::loadOGG("res/Audio/SFX/General/Ring.ogg"));                 //4
-    AudioPlayer::buffersSFX.push_back(AudioMaster::loadOGG("res/Audio/SFX/General/Splash.ogg"));               //5
-    AudioPlayer::buffersSFX.push_back(AudioMaster::loadOGG("res/Audio/SFX/General/Spring.ogg"));               //6
-    AudioPlayer::buffersSFX.push_back(AudioMaster::loadOGG("res/Audio/SFX/General/UnlockSomething.ogg"));      //7
-    AudioPlayer::buffersSFX.push_back(AudioMaster::loadOGG("res/Audio/SFX/Player/Bounce.ogg"));                //8
-    AudioPlayer::buffersSFX.push_back(AudioMaster::loadOGG("res/Audio/SFX/Player/Death.ogg"));                 //9
-    AudioPlayer::buffersSFX.push_back(AudioMaster::loadOGG("res/Audio/SFX/Player/GetHit.ogg"));                //10
-    AudioPlayer::buffersSFX.push_back(AudioMaster::loadOGG("res/Audio/SFX/Player/HomingAttack.ogg"));          //11
-    AudioPlayer::buffersSFX.push_back(AudioMaster::loadOGG("res/Audio/SFX/Player/Jump.ogg"));                  //12
-    AudioPlayer::buffersSFX.push_back(AudioMaster::loadOGG("res/Audio/SFX/Player/Skid.ogg"));                  //13
-    AudioPlayer::buffersSFX.push_back(AudioMaster::loadOGG("res/Audio/SFX/Player/SpindashCharge.ogg"));        //14
-    AudioPlayer::buffersSFX.push_back(AudioMaster::loadOGG("res/Audio/SFX/Player/SpindashRelease.ogg"));       //15
-    AudioPlayer::buffersSFX.push_back(AudioMaster::loadOGG("res/Audio/SFX/Player/StompInit.ogg"));             //16
-    AudioPlayer::buffersSFX.push_back(AudioMaster::loadOGG("res/Audio/SFX/Player/StompLand.ogg"));             //17
-    AudioPlayer::buffersSFX.push_back(AudioMaster::loadOGG("res/Audio/SFX/Player/CantStick.ogg"));             //18
-    AudioPlayer::buffersSFX.push_back(AudioMaster::loadOGG("res/Audio/SFX/General/DockBreak.ogg"));            //19
-    AudioPlayer::buffersSFX.push_back(AudioMaster::loadOGG("res/Audio/SFX/General/Seagull.ogg"));              //20
-    AudioPlayer::buffersSFX.push_back(AudioMaster::loadOGG("res/Audio/SFX/General/SpeedRamp.ogg"));            //21
-    AudioPlayer::buffersSFX.push_back(AudioMaster::loadOGG("res/Audio/SFX/SpeedHighway/CranePlatform.ogg"));   //22
-    AudioPlayer::buffersSFX.push_back(AudioMaster::loadOGG("res/Audio/SFX/SpeedHighway/ElevatorPlatform.ogg"));//23
-    AudioPlayer::buffersSFX.push_back(AudioMaster::loadOGG("res/Audio/SFX/General/ActClear.ogg"));             //24
-    AudioPlayer::buffersSFX.push_back(AudioMaster::loadOGG("res/Audio/SFX/General/ExitStage.ogg"));            //25
-    AudioPlayer::buffersSFX.push_back(AudioMaster::loadOGG("res/Audio/SFX/General/CapsuleClick.ogg"));         //26
-    AudioPlayer::buffersSFX.push_back(AudioMaster::loadOGG("res/Audio/SFX/Player/Fly.ogg"));                   //27
-    AudioPlayer::buffersSFX.push_back(AudioMaster::loadOGG("res/Audio/SFX/Player/FlyTired.ogg"));              //28
-    AudioPlayer::buffersSFX.push_back(AudioMaster::loadOGG("res/Audio/SFX/Player/Climb.ogg"));                 //29
-    AudioPlayer::buffersSFX.push_back(AudioMaster::loadOGG("res/Audio/SFX/Player/Dig.ogg"));                   //30
-    AudioPlayer::buffersSFX.push_back(AudioMaster::loadOGG("res/Audio/SFX/Player/DrillDive.ogg"));             //31
-    AudioPlayer::buffersSFX.push_back(AudioMaster::loadOGG("res/Audio/SFX/Player/Glide.ogg"));                 //32
-    AudioPlayer::buffersSFX.push_back(AudioMaster::loadOGG("res/Audio/SFX/Player/Punch.ogg"));                 //33
-    AudioPlayer::buffersSFX.push_back(AudioMaster::loadOGG("res/Audio/SFX/General/RadarPing.ogg"));            //34
-    AudioPlayer::buffersSFX.push_back(AudioMaster::loadOGG("res/Audio/SFX/General/1Up.ogg"));                  //35
-    AudioPlayer::buffersSFX.push_back(AudioMaster::loadOGG("res/Audio/SFX/General/MenuBleep.ogg"));            //36
-    AudioPlayer::buffersSFX.push_back(AudioMaster::loadOGG("res/Audio/SFX/General/MenuWoosh.ogg"));            //37
-    AudioPlayer::buffersSFX.push_back(AudioMaster::loadOGG("res/Audio/SFX/General/MenuAccept.ogg"));           //38
-    AudioPlayer::buffersSFX.push_back(AudioMaster::loadOGG("res/Audio/SFX/Player/PeelCharge.ogg"));            //39
-    AudioPlayer::buffersSFX.push_back(AudioMaster::loadOGG("res/Audio/SFX/Player/PeelRelease.ogg"));           //40
-    AudioPlayer::buffersSFX.push_back(AudioMaster::loadOGG("res/Audio/SFX/Player/Roll.ogg"));                  //41
-    AudioPlayer::buffersSFX.push_back(AudioMaster::loadOGG("res/Audio/SFX/General/GoalRing.ogg"));             //42
-    AudioPlayer::buffersSFX.push_back(AudioMaster::loadOGG("res/Audio/SFX/General/Dig.ogg"));                  //43
-    AudioPlayer::buffersSFX.push_back(AudioMaster::loadOGG("res/Audio/SFX/General/RankShow.ogg"));             //44
-    AudioPlayer::buffersSFX.push_back(AudioMaster::loadOGG("res/Audio/SFX/General/Checkpoint.ogg"));           //45
-    AudioPlayer::buffersSFX.push_back(AudioMaster::loadOGG("res/Audio/SFX/Boss/BreakDamage.ogg"));             //46
-    AudioPlayer::buffersSFX.push_back(AudioMaster::loadOGG("res/Audio/SFX/Boss/ChaosSpear.ogg"));              //47
-    AudioPlayer::buffersSFX.push_back(AudioMaster::loadOGG("res/Audio/SFX/Boss/Damage.ogg"));                  //48
-    AudioPlayer::buffersSFX.push_back(AudioMaster::loadOGG("res/Audio/SFX/Boss/Electric.ogg"));                //49
-    AudioPlayer::buffersSFX.push_back(AudioMaster::loadOGG("res/Audio/SFX/Boss/MetallicExplode.ogg"));         //50
-    AudioPlayer::buffersSFX.push_back(AudioMaster::loadOGG("res/Audio/SFX/Boss/RunFastLoop.ogg"));             //51
-    AudioPlayer::buffersSFX.push_back(AudioMaster::loadOGG("res/Audio/SFX/Boss/ChargeShot.ogg"));              //52
-    AudioPlayer::buffersSFX.push_back(AudioMaster::loadOGG("res/Audio/SFX/Boss/LaserLoop.ogg"));               //53
-    AudioPlayer::buffersSFX.push_back(AudioMaster::loadOGG("res/Audio/SFX/General/RocketAppear.ogg"));         //54
-    AudioPlayer::buffersSFX.push_back(AudioMaster::loadOGG("res/Audio/SFX/General/RocketTakeOffStart.ogg"));   //55
-    AudioPlayer::buffersSFX.push_back(AudioMaster::loadOGG("res/Audio/SFX/General/RocketTakeOffLoop.ogg"));    //56
-    AudioPlayer::buffersSFX.push_back(AudioMaster::loadOGG("res/Audio/SFX/Player/GrindMetalLoop.ogg"));        //57
-    AudioPlayer::buffersSFX.push_back(AudioMaster::loadOGG("res/Audio/SFX/Player/GrindVineLoop.ogg"));         //58
-    AudioPlayer::buffersSFX.push_back(AudioMaster::loadOGG("res/Audio/SFX/Player/GrindMetalLand.ogg"));        //59
-    AudioPlayer::buffersSFX.push_back(AudioMaster::loadOGG("res/Audio/SFX/Player/GrindVineLand.ogg"));         //60
-    AudioPlayer::buffersSFX.push_back(AudioMaster::loadOGG("res/Audio/SFX/General/ChaoCry.ogg"));              //61
-    AudioPlayer::buffersSFX.push_back(AudioMaster::loadOGG("res/Audio/SFX/General/Pulley.ogg"));               //62
-    AudioPlayer::buffersSFX.push_back(AudioMaster::loadOGG("res/Audio/SFX/MetalHarbor/CratePlatformStop.ogg"));//63
-    AudioPlayer::buffersSFX.push_back(AudioMaster::loadOGG("res/Audio/SFX/Player/SwimStroke.ogg"));            //64
-    AudioPlayer::buffersSFX.push_back(AudioMaster::loadOGG("res/Audio/SFX/Kart/Boostpad.ogg"));                //65
-    AudioPlayer::buffersSFX.push_back(AudioMaster::loadOGG("res/Audio/SFX/Kart/Engine.ogg"));                  //66
-    AudioPlayer::buffersSFX.push_back(AudioMaster::loadOGG("res/Audio/SFX/Kart/HitWall.ogg"));                 //67
-    AudioPlayer::buffersSFX.push_back(AudioMaster::loadOGG("res/Audio/SFX/Kart/SlipSlowdown.ogg"));            //68
-    AudioPlayer::buffersSFX.push_back(AudioMaster::loadOGG("res/Audio/SFX/Kart/Strafe.ogg"));                  //69
-    AudioPlayer::buffersSFX.push_back(AudioMaster::loadOGG("res/Audio/SFX/Kart/ExplosionBig.ogg"));            //70
-    AudioPlayer::buffersSFX.push_back(AudioMaster::loadOGG("res/Audio/SFX/Kart/Boost.ogg"));                   //71
-    AudioPlayer::buffersSFX.push_back(AudioMaster::loadOGG("res/Audio/SFX/General/BombThrow.ogg"));            //72
-    AudioPlayer::buffersSFX.push_back(AudioMaster::loadOGG("res/Audio/SFX/General/BombExplosion.ogg"));        //73
+    AudioPlayer::buffersSFX.push_back(AudioMaster::loadWAV("res/Audio/SFX/Sonic/jump.wav"));                   // 0
+    AudioPlayer::buffersSFX.push_back(AudioMaster::loadWAV("res/Audio/SFX/Sonic/slide.wav"));                  // 1
+    AudioPlayer::buffersSFX.push_back(AudioMaster::loadWAV("res/Audio/SFX/Sonic/swing_fast.wav"));             // 2 
+    AudioPlayer::buffersSFX.push_back(AudioMaster::loadWAV("res/Audio/SFX/Sonic/swing_slow.wav"));             // 3 
+    AudioPlayer::buffersSFX.push_back(AudioMaster::loadWAV("res/Audio/SFX/Sonic/water_splash.wav"));           // 4 
+    AudioPlayer::buffersSFX.push_back(AudioMaster::loadWAV("res/Audio/SFX/Sonic/bush_1.wav"));                 // 5 
+    AudioPlayer::buffersSFX.push_back(AudioMaster::loadWAV("res/Audio/SFX/Sonic/bush_2.wav"));                 // 6 
+    AudioPlayer::buffersSFX.push_back(AudioMaster::loadWAV("res/Audio/SFX/Sonic/bush_3.wav"));                 // 7 
+    AudioPlayer::buffersSFX.push_back(AudioMaster::loadWAV("res/Audio/SFX/Sonic/footstep/step_conc_1.wav"));   // 8 
+    AudioPlayer::buffersSFX.push_back(AudioMaster::loadWAV("res/Audio/SFX/Sonic/footstep/step_conc_2.wav"));   // 9 
+    AudioPlayer::buffersSFX.push_back(AudioMaster::loadWAV("res/Audio/SFX/Sonic/footstep/step_conc_3.wav"));   //10 
+    AudioPlayer::buffersSFX.push_back(AudioMaster::loadWAV("res/Audio/SFX/Sonic/footstep/step_conc_4.wav"));   //11
+    AudioPlayer::buffersSFX.push_back(AudioMaster::loadWAV("res/Audio/SFX/Sonic/footstep/step_conc_5.wav"));   //12 
+    AudioPlayer::buffersSFX.push_back(AudioMaster::loadWAV("res/Audio/SFX/Sonic/footstep/step_dirt_1.wav"));   //13 
+    AudioPlayer::buffersSFX.push_back(AudioMaster::loadWAV("res/Audio/SFX/Sonic/footstep/step_dirt_2.wav"));   //14 
+    AudioPlayer::buffersSFX.push_back(AudioMaster::loadWAV("res/Audio/SFX/Sonic/footstep/step_dirt_3.wav"));   //15 
+    AudioPlayer::buffersSFX.push_back(AudioMaster::loadWAV("res/Audio/SFX/Sonic/footstep/step_dirt_4.wav"));   //16 
+    AudioPlayer::buffersSFX.push_back(AudioMaster::loadWAV("res/Audio/SFX/Sonic/footstep/step_gras_1.wav"));   //17 
+    AudioPlayer::buffersSFX.push_back(AudioMaster::loadWAV("res/Audio/SFX/Sonic/footstep/step_gras_2.wav"));   //18 
+    AudioPlayer::buffersSFX.push_back(AudioMaster::loadWAV("res/Audio/SFX/Sonic/footstep/step_gras_3.wav"));   //19 
+    AudioPlayer::buffersSFX.push_back(AudioMaster::loadWAV("res/Audio/SFX/Sonic/footstep/step_gras_4.wav"));   //20 
+    AudioPlayer::buffersSFX.push_back(AudioMaster::loadWAV("res/Audio/SFX/Sonic/footstep/step_mtlp_1.wav"));   //21 
+    AudioPlayer::buffersSFX.push_back(AudioMaster::loadWAV("res/Audio/SFX/Sonic/footstep/step_mtlp_2.wav"));   //22 
+    AudioPlayer::buffersSFX.push_back(AudioMaster::loadWAV("res/Audio/SFX/Sonic/footstep/step_mtlp_3.wav"));   //23 
+    AudioPlayer::buffersSFX.push_back(AudioMaster::loadWAV("res/Audio/SFX/Sonic/footstep/step_mtlp_4.wav"));   //24 
+    AudioPlayer::buffersSFX.push_back(AudioMaster::loadWAV("res/Audio/SFX/Sonic/footstep/step_mtlp_5.wav"));   //25 
+    AudioPlayer::buffersSFX.push_back(AudioMaster::loadWAV("res/Audio/SFX/Sonic/footstep/step_snow_1.wav"));   //26 
+    AudioPlayer::buffersSFX.push_back(AudioMaster::loadWAV("res/Audio/SFX/Sonic/footstep/step_snow_2.wav"));   //27 
+    AudioPlayer::buffersSFX.push_back(AudioMaster::loadWAV("res/Audio/SFX/Sonic/footstep/step_snow_3.wav"));   //28 
+    AudioPlayer::buffersSFX.push_back(AudioMaster::loadWAV("res/Audio/SFX/Sonic/footstep/step_snow_4.wav"));   //29 
+    AudioPlayer::buffersSFX.push_back(AudioMaster::loadWAV("res/Audio/SFX/Sonic/footstep/step_snow_5.wav"));   //30 
+    AudioPlayer::buffersSFX.push_back(AudioMaster::loadWAV("res/Audio/SFX/Sonic/footstep/step_watr_1.wav"));   //31 
+    AudioPlayer::buffersSFX.push_back(AudioMaster::loadWAV("res/Audio/SFX/Sonic/footstep/step_watr_2.wav"));   //32 
+    AudioPlayer::buffersSFX.push_back(AudioMaster::loadWAV("res/Audio/SFX/Sonic/footstep/step_watr_3.wav"));   //33 
+    AudioPlayer::buffersSFX.push_back(AudioMaster::loadWAV("res/Audio/SFX/Sonic/footstep/step_watr_4.wav"));   //34 
+    AudioPlayer::buffersSFX.push_back(AudioMaster::loadWAV("res/Audio/SFX/Sonic/footstep/step_watr_5.wav"));   //35 
+    AudioPlayer::buffersSFX.push_back(AudioMaster::loadWAV("res/Audio/SFX/Sonic/footstep/step_wood_1.wav"));   //36 
+    AudioPlayer::buffersSFX.push_back(AudioMaster::loadWAV("res/Audio/SFX/Sonic/footstep/step_wood_2.wav"));   //37 
+    AudioPlayer::buffersSFX.push_back(AudioMaster::loadWAV("res/Audio/SFX/Sonic/footstep/step_wood_3.wav"));   //38 
+    AudioPlayer::buffersSFX.push_back(AudioMaster::loadWAV("res/Audio/SFX/Sonic/footstep/step_wood_4.wav"));   //39 
+    AudioPlayer::buffersSFX.push_back(AudioMaster::loadWAV("res/Audio/SFX/Sonic/footstep/step_wood_1.wav"));   //40 
+    AudioPlayer::buffersSFX.push_back(AudioMaster::loadWAV("res/Audio/SFX/Sonic/footstep/step_wood_2.wav"));   //41 
+    AudioPlayer::buffersSFX.push_back(AudioMaster::loadWAV("res/Audio/SFX/Sonic/footstep/step_wood_3.wav"));   //42 
+    AudioPlayer::buffersSFX.push_back(AudioMaster::loadWAV("res/Audio/SFX/Sonic/land_conc.wav"));              //43 
+    AudioPlayer::buffersSFX.push_back(AudioMaster::loadWAV("res/Audio/SFX/Sonic/land_dirt.wav"));              //44 
+    AudioPlayer::buffersSFX.push_back(AudioMaster::loadWAV("res/Audio/SFX/Sonic/land_gras.wav"));              //45 
+    AudioPlayer::buffersSFX.push_back(AudioMaster::loadWAV("res/Audio/SFX/Sonic/land_mtlp.wav"));              //46 
+    AudioPlayer::buffersSFX.push_back(AudioMaster::loadWAV("res/Audio/SFX/Sonic/land_snow.wav"));              //47 
+    AudioPlayer::buffersSFX.push_back(AudioMaster::loadWAV("res/Audio/SFX/Sonic/land_watr.wav"));              //48 
+    AudioPlayer::buffersSFX.push_back(AudioMaster::loadWAV("res/Audio/SFX/Sonic/land_wood.wav"));              //49 
+    AudioPlayer::buffersSFX.push_back(AudioMaster::loadWAV("res/Audio/SFX/Sonic/hit_wood.wav"));               //50 
+    AudioPlayer::buffersSFX.push_back(AudioMaster::loadWAV("res/Audio/SFX/HL2/player/fallpain3.wav"));         //51
 }
 
 void AudioPlayer::loadBGM(char* fileName)
@@ -139,23 +117,26 @@ void AudioPlayer::deleteBuffersBGM()
 
 void AudioPlayer::createSources()
 {
-    //First 14 sources are for sound effects
-    sources.push_back(new Source(1, 100, 600)); INCR_NEW("Source");
-    sources.push_back(new Source(1, 100, 600)); INCR_NEW("Source");
-    sources.push_back(new Source(1, 100, 600)); INCR_NEW("Source");
-    sources.push_back(new Source(1, 100, 600)); INCR_NEW("Source");
-    sources.push_back(new Source(1, 100, 600)); INCR_NEW("Source");
-    sources.push_back(new Source(1, 100, 600)); INCR_NEW("Source");
-    sources.push_back(new Source(1, 100, 600)); INCR_NEW("Source");
-    sources.push_back(new Source(1, 100, 600)); INCR_NEW("Source");
-    sources.push_back(new Source(1, 100, 600)); INCR_NEW("Source");
-    sources.push_back(new Source(1, 100, 600)); INCR_NEW("Source");
-    sources.push_back(new Source(1, 100, 600)); INCR_NEW("Source");
-    sources.push_back(new Source(1, 100, 600)); INCR_NEW("Source");
-    sources.push_back(new Source(1, 100, 600)); INCR_NEW("Source");
-    sources.push_back(new Source(1, 100, 600)); INCR_NEW("Source");
+    //First 7 sources are for sound effects with relative effects (usually for sounds coming from the environment, other players)
+    sources.push_back(new Source(1, 5, 40)); INCR_NEW("Source");
+    sources.push_back(new Source(1, 5, 40)); INCR_NEW("Source");
+    sources.push_back(new Source(1, 5, 40)); INCR_NEW("Source");
+    sources.push_back(new Source(1, 5, 40)); INCR_NEW("Source");
+    sources.push_back(new Source(1, 5, 40)); INCR_NEW("Source");
+    sources.push_back(new Source(1, 5, 40)); INCR_NEW("Source");
+    sources.push_back(new Source(1, 5, 40)); INCR_NEW("Source");
+
+    //Next 7 sources are for sound effects without any relative effects (usually for noises made by the player)
+    sources.push_back(new Source(0, 0, 0)); INCR_NEW("Source");
+    sources.push_back(new Source(0, 0, 0)); INCR_NEW("Source");
+    sources.push_back(new Source(0, 0, 0)); INCR_NEW("Source");
+    sources.push_back(new Source(0, 0, 0)); INCR_NEW("Source");
+    sources.push_back(new Source(0, 0, 0)); INCR_NEW("Source");
+    sources.push_back(new Source(0, 0, 0)); INCR_NEW("Source");
+    sources.push_back(new Source(0, 0, 0)); INCR_NEW("Source");
+
     //Last source is dedicated to background music
-    sources.push_back(new Source(0, 0, 0));     INCR_NEW("Source");
+    sources.push_back(new Source(0, 0, 0)); INCR_NEW("Source");
 }
 
 //with position
@@ -185,16 +166,40 @@ Source* AudioPlayer::play(int buffer, Vector3f* pos, float pitch, bool loop, flo
         return nullptr;
     }
 
-    for (int i = 0; i < 14; i++)
+    int startIdx;
+    float x, y, z;
+    float velx, vely, velz;
+    if (pos != nullptr)
+    {
+        startIdx = 0;
+        x = pos->x;
+        y = pos->y;
+        z = pos->z;
+        velx = xVel;
+        vely = yVel;
+        velz = zVel;
+    }
+    else
+    {
+        startIdx = 7;
+        x = AudioMaster::spotInFrontOfListener.x;
+        y = AudioMaster::spotInFrontOfListener.y;
+        z = AudioMaster::spotInFrontOfListener.z;
+        velx = AudioMaster::listenerVelCopy.x;
+        vely = AudioMaster::listenerVelCopy.y;
+        velz = AudioMaster::listenerVelCopy.z;
+    }
+
+    for (int i = startIdx; i < startIdx + 7; i++)
     {
         Source* src = AudioPlayer::sources[i];
         if (!src->isPlaying())
         {
             src->setVolume(soundLevelSFX);
             src->setLooping(loop);
-            src->setPosition(pos->x, pos->y, pos->z);
+            src->setPosition(x, y, z);
             src->setPitch(pitch);
-            src->setVelocity(xVel, yVel, zVel);
+            src->setVelocity(velx, vely, velz);
             src->play(AudioPlayer::buffersSFX[buffer]);
             return src;
         }
