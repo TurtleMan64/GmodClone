@@ -88,8 +88,6 @@ float RT_RANGE   =  2;
 
 float TRIGGER_DEADZONE = 0.3f;
 
-
-
 void Input::pollInputs()
 {
     glfwPollEvents();
@@ -293,14 +291,11 @@ void Input::pollInputs()
 
     if (freeMouse == false)
     {
-        float mouseDiffX = (float)(mouseSensitivityX*(xpos - mousePreviousX));
-        float mouseDiffY = (float)(mouseSensitivityY*(ypos - mousePreviousY));
+        float mouseDiffX = (float)(mouseSensitivityX*(xpos - mousePreviousX))*0.004f;
+        float mouseDiffY = (float)(mouseSensitivityY*(ypos - mousePreviousY))*0.004f;
 
-        extern float dt;
-        float fpsFactor = 1/(dt*60);
-
-        Input::inputs.INPUT_X2 += mouseDiffX*fpsFactor;
-        Input::inputs.INPUT_Y2 += mouseDiffY*fpsFactor;
+        Input::inputs.INPUT_X2 += mouseDiffX;
+        Input::inputs.INPUT_Y2 += mouseDiffY;
     }
     mousePreviousX = xpos;
     mousePreviousY = ypos;
@@ -495,6 +490,11 @@ void Input::pollInputs()
 void Input::init()
 {
     Input::inputs.uniqueVar = 1149650285; //Value that is very easy to find with a memory scan
+
+    if (glfwRawMouseMotionSupported())
+    {
+        glfwSetInputMode(window, GLFW_RAW_MOUSE_MOTION, GLFW_TRUE);
+    }
 
     //load sensitivity and button mappings from external file
 

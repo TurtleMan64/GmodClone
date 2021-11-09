@@ -80,6 +80,11 @@ void Entity::die()
     
 }
 
+int Entity::getEntityType()
+{
+    return 0;
+}
+
 void Entity::increasePosition(float dx, float dy, float dz)
 {
     position.x += dx;

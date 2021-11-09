@@ -76,8 +76,6 @@ private:
     float getJumpValue(float deltaTime);
 
 public:
-    Vector3f vel;
-
     Player(std::list<TexturedModel*>* models);
 
     void step();

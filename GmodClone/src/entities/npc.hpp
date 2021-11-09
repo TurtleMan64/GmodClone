@@ -1,5 +1,5 @@
-#ifndef HUMAN_H
-#define HUMAN_H
+#ifndef NPC_H
+#define NPC_H
 
 class TexturedModel;
 
@@ -7,16 +7,18 @@ class TexturedModel;
 #include "entity.hpp"
 #include "../toolbox/vector.hpp"
 
-class Human : public Entity
+class Npc : public Entity
 {
 private:
     static std::list<TexturedModel*> models;
 
 public:
-    Human(float x, float y, float z);
+    Npc(std::string name, float x, float y, float z);
 
     void step();
 
     std::list<TexturedModel*>* getModels();
+
+    int getEntityType();
 };
 #endif

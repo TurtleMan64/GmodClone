@@ -50,6 +50,7 @@ class Global
 {
 public:
     static std::string pathToEXE;
+    static std::unordered_set<Entity*> gameEntities;
     //static MenuManager menuManager;
     //static Timer* mainHudTimer;
     static Camera* gameCamera;

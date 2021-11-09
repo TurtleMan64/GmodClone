@@ -15,8 +15,10 @@ std::list<TexturedModel*> Ball::models;
 
 extern float dt;
 
-Ball::Ball(Vector3f pos, Vector3f vel)
+Ball::Ball(std::string name, Vector3f pos, Vector3f vel)
 {
+    this->name = name;
+
     if (Ball::models.size() == 0)
     {
         ObjLoader::loadModel(&Ball::models, "res/Models/Ball/", "Soccer");
@@ -79,4 +81,9 @@ void Ball::step()
 std::list<TexturedModel*>* Ball::getModels()
 {
     return &Ball::models;
+}
+
+int Ball::getEntityType()
+{
+    return ENTITY_BALL;
 }

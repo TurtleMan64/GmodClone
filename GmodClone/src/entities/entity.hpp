@@ -9,11 +9,17 @@ class CollisionModel;
 #include "../toolbox/matrix.hpp"
 #include <string>
 
+#define ENTITY_BLANK 0
+#define ENTITY_NPC 1
+#define ENTITY_BALL 2
+#define ENTITY_ONLINE_PLAYER 3
+
 class Entity
 {
 public:
-    std::string name = "Default";
+    std::string name = "Default"; //Name will be Human1, Ball1, Human2, etc.
     Vector3f position;
+    Vector3f vel;
     float rotX    = 0.0f;
     float rotY    = 0.0f;
     float rotZ    = 0.0f;
@@ -109,5 +115,7 @@ public:
     virtual const Vector3f getHomingCenter();
 
     virtual void die();
+
+    virtual int getEntityType();
 };
 #endif

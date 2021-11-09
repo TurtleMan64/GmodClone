@@ -44,9 +44,10 @@
 #include "../toolbox/getline.hpp"
 #include "../collision/collisionmodel.hpp"
 #include "../entities/player.hpp"
-#include "../entities/human.hpp"
+#include "../entities/npc.hpp"
 #include "../audio/audiomaster.hpp"
 #include "../audio/audioplayer.hpp"
+#include "../entities/ball.hpp"
 #ifdef _WIN32
 #include <windows.h>
 #include <tchar.h>
@@ -54,9 +55,10 @@
 
 std::string Global::pathToEXE;
 
-std::unordered_set<Entity*> gameEntities;
-std::list<Entity*> gameEntitiesToAdd;
-std::list<Entity*> gameEntitiesToDelete;
+std::unordered_set<Entity*> Global::gameEntities;
+
+std::vector<Entity*> gameEntitiesToAdd;
+std::vector<Entity*> gameEntitiesToDelete;
 
 float Global::waterHeight = 0.0f;
 
@@ -176,17 +178,6 @@ int main(int argc, char** argv)
     lightSun.direction.set(-0.2f, -1, -0.4f);
     lightSun.direction.normalize();
 
-    //This light never gets deleted.
-    Light lightMoon;
-    Global::gameLightMoon = &lightMoon;
-
-
-    //lightSun.getPosition()->x = 0;
-    //lightSun.getPosition()->y = 0;
-    //lightSun.getPosition()->z = 0;
-    //lightMoon.getPosition()->y = -100000;
-
-
     long long secSinceEpoch = std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now().time_since_epoch()).count();
 
     glfwSetTime(0);
@@ -195,11 +186,6 @@ int main(int argc, char** argv)
     double previousTime = 0;
 
     Global::gameState = STATE_RUNNING;
-
-    //extern GLuint transparentDepthTexture;
-    //GuiTexture* debugDepth = new GuiTexture(transparentDepthTexture, 0.2f, 0.8f, 0.3f, 0.3f, 0); INCR_NEW("GuiTexture");
-
-    std::list<std::unordered_set<Entity*>*> entityChunkedList;
 
     std::string folder = "TestMap";
 
@@ -213,7 +199,8 @@ int main(int argc, char** argv)
     Global::player = new Player(&modelsSphere);
     Global::addEntity(Global::player);
 
-    Global::addEntity(new Human(72.076897f, 0.313516f, 23.235739f));
+    //Human* human1 = new Human(72.076897f, 0.313516f, 23.235739f);
+    //Global::addEntity(human1);
 
     CollisionModel* cm = ObjLoader::loadCollisionModel("Models/" + folder + "/", "TestMap");
     for (int i = 0; i < cm->triangles.size(); i++)
@@ -221,6 +208,24 @@ int main(int argc, char** argv)
         CollisionChecker::addTriangle(cm->triangles[i]);
     }
     CollisionChecker::constructChunkDatastructure();
+
+    Npc* npc1 = new Npc("Npc1", 73.076897f, 0.313516f, 23.235739f);
+    Npc* npc2 = new Npc("Npc2", 72.076897f, 0.313516f, 23.235739f);
+    Npc* npc3 = new Npc("Npc3", 71.076897f, 0.313516f, 23.235739f);
+    Npc* npc4 = new Npc("Npc4", 70.076897f, 0.313516f, 23.235739f);
+
+    Ball* ball1 = new Ball("Ball1", Vector3f(73.076897f, 1.313516f, 23.235739f), Vector3f(10, 20, 30));
+    Ball* ball2 = new Ball("Ball2", Vector3f(72.076897f, 1.313516f, 23.235739f), Vector3f(20, 10, 30));
+    Ball* ball3 = new Ball("Ball3", Vector3f(71.076897f, 1.313516f, 23.235739f), Vector3f(30, 20, 10));
+
+    Global::gameEntities.insert(npc1);
+    Global::gameEntities.insert(npc2);
+    Global::gameEntities.insert(npc3);
+    Global::gameEntities.insert(npc4);
+
+    Global::gameEntities.insert(ball1);
+    Global::gameEntities.insert(ball2);
+    Global::gameEntities.insert(ball3);
 
 
     while (Global::gameState != STATE_EXITING && displayWantsToClose() == 0)
@@ -281,13 +286,13 @@ int main(int argc, char** argv)
         //entities managment
         for (auto entityToAdd : gameEntitiesToAdd)
         {
-            gameEntities.insert(entityToAdd);
+            Global::gameEntities.insert(entityToAdd);
         }
         gameEntitiesToAdd.clear();
 
         for (auto entityToDelete : gameEntitiesToDelete)
         {
-            gameEntities.erase(entityToDelete);
+            Global::gameEntities.erase(entityToDelete);
             delete entityToDelete; INCR_DEL("Entity");
         }
         gameEntitiesToDelete.clear();
@@ -320,7 +325,7 @@ int main(int argc, char** argv)
                     }
                 }
 
-                for (Entity* e : gameEntities)
+                for (Entity* e : Global::gameEntities)
                 {
                     e->step();
                 }
@@ -397,7 +402,7 @@ int main(int argc, char** argv)
         //SkyManager::calculateValues();
 
         //prepare entities to render
-        for (Entity* e : gameEntities)
+        for (Entity* e : Global::gameEntities)
         {
             Master_processEntity(e);
         }

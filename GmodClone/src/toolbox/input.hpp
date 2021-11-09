@@ -18,6 +18,8 @@ struct InputStruct
     volatile bool INPUT_ACTION2; //B button
     volatile bool INPUT_ACTION3; //X button
     volatile bool INPUT_ACTION4; //Y button
+    volatile bool INPUT_LEFT_CLICK;
+    volatile bool INPUT_RIGHT_CLICK;
     volatile bool INPUT_RB;
     volatile bool INPUT_LB;
     volatile bool INPUT_SELECT;
@@ -37,6 +39,8 @@ struct InputStruct
     volatile bool INPUT_PREVIOUS_ACTION2;
     volatile bool INPUT_PREVIOUS_ACTION3;
     volatile bool INPUT_PREVIOUS_ACTION4;
+    volatile bool INPUT_PREVIOUS_LEFT_CLICK;
+    volatile bool INPUT_PREVIOUS_RIGHT_CLICK;
     volatile bool INPUT_PREVIOUS_RB;
     volatile bool INPUT_PREVIOUS_LB;
     volatile bool INPUT_PREVIOUS_START;

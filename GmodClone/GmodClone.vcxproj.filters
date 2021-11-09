@@ -120,14 +120,8 @@
     <ClCompile Include="src\collision\CollisionModel.cpp">
       <Filter>Source Files\collision</Filter>
     </ClCompile>
-    <ClCompile Include="src\collision\QuadTreeNode.cpp">
-      <Filter>Source Files\collision</Filter>
-    </ClCompile>
     <ClCompile Include="src\collision\Triangle3D.cpp">
       <Filter>Source Files\collision</Filter>
-    </ClCompile>
-    <ClCompile Include="src\entities\Human.cpp">
-      <Filter>Source Files\entities</Filter>
     </ClCompile>
     <ClCompile Include="src\entities\Player.cpp">
       <Filter>Source Files\entities</Filter>
@@ -143,6 +137,9 @@
     </ClCompile>
     <ClCompile Include="src\audio\Source.cpp">
       <Filter>Source Files\audio</Filter>
+    </ClCompile>
+    <ClCompile Include="src\entities\Npc.cpp">
+      <Filter>Source Files\entities</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -206,14 +203,8 @@
     <ClInclude Include="src\collision\collisionmodel.hpp">
       <Filter>Source Files\collision</Filter>
     </ClInclude>
-    <ClInclude Include="src\collision\quadtreenode.hpp">
-      <Filter>Source Files\collision</Filter>
-    </ClInclude>
     <ClInclude Include="src\collision\triangle3d.hpp">
       <Filter>Source Files\collision</Filter>
-    </ClInclude>
-    <ClInclude Include="src\entities\human.hpp">
-      <Filter>Source Files\entities</Filter>
     </ClInclude>
     <ClInclude Include="src\entities\player.hpp">
       <Filter>Source Files\entities</Filter>
@@ -229,6 +220,9 @@
     </ClInclude>
     <ClInclude Include="src\audio\source.hpp">
       <Filter>Source Files\audio</Filter>
+    </ClInclude>
+    <ClInclude Include="src\entities\npc.hpp">
+      <Filter>Source Files\entities</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

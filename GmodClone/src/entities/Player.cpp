@@ -172,6 +172,48 @@ void Player::step()
         wallJumpTimer = -1.0f;
     }
 
+    // Go through entities and get pushed by NPC's
+    for (Entity* e : Global::gameEntities)
+    {
+        switch (e->getEntityType())
+        {
+            case ENTITY_NPC:
+            {
+                Vector3f diff = e->position - position;
+                if (fabsf(diff.y) < HUMAN_HEIGHT)
+                {
+                    diff.y = 0;
+                    if (diff.lengthSquared() < COLLISION_RADIUS*COLLISION_RADIUS)
+                    {
+                        float percent = (COLLISION_RADIUS - diff.length())/COLLISION_RADIUS;
+                        float power = 200*dt*percent;
+                        diff.setLength(power);
+                        diff.scale(-1);
+                        vel = vel + diff;
+                    }
+                }
+                break;
+            }
+
+            case ENTITY_BALL:
+            {
+                Vector3f diff = e->position - position;
+                if (fabsf(diff.y) < HUMAN_HEIGHT)
+                {
+                    diff.y = 0;
+                    if (diff.lengthSquared() < COLLISION_RADIUS*COLLISION_RADIUS)
+                    {
+                        e->vel = e->vel + vel.scaleCopy(1.1f);
+                    }
+                }
+                break;
+            }
+
+            default:
+                break;
+        }
+    }
+
     position = position + vel.scaleCopy(dt);
 
     bool hitAny = false;
@@ -357,7 +399,7 @@ void Player::step()
 
     if (Input::inputs.INPUT_LB && !Input::inputs.INPUT_PREVIOUS_LB)
     {
-        Ball* b = new Ball(position, camDir.scaleCopy(10));
+        Ball* b = new Ball("Ball0", position, camDir.scaleCopy(10));
         b->position.y += HUMAN_HEIGHT;
         Global::addEntity(b);
     }
@@ -382,7 +424,7 @@ float Player::getPushValueGround(float deltaTime)
 
     if (isCrouching)
     {
-        val = val/2;
+        val = val - 25.0f;
     }
 
     return (float)val;
@@ -404,7 +446,7 @@ void Player::updateCamera()
 {
     Vector3f yAxis(0, 1, 0);
 
-    camDir = Maths::rotatePoint(&camDir, &yAxis, -Input::inputs.INPUT_X2*dt);
+    camDir = Maths::rotatePoint(&camDir, &yAxis, -Input::inputs.INPUT_X2);
     camDir.normalize();
 
     Vector3f perpen = camDir.cross(&yAxis);
@@ -416,10 +458,10 @@ void Player::updateCamera()
     {
         Vector3f down(0, -1, 0);
         float angBetweenCamAndDown = Maths::angleBetweenVectors(&camDir, &down);
-        float angToRotate = Input::inputs.INPUT_Y2*dt;
+        float angToRotate = Input::inputs.INPUT_Y2;
         if (angBetweenCamAndDown - angToRotate > maxViewAng)
         {
-            camDir = Maths::rotatePoint(&camDir, &perpen, -Input::inputs.INPUT_Y2*dt);
+            camDir = Maths::rotatePoint(&camDir, &perpen, -Input::inputs.INPUT_Y2);
         }
         else
         {
@@ -430,10 +472,10 @@ void Player::updateCamera()
     {
         Vector3f up(0, 1, 0);
         float angBetweenCamAndUp = Maths::angleBetweenVectors(&camDir, &up);
-        float angToRotate = -Input::inputs.INPUT_Y2*dt;
+        float angToRotate = -Input::inputs.INPUT_Y2;
         if (angBetweenCamAndUp - angToRotate > maxViewAng)
         {
-            camDir = Maths::rotatePoint(&camDir, &perpen, -Input::inputs.INPUT_Y2*dt);
+            camDir = Maths::rotatePoint(&camDir, &perpen, -Input::inputs.INPUT_Y2);
         }
         else
         {

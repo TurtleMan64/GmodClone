@@ -13,8 +13,6 @@ class Ball : public Entity
 private:
     static std::list<TexturedModel*> models;
 
-    Vector3f vel;
-
     Source* src = nullptr;
 
     const float gravityForce = 0.588f*60;
@@ -24,10 +22,12 @@ private:
     const float bounceAmount = 0.85f; //85% of relative vertical speed retain after bounce
 
 public:
-    Ball(Vector3f pos, Vector3f vel);
+    Ball(std::string name, Vector3f pos, Vector3f vel);
 
     void step();
 
     std::list<TexturedModel*>* getModels();
+
+    int getEntityType();
 };
 #endif
