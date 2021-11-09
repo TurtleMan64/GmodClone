@@ -131,25 +131,6 @@ public:
     static void deleteEntity(Entity* entityToDelete);
     static void deleteAllEntites();
 
-    static void addChunkedEntity(Entity* entityToAdd);
-    static void deleteChunkedEntity(Entity* entityToAdd);
-    static void deleteAllChunkedEntities();
-
-    //Return a list of nearby entity sets. renderDistance is number of layers to go outwards.
-    //0 = only the exact chunk.
-    //1 = 4 chunks
-    //2 = 9 chunks
-    static void getNearbyEntities(float x, float z, int renderDistance, std::list<std::unordered_set<Entity*>*>* list);
-
-    //Return a list of nearby entity sets. Returns either 1 chunk, 2 chunks, or 4 chunks,
-    // depending on the minDistance value.
-    static void getNearbyEntities(float x, float z, std::list<std::unordered_set<Entity*>*>* list, float minDistance);
-
-    //Returns the index of 'gameChunkedEntities' for the (x, z) location
-    static int getChunkIndex(float x, float z);
-
-    static void recalculateEntityChunks(float minX, float maxX, float minZ, float maxZ, float chunkSize);
-
     static float calcAspectRatio();
 
     static void createTitleCard();
