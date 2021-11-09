@@ -25,48 +25,44 @@ CollisionResult CollisionChecker::checkCollision(float x, float y, float z, floa
 {
     CollisionResult result;
 
-    //for (int step = 0; step < steps; step++)
+    Triangle3D* closestCollisionTriangle = nullptr;
+    float distanceToCollisionPosition = 1000000000.0f;
+    Vector3f directionToCollisionPosition;
+
+    std::vector<std::vector<Triangle3D*>*> chunks;
+
+    addChunkToDataStruct(getTriangleChunk(x - sphereRadius, z - sphereRadius), &chunks);
+    addChunkToDataStruct(getTriangleChunk(x - sphereRadius, z + sphereRadius), &chunks);
+    addChunkToDataStruct(getTriangleChunk(x               , z               ), &chunks);
+    addChunkToDataStruct(getTriangleChunk(x + sphereRadius, z - sphereRadius), &chunks);
+    addChunkToDataStruct(getTriangleChunk(x + sphereRadius, z + sphereRadius), &chunks);
+
+    for (std::vector<Triangle3D*>* chunk : chunks)
     {
-        Triangle3D* closestCollisionTriangle = nullptr;
-        float distanceToCollisionPosition = 1000000000.0f;
-        Vector3f directionToCollisionPosition;
-        //const float sphereRadius = 0.5f;
-
-        std::vector<std::vector<Triangle3D*>*> chunks;
-
-        addChunkToDataStruct(getTriangleChunk(x - sphereRadius, z - sphereRadius), &chunks);
-        addChunkToDataStruct(getTriangleChunk(x - sphereRadius, z + sphereRadius), &chunks);
-        addChunkToDataStruct(getTriangleChunk(x               , z               ), &chunks);
-        addChunkToDataStruct(getTriangleChunk(x + sphereRadius, z - sphereRadius), &chunks);
-        addChunkToDataStruct(getTriangleChunk(x + sphereRadius, z + sphereRadius), &chunks);
-
-        for (std::vector<Triangle3D*>* chunk : chunks)
+        for ( Triangle3D* tri : *chunk)
         {
-            for ( Triangle3D* tri : *chunk)
+            float thisDist = 1000000000.0f;
+            Vector3f thisDir;
+            Vector3f point(x, y, z);
+            if (Maths::sphereIntersectsTriangle(&point, sphereRadius, tri, &thisDist, &thisDir))
             {
-                float thisDist = 1000000000.0f;
-                Vector3f thisDir;
-                Vector3f point(x, y, z);
-                if (Maths::sphereIntersectsTriangle(&point, sphereRadius, tri, &thisDist, &thisDir))
+                if (thisDist < distanceToCollisionPosition)
                 {
-                    if (thisDist < distanceToCollisionPosition)
-                    {
-                        closestCollisionTriangle = tri;
-                        distanceToCollisionPosition = thisDist;
-                        directionToCollisionPosition = thisDir;
-                    }
+                    closestCollisionTriangle = tri;
+                    distanceToCollisionPosition = thisDist;
+                    directionToCollisionPosition = thisDir;
                 }
             }
         }
+    }
 
-        if (closestCollisionTriangle != nullptr)
-        {
-            result.hit = true;
-            result.directionToPosition = directionToCollisionPosition;
-            result.distanceToPosition = distanceToCollisionPosition;
-            result.tri = closestCollisionTriangle;
-            return result;
-        }
+    if (closestCollisionTriangle != nullptr)
+    {
+        result.hit = true;
+        result.directionToPosition = directionToCollisionPosition;
+        result.distanceToPosition = distanceToCollisionPosition;
+        result.tri = closestCollisionTriangle;
+        return result;
     }
 
     return result;
@@ -95,17 +91,7 @@ void CollisionChecker::addTriangle(Triangle3D* tri)
     CollisionChecker::triangles.push_back(tri);
 }
 
-Triangle3D* CollisionChecker::getCollideTriangle()
-{
-    return CollisionChecker::collideTriangle;
-}
-
-Vector3f* CollisionChecker::getCollidePosition()
-{
-    return &CollisionChecker::collidePosition;
-}
-
-void CollisionChecker::calculateDatastructure()
+void CollisionChecker::constructChunkDatastructure()
 {
     for (int i = 0; i < mapOfTriangles.size(); i++)
     {

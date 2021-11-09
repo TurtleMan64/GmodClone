@@ -5,7 +5,6 @@
 #include "../toolbox/vector.hpp"
 #include "collisionmodel.hpp"
 #include "../main/main.hpp"
-#include "quadtreenode.hpp"
 #include "../toolbox/maths.hpp"
 
 
@@ -37,26 +36,6 @@ void CollisionModel::generateMinMaxValues()
         minZ = fmin(minZ, tri->minZ);
         maxZ = fmax(maxZ, tri->maxZ);
     }
-}
-
-bool CollisionModel::hasQuadTree()
-{
-    return (quadTreeRoot != nullptr);
-}
-
-void CollisionModel::generateQuadTree(int maxDepth)
-{
-    if (quadTreeRoot != nullptr)
-    {
-        std::fprintf(stdout, "Warning: generating a quad tree on a collision model when it already has one. Memory leak!\n");
-    }
-
-    treeMaxDepth = maxDepth;
-    const float pad = 200.0f; //padding to add to the edges of the quad tree
-    quadTreeRoot = new QuadTreeNode(minX-pad, maxX+pad, minZ-pad, maxZ+pad, triangles, 0, maxDepth); INCR_NEW("QuadTreeNode");
-
-    leafNodeWidth  = ((maxX+pad) - (minX-pad))/(1<<maxDepth);
-    leafNodeHeight = ((maxZ+pad) - (minZ-pad))/(1<<maxDepth);
 }
 
 void CollisionModel::offsetModel(Vector3f* offset)
@@ -376,23 +355,12 @@ void CollisionModel::deleteMe()
     }
 
     triangles.clear();
-
-    //Delete the quad tree nodes
-    if (quadTreeRoot != nullptr)
-    {
-        quadTreeRoot->deleteMe();
-        delete quadTreeRoot; INCR_DEL("QuadTreeNode");
-        quadTreeRoot = nullptr;
-    }
 }
 
 CollisionModel* CollisionModel::duplicateMe()
 {
     CollisionModel* copy = new CollisionModel; INCR_NEW("CollisionModel");
 
-    copy->treeMaxDepth    = this->treeMaxDepth;
-    copy->leafNodeWidth   = this->leafNodeWidth;
-    copy->leafNodeHeight  = this->leafNodeHeight;
     copy->maxX            = this->maxX;
     copy->minX            = this->minX;
     copy->maxY            = this->maxY;

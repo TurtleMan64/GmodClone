@@ -231,7 +231,7 @@ int main(int argc, char** argv)
     {
         CollisionChecker::addTriangle(cm->triangles[i]);
     }
-    CollisionChecker::calculateDatastructure();
+    CollisionChecker::constructChunkDatastructure();
 
 
     while (Global::gameState != STATE_EXITING && displayWantsToClose() == 0)

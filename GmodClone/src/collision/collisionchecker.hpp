@@ -42,13 +42,7 @@ public:
 
     static void addTriangle(Triangle3D* cm);
 
-    //based off of the last collision check
-    static Triangle3D* getCollideTriangle();
-
-    //based off of the last collision check
-    static Vector3f* getCollidePosition();
-
-    static void calculateDatastructure();
+    static void constructChunkDatastructure();
 };
 
 #endif
