@@ -55,14 +55,15 @@ private:
 
     const float DRAG_AIR = 1.0;
 
-    const float JUMP_SPEED = 200.0f/36.7816091954f;
+    //replaced with a function that calculates this, since its slightly different based on fps
+    //const float JUMP_SPEED = 5.33f;
 
     //for stored jumps
     float timeSinceOnGround = 0.0f;
     Vector3f lastGroundNormal;
     const float AIR_JUMP_TOLERANCE = 0.02f;
 
-    const float WALL_JUMP_SPEED_VERTICAL = 4.0f;
+    //const float WALL_JUMP_SPEED_VERTICAL = 4.0f;
 
     const float WALL_JUMP_SPEED_HORIZONTAL = 5.0f;
 
@@ -71,6 +72,8 @@ private:
     float getPushValueGround(float deltaTime);
 
     float getPushValueAir(float deltaTime);
+
+    float getJumpValue(float deltaTime);
 
 public:
     Vector3f vel;

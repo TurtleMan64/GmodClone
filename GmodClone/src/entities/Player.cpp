@@ -152,7 +152,7 @@ void Player::step()
     if (Input::inputs.INPUT_ACTION1 && !Input::inputs.INPUT_PREVIOUS_ACTION1 && timeSinceOnGround <= AIR_JUMP_TOLERANCE)
     {
         AudioPlayer::play(36, nullptr);
-        vel = vel + lastGroundNormal.scaleCopy(JUMP_SPEED);
+        vel = vel + lastGroundNormal.scaleCopy(getJumpValue(dt));
         timeSinceOnGround = AIR_JUMP_TOLERANCE + 0.0001f;
     }
 
@@ -168,7 +168,7 @@ void Player::step()
     {
         AudioPlayer::play(50, nullptr);
         vel = vel + storedWallNormal.scaleCopy(WALL_JUMP_SPEED_HORIZONTAL);
-        vel.y += WALL_JUMP_SPEED_VERTICAL;
+        vel.y += getJumpValue(dt) - 1.0f;
         wallJumpTimer = -1.0f;
     }
 
@@ -235,7 +235,7 @@ void Player::step()
     bool onGroundBefore = onGround;
     onGround = false;
     isTouchingWall = false;
-    //bool bounced = false;
+
     bool touchedAWall = false;
     if (hitAny)
     {
@@ -361,18 +361,13 @@ void Player::step()
         b->position.y += HUMAN_HEIGHT;
         Global::addEntity(b);
     }
-
-    printf("position previous frame = %f %f %f\n", position.x, position.y, position.z);
-
-    //printf("\n");
-
     
     updateTransformationMatrix();
 }
 
 float Player::getPushValueGround(float deltaTime)
 {
-    double fps = 1/deltaTime;
+    double fps = 1.0/deltaTime;
 
     double val;
 
@@ -395,8 +390,14 @@ float Player::getPushValueGround(float deltaTime)
 
 float Player::getPushValueAir(float deltaTime)
 {
-    double fps = 1/deltaTime;
+    double fps = 1.0/deltaTime;
     return (float)(9.917682 + (14.17576 - 9.917682)/(1.0 + pow(fps/1.386981, 1.042293)));
+}
+
+float Player::getJumpValue(float deltaTime)
+{
+    double fps = 1.0/deltaTime;
+    return (float)(5.314317 + (60497.54 - 5.314317)/(1.0 + pow(fps/0.000111619, 0.9930026)));
 }
 
 void Player::updateCamera()
