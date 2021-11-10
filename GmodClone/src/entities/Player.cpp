@@ -34,6 +34,11 @@ void Player::step()
 
     updateCamera();
 
+    if (Input::inputs.INPUT_LEFT_CLICK && !Input::inputs.INPUT_PREVIOUS_LEFT_CLICK)
+    {
+        swingYourArm();
+    }
+
     // Sliding
     float slideTimerBefore = slideTimer;
     slideTimer-=dt;
@@ -503,6 +508,68 @@ void Player::updateCamera()
     up.normalize();
 
     Global::gameCamera->setViewMatrixValues(&eye, &target, &up);
+}
+
+void Player::swingYourArm()
+{
+    Vector3f lookDir = Global::gameCamera->target - Global::gameCamera->eye;
+    lookDir.setLength(ARM_REACH);
+    printf("%f %f %f\n", lookDir.x, lookDir.y, lookDir.z);
+    Vector3f target = Global::gameCamera->eye + lookDir;
+    CollisionResult result = CollisionChecker::checkCollision(&Global::gameCamera->eye, &target);
+
+    float distToCollisionSquared = 10000000000.0f;
+    if (result.hit)
+    {
+        distToCollisionSquared = result.distanceToPosition*result.distanceToPosition;
+        printf("%f\n", result.distanceToPosition);
+    }
+
+    Entity* hitEntity = nullptr;
+
+    for (Entity* e : Global::gameEntities)
+    {
+        switch (e->getEntityType())
+        {
+            case ENTITY_BALL:
+            {
+                Vector3f ballCollisionSpot;
+                if (Maths::lineSegmentIntersectsSphere(&Global::gameCamera->eye, &target, &e->position, e->scale, &ballCollisionSpot))
+                {
+                    float thisDistSquared = (Global::gameCamera->eye - ballCollisionSpot).lengthSquared();
+                    if (thisDistSquared < distToCollisionSquared)
+                    {
+                        distToCollisionSquared = thisDistSquared;
+                        hitEntity = e;
+                    }
+                }
+                break;
+            }
+
+            default:
+                break;
+        }
+    }
+
+    if (hitEntity != nullptr)
+    {
+        switch (hitEntity->getEntityType())
+        {
+            case ENTITY_BALL:
+            {
+                hitEntity->vel = lookDir;
+                hitEntity->vel.setLength(30.0f);
+                break;
+            }
+
+            default:
+                break;
+        }
+    }
+    else if (result.hit)
+    {
+        AudioPlayer::play(50, nullptr);
+    }
 }
 
 void Player::setRotation(float xr, float yr, float zr, float sr)

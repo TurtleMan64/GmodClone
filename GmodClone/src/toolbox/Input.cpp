@@ -4,7 +4,7 @@
 #include <GLFW/glfw3.h>
 #include <Windows.h>
 #else
-#include "/usr/include/GLFW/glfw3.hpp"
+#include "/usr/include/GLFW/glfw3.h"
 #endif
 
 #include <iostream>
@@ -29,8 +29,6 @@
 #include <iostream>
 #include <fstream>
 #endif
-
-extern GLFWwindow* window;
 
 InputStruct Input::inputs{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
 
@@ -88,18 +86,22 @@ float RT_RANGE   =  2;
 
 float TRIGGER_DEADZONE = 0.3f;
 
+extern GLFWwindow* window;
+
 void Input::pollInputs()
 {
     glfwPollEvents();
 
-    Input::inputs.INPUT_PREVIOUS_ACTION1 = Input::inputs.INPUT_ACTION1;
-    Input::inputs.INPUT_PREVIOUS_ACTION2 = Input::inputs.INPUT_ACTION2;
-    Input::inputs.INPUT_PREVIOUS_ACTION3 = Input::inputs.INPUT_ACTION3;
-    Input::inputs.INPUT_PREVIOUS_ACTION4 = Input::inputs.INPUT_ACTION4;
-    Input::inputs.INPUT_PREVIOUS_LB      = Input::inputs.INPUT_LB;
-    Input::inputs.INPUT_PREVIOUS_RB      = Input::inputs.INPUT_RB;
-    Input::inputs.INPUT_PREVIOUS_START   = Input::inputs.INPUT_START;
-    Input::inputs.INPUT_PREVIOUS_TAB     = Input::inputs.INPUT_TAB;
+    Input::inputs.INPUT_PREVIOUS_ACTION1     = Input::inputs.INPUT_ACTION1;
+    Input::inputs.INPUT_PREVIOUS_ACTION2     = Input::inputs.INPUT_ACTION2;
+    Input::inputs.INPUT_PREVIOUS_ACTION3     = Input::inputs.INPUT_ACTION3;
+    Input::inputs.INPUT_PREVIOUS_ACTION4     = Input::inputs.INPUT_ACTION4;
+    Input::inputs.INPUT_PREVIOUS_LEFT_CLICK  = Input::inputs.INPUT_LEFT_CLICK;
+    Input::inputs.INPUT_PREVIOUS_RIGHT_CLICK = Input::inputs.INPUT_RIGHT_CLICK;
+    Input::inputs.INPUT_PREVIOUS_LB          = Input::inputs.INPUT_LB;
+    Input::inputs.INPUT_PREVIOUS_RB          = Input::inputs.INPUT_RB;
+    Input::inputs.INPUT_PREVIOUS_START       = Input::inputs.INPUT_START;
+    Input::inputs.INPUT_PREVIOUS_TAB         = Input::inputs.INPUT_TAB;
 
     Input::inputs.INPUT_PREVIOUS_X  = Input::inputs.INPUT_X;
     Input::inputs.INPUT_PREVIOUS_Y  = Input::inputs.INPUT_Y;
@@ -109,15 +111,17 @@ void Input::pollInputs()
     Input::inputs.INPUT_PREVIOUS_L2 = Input::inputs.INPUT_R2;
 
 
-    Input::inputs.INPUT_ACTION1 = false;
-    Input::inputs.INPUT_ACTION2 = false;
-    Input::inputs.INPUT_ACTION3 = false;
-    Input::inputs.INPUT_ACTION4 = false;
-    Input::inputs.INPUT_LB      = false;
-    Input::inputs.INPUT_RB      = false;
-    Input::inputs.INPUT_SELECT  = false;
-    Input::inputs.INPUT_START   = false;
-    Input::inputs.INPUT_TAB     = false;
+    Input::inputs.INPUT_ACTION1     = false;
+    Input::inputs.INPUT_ACTION2     = false;
+    Input::inputs.INPUT_ACTION3     = false;
+    Input::inputs.INPUT_ACTION4     = false;
+    Input::inputs.INPUT_LEFT_CLICK  = false;
+    Input::inputs.INPUT_RIGHT_CLICK = false;
+    Input::inputs.INPUT_LB          = false;
+    Input::inputs.INPUT_RB          = false;
+    Input::inputs.INPUT_SELECT      = false;
+    Input::inputs.INPUT_START       = false;
+    Input::inputs.INPUT_TAB         = false;
 
     Input::inputs.INPUT_X  = 0;
     Input::inputs.INPUT_Y  = 0;
@@ -300,7 +304,14 @@ void Input::pollInputs()
     mousePreviousX = xpos;
     mousePreviousY = ypos;
 
-
+    if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS)
+    {
+        Input::inputs.INPUT_LEFT_CLICK = true;
+    }
+    if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS)
+    {
+        Input::inputs.INPUT_RIGHT_CLICK = true;
+    }
 
 
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
@@ -490,6 +501,8 @@ void Input::pollInputs()
 void Input::init()
 {
     Input::inputs.uniqueVar = 1149650285; //Value that is very easy to find with a memory scan
+
+    glfwSetInputMode(window, GLFW_STICKY_MOUSE_BUTTONS, GLFW_TRUE);
 
     if (glfwRawMouseMotionSupported())
     {

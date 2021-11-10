@@ -5,8 +5,6 @@
 #include "triangle3d.hpp"
 #include "../toolbox/maths.hpp"
 
-Vector3f CollisionChecker::collidePosition;
-Triangle3D* CollisionChecker::collideTriangle;
 std::vector<Triangle3D*> CollisionChecker::triangles;
 
 float CollisionChecker::chunkedTrianglesMinX = 0;
@@ -39,7 +37,7 @@ CollisionResult CollisionChecker::checkCollision(float x, float y, float z, floa
 
     for (std::vector<Triangle3D*>* chunk : chunks)
     {
-        for ( Triangle3D* tri : *chunk)
+        for (Triangle3D* tri : *chunk)
         {
             float thisDist = 1000000000.0f;
             Vector3f thisDir;
@@ -68,6 +66,57 @@ CollisionResult CollisionChecker::checkCollision(float x, float y, float z, floa
     return result;
 }
 
+CollisionResult CollisionChecker::checkCollision(Vector3f* p1, Vector3f* p2)
+{
+    return CollisionChecker::checkCollision(p1->x, p1->y, p1->z, p2->x, p2->y, p2->z);
+}
+
+CollisionResult CollisionChecker::checkCollision(float x1, float y1, float z1, float x2, float y2, float z2)
+{
+    CollisionResult result;
+
+    Triangle3D* closestCollisionTriangle = nullptr;
+
+    float distanceToCollisionPositionSquared = Vector3f(x2-x1, y2-y1, z2-z1).lengthSquared();
+
+    std::vector<std::vector<Triangle3D*>*> chunks;
+
+    addChunkToDataStruct(getTriangleChunk(x1, z1), &chunks);
+    addChunkToDataStruct(getTriangleChunk(x1, z2), &chunks);
+    addChunkToDataStruct(getTriangleChunk(x2, z1), &chunks);
+    addChunkToDataStruct(getTriangleChunk(x2, z2), &chunks);
+
+    for (std::vector<Triangle3D*>* chunk : chunks)
+    {
+        for (Triangle3D* tri : *chunk)
+        {
+            Vector3f rayOrigin(x1, y1, z1);
+            Vector3f rayDir(x2 - x1, y2 - y1, z2 - z1);
+            Vector3f collidePosition;
+            if (Maths::raycastIntersectsTriangle(&rayOrigin, &rayDir, tri, &collidePosition))
+            {
+                float thisDistSquared = (rayOrigin - collidePosition).lengthSquared();
+
+                if (thisDistSquared < distanceToCollisionPositionSquared)
+                {
+                    closestCollisionTriangle = tri;
+                    distanceToCollisionPositionSquared = thisDistSquared;
+                }
+            }
+        }
+    }
+
+    if (closestCollisionTriangle != nullptr)
+    {
+        result.hit = true;
+        result.distanceToPosition = sqrtf(distanceToCollisionPositionSquared);
+        result.tri = closestCollisionTriangle;
+        return result;
+    }
+
+    return result;
+}
+
 void CollisionChecker::deleteAllTriangles()
 {
     for (int i = 0; i < CollisionChecker::triangles.size(); i++)
@@ -77,7 +126,6 @@ void CollisionChecker::deleteAllTriangles()
     }
 
     CollisionChecker::triangles.clear();
-    CollisionChecker::collideTriangle = nullptr;
 
     for (int i = 0; i < mapOfTriangles.size(); i++)
     {

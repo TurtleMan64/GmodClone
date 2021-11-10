@@ -67,7 +67,12 @@ private:
 
     const float WALL_JUMP_SPEED_HORIZONTAL = 5.0f;
 
+    // How far you can hit things from
+    const float ARM_REACH = 2.3f;
+
     void updateCamera();
+
+    void swingYourArm();
 
     float getPushValueGround(float deltaTime);
 

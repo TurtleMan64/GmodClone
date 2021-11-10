@@ -6,6 +6,7 @@
 #include "vector.hpp"
 #include "../entities/camera.hpp"
 #include "../collision/triangle3d.hpp"
+#include "../renderEngine/renderEngine.hpp"
 #include "maths.hpp"
 #include "../main/main.hpp"
 
@@ -741,9 +742,8 @@ Vector2f Maths::calcScreenCoordsOfWorldPoint(Vector3f* worldPoint)
     Matrix4f modelViewMatrix = Matrix4f(modelMatrix);
     viewMatrix.multiply(&modelViewMatrix, &modelViewMatrix);
 
-    extern Matrix4f* projectionMatrix;
-
     Matrix4f result;
+    extern Matrix4f* projectionMatrix;
     projectionMatrix->multiply(&modelViewMatrix, &result);
     Vector4f vec4(0, 0, 0, 1);
     Vector4f gl_Position = result.transform(&vec4);
@@ -881,4 +881,58 @@ bool Maths::raycastIntersectsTriangle(Vector3f* rayOrigin, Vector3f* rayDir, Tri
     }
 
     return intersects;
+}
+
+//http://paulbourke.net/geometry/circlesphere/index.html#linesphere
+//http://paulbourke.net/geometry/circlesphere/raysphere.c
+bool Maths::lineSegmentIntersectsSphere(Vector3f* p1, Vector3f* p2, Vector3f* sc, float r, Vector3f* outCollisionPosition)
+{
+    float a,b,c;
+    float bb4ac;
+    Vector3f dp;
+
+    if ((*p1 - *sc).lengthSquared() < r*r)
+    {
+        // If start point is already in the sphere, return collide point as start point
+        outCollisionPosition->set(p1);
+        return true;
+    }
+
+    dp.x = p2->x - p1->x;
+    dp.y = p2->y - p1->y;
+    dp.z = p2->z - p1->z;
+    a = dp.x * dp.x + dp.y * dp.y + dp.z * dp.z;
+    b = 2 * (dp.x * (p1->x - sc->x) + dp.y * (p1->y - sc->y) + dp.z * (p1->z - sc->z));
+    c = sc->x * sc->x + sc->y * sc->y + sc->z * sc->z;
+    c += p1->x * p1->x + p1->y * p1->y + p1->z * p1->z;
+    c -= 2 * (sc->x * p1->x + sc->y * p1->y + sc->z * p1->z);
+    c -= r * r;
+    bb4ac = b * b - 4 * a * c;
+
+    if (fabsf(a) < 0.000001f || bb4ac < 0)
+    {
+        return false;
+    }
+
+    float mu1 = (-b + sqrt(bb4ac)) / (2 * a);
+    float mu2 = (-b - sqrt(bb4ac)) / (2 * a);
+
+    Vector3f intp1 = *p1 + (*p2 - *p1).scaleCopy(mu1);
+    Vector3f intp2 = *p1 + (*p2 - *p1).scaleCopy(mu2);
+
+    if ((intp1 - *p1).lengthSquared() < (intp2 - *p1).lengthSquared())
+    {
+        outCollisionPosition->set(&intp1);
+    }
+    else
+    {
+        outCollisionPosition->set(&intp2);
+    }
+
+    if ((*p1 - *outCollisionPosition).lengthSquared() < (*p1 - *p2).lengthSquared())
+    {
+        return true;
+    }
+
+    return false;
 }
