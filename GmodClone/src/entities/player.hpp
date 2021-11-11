@@ -68,7 +68,7 @@ private:
     const float WALL_JUMP_SPEED_HORIZONTAL = 5.0f;
 
     // How far you can hit things from
-    const float ARM_REACH = 2.3f;
+    const float ARM_REACH = 1.9f;
 
     void updateCamera();
 
@@ -81,6 +81,9 @@ private:
     float getJumpValue(float deltaTime);
 
 public:
+    Entity* collideEntityImTouching = nullptr;
+    Vector3f externalVel;
+
     Player(std::list<TexturedModel*>* models);
 
     void step();

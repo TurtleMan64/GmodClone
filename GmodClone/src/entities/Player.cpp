@@ -19,7 +19,7 @@ Player::Player(std::list<TexturedModel*>* models)
 {
     myModels = models;
     scale = 0.5f;
-    position.set(77.327835f, 1.313488f, -14.730497f);
+    position.set(77.327835f, 4.313488f, -14.730497f);
     vel.set(0.000001f, 0, 0);
     groundNormal.set(0, 1, 0);
     lastGroundNormal.set(0, 1, 0);
@@ -219,12 +219,16 @@ void Player::step()
         }
     }
 
-    position = position + vel.scaleCopy(dt);
+    position = position + vel.scaleCopy(dt) + externalVel.scaleCopy(dt);
 
     bool hitAny = false;
     std::vector<Triangle3D*> collisionResults;
 
     Vector3f velBefore = vel;
+    //Vector3f positionBefore = position;
+
+    Entity* previousCollideEntity = collideEntityImTouching;
+    collideEntityImTouching = nullptr;
 
     //bottom sphere collision
     for (int c = 0; c < 20; c++)
@@ -245,6 +249,11 @@ void Player::step()
             vel = Maths::projectOntoPlane(&vel, &directionToMove);
             hitAny = true;
             collisionResults.push_back(result.tri);
+
+            if (result.entity != nullptr)
+            {
+                collideEntityImTouching = result.entity;
+            }
         }
         else
         {
@@ -271,6 +280,11 @@ void Player::step()
 
                 //move along the new plane
                 vel = Maths::projectOntoPlane(&vel, &directionToMove);
+
+                if (result.entity != nullptr)
+                {
+                    collideEntityImTouching = result.entity;
+                }
             }
             else
             {
@@ -278,6 +292,13 @@ void Player::step()
             }
         }
     }
+
+    if (collideEntityImTouching == nullptr && previousCollideEntity != nullptr)
+    {
+        printf("adding vel %f\n", externalVel.length());
+        vel = vel + externalVel;
+    }
+    externalVel.set(0, 0, 0);
 
     bool onGroundBefore = onGround;
     onGround = false;
@@ -356,7 +377,7 @@ void Player::step()
     }
 
     // Footstep sounds
-    if (timeSinceOnGround <= 0.02f && slideTimer < 0.0f)
+    if (timeSinceOnGround <= 0.04f && slideTimer < 0.0f)
     {
         float stepTimerBefore = stepTimer;
         stepTimer+=vel.length()*dt;
@@ -514,7 +535,7 @@ void Player::swingYourArm()
 {
     Vector3f lookDir = Global::gameCamera->target - Global::gameCamera->eye;
     lookDir.setLength(ARM_REACH);
-    printf("%f %f %f\n", lookDir.x, lookDir.y, lookDir.z);
+
     Vector3f target = Global::gameCamera->eye + lookDir;
     CollisionResult result = CollisionChecker::checkCollision(&Global::gameCamera->eye, &target);
 
@@ -522,7 +543,6 @@ void Player::swingYourArm()
     if (result.hit)
     {
         distToCollisionSquared = result.distanceToPosition*result.distanceToPosition;
-        printf("%f\n", result.distanceToPosition);
     }
 
     Entity* hitEntity = nullptr;
@@ -569,6 +589,10 @@ void Player::swingYourArm()
     else if (result.hit)
     {
         AudioPlayer::play(50, nullptr);
+    }
+    else //miss
+    {
+        AudioPlayer::play(52, nullptr);
     }
 }
 

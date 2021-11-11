@@ -48,12 +48,15 @@
 #include "../audio/audiomaster.hpp"
 #include "../audio/audioplayer.hpp"
 #include "../entities/ball.hpp"
+#include "../entities/collisionblock.hpp"
 #ifdef _WIN32
 #include <windows.h>
 #include <tchar.h>
 #endif
 
 std::string Global::pathToEXE;
+
+double Global::syncedGlobalTime = 0.0;
 
 std::unordered_set<Entity*> Global::gameEntities;
 
@@ -197,10 +200,6 @@ int main(int argc, char** argv)
     std::list<TexturedModel*> modelsSphere;
     ObjLoader::loadModel(&modelsSphere, "res/Models/", "Sphere");
     Global::player = new Player(&modelsSphere);
-    Global::addEntity(Global::player);
-
-    //Human* human1 = new Human(72.076897f, 0.313516f, 23.235739f);
-    //Global::addEntity(human1);
 
     CollisionModel* cm = ObjLoader::loadCollisionModel("Models/" + folder + "/", "TestMap");
     for (int i = 0; i < cm->triangles.size(); i++)
@@ -218,6 +217,9 @@ int main(int argc, char** argv)
     Ball* ball2 = new Ball("Ball2", Vector3f(72.076897f, 1.313516f, 23.235739f), Vector3f(20, 10, 30));
     Ball* ball3 = new Ball("Ball3", Vector3f(71.076897f, 1.313516f, 23.235739f), Vector3f(30, 20, 10));
 
+    CollisionBlock* cb1 = new CollisionBlock("CollisionBlock1", Vector3f(73.076897f, 1.313516f, 23.235739f), 0);
+    CollisionBlock* cb2 = new CollisionBlock("CollisionBlock2", Vector3f(43.076897f, 1.313516f, 53.235739f), 1);
+
     Global::gameEntities.insert(npc1);
     Global::gameEntities.insert(npc2);
     Global::gameEntities.insert(npc3);
@@ -227,6 +229,8 @@ int main(int argc, char** argv)
     Global::gameEntities.insert(ball2);
     Global::gameEntities.insert(ball3);
 
+    Global::gameEntities.insert(cb1);
+    Global::gameEntities.insert(cb2);
 
     while (Global::gameState != STATE_EXITING && displayWantsToClose() == 0)
     {
@@ -244,6 +248,8 @@ int main(int argc, char** argv)
                 timeNew = glfwGetTime();
             }
         }
+
+        Global::syncedGlobalTime += (timeNew - timeOld);
 
         dt = (float)(timeNew - timeOld);
         dt = std::fminf(dt, 0.04f); //Anything lower than 25fps will slow the gameplay down
@@ -330,6 +336,11 @@ int main(int argc, char** argv)
                     e->step();
                 }
 
+                if (Global::player != nullptr)
+                {
+                    Global::player->step();
+                }
+
                 if (Global::gameStageManager != nullptr)
                 {
                     Global::gameStageManager->step();
@@ -405,6 +416,11 @@ int main(int argc, char** argv)
         for (Entity* e : Global::gameEntities)
         {
             Master_processEntity(e);
+        }
+
+        if (Global::player != nullptr)
+        {
+            Master_processEntity(Global::player);
         }
 
         if (Global::gameStageManager != nullptr)

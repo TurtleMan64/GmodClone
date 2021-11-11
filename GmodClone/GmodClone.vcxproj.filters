@@ -141,6 +141,9 @@
     <ClCompile Include="src\entities\Npc.cpp">
       <Filter>Source Files\entities</Filter>
     </ClCompile>
+    <ClCompile Include="src\entities\CollisionBlock.cpp">
+      <Filter>Source Files\entities</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\toolbox\getline.hpp">
@@ -222,6 +225,9 @@
       <Filter>Source Files\audio</Filter>
     </ClInclude>
     <ClInclude Include="src\entities\npc.hpp">
+      <Filter>Source Files\entities</Filter>
+    </ClInclude>
+    <ClInclude Include="src\entities\collisionblock.hpp">
       <Filter>Source Files\entities</Filter>
     </ClInclude>
   </ItemGroup>

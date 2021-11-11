@@ -4,6 +4,8 @@
 #include "collisionchecker.hpp"
 #include "triangle3d.hpp"
 #include "../toolbox/maths.hpp"
+#include "../main/main.hpp"
+#include "../entities/entity.hpp"
 
 std::vector<Triangle3D*> CollisionChecker::triangles;
 
@@ -24,6 +26,7 @@ CollisionResult CollisionChecker::checkCollision(float x, float y, float z, floa
     CollisionResult result;
 
     Triangle3D* closestCollisionTriangle = nullptr;
+    Entity* closestEntity = nullptr;
     float distanceToCollisionPosition = 1000000000.0f;
     Vector3f directionToCollisionPosition;
 
@@ -35,13 +38,14 @@ CollisionResult CollisionChecker::checkCollision(float x, float y, float z, floa
     addChunkToDataStruct(getTriangleChunk(x + sphereRadius, z - sphereRadius), &chunks);
     addChunkToDataStruct(getTriangleChunk(x + sphereRadius, z + sphereRadius), &chunks);
 
+    float thisDist;
+    Vector3f thisDir;
+    Vector3f point(x, y, z);
+
     for (std::vector<Triangle3D*>* chunk : chunks)
     {
         for (Triangle3D* tri : *chunk)
         {
-            float thisDist = 1000000000.0f;
-            Vector3f thisDir;
-            Vector3f point(x, y, z);
             if (Maths::sphereIntersectsTriangle(&point, sphereRadius, tri, &thisDist, &thisDir))
             {
                 if (thisDist < distanceToCollisionPosition)
@@ -54,12 +58,34 @@ CollisionResult CollisionChecker::checkCollision(float x, float y, float z, floa
         }
     }
 
+    for (Entity* e : Global::gameEntities)
+    {
+        std::vector<Triangle3D*>* ts = e->getCollisionTriangles();
+        if (ts != nullptr)
+        {
+            for (Triangle3D* tri : *ts)
+            {
+                if (Maths::sphereIntersectsTriangle(&point, sphereRadius, tri, &thisDist, &thisDir))
+                {
+                    if (thisDist < distanceToCollisionPosition)
+                    {
+                        closestCollisionTriangle = tri;
+                        distanceToCollisionPosition = thisDist;
+                        directionToCollisionPosition = thisDir;
+                        closestEntity = e;
+                    }
+                }
+            }
+        }
+    }
+
     if (closestCollisionTriangle != nullptr)
     {
         result.hit = true;
         result.directionToPosition = directionToCollisionPosition;
         result.distanceToPosition = distanceToCollisionPosition;
         result.tri = closestCollisionTriangle;
+        result.entity = closestEntity;
         return result;
     }
 
@@ -76,6 +102,7 @@ CollisionResult CollisionChecker::checkCollision(float x1, float y1, float z1, f
     CollisionResult result;
 
     Triangle3D* closestCollisionTriangle = nullptr;
+    Entity* closestEntity = nullptr;
 
     float distanceToCollisionPositionSquared = Vector3f(x2-x1, y2-y1, z2-z1).lengthSquared();
 
@@ -86,13 +113,14 @@ CollisionResult CollisionChecker::checkCollision(float x1, float y1, float z1, f
     addChunkToDataStruct(getTriangleChunk(x2, z1), &chunks);
     addChunkToDataStruct(getTriangleChunk(x2, z2), &chunks);
 
+    Vector3f rayOrigin(x1, y1, z1);
+    Vector3f rayDir(x2 - x1, y2 - y1, z2 - z1);
+    Vector3f collidePosition;
+
     for (std::vector<Triangle3D*>* chunk : chunks)
     {
         for (Triangle3D* tri : *chunk)
         {
-            Vector3f rayOrigin(x1, y1, z1);
-            Vector3f rayDir(x2 - x1, y2 - y1, z2 - z1);
-            Vector3f collidePosition;
             if (Maths::raycastIntersectsTriangle(&rayOrigin, &rayDir, tri, &collidePosition))
             {
                 float thisDistSquared = (rayOrigin - collidePosition).lengthSquared();
@@ -106,11 +134,34 @@ CollisionResult CollisionChecker::checkCollision(float x1, float y1, float z1, f
         }
     }
 
+    for (Entity* e : Global::gameEntities)
+    {
+        std::vector<Triangle3D*>* ts = e->getCollisionTriangles();
+        if (ts != nullptr)
+        {
+            for (Triangle3D* tri : *ts)
+            {
+                if (Maths::raycastIntersectsTriangle(&rayOrigin, &rayDir, tri, &collidePosition))
+                {
+                    float thisDistSquared = (rayOrigin - collidePosition).lengthSquared();
+
+                    if (thisDistSquared < distanceToCollisionPositionSquared)
+                    {
+                        closestCollisionTriangle = tri;
+                        distanceToCollisionPositionSquared = thisDistSquared;
+                        closestEntity = e;
+                    }
+                }
+            }
+        }
+    }
+
     if (closestCollisionTriangle != nullptr)
     {
         result.hit = true;
         result.distanceToPosition = sqrtf(distanceToCollisionPositionSquared);
         result.tri = closestCollisionTriangle;
+        result.entity = closestEntity;
         return result;
     }
 

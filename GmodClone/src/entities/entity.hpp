@@ -3,8 +3,10 @@
 
 class TexturedModel;
 class CollisionModel;
+class Triangle3D;
 
 #include <list>
+#include <vector>
 #include "../toolbox/vector.hpp"
 #include "../toolbox/matrix.hpp"
 #include <string>
@@ -13,6 +15,7 @@ class CollisionModel;
 #define ENTITY_NPC 1
 #define ENTITY_BALL 2
 #define ENTITY_ONLINE_PLAYER 3
+#define ENTITY_COLLISION_BLOCK 4
 
 class Entity
 {
@@ -117,5 +120,7 @@ public:
     virtual void die();
 
     virtual int getEntityType();
+
+    virtual std::vector<Triangle3D*>* getCollisionTriangles();
 };
 #endif

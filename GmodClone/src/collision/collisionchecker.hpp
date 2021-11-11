@@ -2,6 +2,7 @@
 #define COLLISIONCHECKER_H
 
 class Triangle3D;
+class Entity;
 
 #include <vector>
 #include "../toolbox/vector.hpp"
@@ -13,6 +14,7 @@ public:
     Vector3f directionToPosition;
     float distanceToPosition = 0.0f;
     Triangle3D* tri = nullptr;
+    Entity* entity = nullptr;
 };
 
 class CollisionChecker

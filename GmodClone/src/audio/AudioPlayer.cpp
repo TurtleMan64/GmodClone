@@ -74,6 +74,7 @@ void AudioPlayer::loadSoundEffects()
     AudioPlayer::buffersSFX.push_back(AudioMaster::loadWAV("res/Audio/SFX/Sonic/land_wood.wav"));              //49 
     AudioPlayer::buffersSFX.push_back(AudioMaster::loadWAV("res/Audio/SFX/Sonic/hit_wood.wav"));               //50 
     AudioPlayer::buffersSFX.push_back(AudioMaster::loadWAV("res/Audio/SFX/HL2/player/fallpain3.wav"));         //51
+    AudioPlayer::buffersSFX.push_back(AudioMaster::loadWAV("res/Audio/SFX/HL2/weapon/crowbar_swing.wav"));     //52
 }
 
 void AudioPlayer::loadBGM(char* fileName)

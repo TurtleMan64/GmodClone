@@ -50,6 +50,8 @@ class Global
 {
 public:
     static std::string pathToEXE;
+    // Time in seconds that is synced between us and the server and the other players.
+    static double syncedGlobalTime;
     static std::unordered_set<Entity*> gameEntities;
     //static MenuManager menuManager;
     //static Timer* mainHudTimer;

@@ -85,6 +85,11 @@ int Entity::getEntityType()
     return 0;
 }
 
+std::vector<Triangle3D*>* Entity::getCollisionTriangles()
+{
+    return nullptr;
+}
+
 void Entity::increasePosition(float dx, float dy, float dz)
 {
     position.x += dx;
