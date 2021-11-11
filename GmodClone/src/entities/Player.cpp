@@ -225,7 +225,6 @@ void Player::step()
     std::vector<Triangle3D*> collisionResults;
 
     Vector3f velBefore = vel;
-    //Vector3f positionBefore = position;
 
     Entity* previousCollideEntity = collideEntityImTouching;
     collideEntityImTouching = nullptr;
@@ -377,7 +376,7 @@ void Player::step()
     }
 
     // Footstep sounds
-    if (timeSinceOnGround <= 0.04f && slideTimer < 0.0f)
+    if (timeSinceOnGround <= 0.02f && slideTimer < 0.0f)
     {
         float stepTimerBefore = stepTimer;
         stepTimer+=vel.length()*dt;

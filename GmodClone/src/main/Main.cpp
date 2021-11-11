@@ -217,8 +217,10 @@ int main(int argc, char** argv)
     Ball* ball2 = new Ball("Ball2", Vector3f(72.076897f, 1.313516f, 23.235739f), Vector3f(20, 10, 30));
     Ball* ball3 = new Ball("Ball3", Vector3f(71.076897f, 1.313516f, 23.235739f), Vector3f(30, 20, 10));
 
-    CollisionBlock* cb1 = new CollisionBlock("CollisionBlock1", Vector3f(73.076897f, 1.313516f, 23.235739f), 0);
-    CollisionBlock* cb2 = new CollisionBlock("CollisionBlock2", Vector3f(43.076897f, 1.313516f, 53.235739f), 1);
+    //std::string name, Vector3f pos, int direction,                                                          scale, timePeriod, distance, 
+    CollisionBlock* cb1 = new CollisionBlock("CollisionBlock1", Vector3f(73.076897f, 1.313516f, 23.235739f), 0, 4.0f, 1.0f, 12.0f, false, 0);
+    CollisionBlock* cb2 = new CollisionBlock("CollisionBlock2", Vector3f(73.076897f, 1.313516f, 33.235739f), 0, 4.0f, 2.0f, 12.0f, false, 0);
+    CollisionBlock* cb3 = new CollisionBlock("CollisionBlock3", Vector3f(73.076897f, 1.313516f, 43.235739f), 0, 4.0f, 3.0f, 12.0f, false, 0);
 
     Global::gameEntities.insert(npc1);
     Global::gameEntities.insert(npc2);
@@ -231,6 +233,7 @@ int main(int argc, char** argv)
 
     Global::gameEntities.insert(cb1);
     Global::gameEntities.insert(cb2);
+    Global::gameEntities.insert(cb3);
 
     while (Global::gameState != STATE_EXITING && displayWantsToClose() == 0)
     {

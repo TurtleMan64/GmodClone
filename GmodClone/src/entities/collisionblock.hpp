@@ -20,10 +20,19 @@ private:
 
     Vector3f startPos;
 
-    int type = 0;
+    int direction = 0;
+    float timePeriod = 1.0f;
+    float distance = 1.0f;
+    bool sinusoidal = false;
+    float timeOffset = 0.0f;
 
 public:
-    CollisionBlock(std::string name, Vector3f pos, int type);
+    //direction: 0 = x axis, 1 = y axis, 2 = z axis
+    //radius: radius of block
+    //timePeriod: time for a full cycle
+    //distance: distance traveled in the full cycle
+    //sinusoidal: false for linear
+    CollisionBlock(std::string name, Vector3f pos, int direction, float radius, float timePeriod, float distance, bool sinusoidal, float timeOffset);
 
     void step();
 

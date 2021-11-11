@@ -19,10 +19,15 @@ CollisionModel* CollisionBlock::baseCM = nullptr;
 
 extern float dt;
 
-CollisionBlock::CollisionBlock(std::string name, Vector3f pos, int type)
+CollisionBlock::CollisionBlock(std::string name, Vector3f pos, int direction, float radius, float timePeriod, float distance, bool sinusoidal, float timeOffset)
 {
     this->name = name;
-    this->type = type;
+    this->direction = direction;
+    this->scale = radius;
+    this->timePeriod = timePeriod;
+    this->distance = distance;
+    this->sinusoidal = sinusoidal;
+    this->timeOffset = timeOffset;
 
     if (CollisionBlock::models.size() == 0)
     {
@@ -32,56 +37,91 @@ CollisionBlock::CollisionBlock(std::string name, Vector3f pos, int type)
 
     cm = CollisionBlock::baseCM->duplicateMe();
 
-    scale = 5.5f;
-
     position = pos;
     startPos = pos;
     visible = true;
 }
 
+float prevPosX = 0.0f;
+
 void CollisionBlock::step()
 {
-    if (type == 0)
-    {
-        position.y = startPos.y + 5.0f*sinf((float)Global::syncedGlobalTime);
+    float syncedTime = (((float)Global::syncedGlobalTime) - timeOffset)/timePeriod;
 
-        if (Global::player->collideEntityImTouching == this && 
-            Global::player->position.y >= (position.y + scale) - 0.01f)
-        {
-            Global::player->externalVel.set(0, 5.0f*cosf((float)Global::syncedGlobalTime), 0);
-        }
-        //if (fmodf((float)Global::syncedGlobalTime, 3.0f) < 1.5f)
-        //{
-        //    if (Global::player->collideEntityImTouching == this && 
-        //        Global::player->position.y >= (position.y + scale) - 0.01f)
-        //    {
-        //        //printf("running\n");
-        //        //Global::player->vel.y = 5.0f;
-        //        Global::player->externalVel.set(0, 5, 0);
-        //        //Global::player->position.y += 1.0f;
-        //    }
-        //
-        //    position.y += 5*dt;
-        //}
-        //else
-        //{
-        //    position.y -= 5*dt;
-        //
-        //    if (Global::player->collideEntityImTouching == this && 
-        //        Global::player->position.y > position.y + scale)
-        //    {
-        //        //Global::player->vel.y += -500*dt;
-        //    }
-        //}
+    const float magicNumber = 0.636612f; //no idea where this number comes from
+    float off;
+    float spd;
+    if (sinusoidal)
+    {
+        off = distance*sinf(syncedTime);
+        spd = (distance/timePeriod)*cosf(syncedTime);
     }
-    else if (type == 1)
+    else
     {
-        position.x = startPos.x + 2.0f*sinf((float)Global::syncedGlobalTime);
+        float t = (syncedTime + Maths::PI/2)/(2*Maths::PI);
+        float p = fmodf(t, 1.0f);
+        if (p < 0.5f)
+        {
+            off = (-2*distance) + 4*distance*p + distance;
+            spd = (distance/timePeriod)*magicNumber;
+        }
+        else
+        {
+            off =  (2*distance) - 4*distance*p + distance;
+            spd = -(distance/timePeriod)*magicNumber;
+        }
+    }
+
+    const float eps = scale + 0.01f;
+
+    if (direction == 0)
+    {
+        position.x = startPos.x + off;
+
+        if (Global::player->collideEntityImTouching == this)
+        {
+            if (Global::player->position.y >= (position.y + scale) - eps)
+            {
+                Global::player->externalVel.set(spd, 0, 0);
+            }
+            else if (Global::player->position.x >= (position.x + scale) - eps && spd > 0)
+            {
+                Global::player->externalVel.set(spd, 0, 0);
+            }
+            else if (Global::player->position.x <= (position.x - scale) + eps && spd < 0)
+            {
+                Global::player->externalVel.set(spd, 0, 0);
+            }
+        }
+    }
+    else if (direction == 1)
+    {
+        position.y = startPos.y + off;
 
         if (Global::player->collideEntityImTouching == this && 
-            Global::player->position.y >= (position.y + scale) - 0.01f)
+            Global::player->position.y >= (position.y + scale) - scale)
         {
-            Global::player->externalVel.set(2.0f*cosf((float)Global::syncedGlobalTime), 0, 0);
+            Global::player->externalVel.set(0, spd, 0);
+        }
+    }
+    else if (direction == 2)
+    {
+        position.z = startPos.z + off;
+
+        if (Global::player->collideEntityImTouching == this)
+        {
+            if (Global::player->position.y >= (position.y + scale) - eps)
+            {
+                Global::player->externalVel.set(0, 0, spd);
+            }
+            else if (Global::player->position.z >= (position.z + scale) - eps && spd > 0)
+            {
+                Global::player->externalVel.set(0, 0, spd);
+            }
+            else if (Global::player->position.z <= (position.z - scale) + eps && spd < 0)
+            {
+                Global::player->externalVel.set(0, 0, spd);
+            }
         }
     }
 
