@@ -1,28 +1,27 @@
-#ifndef BALL_H
-#define BALL_H
+#ifndef REDBARREL_H
+#define REDBARREL_H
 
 class TexturedModel;
-class Source;
+class Triangle3D;
+class CollisionModel;
 
 #include <list>
+#include <vector>
 #include "entity.hpp"
 #include "../toolbox/vector.hpp"
 
-class Ball : public Entity
+class RedBarrel : public Entity
 {
 private:
     static std::list<TexturedModel*> models;
+    static CollisionModel* baseCM;
 
-    Source* src = nullptr;
+    CollisionModel* cm = nullptr;
 
-    const float gravityForce = 0.588f*60;
-
-    const float DRAG_AIR = 0.4f;
-
-    const float bounceAmount = 0.85f; //85% of relative vertical speed retain after bounce
+    float health = 1.0f;
 
 public:
-    Ball(std::string name, Vector3f pos, Vector3f vel);
+    RedBarrel(std::string name, Vector3f pos);
 
     void step();
 
@@ -31,6 +30,8 @@ public:
     static void loadModels();
 
     int getEntityType();
+
+    std::vector<Triangle3D*>* getCollisionTriangles();
 
     void getHit(Vector3f* hitPos, Vector3f* hitDir, int weapon);
 };

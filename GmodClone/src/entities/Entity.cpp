@@ -90,6 +90,11 @@ std::vector<Triangle3D*>* Entity::getCollisionTriangles()
     return nullptr;
 }
 
+void Entity::getHit(Vector3f* /*hitPos*/, Vector3f* /*hitDir*/, int /*weapon*/)
+{
+
+}
+
 void Entity::increasePosition(float dx, float dy, float dz)
 {
     position.x += dx;

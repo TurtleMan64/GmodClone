@@ -29,12 +29,6 @@ CollisionBlock::CollisionBlock(std::string name, Vector3f pos, int direction, fl
     this->sinusoidal = sinusoidal;
     this->timeOffset = timeOffset;
 
-    if (CollisionBlock::models.size() == 0)
-    {
-        ObjLoader::loadModel(&CollisionBlock::models, "res/Models/Cheese/", "Cheese");
-        CollisionBlock::baseCM = ObjLoader::loadCollisionModel("Models/Cheese/", "Cheese");
-    }
-
     cm = CollisionBlock::baseCM->duplicateMe();
 
     position = pos;
@@ -143,4 +137,13 @@ int CollisionBlock::getEntityType()
 std::vector<Triangle3D*>* CollisionBlock::getCollisionTriangles()
 {
     return &cm->triangles;
+}
+
+void CollisionBlock::loadModels()
+{
+    if (CollisionBlock::models.size() == 0)
+    {
+        ObjLoader::loadModel(&CollisionBlock::models, "res/Models/Cheese/", "Cheese");
+        CollisionBlock::baseCM = ObjLoader::loadCollisionModel("Models/Cheese/", "Cheese");
+    }
 }

@@ -16,6 +16,7 @@ class Triangle3D;
 #define ENTITY_BALL 2
 #define ENTITY_ONLINE_PLAYER 3
 #define ENTITY_COLLISION_BLOCK 4
+#define ENTITY_RED_BARREL 5
 
 class Entity
 {
@@ -122,5 +123,7 @@ public:
     virtual int getEntityType();
 
     virtual std::vector<Triangle3D*>* getCollisionTriangles();
+
+    virtual void getHit(Vector3f* hitPos, Vector3f* hitDir, int weapon);
 };
 #endif

@@ -177,12 +177,12 @@ void Master_render(Camera* camera, float clipX, float clipY, float clipZ, float 
     shader->loadClipPlane(clipX, clipY, clipZ, clipW);
 
     //calc behind clipm plane based on camera
-    Vector3f camDir = camera->target - camera->eye;
-    camDir.normalize();
-    camDir.neg();
+    Vector3f lookDir = camera->target - camera->eye;
+    lookDir.normalize();
+    lookDir.neg();
     Vector3f startPos(&camera->eye);
     //startPos = startPos + camDir.scaleCopy(-100);
-    Vector4f plane = Maths::calcPlaneValues(&startPos, &camDir);
+    Vector4f plane = Maths::calcPlaneValues(&startPos, &lookDir);
     shader->loadClipPlaneBehind(plane.x, plane.y, plane.z, plane.w);
 
     RED = 1.0f;

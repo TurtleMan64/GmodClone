@@ -160,8 +160,9 @@
     <ClCompile Include="src\entities\Camera.cpp" />
     <ClCompile Include="src\entities\Dummy.cpp" />
     <ClCompile Include="src\entities\Entity.cpp" />
-    <ClCompile Include="src\entities\Npc.cpp" />
+    <ClCompile Include="src\entities\OnlinePlayer.cpp" />
     <ClCompile Include="src\entities\Light.cpp" />
+    <ClCompile Include="src\entities\RedBarrel.cpp" />
     <ClCompile Include="src\glad.c" />
     <ClCompile Include="src\loader\FakeTexture.cpp" />
     <ClCompile Include="src\loader\ObjLoader.cpp" />
@@ -169,6 +170,7 @@
     <ClCompile Include="src\main\Main.cpp" />
     <ClCompile Include="src\models\RawModel.cpp" />
     <ClCompile Include="src\models\TexturedModel.cpp" />
+    <ClCompile Include="src\network\TcpClient.cpp" />
     <ClCompile Include="src\renderEngine\DisplayManager.cpp" />
     <ClCompile Include="src\renderEngine\Loader.cpp" />
     <ClCompile Include="src\renderEngine\MasterRenderer.cpp" />
@@ -195,13 +197,15 @@
     <ClInclude Include="src\entities\camera.hpp" />
     <ClInclude Include="src\entities\dummy.hpp" />
     <ClInclude Include="src\entities\entity.hpp" />
-    <ClInclude Include="src\entities\npc.hpp" />
+    <ClInclude Include="src\entities\onlineplayer.hpp" />
     <ClInclude Include="src\entities\light.hpp" />
+    <ClInclude Include="src\entities\redbarrel.hpp" />
     <ClInclude Include="src\loader\fakeTexture.hpp" />
     <ClInclude Include="src\loader\objloader.hpp" />
     <ClInclude Include="src\loader\vertex.hpp" />
     <ClInclude Include="src\main\main.hpp" />
     <ClInclude Include="src\models\models.hpp" />
+    <ClInclude Include="src\network\tcpclient.hpp" />
     <ClInclude Include="src\renderEngine\renderEngine.hpp" />
     <ClInclude Include="src\shaders\shaderprogram.hpp" />
     <ClInclude Include="src\textures\modeltexture.hpp" />

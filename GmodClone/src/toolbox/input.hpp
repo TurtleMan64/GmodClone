@@ -1,6 +1,7 @@
 #ifndef INPUT_H
 #define INPUT_H
 
+#include <GLFW/glfw3.h>
 #include <string>
 
 struct InputStruct
@@ -49,6 +50,8 @@ struct InputStruct
     volatile int MENU_X;
     volatile int MENU_Y;
 
+    volatile int INPUT_SCROLL;
+
     volatile int approxXLeft;
     volatile int approxXLeftPrevious;
     volatile int approxYLeft;
@@ -57,6 +60,9 @@ struct InputStruct
 
 class Input
 {
+private:
+    static void scrollCallback(GLFWwindow* window, double xOff, double yOff);
+
 public:
     static InputStruct inputs;
 

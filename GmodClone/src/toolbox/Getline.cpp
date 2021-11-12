@@ -1,6 +1,8 @@
 #include <istream>
 #include <string>
+#include <fstream>
 #include "getline.hpp"
+#include "../main/main.hpp"
 
 std::istream& getlineSafe(std::istream& is, std::string& t)
 {
@@ -88,4 +90,21 @@ std::istream& getlineSafe(std::istream& is, std::string& t)
     
     return is;
     */
+}
+
+std::string getFirstLineOfFile(const char* filename)
+{
+    std::ifstream file(Global::pathToEXE + filename);
+    if (!file.is_open())
+    {
+        std::fprintf(stdout, "Error: Cannot load file '%s'\n", (Global::pathToEXE + filename).c_str());
+        file.close();
+        return "";
+    }
+    
+    std::string s;
+    getlineSafe(file, s);
+    file.close();
+
+    return s;
 }

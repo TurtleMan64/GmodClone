@@ -46,8 +46,6 @@ private:
         std::vector<float>* normalsArray,
         std::vector<float>* colorsArray);
 
-    static void workOnQuadTreeNode(FILE* file, QuadTreeNode* node);
-
 public:
     //Attempts to load a mode as either an OBJ or binary format.
     //Checks for binary file first, then tries OBJ.
@@ -82,8 +80,5 @@ public:
 
     //The CollisionModel returned must be deleted later.
     static CollisionModel* loadBinaryCollisionModel(std::string filePath, std::string fileName);
-
-    //The CollisionModel returned must be deleted later.
-    static CollisionModel* loadBinaryQuadTree(std::string filePath, std::string fileName);
 };
 #endif

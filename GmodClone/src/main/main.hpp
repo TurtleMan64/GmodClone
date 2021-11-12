@@ -6,6 +6,7 @@ class Camera;
 class Light;
 class Fbo;
 class Player;
+class OnlinePlayer;
 
 #include <string>
 #include <random>
@@ -14,6 +15,7 @@ class Player;
 #include <unordered_map>
 #include <unordered_set>
 #include <utility>
+
 #include "../toolbox/vector.hpp"
 
 #define STATE_PAUSED 0
@@ -50,9 +52,11 @@ class Global
 {
 public:
     static std::string pathToEXE;
+    static std::string nickname;
     // Time in seconds that is synced between us and the server and the other players.
     static double syncedGlobalTime;
     static std::unordered_set<Entity*> gameEntities;
+    static std::unordered_map<std::string, OnlinePlayer*> gameOnlinePlayers;
     //static MenuManager menuManager;
     //static Timer* mainHudTimer;
     static Camera* gameCamera;

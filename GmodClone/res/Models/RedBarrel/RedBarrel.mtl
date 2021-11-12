@@ -1,0 +1,6 @@
+# Material Count: 1
+
+newmtl None
+Ns 20
+Ni 0.3
+map_Kd oil_barrel_diffuse.png

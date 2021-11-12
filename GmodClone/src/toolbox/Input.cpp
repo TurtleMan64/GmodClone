@@ -36,6 +36,8 @@ InputStruct Input::inputs{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 double mousePreviousX = 0;
 double mousePreviousY = 0;
 
+double mouseScroll = 0.0;
+
 //settings
 
 bool freeMouse = true;
@@ -313,6 +315,20 @@ void Input::pollInputs()
         Input::inputs.INPUT_RIGHT_CLICK = true;
     }
 
+    if (mouseScroll > 0.0)
+    {
+        Input::inputs.INPUT_SCROLL = 1;
+    }
+    else if (mouseScroll < 0.0)
+    {
+        Input::inputs.INPUT_SCROLL = -1;
+    }
+    else
+    {
+        Input::inputs.INPUT_SCROLL = 0;
+    }
+
+    mouseScroll = 0;
 
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
     {
@@ -508,6 +524,8 @@ void Input::init()
     {
         glfwSetInputMode(window, GLFW_RAW_MOUSE_MOTION, GLFW_TRUE);
     }
+
+    glfwSetScrollCallback(window, Input::scrollCallback);
 
     //load sensitivity and button mappings from external file
 
@@ -809,4 +827,9 @@ bool Input::changeController(int direction)
 
     CONTROLLER_ID = originalControllerID;
     return false;
+}
+
+void Input::scrollCallback(GLFWwindow* /*w*/, double /*xOff*/, double yOff)
+{
+    mouseScroll = yOff;
 }

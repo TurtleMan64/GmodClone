@@ -1345,17 +1345,13 @@ CollisionModel* ObjLoader::loadCollisionModel(std::string filePath, std::string 
                         else if (strcmp(lineSplitMTL[0], "type") == 0 ||
                                  strcmp(lineSplitMTL[0], "\ttype") == 0)
                         {
-                            if (strcmp(lineSplitMTL[1], "dig") == 0)
+                            if (strcmp(lineSplitMTL[1], "bounce") == 0)
                             {
                                 fakeTextures.back().type = 1;
                             }
-                            else if (strcmp(lineSplitMTL[1], "wall") == 0)
-                            {
-                                fakeTextures.back().type = 2;
-                            }
                             else if (strcmp(lineSplitMTL[1], "death") == 0)
                             {
-                                fakeTextures.back().type = 3;
+                                fakeTextures.back().type = 2;
                             }
                         }
                         else if (strcmp(lineSplitMTL[0], "sound") == 0 ||
@@ -1457,17 +1453,13 @@ CollisionModel* ObjLoader::loadBinaryCollisionModel(std::string filePath, std::s
                 else if (strcmp(lineSplitMTL[0], "type") == 0 ||
                          strcmp(lineSplitMTL[0], "\ttype") == 0)
                 {
-                    if (strcmp(lineSplitMTL[1], "dig") == 0)
+                    if (strcmp(lineSplitMTL[1], "bounce") == 0)
                     {
                         fakeTextures.back().type = 1;
                     }
-                    else if (strcmp(lineSplitMTL[1], "wall") == 0)
-                    {
-                        fakeTextures.back().type = 2;
-                    }
                     else if (strcmp(lineSplitMTL[1], "death") == 0)
                     {
-                        fakeTextures.back().type = 3;
+                        fakeTextures.back().type = 2;
                     }
                 }
                 else if (strcmp(lineSplitMTL[0], "sound") == 0 ||

@@ -75,6 +75,7 @@ map_Kd TerrSS16.png
 newmtl m7
 Ns 94.000000
 Ni 0.000000
+type bounce
 map_d TerrSS08.png
 map_Kd TerrSS08.png
 
@@ -147,6 +148,7 @@ map_Kd TerrSS18.png
 newmtl m8
 Ns 94.000000
 Ni 0.000000
+type bounce
 map_d TerrSS05.png
 map_Kd TerrSS05.png
 

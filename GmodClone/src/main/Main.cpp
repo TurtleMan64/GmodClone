@@ -1,5 +1,11 @@
 #ifdef _WIN32
 #define _CRT_SECURE_NO_DEPRECATE
+#define NOMINMAX
+#endif
+
+#ifdef _WIN32
+#include <windows.h>
+#include <tchar.h>
 #endif
 
 #include <glad/glad.h>
@@ -14,6 +20,8 @@
 #include <unordered_set>
 #include <list>
 #include <utility>
+#include <thread>
+#include <mutex>
 
 #include <chrono>
 #include <ctime>
@@ -44,22 +52,25 @@
 #include "../toolbox/getline.hpp"
 #include "../collision/collisionmodel.hpp"
 #include "../entities/player.hpp"
-#include "../entities/npc.hpp"
+#include "../entities/onlineplayer.hpp"
 #include "../audio/audiomaster.hpp"
 #include "../audio/audioplayer.hpp"
 #include "../entities/ball.hpp"
 #include "../entities/collisionblock.hpp"
-#ifdef _WIN32
-#include <windows.h>
-#include <tchar.h>
-#endif
+#include "../entities/redbarrel.hpp"
+#include "../network/tcpclient.hpp"
 
 std::string Global::pathToEXE;
+
+std::string Global::nickname;
 
 double Global::syncedGlobalTime = 0.0;
 
 std::unordered_set<Entity*> Global::gameEntities;
 
+std::unordered_map<std::string, OnlinePlayer*> Global::gameOnlinePlayers;
+
+std::mutex gameEntitiesAddMutex;
 std::vector<Entity*> gameEntitiesToAdd;
 std::vector<Entity*> gameEntitiesToDelete;
 
@@ -133,6 +144,10 @@ int Global::displaySizeChanged = 0;
 
 void increaseProcessPriority();
 
+void readThreadBehavoir(TcpClient* client);
+
+void writeThreadBehavior(TcpClient* client);
+
 int main(int argc, char** argv)
 {
     if (argc > 0)
@@ -149,6 +164,18 @@ int main(int argc, char** argv)
     }
 
     increaseProcessPriority();
+
+    Global::nickname = getFirstLineOfFile("Nickname.txt");
+    if (Global::nickname.size() >= 32)
+    {
+        char name[32];
+        name[31] = 0;
+        for (int i = 0; i < 31; i++)
+        {
+            name[i] = Global::nickname[i];
+        }
+        Global::nickname = name;
+    }
 
     Global::countNew = 0;
     Global::countDelete = 0;
@@ -174,6 +201,19 @@ int main(int argc, char** argv)
     AudioMaster::init();
     AudioPlayer::loadSoundEffects();
 
+    Ball::loadModels();
+    CollisionBlock::loadModels();
+    OnlinePlayer::loadModels();
+    RedBarrel::loadModels();
+
+    TcpClient* client = new TcpClient("127.0.0.1", 25567, 2);
+    std::thread* t1 = nullptr;
+    std::thread* t2 = nullptr;
+    if (client != nullptr)
+    {
+        t1 = new std::thread(readThreadBehavoir, client);
+        t2 = new std::thread(writeThreadBehavior, client);
+    }
 
     //This light never gets deleted.
     Light lightSun;
@@ -208,19 +248,21 @@ int main(int argc, char** argv)
     }
     CollisionChecker::constructChunkDatastructure();
 
-    Npc* npc1 = new Npc("Npc1", 73.076897f, 0.313516f, 23.235739f);
-    Npc* npc2 = new Npc("Npc2", 72.076897f, 0.313516f, 23.235739f);
-    Npc* npc3 = new Npc("Npc3", 71.076897f, 0.313516f, 23.235739f);
-    Npc* npc4 = new Npc("Npc4", 70.076897f, 0.313516f, 23.235739f);
+    OnlinePlayer* npc1 = new OnlinePlayer("Npc1", 73.076897f, 0.313516f, 23.235739f);
+    OnlinePlayer* npc2 = new OnlinePlayer("Npc2", 72.076897f, 0.313516f, 23.235739f);
+    OnlinePlayer* npc3 = new OnlinePlayer("Npc3", 71.076897f, 0.313516f, 23.235739f);
+    OnlinePlayer* npc4 = new OnlinePlayer("Npc4", 70.076897f, 0.313516f, 23.235739f);
 
     Ball* ball1 = new Ball("Ball1", Vector3f(73.076897f, 1.313516f, 23.235739f), Vector3f(10, 20, 30));
     Ball* ball2 = new Ball("Ball2", Vector3f(72.076897f, 1.313516f, 23.235739f), Vector3f(20, 10, 30));
     Ball* ball3 = new Ball("Ball3", Vector3f(71.076897f, 1.313516f, 23.235739f), Vector3f(30, 20, 10));
 
-    //std::string name, Vector3f pos, int direction,                                                          scale, timePeriod, distance, 
     CollisionBlock* cb1 = new CollisionBlock("CollisionBlock1", Vector3f(73.076897f, 1.313516f, 23.235739f), 0, 4.0f, 1.0f, 12.0f, false, 0);
-    CollisionBlock* cb2 = new CollisionBlock("CollisionBlock2", Vector3f(73.076897f, 1.313516f, 33.235739f), 0, 4.0f, 2.0f, 12.0f, false, 0);
-    CollisionBlock* cb3 = new CollisionBlock("CollisionBlock3", Vector3f(73.076897f, 1.313516f, 43.235739f), 0, 4.0f, 3.0f, 12.0f, false, 0);
+    CollisionBlock* cb2 = new CollisionBlock("CollisionBlock2", Vector3f(73.076897f, 1.313516f, 33.235739f), 0, 4.0f, 1.0f, 12.0f, true, 0);
+    CollisionBlock* cb3 = new CollisionBlock("CollisionBlock3", Vector3f(73.076897f, 1.313516f, 43.235739f), 1, 4.0f, 1.0f, 12.0f, false, 0);
+    CollisionBlock* cb4 = new CollisionBlock("CollisionBlock4", Vector3f(73.076897f, 1.313516f, 53.235739f), 1, 4.0f, 1.0f, 12.0f, true, 0);
+
+    RedBarrel* barrel1 = new RedBarrel("Barrel1", Vector3f(86.722473f, 0.313497f, -4.892693f));
 
     Global::gameEntities.insert(npc1);
     Global::gameEntities.insert(npc2);
@@ -234,6 +276,9 @@ int main(int argc, char** argv)
     Global::gameEntities.insert(cb1);
     Global::gameEntities.insert(cb2);
     Global::gameEntities.insert(cb3);
+    Global::gameEntities.insert(cb4);
+
+    Global::gameEntities.insert(barrel1);
 
     while (Global::gameState != STATE_EXITING && displayWantsToClose() == 0)
     {
@@ -293,6 +338,7 @@ int main(int argc, char** argv)
 
         ANALYSIS_START("Entity Management");
         //entities managment
+        gameEntitiesAddMutex.lock();
         for (auto entityToAdd : gameEntitiesToAdd)
         {
             Global::gameEntities.insert(entityToAdd);
@@ -305,6 +351,7 @@ int main(int argc, char** argv)
             delete entityToDelete; INCR_DEL("Entity");
         }
         gameEntitiesToDelete.clear();
+        gameEntitiesAddMutex.unlock();
 
         ANALYSIS_DONE("Entity Management");
 
@@ -488,11 +535,16 @@ int main(int argc, char** argv)
         ANALYSIS_REPORT();
     }
 
+    Global::gameState = STATE_EXITING;
+
     Global::saveSaveData();
 
     Master_cleanUp();
     Loader::cleanUp();
     closeDisplay();
+
+    t1->join();
+    t2->join();
 
     return 0;
 }
@@ -793,4 +845,209 @@ void Global::performanceAnalysisReport()
     }
     operationStartTimes.clear();
     operationTotalTimes.clear();
+}
+
+void readThreadBehavoir(TcpClient* client)
+{
+    while (Global::gameState != STATE_EXITING && client->isOpen())
+    {
+        char cmd;
+        int numRead = client->read(&cmd, 1, 5);
+        if (numRead < 0)
+        {
+            printf("Could not read cmd from server\n");
+            return;
+        }
+        else if (numRead == 1)
+        {
+            printf("read cmd = %d\n", cmd);
+            switch (cmd)
+            {
+                case 0: //no nop
+                    //printf("NO OP");
+                    break;
+
+                case 1: //time msg
+                    numRead = client->read((char*)&Global::syncedGlobalTime, 8, 5);
+                    if (numRead != 8)
+                    {
+                        printf("Could not read time from server\n");
+                        return;
+                    }
+                    break;
+
+                case 2: //player update
+                {
+                    int nameLen;
+                    numRead = client->read((char*)&nameLen, 4, 5);
+                    if (numRead != 4)
+                    {
+                        printf("Could not read name len from server\n");
+                        return;
+                    }
+                    //printf("nameLen = %d\n", nameLen);
+
+                    char nameBuf[32] = {0};
+                    numRead = client->read(nameBuf, nameLen, 5);
+                    if (numRead != nameLen)
+                    {
+                        printf("Could not read name from server\n");
+                        return;
+                    }
+
+                    std::string name = nameBuf;
+
+                    //printf("name = %s\n", nameBuf);
+
+                    OnlinePlayer* player = nullptr;
+
+
+                    if (Global::gameOnlinePlayers.find(name) != Global::gameOnlinePlayers.end())
+                    {
+                        player = Global::gameOnlinePlayers[name];
+                    }
+
+                    //gameEntitiesAddMutex.lock();
+                    //for (Entity* e : Global::gameEntities)
+                    //{
+                    //    //printf("LOL\n");
+                    //    if (e->name == name)
+                    //    {
+                    //        //printf("LOL2\n");
+                    //        player = (OnlinePlayer*)e;
+                    //        break;
+                    //    }
+                    //}
+                    //gameEntitiesAddMutex.unlock();
+                    //printf("LOL3\n");
+
+                    if (player == nullptr)
+                    {
+                        //printf("creating new player\n");
+                        player = new OnlinePlayer(name, 0, 0, 0);
+                        //printf("created new player\n");
+                        gameEntitiesAddMutex.lock();
+                        //printf("locked\n");
+                        gameEntitiesToAdd.push_back(player);
+                        //printf("pushed\n");
+                        gameEntitiesAddMutex.unlock();
+
+                        Global::gameOnlinePlayers[name] = player;
+                        //printf("%s connected!", name.c_str());
+                    }
+
+                    //printf("Updating player %s\n", name.c_str());
+
+                    client->read((char*)&player->position.x,  4, 5);
+                    client->read((char*)&player->position.y,  4, 5);
+                    client->read((char*)&player->position.z,  4, 5);
+                    client->read((char*)&player->vel.x,       4, 5);
+                    client->read((char*)&player->vel.y,       4, 5);
+                    client->read((char*)&player->vel.z,       4, 5);
+                    client->read((char*)&player->lookDir.x,   4, 5);
+                    client->read((char*)&player->lookDir.y,   4, 5);
+                    client->read((char*)&player->lookDir.z,   4, 5);
+                    client->read((char*)&player->health,      1, 5);
+                    client->read((char*)&player->weapon,      1, 5);
+                    client->read((char*)&player->isCrouching, 1, 5);
+                    client->read((char*)&player->isSliding,   1, 5);
+
+                    //printf("Updated %s", name.c_str());
+
+                    break;
+                }
+
+                default:
+                    //printf("DEAFULAQT");
+                    break;
+            }
+        }
+        else
+        {
+            printf("Read timed out\n");
+        }
+
+        //Sleep(1);
+    }
+
+    printf("Read thread all done\n");
+}
+
+void writeThreadBehavior(TcpClient* client)
+{
+    // Send name message
+    int nameLen = (int)Global::nickname.size();
+    int numWritten = client->write((char*)&nameLen, 4, 5);
+    if (numWritten != 4)
+    {
+        printf("Could not write name length to server\n");
+        return;
+    }
+
+    //printf("Wrote name length to server\n");
+
+    numWritten = client->write((char*)Global::nickname.c_str(), nameLen, 5);
+    if (numWritten != nameLen)
+    {
+        printf("Could not write name to server\n");
+        return;
+    }
+
+    //printf("Wrote name to server\n");
+
+    double lastSentMsg = glfwGetTime();
+
+    while (Global::gameState != STATE_EXITING && client->isOpen())
+    {
+        Sleep(1);
+
+        if (glfwGetTime() - lastSentMsg > 0.03)
+        {
+            // Send time message
+            char cmd = 1;
+            numWritten = client->write(&cmd, 1, 5);
+            if (numWritten != 1)
+            {
+                printf("Could not write time command to server\n");
+                return;
+            }
+
+            numWritten = client->write((char*)&Global::syncedGlobalTime, 8, 5);
+
+            if (numWritten != 8)
+            {
+                printf("Could not write time to server\n");
+                return;
+            }
+
+            //printf("Wrote time to server\n");
+
+            //Send main player message
+            if (Global::player != nullptr)
+            {
+                cmd = 2;
+                client->write(&cmd, 1, 5);
+                client->write((char*)&Global::player->position.x, 4, 5);
+                client->write((char*)&Global::player->position.y, 4, 5);
+                client->write((char*)&Global::player->position.z, 4, 5);
+                client->write((char*)&Global::player->vel.x,      4, 5);
+                client->write((char*)&Global::player->vel.y,      4, 5);
+                client->write((char*)&Global::player->vel.z,      4, 5);
+                client->write((char*)&Global::player->lookDir.x,  4, 5);
+                client->write((char*)&Global::player->lookDir.y,  4, 5);
+                client->write((char*)&Global::player->lookDir.z,  4, 5);
+                char tmp = 1;
+                client->write(&tmp, 1, 5);
+                client->write(&tmp, 1, 5);
+                client->write(&tmp, 1, 5);
+                client->write(&tmp, 1, 5);
+            }
+
+            //printf("Wrote player to server\n");
+
+            lastSentMsg = glfwGetTime();
+        }
+    }
+
+    printf("Write thread all done\n");
 }

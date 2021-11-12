@@ -38,6 +38,8 @@ public:
 
     std::list<TexturedModel*>* getModels();
 
+    static void loadModels();
+
     int getEntityType();
 
     std::vector<Triangle3D*>* getCollisionTriangles();

@@ -75,6 +75,13 @@ void AudioPlayer::loadSoundEffects()
     AudioPlayer::buffersSFX.push_back(AudioMaster::loadWAV("res/Audio/SFX/Sonic/hit_wood.wav"));               //50 
     AudioPlayer::buffersSFX.push_back(AudioMaster::loadWAV("res/Audio/SFX/HL2/player/fallpain3.wav"));         //51
     AudioPlayer::buffersSFX.push_back(AudioMaster::loadWAV("res/Audio/SFX/HL2/weapon/crowbar_swing.wav"));     //52
+    AudioPlayer::buffersSFX.push_back(AudioMaster::loadWAV("res/Audio/SFX/HL2/weapon/explode3.wav"));          //53
+    AudioPlayer::buffersSFX.push_back(AudioMaster::loadWAV("res/Audio/SFX/HL2/weapon/crowbar_impact1.wav"));   //54
+    AudioPlayer::buffersSFX.push_back(AudioMaster::loadWAV("res/Audio/SFX/HL2/weapon/crowbar_impact2.wav"));   //55
+    AudioPlayer::buffersSFX.push_back(AudioMaster::loadWAV("res/Audio/SFX/HL2/misc/wpn_moveselect.wav"));      //56
+    AudioPlayer::buffersSFX.push_back(AudioMaster::loadWAV("res/Audio/SFX/SplatFruit/boing1.wav"));            //57
+    AudioPlayer::buffersSFX.push_back(AudioMaster::loadWAV("res/Audio/SFX/SplatFruit/boing2.wav"));            //58
+    AudioPlayer::buffersSFX.push_back(AudioMaster::loadWAV("res/Audio/SFX/SplatFruit/splat.wav"));             //59
 }
 
 void AudioPlayer::loadBGM(char* fileName)

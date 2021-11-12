@@ -24,7 +24,7 @@ Player::Player(std::list<TexturedModel*>* models)
     groundNormal.set(0, 1, 0);
     lastGroundNormal.set(0, 1, 0);
     wallNormal.set(1, 0, 0);
-    camDir.set(0, 0, -1);
+    lookDir.set(0, 0, -1);
     visible = false;
 }
 
@@ -33,6 +33,17 @@ void Player::step()
     Vector3f yAxis(0, -1, 0);
 
     updateCamera();
+
+    if (Input::inputs.INPUT_SCROLL != 0)
+    {
+        AudioPlayer::play(56, nullptr);
+        weapon += Input::inputs.INPUT_SCROLL;
+        weapon = weapon % 2;
+        if (weapon < 0)
+        {
+            weapon = 1;
+        }
+    }
 
     if (Input::inputs.INPUT_LEFT_CLICK && !Input::inputs.INPUT_PREVIOUS_LEFT_CLICK)
     {
@@ -135,7 +146,7 @@ void Player::step()
         float stickAngle = atan2f(Input::inputs.INPUT_Y, Input::inputs.INPUT_X) - Maths::PI/2; //angle you are holding on the stick, with 0 being up
         float stickRadius = sqrtf(Input::inputs.INPUT_X*Input::inputs.INPUT_X + Input::inputs.INPUT_Y*Input::inputs.INPUT_Y);
 
-        Vector3f dirForward = Maths::projectOntoPlane(&camDir, &yAxis);
+        Vector3f dirForward = Maths::projectOntoPlane(&lookDir, &yAxis);
         dirForward.setLength(stickRadius);
 
         Vector3f velToAdd = Maths::rotatePoint(&dirForward, &yAxis, stickAngle + Maths::PI);
@@ -182,7 +193,7 @@ void Player::step()
     {
         switch (e->getEntityType())
         {
-            case ENTITY_NPC:
+            case ENTITY_ONLINE_PLAYER:
             {
                 Vector3f diff = e->position - position;
                 if (fabsf(diff.y) < HUMAN_HEIGHT)
@@ -229,6 +240,8 @@ void Player::step()
     Entity* previousCollideEntity = collideEntityImTouching;
     collideEntityImTouching = nullptr;
 
+    const float MIN_BOUNCE_SPD = 6.0f;
+
     //bottom sphere collision
     for (int c = 0; c < 20; c++)
     {
@@ -243,6 +256,23 @@ void Player::step()
             spotToTest = spotToTest + directionToMove.scaleCopy(distanceToMoveAway);
             position = spotToTest;
             position.y -= COLLISION_RADIUS;
+
+            if (result.tri->type == 1)
+            {
+                vel = Maths::bounceVector(&vel, &result.tri->normal, 1.0f);
+                if (vel.lengthSquared() < MIN_BOUNCE_SPD*MIN_BOUNCE_SPD)
+                {
+                    vel = result.tri->normal;
+                    vel.setLength(MIN_BOUNCE_SPD);
+                }
+                AudioPlayer::play((int)(2*Maths::random()) + 57, nullptr);
+                break;
+            }
+            else if (result.tri->type == 2)
+            {
+                die();
+                break;
+            }
 
             //move along the new plane
             vel = Maths::projectOntoPlane(&vel, &directionToMove);
@@ -277,6 +307,23 @@ void Player::step()
                 position = spotToTest;
                 position.y -= COLLISION_RADIUS*3;
 
+                if (result.tri->type == 1)
+                {
+                    vel = Maths::bounceVector(&vel, &result.tri->normal, 1.0f);
+                    if (vel.lengthSquared() < MIN_BOUNCE_SPD*MIN_BOUNCE_SPD)
+                    {
+                        vel = result.tri->normal;
+                        vel.setLength(MIN_BOUNCE_SPD);
+                    }
+                    AudioPlayer::play((int)(2*Maths::random()) + 57, nullptr);
+                    break;
+                }
+                else if (result.tri->type == 2)
+                {
+                    die();
+                    break;
+                }
+
                 //move along the new plane
                 vel = Maths::projectOntoPlane(&vel, &directionToMove);
 
@@ -294,9 +341,15 @@ void Player::step()
 
     if (collideEntityImTouching == nullptr && previousCollideEntity != nullptr)
     {
-        printf("adding vel %f\n", externalVel.length());
+        //printf("adding vel %f\n", externalVel.length());
         vel = vel + externalVel;
     }
+    //if (externalVelPrevious.lengthSquared() > 0.0f && externalVel.lengthSquared() == 0.0f)
+    //{
+    //    //printf("adding vel %f\n", externalVelPrevious.length());
+    //    vel = vel + externalVelPrevious;
+    //}
+    //externalVelPrevious = externalVel;
     externalVel.set(0, 0, 0);
 
     bool onGroundBefore = onGround;
@@ -351,18 +404,29 @@ void Player::step()
     }
 
     //Calculate landing on the ground
+    landSoundTimer+=dt;
     if (!onGroundBefore && onGround)
     {
         Vector3f ouchness = Maths::projectAlongLine(&velBefore, &groundNormal);
 
         if (ouchness.lengthSquared() > 14.0f*14.0f)
         {
-            AudioPlayer::play(51, nullptr);
+            //TODO calculate and apply fall damage;
+
+            if (landSoundTimer > 0.2f)
+            {
+                AudioPlayer::play(51, nullptr);
+            }
         }
         else if (ouchness.lengthSquared() > 4.0f*4.0f)
         {
-            AudioPlayer::play(49, nullptr);
+            if (landSoundTimer > 0.2f)
+            {
+                AudioPlayer::play(49, nullptr);
+            }
         }
+
+        landSoundTimer = 0.0f;
     }
 
     if (onGround)
@@ -424,7 +488,7 @@ void Player::step()
 
     if (Input::inputs.INPUT_LB && !Input::inputs.INPUT_PREVIOUS_LB)
     {
-        Ball* b = new Ball("Ball0", position, camDir.scaleCopy(10));
+        Ball* b = new Ball("Ball0", position, lookDir.scaleCopy(10));
         b->position.y += HUMAN_HEIGHT;
         Global::addEntity(b);
     }
@@ -471,10 +535,10 @@ void Player::updateCamera()
 {
     Vector3f yAxis(0, 1, 0);
 
-    camDir = Maths::rotatePoint(&camDir, &yAxis, -Input::inputs.INPUT_X2);
-    camDir.normalize();
+    lookDir = Maths::rotatePoint(&lookDir, &yAxis, -Input::inputs.INPUT_X2);
+    lookDir.normalize();
 
-    Vector3f perpen = camDir.cross(&yAxis);
+    Vector3f perpen = lookDir.cross(&yAxis);
     perpen.normalize();
 
     const float maxViewAng = Maths::toRadians(0.1f);
@@ -482,32 +546,32 @@ void Player::updateCamera()
     if (Input::inputs.INPUT_Y2 > 0) //mouse is going down
     {
         Vector3f down(0, -1, 0);
-        float angBetweenCamAndDown = Maths::angleBetweenVectors(&camDir, &down);
+        float angBetweenCamAndDown = Maths::angleBetweenVectors(&lookDir, &down);
         float angToRotate = Input::inputs.INPUT_Y2;
         if (angBetweenCamAndDown - angToRotate > maxViewAng)
         {
-            camDir = Maths::rotatePoint(&camDir, &perpen, -Input::inputs.INPUT_Y2);
+            lookDir = Maths::rotatePoint(&lookDir, &perpen, -Input::inputs.INPUT_Y2);
         }
         else
         {
-            camDir = Maths::rotatePoint(&camDir, &perpen, -(angBetweenCamAndDown - maxViewAng));
+            lookDir = Maths::rotatePoint(&lookDir, &perpen, -(angBetweenCamAndDown - maxViewAng));
         }
     }
     else
     {
         Vector3f up(0, 1, 0);
-        float angBetweenCamAndUp = Maths::angleBetweenVectors(&camDir, &up);
+        float angBetweenCamAndUp = Maths::angleBetweenVectors(&lookDir, &up);
         float angToRotate = -Input::inputs.INPUT_Y2;
         if (angBetweenCamAndUp - angToRotate > maxViewAng)
         {
-            camDir = Maths::rotatePoint(&camDir, &perpen, -Input::inputs.INPUT_Y2);
+            lookDir = Maths::rotatePoint(&lookDir, &perpen, -Input::inputs.INPUT_Y2);
         }
         else
         {
-            camDir = Maths::rotatePoint(&camDir, &perpen, (angBetweenCamAndUp - maxViewAng));
+            lookDir = Maths::rotatePoint(&lookDir, &perpen, (angBetweenCamAndUp - maxViewAng));
         }
     }
-    camDir.normalize();
+    lookDir.normalize();
 
     if (isCrouching || slideTimer > 0.0f)
     {
@@ -522,9 +586,9 @@ void Player::updateCamera()
     eye.y += eyeHeightSmooth;
 
     Vector3f target(&eye);
-    target = target + camDir;
+    target = target + lookDir;
 
-    Vector3f up = Maths::rotatePoint(&camDir, &perpen, Maths::PI/2);
+    Vector3f up = Maths::rotatePoint(&lookDir, &perpen, Maths::PI/2);
     up.normalize();
 
     Global::gameCamera->setViewMatrixValues(&eye, &target, &up);
@@ -532,19 +596,20 @@ void Player::updateCamera()
 
 void Player::swingYourArm()
 {
-    Vector3f lookDir = Global::gameCamera->target - Global::gameCamera->eye;
-    lookDir.setLength(ARM_REACH);
+    Vector3f camDir = Global::gameCamera->target - Global::gameCamera->eye;
+    camDir.setLength(ARM_REACH);
 
-    Vector3f target = Global::gameCamera->eye + lookDir;
+    Vector3f target = Global::gameCamera->eye + camDir;
     CollisionResult result = CollisionChecker::checkCollision(&Global::gameCamera->eye, &target);
+
+    Entity* hitEntity = nullptr;
 
     float distToCollisionSquared = 10000000000.0f;
     if (result.hit)
     {
         distToCollisionSquared = result.distanceToPosition*result.distanceToPosition;
+        hitEntity = result.entity;
     }
-
-    Entity* hitEntity = nullptr;
 
     for (Entity* e : Global::gameEntities)
     {
@@ -572,18 +637,9 @@ void Player::swingYourArm()
 
     if (hitEntity != nullptr)
     {
-        switch (hitEntity->getEntityType())
-        {
-            case ENTITY_BALL:
-            {
-                hitEntity->vel = lookDir;
-                hitEntity->vel.setLength(30.0f);
-                break;
-            }
-
-            default:
-                break;
-        }
+        camDir.normalize();
+        Vector3f hitPosition = Global::gameCamera->eye + camDir.scaleCopy(sqrtf(distToCollisionSquared));
+        hitEntity->getHit(&hitPosition, &camDir, weapon);
     }
     else if (result.hit)
     {
@@ -611,4 +667,10 @@ std::list<TexturedModel*>* Player::getModels()
 void Player::setModels(std::list<TexturedModel*>* newModels)
 {
     myModels = newModels;
+}
+
+void Player::die()
+{
+    health = 0.0f;
+    AudioPlayer::play(59, nullptr);
 }

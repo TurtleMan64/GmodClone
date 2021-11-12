@@ -19,11 +19,6 @@ Ball::Ball(std::string name, Vector3f pos, Vector3f vel)
 {
     this->name = name;
 
-    if (Ball::models.size() == 0)
-    {
-        ObjLoader::loadModel(&Ball::models, "res/Models/Ball/", "Soccer");
-    }
-
     scale = 0.225f; //Size 5 soccer ball is ~22.5 cm
     position = pos;
     this->vel = vel;
@@ -86,4 +81,26 @@ std::list<TexturedModel*>* Ball::getModels()
 int Ball::getEntityType()
 {
     return ENTITY_BALL;
+}
+
+void Ball::getHit(Vector3f* /*hitPos*/, Vector3f* hitDir, int weapon)
+{
+    vel = *hitDir;
+
+    if (weapon == 0)
+    {
+        vel.setLength(10.0f);
+    }
+    else
+    {
+        vel.setLength(30.0f);
+    }
+}
+
+void Ball::loadModels()
+{
+    if (Ball::models.size() == 0)
+    {
+        ObjLoader::loadModel(&Ball::models, "res/Models/Ball/", "Soccer");
+    }
 }

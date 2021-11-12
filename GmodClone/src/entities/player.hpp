@@ -14,15 +14,13 @@ private:
 
     Vector3f groundNormal;
     Vector3f wallNormal;
-    Vector3f camDir;
 
     bool onGround = false;
 
     bool isTouchingWall = false;
 
-    bool isCrouching = false;
-
     float stepTimer = 0.0f;
+    float landSoundTimer = 0.0f;
 
     const float SLIDE_SPEED_REQUIRED = 4.0f;
     const float SLIDE_TIMER_DURATION = 0.666f;
@@ -83,6 +81,13 @@ private:
 public:
     Entity* collideEntityImTouching = nullptr;
     Vector3f externalVel;
+    Vector3f lookDir;
+    bool isCrouching = false;
+
+    int weapon = 0;
+
+    float health = 1.0f;
+    //Vector3f externalVelPrevious;
 
     Player(std::list<TexturedModel*>* models);
 
@@ -93,5 +98,7 @@ public:
     std::list<TexturedModel*>* getModels();
 
     void setModels(std::list<TexturedModel*>* newModels);
+
+    void die();
 };
 #endif

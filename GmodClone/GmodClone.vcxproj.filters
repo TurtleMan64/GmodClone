@@ -43,6 +43,9 @@
     <Filter Include="Source Files\audio">
       <UniqueIdentifier>{6903f970-e984-42f2-bf34-1bb517522070}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\network">
+      <UniqueIdentifier>{7dfc2ba5-066b-43e3-aab5-1b7807b8c590}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\glad.c">
@@ -138,10 +141,16 @@
     <ClCompile Include="src\audio\Source.cpp">
       <Filter>Source Files\audio</Filter>
     </ClCompile>
-    <ClCompile Include="src\entities\Npc.cpp">
+    <ClCompile Include="src\entities\CollisionBlock.cpp">
       <Filter>Source Files\entities</Filter>
     </ClCompile>
-    <ClCompile Include="src\entities\CollisionBlock.cpp">
+    <ClCompile Include="src\entities\RedBarrel.cpp">
+      <Filter>Source Files\entities</Filter>
+    </ClCompile>
+    <ClCompile Include="src\network\TcpClient.cpp">
+      <Filter>Source Files\network</Filter>
+    </ClCompile>
+    <ClCompile Include="src\entities\OnlinePlayer.cpp">
       <Filter>Source Files\entities</Filter>
     </ClCompile>
   </ItemGroup>
@@ -224,10 +233,16 @@
     <ClInclude Include="src\audio\source.hpp">
       <Filter>Source Files\audio</Filter>
     </ClInclude>
-    <ClInclude Include="src\entities\npc.hpp">
+    <ClInclude Include="src\entities\collisionblock.hpp">
       <Filter>Source Files\entities</Filter>
     </ClInclude>
-    <ClInclude Include="src\entities\collisionblock.hpp">
+    <ClInclude Include="src\entities\redbarrel.hpp">
+      <Filter>Source Files\entities</Filter>
+    </ClInclude>
+    <ClInclude Include="src\network\tcpclient.hpp">
+      <Filter>Source Files\network</Filter>
+    </ClInclude>
+    <ClInclude Include="src\entities\onlineplayer.hpp">
       <Filter>Source Files\entities</Filter>
     </ClInclude>
   </ItemGroup>
