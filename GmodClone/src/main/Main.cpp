@@ -206,13 +206,13 @@ int main(int argc, char** argv)
     OnlinePlayer::loadModels();
     RedBarrel::loadModels();
 
-    TcpClient* client = new TcpClient("127.0.0.1", 25567, 2);
+    TcpClient* client = new TcpClient("127.0.0.1", 25567, 2); INCR_NEW("TcpClient");
     std::thread* t1 = nullptr;
     std::thread* t2 = nullptr;
     if (client != nullptr)
     {
-        t1 = new std::thread(readThreadBehavoir, client);
-        t2 = new std::thread(writeThreadBehavior, client);
+        t1 = new std::thread(readThreadBehavoir, client);  INCR_NEW("std::thread");
+        t2 = new std::thread(writeThreadBehavior, client); INCR_NEW("std::thread");
     }
 
     //This light never gets deleted.
@@ -234,12 +234,12 @@ int main(int argc, char** argv)
 
     std::list<TexturedModel*> modelsStage;
     ObjLoader::loadModel(&modelsStage, "res/Models/" + folder + "/", "TestMap");
-    Dummy* entityStage = new Dummy(&modelsStage);
+    Dummy* entityStage = new Dummy(&modelsStage); INCR_NEW("Entity");
     Global::addEntity(entityStage);
 
     std::list<TexturedModel*> modelsSphere;
     ObjLoader::loadModel(&modelsSphere, "res/Models/", "Sphere");
-    Global::player = new Player(&modelsSphere);
+    Global::player = new Player(&modelsSphere); INCR_NEW("Entity");
 
     CollisionModel* cm = ObjLoader::loadCollisionModel("Models/" + folder + "/", "TestMap");
     for (int i = 0; i < cm->triangles.size(); i++)
@@ -248,21 +248,21 @@ int main(int argc, char** argv)
     }
     CollisionChecker::constructChunkDatastructure();
 
-    OnlinePlayer* npc1 = new OnlinePlayer("Npc1", 73.076897f, 0.313516f, 23.235739f);
-    OnlinePlayer* npc2 = new OnlinePlayer("Npc2", 72.076897f, 0.313516f, 23.235739f);
-    OnlinePlayer* npc3 = new OnlinePlayer("Npc3", 71.076897f, 0.313516f, 23.235739f);
-    OnlinePlayer* npc4 = new OnlinePlayer("Npc4", 70.076897f, 0.313516f, 23.235739f);
+    OnlinePlayer* npc1 = new OnlinePlayer("Npc1", 73.076897f, 0.313516f, 23.235739f); INCR_NEW("Entity");
+    OnlinePlayer* npc2 = new OnlinePlayer("Npc2", 72.076897f, 0.313516f, 23.235739f); INCR_NEW("Entity");
+    OnlinePlayer* npc3 = new OnlinePlayer("Npc3", 71.076897f, 0.313516f, 23.235739f); INCR_NEW("Entity");
+    OnlinePlayer* npc4 = new OnlinePlayer("Npc4", 70.076897f, 0.313516f, 23.235739f); INCR_NEW("Entity");
 
-    Ball* ball1 = new Ball("Ball1", Vector3f(73.076897f, 1.313516f, 23.235739f), Vector3f(10, 20, 30));
-    Ball* ball2 = new Ball("Ball2", Vector3f(72.076897f, 1.313516f, 23.235739f), Vector3f(20, 10, 30));
-    Ball* ball3 = new Ball("Ball3", Vector3f(71.076897f, 1.313516f, 23.235739f), Vector3f(30, 20, 10));
+    Ball* ball1 = new Ball("Ball1", Vector3f(73.076897f, 1.313516f, 23.235739f), Vector3f(10, 20, 30)); INCR_NEW("Entity");
+    Ball* ball2 = new Ball("Ball2", Vector3f(72.076897f, 1.313516f, 23.235739f), Vector3f(20, 10, 30)); INCR_NEW("Entity");
+    Ball* ball3 = new Ball("Ball3", Vector3f(71.076897f, 1.313516f, 23.235739f), Vector3f(30, 20, 10)); INCR_NEW("Entity");
 
-    CollisionBlock* cb1 = new CollisionBlock("CollisionBlock1", Vector3f(73.076897f, 1.313516f, 23.235739f), 0, 4.0f, 1.0f, 12.0f, false, 0);
-    CollisionBlock* cb2 = new CollisionBlock("CollisionBlock2", Vector3f(73.076897f, 1.313516f, 33.235739f), 0, 4.0f, 1.0f, 12.0f, true, 0);
-    CollisionBlock* cb3 = new CollisionBlock("CollisionBlock3", Vector3f(73.076897f, 1.313516f, 43.235739f), 1, 4.0f, 1.0f, 12.0f, false, 0);
-    CollisionBlock* cb4 = new CollisionBlock("CollisionBlock4", Vector3f(73.076897f, 1.313516f, 53.235739f), 1, 4.0f, 1.0f, 12.0f, true, 0);
+    CollisionBlock* cb1 = new CollisionBlock("CollisionBlock1", Vector3f(73.076897f, 1.313516f, 23.235739f), 0, 4.0f, 1.0f, 12.0f, false, 0); INCR_NEW("Entity");
+    CollisionBlock* cb2 = new CollisionBlock("CollisionBlock2", Vector3f(73.076897f, 1.313516f, 33.235739f), 0, 4.0f, 1.0f, 12.0f, true,  0); INCR_NEW("Entity");
+    CollisionBlock* cb3 = new CollisionBlock("CollisionBlock3", Vector3f(73.076897f, 1.313516f, 43.235739f), 1, 4.0f, 1.0f, 12.0f, false, 0); INCR_NEW("Entity");
+    CollisionBlock* cb4 = new CollisionBlock("CollisionBlock4", Vector3f(73.076897f, 1.313516f, 53.235739f), 1, 4.0f, 1.0f, 12.0f, true,  0); INCR_NEW("Entity");
 
-    RedBarrel* barrel1 = new RedBarrel("Barrel1", Vector3f(86.722473f, 0.313497f, -4.892693f));
+    RedBarrel* barrel1 = new RedBarrel("Barrel1", Vector3f(86.722473f, 0.313497f, -4.892693f)); INCR_NEW("Entity");
 
     Global::gameEntities.insert(npc1);
     Global::gameEntities.insert(npc2);
@@ -860,11 +860,9 @@ void readThreadBehavoir(TcpClient* client)
         }
         else if (numRead == 1)
         {
-            printf("read cmd = %d\n", cmd);
             switch (cmd)
             {
                 case 0: //no nop
-                    //printf("NO OP");
                     break;
 
                 case 1: //time msg
@@ -885,7 +883,12 @@ void readThreadBehavoir(TcpClient* client)
                         printf("Could not read name len from server\n");
                         return;
                     }
-                    //printf("nameLen = %d\n", nameLen);
+
+                    if (nameLen >= 32)
+                    {
+                        printf("Player name is too big\n");
+                        return;
+                    }
 
                     char nameBuf[32] = {0};
                     numRead = client->read(nameBuf, nameLen, 5);
@@ -897,46 +900,24 @@ void readThreadBehavoir(TcpClient* client)
 
                     std::string name = nameBuf;
 
-                    //printf("name = %s\n", nameBuf);
-
                     OnlinePlayer* player = nullptr;
-
 
                     if (Global::gameOnlinePlayers.find(name) != Global::gameOnlinePlayers.end())
                     {
                         player = Global::gameOnlinePlayers[name];
                     }
 
-                    //gameEntitiesAddMutex.lock();
-                    //for (Entity* e : Global::gameEntities)
-                    //{
-                    //    //printf("LOL\n");
-                    //    if (e->name == name)
-                    //    {
-                    //        //printf("LOL2\n");
-                    //        player = (OnlinePlayer*)e;
-                    //        break;
-                    //    }
-                    //}
-                    //gameEntitiesAddMutex.unlock();
-                    //printf("LOL3\n");
-
                     if (player == nullptr)
                     {
-                        //printf("creating new player\n");
-                        player = new OnlinePlayer(name, 0, 0, 0);
-                        //printf("created new player\n");
+                        player = new OnlinePlayer(name, 0, 0, 0); INCR_NEW("Entity");
+
                         gameEntitiesAddMutex.lock();
-                        //printf("locked\n");
                         gameEntitiesToAdd.push_back(player);
-                        //printf("pushed\n");
                         gameEntitiesAddMutex.unlock();
 
                         Global::gameOnlinePlayers[name] = player;
-                        //printf("%s connected!", name.c_str());
+                        printf("%s connected!", name.c_str());
                     }
-
-                    //printf("Updating player %s\n", name.c_str());
 
                     client->read((char*)&player->position.x,  4, 5);
                     client->read((char*)&player->position.y,  4, 5);
@@ -952,19 +933,65 @@ void readThreadBehavoir(TcpClient* client)
                     client->read((char*)&player->isCrouching, 1, 5);
                     client->read((char*)&player->isSliding,   1, 5);
 
-                    //printf("Updated %s", name.c_str());
+                    break;
+                }
+
+                case 3: //player disconnected
+                {
+                    int nameLen;
+                    numRead = client->read((char*)&nameLen, 4, 5);
+                    if (numRead != 4)
+                    {
+                        printf("Could not read name len from server\n");
+                        return;
+                    }
+
+                    if (nameLen >= 32)
+                    {
+                        printf("Name length is too big\n");
+                        return;
+                    }
+
+                    char nameBuf[32] = {0};
+                    numRead = client->read(nameBuf, nameLen, 5);
+                    if (numRead != nameLen)
+                    {
+                        printf("Could not read name from server\n");
+                        return;
+                    }
+
+                    std::string name = nameBuf;
+
+                    OnlinePlayer* player = nullptr;
+
+                    if (Global::gameOnlinePlayers.find(name) != Global::gameOnlinePlayers.end())
+                    {
+                        player = Global::gameOnlinePlayers[name];
+                        Global::gameOnlinePlayers.erase(name);
+                        printf("%s Disconnected.\n", name.c_str());
+                    }
+
+                    if (player != nullptr)
+                    {
+                        gameEntitiesAddMutex.lock();
+                        gameEntitiesToDelete.push_back(player);
+                        gameEntitiesAddMutex.unlock();
+                    }
+                    else
+                    {
+                        printf("There is no player named %s\n", name.c_str());
+                    }
 
                     break;
                 }
 
                 default:
-                    //printf("DEAFULAQT");
                     break;
             }
         }
         else
         {
-            printf("Read timed out\n");
+            //printf("Read timed out\n");
         }
 
         //Sleep(1);
@@ -984,16 +1011,12 @@ void writeThreadBehavior(TcpClient* client)
         return;
     }
 
-    //printf("Wrote name length to server\n");
-
     numWritten = client->write((char*)Global::nickname.c_str(), nameLen, 5);
     if (numWritten != nameLen)
     {
         printf("Could not write name to server\n");
         return;
     }
-
-    //printf("Wrote name to server\n");
 
     double lastSentMsg = glfwGetTime();
 

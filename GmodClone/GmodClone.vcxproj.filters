@@ -46,6 +46,12 @@
     <Filter Include="Source Files\network">
       <UniqueIdentifier>{7dfc2ba5-066b-43e3-aab5-1b7807b8c590}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\fontMeshCreator">
+      <UniqueIdentifier>{42926236-1348-4f4c-aeb0-c6d2b6892354}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\fontRendering">
+      <UniqueIdentifier>{097988d0-04ed-400a-988c-29bdfb2f1a46}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\glad.c">
@@ -153,6 +159,42 @@
     <ClCompile Include="src\entities\OnlinePlayer.cpp">
       <Filter>Source Files\entities</Filter>
     </ClCompile>
+    <ClCompile Include="src\fontMeshCreator\Character.cpp">
+      <Filter>Source Files\fontMeshCreator</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fontMeshCreator\FontType.cpp">
+      <Filter>Source Files\fontMeshCreator</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fontMeshCreator\GUINumber.cpp">
+      <Filter>Source Files\fontMeshCreator</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fontMeshCreator\GUIText.cpp">
+      <Filter>Source Files\fontMeshCreator</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fontMeshCreator\Line.cpp">
+      <Filter>Source Files\fontMeshCreator</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fontMeshCreator\MetaFile.cpp">
+      <Filter>Source Files\fontMeshCreator</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fontMeshCreator\TextMeshCreator.cpp">
+      <Filter>Source Files\fontMeshCreator</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fontMeshCreator\TextMeshData.cpp">
+      <Filter>Source Files\fontMeshCreator</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fontMeshCreator\Word.cpp">
+      <Filter>Source Files\fontMeshCreator</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fontRendering\FontRenderer.cpp">
+      <Filter>Source Files\fontRendering</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fontRendering\FontShader.cpp">
+      <Filter>Source Files\fontRendering</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fontRendering\TextMaster.cpp">
+      <Filter>Source Files\fontRendering</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\toolbox\getline.hpp">
@@ -244,6 +286,42 @@
     </ClInclude>
     <ClInclude Include="src\entities\onlineplayer.hpp">
       <Filter>Source Files\entities</Filter>
+    </ClInclude>
+    <ClInclude Include="src\fontMeshCreator\character.hpp">
+      <Filter>Source Files\fontMeshCreator</Filter>
+    </ClInclude>
+    <ClInclude Include="src\fontMeshCreator\fonttype.hpp">
+      <Filter>Source Files\fontMeshCreator</Filter>
+    </ClInclude>
+    <ClInclude Include="src\fontMeshCreator\guinumber.hpp">
+      <Filter>Source Files\fontMeshCreator</Filter>
+    </ClInclude>
+    <ClInclude Include="src\fontMeshCreator\guitext.hpp">
+      <Filter>Source Files\fontMeshCreator</Filter>
+    </ClInclude>
+    <ClInclude Include="src\fontMeshCreator\line.hpp">
+      <Filter>Source Files\fontMeshCreator</Filter>
+    </ClInclude>
+    <ClInclude Include="src\fontMeshCreator\metafile.hpp">
+      <Filter>Source Files\fontMeshCreator</Filter>
+    </ClInclude>
+    <ClInclude Include="src\fontMeshCreator\textmeshcreator.hpp">
+      <Filter>Source Files\fontMeshCreator</Filter>
+    </ClInclude>
+    <ClInclude Include="src\fontMeshCreator\textmeshdata.hpp">
+      <Filter>Source Files\fontMeshCreator</Filter>
+    </ClInclude>
+    <ClInclude Include="src\fontMeshCreator\word.hpp">
+      <Filter>Source Files\fontMeshCreator</Filter>
+    </ClInclude>
+    <ClInclude Include="src\fontRendering\fontrenderer.hpp">
+      <Filter>Source Files\fontRendering</Filter>
+    </ClInclude>
+    <ClInclude Include="src\fontRendering\fontshader.hpp">
+      <Filter>Source Files\fontRendering</Filter>
+    </ClInclude>
+    <ClInclude Include="src\fontRendering\textmaster.hpp">
+      <Filter>Source Files\fontRendering</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
