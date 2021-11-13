@@ -66,10 +66,48 @@ void FontRenderer::renderText(GUIText* text)
     glBindVertexArray(text->getMesh());
     glEnableVertexAttribArray(0);
     glEnableVertexAttribArray(1);
-    //shader->loadScale(text->getFontSize());
-    shader->loadScale(1.0f);
+
+    extern unsigned int SCR_WIDTH;
+    extern unsigned int SCR_HEIGHT;
+
+    float ratio = ((float)SCR_HEIGHT)/SCR_WIDTH;
+
+    shader->loadScale(ratio);
     shader->loadColor(text->getColor());
-    shader->loadTranslation(text->getPosition());
+
+    float offX = 0.0f;
+    float offY = 0.0f;
+
+    if (text->alignment == 3 ||
+        text->alignment == 4 ||
+        text->alignment == 5)
+    {
+        offY = -((text->fontSize)/2);
+    }
+    else if (text->alignment == 6 ||
+             text->alignment == 7 ||
+             text->alignment == 8)
+    {
+        offY = -(text->fontSize);
+    }
+
+    if (text->alignment == 1 ||
+        text->alignment == 4 ||
+        text->alignment == 7)
+    {
+        offX = (-(text->maxLineWidth/2))*ratio;
+    }
+    else if (text->alignment == 2 ||
+             text->alignment == 5 ||
+             text->alignment == 8)
+    {
+        offX = -(text->maxLineWidth)*ratio;
+    }
+
+    Vector2f off(offX + text->position.x, offY + text->position.y);
+    shader->loadTranslation(&off);
+    shader->loadAlpha(text->alpha);
+
     glDrawArrays(GL_TRIANGLES, 0, text->getVertexCount());
     glDisableVertexAttribArray(0);
     glDisableVertexAttribArray(1);

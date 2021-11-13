@@ -97,7 +97,7 @@ void EntityRenderer::unbindTexturedModel()
 void EntityRenderer::prepareInstance(Entity* entity)
 {
     shader->loadTransformationMatrix(&entity->transformationMatrix);
-    shader->loadBaseColour(&entity->baseColour);
+    shader->loadBaseColor(&entity->baseColor);
     shader->loadBaseAlpha(entity->baseAlpha);
 }
 

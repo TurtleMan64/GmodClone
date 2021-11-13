@@ -188,7 +188,7 @@ void Master_render(Camera* camera, float clipX, float clipY, float clipZ, float 
     RED = 1.0f;
     GREEN = 1.0f;
     BLUE = 1.0f;
-    shader->loadSkyColour(RED, GREEN, BLUE);
+    shader->loadSkyColor(RED, GREEN, BLUE);
     shader->loadSun(Global::gameLightSun);
     shader->loadFogGradient(0.0000000000000005f);
     shader->loadFogDensity(2.0f);

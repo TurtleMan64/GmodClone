@@ -62,11 +62,17 @@ void FontShader::getAllUniformLocations()
     location_color = getUniformLocation("color");
     location_translation = getUniformLocation("translation");
     location_scale = getUniformLocation("scale");
+    location_alpha = getUniformLocation("alpha");
 }
 
 void FontShader::loadColor(Vector3f* color)
 {
     loadVector(location_color, color);
+}
+
+void FontShader::loadAlpha(float alpha)
+{
+    loadFloat(location_alpha, alpha);
 }
 
 void FontShader::loadTranslation(Vector2f* translation)

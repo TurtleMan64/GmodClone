@@ -13,7 +13,7 @@
 MetaFile::MetaFile(std::string filename)
 {
     //aspectRatio = Display::ASPECT_RATIO;
-    aspectRatio = 16.0f/9.0f;
+    aspectRatio = 1.0f;
     openFile(filename);
     loadPaddingData();
     loadLineSizes();

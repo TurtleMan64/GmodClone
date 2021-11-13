@@ -59,6 +59,9 @@
 #include "../entities/collisionblock.hpp"
 #include "../entities/redbarrel.hpp"
 #include "../network/tcpclient.hpp"
+#include "../fontRendering/textmaster.hpp"
+#include "../fontMeshCreator/fonttype.hpp"
+#include "../fontMeshCreator/guitext.hpp"
 
 std::string Global::pathToEXE;
 
@@ -84,6 +87,8 @@ Player*             Global::player           = nullptr;
 Entity*             Global::gameStageManager = nullptr;
 Light*              Global::gameLightSun     = nullptr;
 Light*              Global::gameLightMoon    = nullptr;
+
+FontType* Global::gameFont = nullptr;
 
 float Global::finishStageTimer = -1;
 
@@ -197,6 +202,16 @@ int main(int argc, char** argv)
     Global::gameCamera = &cam;
 
     Master_init();
+
+    Global::gameFont = new FontType(Loader::loadTexture("res/Fonts/consolas.png"), "res/Fonts/consolas.fnt"); INCR_NEW("FontType");
+
+    TextMaster::init();
+
+    // new GUIText("Top Left",     0.1f, Global::gameFont, 0.0f, 0.0f, 0, true);
+    // new GUIText("Top Right",    0.1f, Global::gameFont, 1.0f, 0.0f, 2, true);
+    // new GUIText("Middle",       0.1f, Global::gameFont, 0.5f, 0.5f, 4, true);
+    // new GUIText("Bottom Left",  0.1f, Global::gameFont, 0.0f, 1.0f, 6, true);
+    // new GUIText("Bottom Right", 0.1f, Global::gameFont, 1.0f, 1.0f, 8, true);
 
     AudioMaster::init();
     AudioPlayer::loadSoundEffects();
@@ -491,6 +506,10 @@ int main(int argc, char** argv)
 
         Master_clearAllEntities();
 
+        Global::updateChatMessages();
+
+        TextMaster::render();
+
         updateDisplay();
 
         Global::clearTitleCard();
@@ -541,6 +560,7 @@ int main(int argc, char** argv)
 
     Master_cleanUp();
     Loader::cleanUp();
+    TextMaster::cleanUp();
     closeDisplay();
 
     t1->join();
@@ -1073,4 +1093,64 @@ void writeThreadBehavior(TcpClient* client)
     }
 
     printf("Write thread all done\n");
+}
+
+//float lastChatMessageTime = 0.0f;
+
+std::mutex chatMsgMutex;
+//std::vector<std::string> chatMessages;
+std::vector<float> chatMessagesTimestamp;
+std::vector<GUIText*> chatTexts;
+
+void Global::addChatMessage(std::string msg)
+{
+    GUIText* tex = new GUIText(msg, 0.025f, Global::gameFont, 0.0f, 1.0f, 6, true); INCR_NEW("GUIText");
+
+    chatMsgMutex.lock();
+
+    for (int i = 0; i < chatTexts.size(); i++)
+    {
+        GUIText* t = chatTexts[i];
+        t->position.y -= 0.025f;
+    }
+
+    chatTexts.push_back(tex);
+    chatMessagesTimestamp.push_back((float)glfwGetTime());
+
+    chatMsgMutex.unlock();
+}
+
+void Global::updateChatMessages()
+{
+    float currTime = (float)glfwGetTime();
+
+    chatMsgMutex.lock();
+
+    while (chatTexts.size() > 5)
+    {
+        GUIText* t = chatTexts.front();
+        t->deleteMe();
+        delete t; INCR_DEL("GUIText");
+        chatTexts.erase(chatTexts.begin());
+        chatMessagesTimestamp.erase(chatMessagesTimestamp.begin());
+    }
+
+    for (int i = 0; i < chatTexts.size(); i++)
+    {
+        GUIText* t = chatTexts[i];
+        float tim = chatMessagesTimestamp[i];
+
+        float diff = currTime - tim;
+        if (diff > 5.0f)
+        {
+            float a = 1.0f - (diff - 5.0f);
+            if (a < 0.0f)
+            {
+                a = 0.0f;
+            }
+            t->alpha = a;
+        }
+    }
+
+    chatMsgMutex.unlock();
 }

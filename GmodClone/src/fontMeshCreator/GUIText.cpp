@@ -28,14 +28,12 @@ GUIText::GUIText(std::string text, float fontSize, FontType* font, float x, floa
 
 GUIText::GUIText(std::string text, float fontSize, FontType* font, float x, float y, int alignment, bool visible)
 {
-    this->color.set(1, 1, 1);
     this->textString.assign(text);
     this->fontSize = fontSize;
     this->font = font;
     this->position.set(x, y);
     this->alignment = alignment;
     this->visible = visible;
-    this->lineMaxSizeConstraint = 1000000.0f;
     TextMaster::loadText(this);
 }
 

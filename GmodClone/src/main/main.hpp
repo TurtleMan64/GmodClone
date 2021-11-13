@@ -7,6 +7,7 @@ class Light;
 class Fbo;
 class Player;
 class OnlinePlayer;
+class FontType;
 
 #include <string>
 #include <random>
@@ -67,6 +68,7 @@ public:
     //static SkySphere* gameSkySphere;
     static Light* gameLightSun;
     static Light* gameLightMoon;
+    static FontType* gameFont;
     static int countNew;
     static int countDelete;
     static int gameState;
@@ -153,5 +155,9 @@ public:
     static void performanceAnalysisDone(const char* name);
 
     static void performanceAnalysisReport();
+
+    static void addChatMessage(std::string msg);
+
+    static void updateChatMessages();
 };
 #endif

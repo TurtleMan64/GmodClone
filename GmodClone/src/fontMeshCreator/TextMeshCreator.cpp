@@ -21,7 +21,7 @@ TextMeshData* TextMeshCreator::createTextMesh(GUIText* text)
     for (int i = 0; i < (int)lines.size(); i++)
     {
         float newLength = lines[i].getLineLength();
-        text->lineWidths.push_back(lines[i].getLineLength());
+        text->lineWidths.push_back(newLength);
         if (newLength > text->maxLineWidth)
         {
             text->maxLineWidth = newLength;
@@ -91,34 +91,8 @@ TextMeshData* TextMeshCreator::createQuadVertices(GUIText* text, std::vector<Lin
     std::vector<float> vertices;
     std::vector<float> textureCoords;
 
-    if (text->getAlignment() == 3 ||
-        text->getAlignment() == 4 ||
-        text->getAlignment() == 5)
-    {
-        curserY = -((LINE_HEIGHT * FONT_SIZE)/2);
-    }
-    else if (text->getAlignment() == 6 ||
-             text->getAlignment() == 7 ||
-             text->getAlignment() == 8)
-    {
-        curserY = -(LINE_HEIGHT * FONT_SIZE);
-    }
-
     for (Line line : (*lines))
     {
-        if (text->getAlignment() == 1 ||
-            text->getAlignment() == 4 ||
-            text->getAlignment() == 7)
-        {
-            curserX = -(line.getLineLength()/2);
-        }
-        else if (text->getAlignment() == 2 ||
-                 text->getAlignment() == 5 ||
-                 text->getAlignment() == 8)
-        {
-            curserX = -line.getLineLength();
-        }
-
         for (Word word : (*line.getWords()))
         {
             for (Character letter : (*word.getCharacters()))
@@ -146,11 +120,7 @@ void TextMeshCreator::addVerticesForCharacter(float curserX, float curserY, Char
     float y = curserY + (character.getyOffset() * fontSize);
     float maxX = x + (character.getSizeX() * fontSize);
     float maxY = y + (character.getSizeY() * fontSize);
-    float properX = (2 * x) - 1;
-    float properY = (-2 * y) + 1;
-    float properMaxX = (2 * maxX) - 1;
-    float properMaxY = (-2 * maxY) + 1;
-    addVertices(vertices, properX, properY, properMaxX, properMaxY);
+    addVertices(vertices, x, y, maxX, maxY);
 }
 
 void TextMeshCreator::addVertices(std::vector<float>* vertices, float x, float y, float maxX, float maxY)

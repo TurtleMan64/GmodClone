@@ -18,23 +18,24 @@ class GUIText
 {
 public:
     std::string textString;
-    float fontSize;
+    float fontSize = 1.0f;
 
-    int textMeshVao;
+    int textMeshVao = 0;
     std::vector<int> textMeshVbos;
-    int vertexCount;
-    Vector3f color;
-    bool visible;
+    int vertexCount = 0;
+    Vector3f color = Vector3f(1,1,1);
+    float alpha = 1.0f;
+    bool visible = true;
 
     Vector2f position;
-    float lineMaxSizeConstraint; //constraint on how big the biggest line can be
+    float lineMaxSizeConstraint = 100000000.0f; //constraint on how big the biggest line can be
 
     std::vector<float> lineWidths;
-    float maxLineWidth; //the largest width of all the calculated text lines
+    float maxLineWidth = 1.0f; //the largest width of all the calculated text lines
 
-    FontType* font;
+    FontType* font = nullptr;
 
-    int alignment;
+    int alignment = 0;
 
 public:
     /**

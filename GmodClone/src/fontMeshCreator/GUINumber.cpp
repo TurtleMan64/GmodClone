@@ -13,7 +13,7 @@ GLuint GUINumber::numberMeshVertexCounts[10];
 void GUINumber::createNumber(int i, float x, float y, float w, float h)
 {
     //float ratioScreen = 1.0f/Display::ASPECT_RATIO;
-    float ratioScreen = 1.0f/(16.0f/9.0f);
+    float ratioScreen = 1.0f;
     float ratioText   = w/h;
 
     std::vector<float> positions;

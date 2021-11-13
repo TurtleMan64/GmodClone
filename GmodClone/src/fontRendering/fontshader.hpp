@@ -19,6 +19,7 @@ private:
     int location_color;
     int location_translation;
     int location_scale;
+    int location_alpha;
 
 public:
     FontShader(const char*, const char*);
@@ -30,6 +31,8 @@ public:
     void cleanUp();
 
     void loadColor(Vector3f* color);
+
+    void loadAlpha(float alpha);
 
     void loadTranslation(Vector2f* translation);
 
