@@ -58,6 +58,7 @@ public:
     static double syncedGlobalTime;
     static std::unordered_set<Entity*> gameEntities;
     static std::unordered_map<std::string, OnlinePlayer*> gameOnlinePlayers;
+    static std::vector<std::string> serverSettings;
     //static MenuManager menuManager;
     //static Timer* mainHudTimer;
     static Camera* gameCamera;

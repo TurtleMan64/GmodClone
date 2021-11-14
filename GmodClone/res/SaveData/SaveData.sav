@@ -1,22 +1,22 @@
+PLAYTIME;1008661
 Sacred Sky_Sonic_M1_TIME;52.915009
-PLAYTIME;1006962
-Sacred Sky_Sonic_M2_SCORE;11320
-Dragon Road_NPC_7;true
 Pyramid Cave_Knuckles_M1_TIME;84.009056
+Dragon Road_NPC_7;true
 CAMERA;AUTO
-Sacred Sky_Sonic_M1_SCORE;14590
+Sacred Sky_Sonic_M2_SCORE;11320
 Metal Harbor_Sonic_M2_TIME;70.592590
-Sacred Sky_Sonic_M1_RANK;A
+Sacred Sky_Sonic_M1_SCORE;14590
+Metal Harbor_Knuckles_M1_SCORE;10750
 Dragon Road_Sonic_M3_SCORE;12970
 Metal Harbor_Sonic_M1_SCORE;16250
-Metal Harbor_Knuckles_M1_SCORE;10750
-Metal Harbor_Knuckles_M1_TIME;58.958355
-Tutorial_Knuckles_M1_SCORE;10700
+Sacred Sky_Sonic_M1_RANK;A
 Dragon Road_Sonic_M3_TIME;59.757847
 Metal Harbor_Sonic_M1_TIME;61.851509
-Metal Harbor_Knuckles_M1_RANK;B
+Tutorial_Knuckles_M1_SCORE;10700
+Metal Harbor_Knuckles_M1_TIME;58.958355
 Dragon Road_Sonic_M3_RANK;A
 Metal Harbor_Sonic_M1_RANK;A
+Metal Harbor_Knuckles_M1_RANK;B
 Dragon Road_Sonic_M1_RANK;A
 Metal Harbor_Sonic_M3_RANK;A
 Sacred Sky_Sonic_M2_TIME;44.817726
@@ -24,19 +24,19 @@ Sacred Sky_Sonic_M2_RANK;A
 Sacred Sky_Sonic_M3_SCORE;10840
 Sacred Sky_Sonic_M3_TIME;30.224503
 Sacred Sky_Sonic_M3_RANK;A
+Sacred Sky_Sonic_M4_SCORE;12030
 Green Forest_Sonic_M1_RANK;A
 Radical Highway_Tails_M1_SCORE;10330
-Sacred Sky_Sonic_M4_SCORE;12030
-Radical Highway_Tails_M1_TIME;89.654129
 Sacred Sky_Sonic_M4_TIME;54.451401
-Radical Highway_Tails_M1_RANK;B
+Radical Highway_Tails_M1_TIME;89.654129
 Sacred Sky_Sonic_M4_RANK;A
+Radical Highway_Tails_M1_RANK;B
 Sacred Sky_Tails_M3_SCORE;10580
 Sacred Sky_Tails_M3_TIME;36.034767
-Sacred Sky_Tails_M3_RANK;A
-Sky Rail_Sonic_M1_TIME;39.850754
 Dry Lagoon_Knuckles_M2_SCORE;11840
 Sky Rail_Knuckles_M1_TIME;58.129875
+Sacred Sky_Tails_M3_RANK;A
+Sky Rail_Sonic_M1_TIME;39.850754
 Metal Harbor_Tails_M1_SCORE;11570
 Green Hill Zone_Knuckles_M1_SCORE;10560
 Metal Harbor_Tails_M1_TIME;84.268196
@@ -44,46 +44,46 @@ Green Hill Zone_Knuckles_M1_TIME;38.817566
 Metal Harbor_Tails_M1_RANK;B
 Green Hill Zone_Knuckles_M1_RANK;B
 Sky Rail_Tails_M1_SCORE;10360
-Sky Rail_Tails_M1_TIME;50.752090
 Pyramid Cave_Knuckles_M1_SCORE;10160
-Dry Lagoon_Knuckles_M1_TIME;22.033592
-Tutorial_Sonic_M4_TIME;62.117973
+Sky Rail_Tails_M1_TIME;50.752090
 Sky Rail_Tails_M1_RANK;B
+Tutorial_Sonic_M4_TIME;62.117973
+Dry Lagoon_Knuckles_M1_TIME;22.033592
 Tutorial_Knuckles_M1_TIME;52.059513
-Radical Highway_Knuckles_M1_TIME;110.426468
 Tutorial_Knuckles_M1_RANK;A
+Radical Highway_Knuckles_M1_TIME;110.426468
 Pyramid Cave_Knuckles_M1_RANK;A
-Sky Rail_Sonic_M1_SCORE;14130
 Sky Rail_Knuckles_M1_SCORE;10040
-Sky Rail_Sonic_M1_RANK;A
+Sky Rail_Sonic_M1_SCORE;14130
 Sky Rail_Knuckles_M1_RANK;B
+Sky Rail_Sonic_M1_RANK;A
 Green Forest_Knuckles_M1_SCORE;10730
 Green Hill Zone_Sonic_M1_RANK;B
+Green Forest_Knuckles_M1_TIME;29.401558
+Tutorial_Sonic_M4_SCORE;12520
 Green Hill Zone_Tails_M2_TIME;52.195683
 Dry Lagoon_Knuckles_M1_SCORE;16350
-Tutorial_Sonic_M4_SCORE;12520
-Green Forest_Knuckles_M1_TIME;29.401558
 Green Forest_Knuckles_M1_RANK;C
 Tutorial_Sonic_M4_RANK;A
 Green Hill Zone_Sonic_M1_SCORE;10980
 Green Hill Zone_Sonic_M1_TIME;20.050634
 Radical Highway_Knuckles_M1_SCORE;9550
 Radical Highway_Knuckles_M1_RANK;B
-Twinkle Circuit_Sonic_M1_SCORE;11970
 Dry Lagoon_Knuckles_M2_TIME;19.421064
+Twinkle Circuit_Sonic_M1_SCORE;11970
 Dry Lagoon_Knuckles_M2_RANK;A
-Dry Lagoon_Knuckles_M1_RANK;A
 Green Hill Zone_Tails_M1_SCORE;12940
-Dry Lagoon_Knuckles_M4_SCORE;15990
+Dry Lagoon_Knuckles_M1_RANK;A
 Metal Harbor_Tails_M3_RANK;A
+Dry Lagoon_Knuckles_M4_SCORE;15990
 Dry Lagoon_Knuckles_M4_TIME;31.261728
 Dry Lagoon_Knuckles_M4_RANK;A
-Tutorial_Tails_M1_SCORE;10100
 Dry Lagoon_Knuckles_M3_SCORE;10870
-Tutorial_Tails_M1_TIME;97.028336
+Tutorial_Tails_M1_SCORE;10100
 Dry Lagoon_Knuckles_M3_TIME;17.602343
-Tutorial_Tails_M1_RANK;A
+Tutorial_Tails_M1_TIME;97.028336
 Dry Lagoon_Knuckles_M3_RANK;A
+Tutorial_Tails_M1_RANK;A
 Sacred Sky_Knuckles_M3_SCORE;10230
 Sacred Sky_Knuckles_M3_TIME;56.284241
 Sacred Sky_Knuckles_M3_RANK;C
@@ -94,18 +94,18 @@ Green Forest_Sonic_M1_SCORE;14690
 Green Forest_Sonic_M1_TIME;79.480431
 Green Forest_Sonic_M3_SCORE;11560
 Green Forest_Sonic_M3_TIME;57.960842
-Green Forest_Sonic_M3_RANK;A
 Radical Highway_Tails_M3_SCORE;10080
-Dragon Road_Sonic_M1_SCORE;16320
-Metal Harbor_Sonic_M3_SCORE;11260
+Green Forest_Sonic_M3_RANK;A
 ChaosEmerald_3;true
-Dragon Road_Sonic_M1_TIME;176.637558
+Metal Harbor_Sonic_M3_SCORE;11260
+Dragon Road_Sonic_M1_SCORE;16320
 Metal Harbor_Sonic_M3_TIME;22.732574
+Dragon Road_Sonic_M1_TIME;176.637558
 Metal Harbor_Sonic_M2_SCORE;11710
 Metal Harbor_Sonic_M2_RANK;A
 Radical Highway_Sonic_M1_SCORE;11240
-Cloud Temple_NPC_0;true
 Radical Highway_Sonic_M1_TIME;78.868843
+Cloud Temple_NPC_0;true
 Radical Highway_Sonic_M1_RANK;B
 City Escape_Sonic_M1_SCORE;11360
 City Escape_Sonic_M1_TIME;101.981705
@@ -117,8 +117,8 @@ Tutorial_Sonic_M1_TIME;23.939041
 Tutorial_Sonic_M1_RANK;A
 BestArcadeClearTime_Sonic;377.114594
 City Escape_Tails_M1_SCORE;10640
-Dragon Road_NPC_1;true
 City Escape_Tails_M1_TIME;127.800529
+Dragon Road_NPC_1;true
 City Escape_Tails_M1_RANK;A
 Epic Test Level_Sonic_M1_SCORE;12030
 Epic Test Level_Sonic_M1_TIME;84.939186
@@ -132,31 +132,31 @@ BestArcadeClearTime_Knuckles;462.341431
 Metal Harbor_NPC_2;true
 Metal Harbor_NPC_3;true
 Metal Harbor_NPC_1;true
-Cloud Temple_Tails_M1_SCORE;11710
 Green Forest_Tails_M3_SCORE;11830
-Cloud Temple_Tails_M1_TIME;60.599564
+Cloud Temple_Tails_M1_SCORE;11710
 Green Forest_Tails_M3_TIME;59.380650
-Cloud Temple_Tails_M1_RANK;A
+Cloud Temple_Tails_M1_TIME;60.599564
 Green Forest_Tails_M3_RANK;A
+Cloud Temple_Tails_M1_RANK;A
 Cloud Temple_Tails_M2_SCORE;11680
 Cloud Temple_Tails_M2_TIME;32.056297
-Cloud Temple_Tails_M2_RANK;A
 Metal Harbor_Tails_M3_SCORE;10780
+Cloud Temple_Tails_M2_RANK;A
 Radical Highway_Tails_M2_SCORE;11860
 Radical Highway_Tails_M2_TIME;63.001579
 Radical Highway_Tails_M2_RANK;A
-Cloud Temple_Tails_M3_SCORE;10880
 Green Forest_Tails_M1_SCORE;15050
-Cloud Temple_Tails_M3_TIME;16.389799
+Cloud Temple_Tails_M3_SCORE;10880
 Green Forest_Tails_M1_TIME;114.235947
-Cloud Temple_Tails_M3_RANK;A
+Cloud Temple_Tails_M3_TIME;16.389799
 Green Forest_Tails_M1_RANK;A
+Cloud Temple_Tails_M3_RANK;A
 Cloud Temple_Tails_M4_SCORE;10320
-Twinkle Circuit_Sonic_M3_RANK;A
 Cloud Temple_Tails_M4_TIME;60.878239
+Twinkle Circuit_Sonic_M3_RANK;A
 Cloud Temple_Tails_M4_RANK;A
-Twinkle Circuit_Sonic_M3_SCORE;10080
 Green Hill Zone_Tails_M1_RANK;B
+Twinkle Circuit_Sonic_M3_SCORE;10080
 Twinkle Circuit_Sonic_M3_TIME;80.207336
 Radical Highway_NPC_2;true
 Dragon Road_NPC_4;true

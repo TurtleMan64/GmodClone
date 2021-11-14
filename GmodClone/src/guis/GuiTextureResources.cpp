@@ -7,5 +7,5 @@ GuiTexture* GuiTextureResources::textureChatBG = nullptr;
 
 void GuiTextureResources::loadGuiTextures()
 {
-    INCR_NEW("GuiTexture"); textureChatBG = new GuiTexture(Loader::loadTexture("res/Images/Black.png"), 0.007f, 0.99f, 0.315f, 0.1f, 6); textureChatBG->alpha = 0.5f;
+    INCR_NEW("GuiTexture"); textureChatBG = new GuiTexture(Loader::loadTexture("res/Images/Black.png"), 0.007f, 0.99f, 0.425f, 0.1f, 6); textureChatBG->alpha = 0.0f;
 }

@@ -76,6 +76,8 @@ std::unordered_set<Entity*> Global::gameEntities;
 
 std::unordered_map<std::string, OnlinePlayer*> Global::gameOnlinePlayers;
 
+std::vector<std::string> Global::serverSettings;
+
 std::mutex gameEntitiesAddMutex;
 std::vector<Entity*> gameEntitiesToAdd;
 std::vector<Entity*> gameEntitiesToDelete;
@@ -173,7 +175,7 @@ int main(int argc, char** argv)
 
     increaseProcessPriority();
 
-    Global::nickname = getFirstLineOfFile("Nickname.txt");
+    Global::nickname = readFileLines("Nickname.ini")[0];
     if (Global::nickname.size() >= 32)
     {
         char name[32];
@@ -221,13 +223,18 @@ int main(int argc, char** argv)
     OnlinePlayer::loadModels();
     RedBarrel::loadModels();
 
-    TcpClient* client = new TcpClient("127.0.0.1", 25567, 2); INCR_NEW("TcpClient");
+    Global::serverSettings = readFileLines("ServerSettings.ini");
+    TcpClient* client = new TcpClient(Global::serverSettings[0].c_str(), std::stoi(Global::serverSettings[1]), 2); INCR_NEW("TcpClient");
     std::thread* t1 = nullptr;
     std::thread* t2 = nullptr;
-    if (client != nullptr)
+    if (client->isOpen())
     {
         t1 = new std::thread(readThreadBehavoir, client);  INCR_NEW("std::thread");
         t2 = new std::thread(writeThreadBehavior, client); INCR_NEW("std::thread");
+    }
+    else
+    {
+        Global::addChatMessage("Could not connect to " + Global::serverSettings[0], Vector3f(1, 0.5f, 0.5f));
     }
 
     //This light never gets deleted.
@@ -566,8 +573,17 @@ int main(int argc, char** argv)
     TextMaster::cleanUp();
     closeDisplay();
 
-    t1->join();
-    t2->join();
+    if (t1 != nullptr)
+    {
+        t1->join();
+        delete t1;
+    }
+
+    if (t2 != nullptr)
+    {
+        t2->join();
+        delete t2;
+    }
 
     return 0;
 }
@@ -879,6 +895,7 @@ void readThreadBehavoir(TcpClient* client)
         if (numRead < 0)
         {
             printf("Could not read cmd from server\n");
+            Global::addChatMessage("Disconnected from Server", Vector3f(1, 0.5f, 0.5f));
             return;
         }
         else if (numRead == 1)
@@ -893,6 +910,7 @@ void readThreadBehavoir(TcpClient* client)
                     if (numRead != 8)
                     {
                         printf("Could not read time from server\n");
+                        Global::addChatMessage("Disconnected from Server", Vector3f(1, 0.5f, 0.5f));
                         return;
                     }
                     break;
@@ -904,12 +922,14 @@ void readThreadBehavoir(TcpClient* client)
                     if (numRead != 4)
                     {
                         printf("Could not read name len from server\n");
+                        Global::addChatMessage("Disconnected from Server", Vector3f(1, 0.5f, 0.5f));
                         return;
                     }
 
                     if (nameLen >= 32)
                     {
                         printf("Player name is too big\n");
+                        Global::addChatMessage("Disconnected from Server", Vector3f(1, 0.5f, 0.5f));
                         return;
                     }
 
@@ -918,6 +938,7 @@ void readThreadBehavoir(TcpClient* client)
                     if (numRead != nameLen)
                     {
                         printf("Could not read name from server\n");
+                        Global::addChatMessage("Disconnected from Server", Vector3f(1, 0.5f, 0.5f));
                         return;
                     }
 
@@ -966,12 +987,14 @@ void readThreadBehavoir(TcpClient* client)
                     if (numRead != 4)
                     {
                         printf("Could not read name len from server\n");
+                        Global::addChatMessage("Disconnected from Server", Vector3f(1, 0.5f, 0.5f));
                         return;
                     }
 
                     if (nameLen >= 32)
                     {
                         printf("Name length is too big\n");
+                        Global::addChatMessage("Disconnected from Server", Vector3f(1, 0.5f, 0.5f));
                         return;
                     }
 
@@ -980,6 +1003,7 @@ void readThreadBehavoir(TcpClient* client)
                     if (numRead != nameLen)
                     {
                         printf("Could not read name from server\n");
+                        Global::addChatMessage("Disconnected from Server", Vector3f(1, 0.5f, 0.5f));
                         return;
                     }
 
@@ -992,6 +1016,7 @@ void readThreadBehavoir(TcpClient* client)
                         player = Global::gameOnlinePlayers[name];
                         Global::gameOnlinePlayers.erase(name);
                         printf("%s Disconnected.\n", name.c_str());
+                        Global::addChatMessage(name + " left", Vector3f(1, 1, 0.5f));
                     }
 
                     if (player != nullptr)
@@ -1031,6 +1056,7 @@ void writeThreadBehavior(TcpClient* client)
     if (numWritten != 4)
     {
         printf("Could not write name length to server\n");
+        Global::addChatMessage("Disconnected from Server", Vector3f(1, 0.5f, 0.5f));
         return;
     }
 
@@ -1038,6 +1064,7 @@ void writeThreadBehavior(TcpClient* client)
     if (numWritten != nameLen)
     {
         printf("Could not write name to server\n");
+        Global::addChatMessage("Disconnected from Server", Vector3f(1, 0.5f, 0.5f));
         return;
     }
 
@@ -1055,6 +1082,7 @@ void writeThreadBehavior(TcpClient* client)
             if (numWritten != 1)
             {
                 printf("Could not write time command to server\n");
+                Global::addChatMessage("Disconnected from Server", Vector3f(1, 0.5f, 0.5f));
                 return;
             }
 
@@ -1063,10 +1091,9 @@ void writeThreadBehavior(TcpClient* client)
             if (numWritten != 8)
             {
                 printf("Could not write time to server\n");
+                Global::addChatMessage("Disconnected from Server", Vector3f(1, 0.5f, 0.5f));
                 return;
             }
-
-            //printf("Wrote time to server\n");
 
             //Send main player message
             if (Global::player != nullptr)
@@ -1089,8 +1116,6 @@ void writeThreadBehavior(TcpClient* client)
                 client->write(&tmp, 1, 5);
             }
 
-            //printf("Wrote player to server\n");
-
             lastSentMsg = glfwGetTime();
         }
     }
@@ -1101,37 +1126,16 @@ void writeThreadBehavior(TcpClient* client)
 //float lastChatMessageTime = 0.0f;
 
 std::mutex chatMsgMutex;
-//std::vector<std::string> chatMessages;
+std::vector<std::string> chatMessagesToAdd;
+std::vector<Vector3f> chatColorsToAdd;
 std::vector<float> chatMessagesTimestamp;
 std::vector<GUIText*> chatTexts;
 
 void Global::addChatMessage(std::string msg, Vector3f color)
 {
-    if (msg.size() >= 33)
-    {
-        char buf[34];
-        buf[33] = 0;
-        for (int i = 0; i < 33; i++)
-        {
-            buf[i] = msg[i];
-        }
-        msg = buf;
-    }
-
-    GUIText* tex = new GUIText(msg, 0.02f, Global::gameFont, 0.01f, 0.99f, 6, true); INCR_NEW("GUIText");
-    tex->color = color;
-
     chatMsgMutex.lock();
-
-    for (int i = 0; i < chatTexts.size(); i++)
-    {
-        GUIText* t = chatTexts[i];
-        t->position.y -= 0.025f;
-    }
-
-    chatTexts.push_back(tex);
-    chatMessagesTimestamp.push_back((float)glfwGetTime());
-
+    chatMessagesToAdd.push_back(msg);
+    chatColorsToAdd.push_back(color);
     chatMsgMutex.unlock();
 }
 
@@ -1141,7 +1145,36 @@ void Global::updateChatMessages()
 
     chatMsgMutex.lock();
 
-    while (chatTexts.size() > 10)
+    for (int i = 0; i < (int)chatMessagesToAdd.size(); i++)
+    {
+        std::string msg = chatMessagesToAdd[i];
+        if (msg.size() >= 45)
+        {
+            char buf[46];
+            buf[45] = 0;
+            for (int c = 0; c < 45; c++)
+            {
+                buf[c] = msg[c];
+            }
+            msg = buf;
+        }
+
+        GUIText* tex = new GUIText(msg, 0.02f, Global::gameFont, 0.01f, 0.99f, 6, true); INCR_NEW("GUIText");
+        tex->color = chatColorsToAdd[i];
+
+        for (int c = 0; c < chatTexts.size(); c++)
+        {
+            GUIText* t = chatTexts[c];
+            t->position.y -= 0.025f;
+        }
+
+        chatTexts.push_back(tex);
+        chatMessagesTimestamp.push_back(currTime);
+    }
+    chatMessagesToAdd.clear();
+    chatColorsToAdd.clear();
+
+    while (chatTexts.size() > 12)
     {
         GUIText* t = chatTexts.front();
         t->deleteMe();
