@@ -52,6 +52,9 @@
     <Filter Include="Source Files\fontRendering">
       <UniqueIdentifier>{097988d0-04ed-400a-988c-29bdfb2f1a46}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\guis">
+      <UniqueIdentifier>{ffa239c9-586e-4cd5-8650-73aa846a9c75}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\glad.c">
@@ -195,6 +198,21 @@
     <ClCompile Include="src\fontRendering\TextMaster.cpp">
       <Filter>Source Files\fontRendering</Filter>
     </ClCompile>
+    <ClCompile Include="src\guis\GuiManager.cpp">
+      <Filter>Source Files\guis</Filter>
+    </ClCompile>
+    <ClCompile Include="src\guis\GuiRenderer.cpp">
+      <Filter>Source Files\guis</Filter>
+    </ClCompile>
+    <ClCompile Include="src\guis\GuiShader.cpp">
+      <Filter>Source Files\guis</Filter>
+    </ClCompile>
+    <ClCompile Include="src\guis\GuiTexture.cpp">
+      <Filter>Source Files\guis</Filter>
+    </ClCompile>
+    <ClCompile Include="src\guis\GuiTextureResources.cpp">
+      <Filter>Source Files\guis</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\toolbox\getline.hpp">
@@ -322,6 +340,21 @@
     </ClInclude>
     <ClInclude Include="src\fontRendering\textmaster.hpp">
       <Filter>Source Files\fontRendering</Filter>
+    </ClInclude>
+    <ClInclude Include="src\guis\guimanager.hpp">
+      <Filter>Source Files\guis</Filter>
+    </ClInclude>
+    <ClInclude Include="src\guis\guirenderer.hpp">
+      <Filter>Source Files\guis</Filter>
+    </ClInclude>
+    <ClInclude Include="src\guis\guishader.hpp">
+      <Filter>Source Files\guis</Filter>
+    </ClInclude>
+    <ClInclude Include="src\guis\guitexture.hpp">
+      <Filter>Source Files\guis</Filter>
+    </ClInclude>
+    <ClInclude Include="src\guis\guitextureresources.hpp">
+      <Filter>Source Files\guis</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

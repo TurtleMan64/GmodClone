@@ -171,7 +171,7 @@ void Player::step()
         vel = vel + lastGroundNormal.scaleCopy(getJumpValue(dt));
         timeSinceOnGround = AIR_JUMP_TOLERANCE + 0.0001f;
 
-        Global::addChatMessage("Jump at " + std::to_string(position.x) + ", " + std::to_string(position.y) + ", " + std::to_string(position.z));
+        Global::addChatMessage("Jump at " + std::to_string(position.x) + ", " + std::to_string(position.y) + ", " + std::to_string(position.z), Vector3f(1,1,1));
     }
 
     // Wall Jumping

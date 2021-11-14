@@ -21,7 +21,7 @@ void window_close_callback(GLFWwindow* window);
 unsigned int SCR_WIDTH = 1280;
 unsigned int SCR_HEIGHT = 720;
 
-unsigned int F_WIDTH = 1280;
+unsigned int F_WIdTH = 1280;
 unsigned int F_HEIGHT = 720;
 unsigned int F_BITSRED = 8;
 unsigned int F_BITSGREEN = 8;
@@ -70,7 +70,7 @@ int createDisplay()
     {
         monitor = glfwGetPrimaryMonitor();
 
-        SCR_WIDTH = F_WIDTH;
+        SCR_WIDTH = F_WIdTH;
         SCR_HEIGHT = F_HEIGHT;
 
         glfwWindowHint(GLFW_REFRESH_RATE, F_HZ);
@@ -251,7 +251,7 @@ void loadDisplaySettings()
                 }
                 else if (strcmp(lineSplit[0], "F_Width") == 0)
                 {
-                    F_WIDTH = std::stoi(lineSplit[1], nullptr, 10);
+                    F_WIdTH = std::stoi(lineSplit[1], nullptr, 10);
                 }
                 else if (strcmp(lineSplit[0], "F_Height") == 0)
                 {

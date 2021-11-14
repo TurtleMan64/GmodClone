@@ -50,7 +50,7 @@ float stickSensitivityY = 2.5f;
 
 float triggerSensitivity = 2;
 
-int CONTROLLER_ID = 0; //-1 = no controller. otherwise, controller id
+int CONTROLLER_Id = 0; //-1 = no controller. otherwise, controller id
 
 int BUTTON_A      = 0;
 int BUTTON_X      = 1;
@@ -135,10 +135,10 @@ void Input::pollInputs()
     bool joystickIsPresent = false;
 
     #if GLFW_VERSION_MAJOR == 3 && GLFW_VERSION_MINOR == 3
-    if ((CONTROLLER_ID != (GLFW_JOYSTICK_1 - 1)) && glfwJoystickIsGamepad(CONTROLLER_ID)) //joystick is both present and has a pre defined mapping
+    if ((CONTROLLER_Id != (GLFW_JOYSTICK_1 - 1)) && glfwJoystickIsGamepad(CONTROLLER_Id)) //joystick is both present and has a pre defined mapping
     {
         GLFWgamepadstate state;
-        if (glfwGetGamepadState(CONTROLLER_ID, &state))
+        if (glfwGetGamepadState(CONTROLLER_Id, &state))
         {
             joystickIsPresent = true;
 
@@ -165,12 +165,12 @@ void Input::pollInputs()
     }
     #endif
 
-    if (!joystickIsPresent && (CONTROLLER_ID != (GLFW_JOYSTICK_1 - 1)) && glfwJoystickPresent(CONTROLLER_ID))
+    if (!joystickIsPresent && (CONTROLLER_Id != (GLFW_JOYSTICK_1 - 1)) && glfwJoystickPresent(CONTROLLER_Id))
     {
         joystickIsPresent = true;
 
         int buttonCount;
-        const unsigned char *buttons = glfwGetJoystickButtons(CONTROLLER_ID, &buttonCount);
+        const unsigned char *buttons = glfwGetJoystickButtons(CONTROLLER_Id, &buttonCount);
 
         Input::inputs.INPUT_ACTION1  = buttons[BUTTON_A];
         Input::inputs.INPUT_ACTION2  = buttons[BUTTON_B];
@@ -183,7 +183,7 @@ void Input::pollInputs()
         Input::inputs.INPUT_DPADD    = buttons[BUTTON_DPADD];
 
         int axesCount;
-        const float *axes = glfwGetJoystickAxes(CONTROLLER_ID, &axesCount);
+        const float *axes = glfwGetJoystickAxes(CONTROLLER_Id, &axesCount);
 
         Input::inputs.INPUT_X = axes[STICK_LX];
         Input::inputs.INPUT_Y = axes[STICK_LY];
@@ -637,28 +637,28 @@ void Input::init()
                 {
                     BUTTON_DPADD = std::stoi(lineSplit[1], nullptr, 10);
                 }
-                else if (strcmp(lineSplit[0], "Controller_ID") == 0)
+                else if (strcmp(lineSplit[0], "Controller_Id") == 0)
                 {
                     int raw = std::stoi(lineSplit[1], nullptr, 10);
                     switch (raw)
                     {
-                        case 0:  CONTROLLER_ID = GLFW_JOYSTICK_1;  break;
-                        case 1:  CONTROLLER_ID = GLFW_JOYSTICK_2;  break;
-                        case 2:  CONTROLLER_ID = GLFW_JOYSTICK_3;  break;
-                        case 3:  CONTROLLER_ID = GLFW_JOYSTICK_4;  break;
-                        case 4:  CONTROLLER_ID = GLFW_JOYSTICK_5;  break;
-                        case 5:  CONTROLLER_ID = GLFW_JOYSTICK_6;  break;
-                        case 6:  CONTROLLER_ID = GLFW_JOYSTICK_7;  break;
-                        case 7:  CONTROLLER_ID = GLFW_JOYSTICK_8;  break;
-                        case 8:  CONTROLLER_ID = GLFW_JOYSTICK_9;  break;
-                        case 9:  CONTROLLER_ID = GLFW_JOYSTICK_10; break;
-                        case 10: CONTROLLER_ID = GLFW_JOYSTICK_11; break;
-                        case 11: CONTROLLER_ID = GLFW_JOYSTICK_12; break;
-                        case 12: CONTROLLER_ID = GLFW_JOYSTICK_13; break;
-                        case 13: CONTROLLER_ID = GLFW_JOYSTICK_14; break;
-                        case 14: CONTROLLER_ID = GLFW_JOYSTICK_15; break;
-                        case 15: CONTROLLER_ID = GLFW_JOYSTICK_16; break;
-                        default: CONTROLLER_ID = GLFW_JOYSTICK_1-1;break;
+                        case 0:  CONTROLLER_Id = GLFW_JOYSTICK_1;  break;
+                        case 1:  CONTROLLER_Id = GLFW_JOYSTICK_2;  break;
+                        case 2:  CONTROLLER_Id = GLFW_JOYSTICK_3;  break;
+                        case 3:  CONTROLLER_Id = GLFW_JOYSTICK_4;  break;
+                        case 4:  CONTROLLER_Id = GLFW_JOYSTICK_5;  break;
+                        case 5:  CONTROLLER_Id = GLFW_JOYSTICK_6;  break;
+                        case 6:  CONTROLLER_Id = GLFW_JOYSTICK_7;  break;
+                        case 7:  CONTROLLER_Id = GLFW_JOYSTICK_8;  break;
+                        case 8:  CONTROLLER_Id = GLFW_JOYSTICK_9;  break;
+                        case 9:  CONTROLLER_Id = GLFW_JOYSTICK_10; break;
+                        case 10: CONTROLLER_Id = GLFW_JOYSTICK_11; break;
+                        case 11: CONTROLLER_Id = GLFW_JOYSTICK_12; break;
+                        case 12: CONTROLLER_Id = GLFW_JOYSTICK_13; break;
+                        case 13: CONTROLLER_Id = GLFW_JOYSTICK_14; break;
+                        case 14: CONTROLLER_Id = GLFW_JOYSTICK_15; break;
+                        case 15: CONTROLLER_Id = GLFW_JOYSTICK_16; break;
+                        default: CONTROLLER_Id = GLFW_JOYSTICK_1-1;break;
                     }
                 }
             }
@@ -717,10 +717,10 @@ void Input::init()
     glfwPollEvents();
 
     //make sure no index goes out of bounds
-    if ((CONTROLLER_ID != (GLFW_JOYSTICK_1 - 1)) && glfwJoystickPresent(CONTROLLER_ID) == GLFW_TRUE)
+    if ((CONTROLLER_Id != (GLFW_JOYSTICK_1 - 1)) && glfwJoystickPresent(CONTROLLER_Id) == GLFW_TRUE)
     {
         int axesCount;
-        glfwGetJoystickAxes(CONTROLLER_ID, &axesCount);
+        glfwGetJoystickAxes(CONTROLLER_Id, &axesCount);
         STICK_LX  = std::min(STICK_LX,  axesCount - 1);
         STICK_LY  = std::min(STICK_LY,  axesCount - 1);
         STICK_RX  = std::min(STICK_RX,  axesCount - 1);
@@ -729,7 +729,7 @@ void Input::init()
         TRIGGER_R = std::min(TRIGGER_R, axesCount - 1);
 
         int buttonCount;
-        glfwGetJoystickButtons(CONTROLLER_ID, &buttonCount);
+        glfwGetJoystickButtons(CONTROLLER_Id, &buttonCount);
         BUTTON_A     = std::min(BUTTON_A,     buttonCount - 1);
         BUTTON_B     = std::min(BUTTON_B,     buttonCount - 1);
         BUTTON_X     = std::min(BUTTON_X,     buttonCount - 1);
@@ -769,20 +769,20 @@ void Input::init()
 
 std::string Input::getControllerName()
 {
-    if (CONTROLLER_ID == (GLFW_JOYSTICK_1 - 1))
+    if (CONTROLLER_Id == (GLFW_JOYSTICK_1 - 1))
     {
         return "None";    
     }
 
     #if GLFW_VERSION_MAJOR == 3 && GLFW_VERSION_MINOR == 3
-    const char* nameGamepad = glfwGetGamepadName(CONTROLLER_ID);
+    const char* nameGamepad = glfwGetGamepadName(CONTROLLER_Id);
     if (nameGamepad != nullptr)
     {
         return nameGamepad;
     }
     #endif
 
-    const char* nameJoystick = glfwGetJoystickName(CONTROLLER_ID);
+    const char* nameJoystick = glfwGetJoystickName(CONTROLLER_Id);
     if (nameJoystick != nullptr)
     {
         return nameJoystick;
@@ -793,7 +793,7 @@ std::string Input::getControllerName()
 
 bool Input::changeController(int direction)
 {
-    int originalControllerID = CONTROLLER_ID;
+    int originalControllerId = CONTROLLER_Id;
     int maxAttempts = (GLFW_JOYSTICK_LAST - GLFW_JOYSTICK_1) + 1;
     int currentAttempt = 0;
     if (direction >= 0)
@@ -807,17 +807,17 @@ bool Input::changeController(int direction)
 
     while (currentAttempt < maxAttempts)
     {
-        CONTROLLER_ID = (CONTROLLER_ID + direction);
-        if (CONTROLLER_ID < GLFW_JOYSTICK_1 - 1)
+        CONTROLLER_Id = (CONTROLLER_Id + direction);
+        if (CONTROLLER_Id < GLFW_JOYSTICK_1 - 1)
         {
-            CONTROLLER_ID = GLFW_JOYSTICK_LAST;
+            CONTROLLER_Id = GLFW_JOYSTICK_LAST;
         }
-        else if (CONTROLLER_ID > GLFW_JOYSTICK_LAST)
+        else if (CONTROLLER_Id > GLFW_JOYSTICK_LAST)
         {
-            CONTROLLER_ID = GLFW_JOYSTICK_1 - 1;
+            CONTROLLER_Id = GLFW_JOYSTICK_1 - 1;
         }
 
-        if (CONTROLLER_ID == GLFW_JOYSTICK_1 - 1 || glfwJoystickPresent(CONTROLLER_ID))
+        if (CONTROLLER_Id == GLFW_JOYSTICK_1 - 1 || glfwJoystickPresent(CONTROLLER_Id))
         {
             return true;
         }
@@ -825,7 +825,7 @@ bool Input::changeController(int direction)
         currentAttempt++;
     }
 
-    CONTROLLER_ID = originalControllerID;
+    CONTROLLER_Id = originalControllerId;
     return false;
 }
 

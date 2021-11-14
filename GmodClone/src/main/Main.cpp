@@ -62,6 +62,9 @@
 #include "../fontRendering/textmaster.hpp"
 #include "../fontMeshCreator/fonttype.hpp"
 #include "../fontMeshCreator/guitext.hpp"
+#include "../guis/guimanager.hpp"
+#include "../guis/guitextureresources.hpp"
+#include "../guis/guitexture.hpp"
 
 std::string Global::pathToEXE;
 
@@ -108,7 +111,7 @@ extern unsigned int SCR_HEIGHT;
 int Global::countNew = 0;
 int Global::countDelete = 0;
 int Global::gameState = 0;
-int Global::levelID = 0;
+int Global::levelId = 0;
 float Global::startStageTimer = -1;
 bool Global::shouldLoadLevel = false;
 bool Global::isNewLevel = false;
@@ -207,11 +210,8 @@ int main(int argc, char** argv)
 
     TextMaster::init();
 
-    // new GUIText("Top Left",     0.1f, Global::gameFont, 0.0f, 0.0f, 0, true);
-    // new GUIText("Top Right",    0.1f, Global::gameFont, 1.0f, 0.0f, 2, true);
-    // new GUIText("Middle",       0.1f, Global::gameFont, 0.5f, 0.5f, 4, true);
-    // new GUIText("Bottom Left",  0.1f, Global::gameFont, 0.0f, 1.0f, 6, true);
-    // new GUIText("Bottom Right", 0.1f, Global::gameFont, 1.0f, 1.0f, 8, true);
+    GuiManager::init();
+    GuiTextureResources::loadGuiTextures();
 
     AudioMaster::init();
     AudioPlayer::loadSoundEffects();
@@ -508,6 +508,9 @@ int main(int argc, char** argv)
 
         Global::updateChatMessages();
 
+        GuiManager::render();
+        GuiManager::clearGuisToRender();
+
         TextMaster::render();
 
         updateDisplay();
@@ -630,13 +633,13 @@ void increaseProcessPriority()
     
 
     
-    //if (!SetPriorityClass(GetCurrentProcess(), IDLE_PRIORITY_CLASS))
+    //if (!SetPriorityClass(GetCurrentProcess(), IdLE_PRIORITY_CLASS))
     //{
     //    dwError = GetLastError();
     //    _tprintf(TEXT("Failed to enter below normal mode (%d)\n"), (int)dwError);
     //}
     //
-    //if (!SetThreadPriority(GetCurrentThread(), THREAD_PRIORITY_IDLE))
+    //if (!SetThreadPriority(GetCurrentThread(), THREAD_PRIORITY_IdLE))
     //{
     //    dwError = GetLastError();
     //    _tprintf(TEXT("Failed to enter below normal mode (%d)\n"), (int)dwError);
@@ -1102,9 +1105,21 @@ std::mutex chatMsgMutex;
 std::vector<float> chatMessagesTimestamp;
 std::vector<GUIText*> chatTexts;
 
-void Global::addChatMessage(std::string msg)
+void Global::addChatMessage(std::string msg, Vector3f color)
 {
-    GUIText* tex = new GUIText(msg, 0.025f, Global::gameFont, 0.0f, 1.0f, 6, true); INCR_NEW("GUIText");
+    if (msg.size() >= 33)
+    {
+        char buf[34];
+        buf[33] = 0;
+        for (int i = 0; i < 33; i++)
+        {
+            buf[i] = msg[i];
+        }
+        msg = buf;
+    }
+
+    GUIText* tex = new GUIText(msg, 0.02f, Global::gameFont, 0.01f, 0.99f, 6, true); INCR_NEW("GUIText");
+    tex->color = color;
 
     chatMsgMutex.lock();
 
@@ -1126,7 +1141,7 @@ void Global::updateChatMessages()
 
     chatMsgMutex.lock();
 
-    while (chatTexts.size() > 5)
+    while (chatTexts.size() > 10)
     {
         GUIText* t = chatTexts.front();
         t->deleteMe();
@@ -1135,9 +1150,32 @@ void Global::updateChatMessages()
         chatMessagesTimestamp.erase(chatMessagesTimestamp.begin());
     }
 
+    bool keepGoing = true;
+    while (keepGoing && chatTexts.size() > 0)
+    {
+        float oldestTime = chatMessagesTimestamp.front();
+        if (currTime - oldestTime > 6.0f)
+        {
+            keepGoing = true;
+
+            GUIText* t = chatTexts.front();
+            t->deleteMe();
+            delete t; INCR_DEL("GUIText");
+            chatTexts.erase(chatTexts.begin());
+            chatMessagesTimestamp.erase(chatMessagesTimestamp.begin());
+        }
+        else
+        {
+            keepGoing = false;
+        }
+    }
+
+    float highestAlpha = 0.0f;
+
     for (int i = 0; i < chatTexts.size(); i++)
     {
         GUIText* t = chatTexts[i];
+        t->alpha = 0.85f;
         float tim = chatMessagesTimestamp[i];
 
         float diff = currTime - tim;
@@ -1148,9 +1186,25 @@ void Global::updateChatMessages()
             {
                 a = 0.0f;
             }
-            t->alpha = a;
+            t->alpha = a*0.85f;
+
+            if (a > highestAlpha)
+            {
+                highestAlpha = a;
+            }
+        }
+        else
+        {
+            highestAlpha = 1.0f;
         }
     }
 
     chatMsgMutex.unlock();
+
+    if (chatTexts.size() > 0)
+    {
+        GuiManager::addGuiToRender(GuiTextureResources::textureChatBG);
+        GuiTextureResources::textureChatBG->size.y = chatTexts.size()*0.025f;
+        GuiTextureResources::textureChatBG->alpha = highestAlpha*0.7f;
+    }
 }

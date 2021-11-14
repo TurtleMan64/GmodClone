@@ -72,7 +72,7 @@ public:
     static int countNew;
     static int countDelete;
     static int gameState;
-    static int levelID;
+    static int levelId;
     static std::string levelName;
     static std::string levelNameDisplay;
     static bool shouldLoadLevel;
@@ -156,7 +156,7 @@ public:
 
     static void performanceAnalysisReport();
 
-    static void addChatMessage(std::string msg);
+    static void addChatMessage(std::string msg, Vector3f color);
 
     static void updateChatMessages();
 };
