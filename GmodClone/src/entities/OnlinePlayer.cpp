@@ -5,7 +5,11 @@
 #include "../loader/objloader.hpp"
 #include "../toolbox/maths.hpp"
 
-std::list<TexturedModel*> OnlinePlayer::models;
+std::list<TexturedModel*> OnlinePlayer::modelsFall;
+std::list<TexturedModel*> OnlinePlayer::modelsJump;
+std::list<TexturedModel*> OnlinePlayer::modelsSlide;
+std::list<TexturedModel*> OnlinePlayer::modelsSquat;
+std::list<TexturedModel*> OnlinePlayer::modelsStand;
 
 OnlinePlayer::OnlinePlayer(std::string name, float x, float y, float z)
 {
@@ -24,13 +28,31 @@ void OnlinePlayer::step()
     position = position + vel.scaleCopy(dt);
 
     Maths::sphereAnglesFromPosition(&lookDir, &rotY, &rotZ);
+    rotZ = 0;
 
     updateTransformationMatrix();
 }
 
 std::list<TexturedModel*>* OnlinePlayer::getModels()
 {
-    return &OnlinePlayer::models;
+    if (isCrouching)
+    {
+        return &OnlinePlayer::modelsSquat;
+    }
+    else if (isSliding)
+    {
+        return &OnlinePlayer::modelsSlide;
+    }
+    else if (vel.y > 1.0f)
+    {
+        return &OnlinePlayer::modelsJump;
+    }
+    else if (vel.y < -1.0f)
+    {
+        return &OnlinePlayer::modelsFall;
+    }
+
+    return &OnlinePlayer::modelsStand;
 }
 
 int OnlinePlayer::getEntityType()
@@ -40,8 +62,12 @@ int OnlinePlayer::getEntityType()
 
 void OnlinePlayer::loadModels()
 {
-    if (OnlinePlayer::models.size() == 0)
+    if (OnlinePlayer::modelsStand.size() == 0)
     {
-        ObjLoader::loadModel(&OnlinePlayer::models, "res/Models/Human/", "Human");
+        ObjLoader::loadModel(&OnlinePlayer::modelsFall , "res/Models/Human/", "ShrekFall");
+        ObjLoader::loadModel(&OnlinePlayer::modelsJump , "res/Models/Human/", "ShrekJump");
+        ObjLoader::loadModel(&OnlinePlayer::modelsSlide, "res/Models/Human/", "ShrekSlide");
+        ObjLoader::loadModel(&OnlinePlayer::modelsSquat, "res/Models/Human/", "ShrekSquat");
+        ObjLoader::loadModel(&OnlinePlayer::modelsStand, "res/Models/Human/", "ShrekStand");
     }
 }

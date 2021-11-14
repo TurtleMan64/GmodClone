@@ -65,6 +65,7 @@
 #include "../guis/guimanager.hpp"
 #include "../guis/guitextureresources.hpp"
 #include "../guis/guitexture.hpp"
+#include "../toolbox/maths.hpp"
 
 std::string Global::pathToEXE;
 
@@ -175,12 +176,23 @@ int main(int argc, char** argv)
 
     increaseProcessPriority();
 
+    srand((unsigned long)time(nullptr));
+
     Global::nickname = readFileLines("Nickname.ini")[0];
-    if (Global::nickname.size() >= 32)
+    if (Global::nickname == "nickname")
     {
-        char name[32];
-        name[31] = 0;
-        for (int i = 0; i < 31; i++)
+        Global::nickname = "user_";
+        for (int i = 0; i < 8; i++)
+        {
+            Global::nickname = Global::nickname + std::to_string((int)(Maths::random()*10));
+        }
+    }
+
+    if (Global::nickname.size() >= 16)
+    {
+        char name[16];
+        name[15] = 0;
+        for (int i = 0; i < 15; i++)
         {
             name[i] = Global::nickname[i];
         }
@@ -189,8 +201,6 @@ int main(int argc, char** argv)
 
     Global::countNew = 0;
     Global::countDelete = 0;
-
-    srand(0);
 
     createDisplay();
 
@@ -961,6 +971,7 @@ void readThreadBehavoir(TcpClient* client)
 
                         Global::gameOnlinePlayers[name] = player;
                         printf("%s connected!", name.c_str());
+                        Global::addChatMessage(name + " joined", Vector3f(0.5f, 1, 0.5f));
                     }
 
                     client->read((char*)&player->position.x,  4, 5);
@@ -1109,11 +1120,17 @@ void writeThreadBehavior(TcpClient* client)
                 client->write((char*)&Global::player->lookDir.x,  4, 5);
                 client->write((char*)&Global::player->lookDir.y,  4, 5);
                 client->write((char*)&Global::player->lookDir.z,  4, 5);
-                char tmp = 1;
-                client->write(&tmp, 1, 5);
-                client->write(&tmp, 1, 5);
-                client->write(&tmp, 1, 5);
-                client->write(&tmp, 1, 5);
+                char health = 100;
+                char weapon = 1;
+                client->write(&health, 1, 5);
+                client->write(&weapon, 1, 5);
+                client->write((char*)&Global::player->isCrouching, 1, 5);
+                char slide = 0;
+                if (Global::player->slideTimer > 0.0f)
+                {
+                    slide = 1;
+                }
+                client->write(&slide, 1, 5);
             }
 
             lastSentMsg = glfwGetTime();

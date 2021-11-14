@@ -9,7 +9,7 @@ class TexturedModel;
 
 class Player : public Entity
 {
-private:
+public:
     std::list<TexturedModel*>* myModels = nullptr;
 
     Vector3f groundNormal;

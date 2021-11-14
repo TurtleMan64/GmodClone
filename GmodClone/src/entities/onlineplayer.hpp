@@ -10,7 +10,11 @@ class TexturedModel;
 class OnlinePlayer : public Entity
 {
 private:
-    static std::list<TexturedModel*> models;
+    static std::list<TexturedModel*> modelsFall;
+    static std::list<TexturedModel*> modelsJump;
+    static std::list<TexturedModel*> modelsSlide;
+    static std::list<TexturedModel*> modelsSquat;
+    static std::list<TexturedModel*> modelsStand;
 
 public:
     char health = 0;
