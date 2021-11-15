@@ -1357,7 +1357,34 @@ CollisionModel* ObjLoader::loadCollisionModel(std::string filePath, std::string 
                         else if (strcmp(lineSplitMTL[0], "sound") == 0 ||
                                  strcmp(lineSplitMTL[0], "\tsound") == 0)
                         {
-                            fakeTextures.back().sound = (char)round(std::stof(lineSplitMTL[1]));
+                            if (strcmp(lineSplitMTL[1], "concrete") == 0)
+                            {
+                                fakeTextures.back().sound = 0;
+                            }
+                            else if (strcmp(lineSplitMTL[1], "dirt") == 0)
+                            {
+                                fakeTextures.back().sound = 1;
+                            }
+                            else if (strcmp(lineSplitMTL[1], "grass") == 0)
+                            {
+                                fakeTextures.back().sound = 2;
+                            }
+                            else if (strcmp(lineSplitMTL[1], "metal") == 0)
+                            {
+                                fakeTextures.back().sound = 3;
+                            }
+                            else if (strcmp(lineSplitMTL[1], "snow") == 0)
+                            {
+                                fakeTextures.back().sound = 4;
+                            }
+                            else if (strcmp(lineSplitMTL[1], "water") == 0)
+                            {
+                                fakeTextures.back().sound = 5;
+                            }
+                            else if (strcmp(lineSplitMTL[1], "wood") == 0)
+                            {
+                                fakeTextures.back().sound = 6;
+                            }
                         }
                         else if (strcmp(lineSplitMTL[0], "particle") == 0 ||
                                  strcmp(lineSplitMTL[0], "\tparticle") == 0)
@@ -1465,7 +1492,34 @@ CollisionModel* ObjLoader::loadBinaryCollisionModel(std::string filePath, std::s
                 else if (strcmp(lineSplitMTL[0], "sound") == 0 ||
                          strcmp(lineSplitMTL[0], "\tsound") == 0)
                 {
-                    fakeTextures.back().sound = (char)round(std::stof(lineSplitMTL[1]));
+                    if (strcmp(lineSplitMTL[1], "concrete") == 0)
+                    {
+                        fakeTextures.back().sound = 0;
+                    }
+                    else if (strcmp(lineSplitMTL[1], "dirt") == 0)
+                    {
+                        fakeTextures.back().sound = 1;
+                    }
+                    else if (strcmp(lineSplitMTL[1], "grass") == 0)
+                    {
+                        fakeTextures.back().sound = 2;
+                    }
+                    else if (strcmp(lineSplitMTL[1], "metal") == 0)
+                    {
+                        fakeTextures.back().sound = 3;
+                    }
+                    else if (strcmp(lineSplitMTL[1], "snow") == 0)
+                    {
+                        fakeTextures.back().sound = 4;
+                    }
+                    else if (strcmp(lineSplitMTL[1], "water") == 0)
+                    {
+                        fakeTextures.back().sound = 5;
+                    }
+                    else if (strcmp(lineSplitMTL[1], "wood") == 0)
+                    {
+                        fakeTextures.back().sound = 6;
+                    }
                 }
                 else if (strcmp(lineSplitMTL[0], "particle") == 0 ||
                          strcmp(lineSplitMTL[0], "\tparticle") == 0)

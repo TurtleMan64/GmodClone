@@ -19,9 +19,9 @@ Player::Player(std::list<TexturedModel*>* models)
 {
     myModels = models;
     scale = 0.5f;
-    position.set(77.327835f, 4.313488f, -14.730497f);
+    position.set(-4.85623f, 1.5322f, -12.5412f);
     vel.set(0.000001f, 0, 0);
-    groundNormal.set(0, 1, 0);
+    groundNormal.set(0, 1, 0);  
     lastGroundNormal.set(0, 1, 0);
     wallNormal.set(1, 0, 0);
     lookDir.set(0, 0, -1);
@@ -65,9 +65,20 @@ void Player::step()
     }
 
     // If holding crouch after slide is done, start crouching
-    if (slideTimer <= 0.0f && slideTimerBefore > 0.0f && Input::inputs.INPUT_ACTION4)
+    if (slideTimer <= 0.0f && slideTimerBefore > 0.0f)
     {
-        isCrouching = true;
+        if (Input::inputs.INPUT_ACTION4)
+        {
+            isCrouching = true;
+        }
+        else
+        {
+            CollisionResult result = CollisionChecker::checkCollision(position.x, position.y + COLLISION_RADIUS*3, position.z, COLLISION_RADIUS - 0.01f);
+            if (result.hit)
+            {
+                isCrouching = true;
+            }
+        }
     }
 
     // If you are in the air, cancel slide
@@ -104,7 +115,7 @@ void Player::step()
     {
         if (isCrouching)
         {
-            CollisionResult result = CollisionChecker::checkCollision(position.x, position.y + COLLISION_RADIUS*3, position.z, COLLISION_RADIUS);
+            CollisionResult result = CollisionChecker::checkCollision(position.x, position.y + COLLISION_RADIUS*3, position.z, COLLISION_RADIUS - 0.01f);
             if (!result.hit)
             {
                 isCrouching = false;
@@ -167,11 +178,22 @@ void Player::step()
     // Normal Jump
     if (Input::inputs.INPUT_ACTION1 && !Input::inputs.INPUT_PREVIOUS_ACTION1 && timeSinceOnGround <= AIR_JUMP_TOLERANCE)
     {
-        AudioPlayer::play(36, nullptr);
-        vel = vel + lastGroundNormal.scaleCopy(getJumpValue(dt));
-        timeSinceOnGround = AIR_JUMP_TOLERANCE + 0.0001f;
+        bool canJump = true;
+        // Don't jump if there is a ceiling above you
+        if (slideTimer > 0.0f || isCrouching)
+        {
+            CollisionResult result = CollisionChecker::checkCollision(position.x, position.y + COLLISION_RADIUS*3, position.z, COLLISION_RADIUS - 0.01f);
+            canJump = !result.hit;
+        }
 
-        Global::addChatMessage("Jump at " + std::to_string(position.x) + ", " + std::to_string(position.y) + ", " + std::to_string(position.z), Vector3f(1,1,1));
+        if (canJump)
+        {
+            AudioPlayer::play(60, nullptr);
+            vel = vel + lastGroundNormal.scaleCopy(getJumpValue(dt));
+            timeSinceOnGround = AIR_JUMP_TOLERANCE + 0.0001f;
+
+            Global::addChatMessage("Jump at " + std::to_string(position.x) + ", " + std::to_string(position.y) + ", " + std::to_string(position.z), Vector3f(1,1,1));
+        }
     }
 
     // Wall Jumping
@@ -184,7 +206,23 @@ void Player::step()
 
     if (!onGround && wallJumpTimer >= 0.0f && Input::inputs.INPUT_ACTION1 && !Input::inputs.INPUT_PREVIOUS_ACTION1)
     {
-        AudioPlayer::play(50, nullptr);
+        int sfxId = 43;
+        if (latestWallTriangle != nullptr)
+        {
+            switch (latestWallTriangle->sound)
+            {
+                case 0: sfxId = 43; break;
+                case 1: sfxId = 44; break;
+                case 2: sfxId = 45; break;
+                case 3: sfxId = 46; break;
+                case 4: sfxId = 47; break;
+                case 5: sfxId = 48; break;
+                case 6: sfxId = 49; break;
+                default: break;
+            }
+        }
+        AudioPlayer::play(sfxId, nullptr);
+
         vel = vel + storedWallNormal.scaleCopy(WALL_JUMP_SPEED_HORIZONTAL);
         vel.y += getJumpValue(dt) - 1.0f;
         wallJumpTimer = -1.0f;
@@ -259,6 +297,15 @@ void Player::step()
             position = spotToTest;
             position.y -= COLLISION_RADIUS;
 
+            if (result.tri->normal.y > 0.5f)
+            {
+                latestGroundTriangle = result.tri;
+            }
+            else
+            {
+                latestWallTriangle = result.tri;
+            }
+
             if (result.tri->type == 1)
             {
                 vel = Maths::bounceVector(&vel, &result.tri->normal, 1.0f);
@@ -293,7 +340,7 @@ void Player::step()
     }
 
     //top sphere collision
-    if (!isCrouching)
+    if (!isCrouching && slideTimer <= 0.0f)
     {
         for (int c = 0; c < 20; c++)
         {
@@ -308,6 +355,15 @@ void Player::step()
                 spotToTest = spotToTest + directionToMove.scaleCopy(distanceToMoveAway);
                 position = spotToTest;
                 position.y -= COLLISION_RADIUS*3;
+
+                if (result.tri->normal.y > 0.5f)
+                {
+                    latestGroundTriangle = result.tri;
+                }
+                else
+                {
+                    latestWallTriangle = result.tri;
+                }
 
                 if (result.tri->type == 1)
                 {
@@ -398,7 +454,7 @@ void Player::step()
         {
             slideTimer = 0.0f;
 
-            if (Input::inputs.INPUT_ACTION4)
+            if (Input::inputs.INPUT_ACTION4 || CollisionChecker::checkCollision(position.x, position.y + COLLISION_RADIUS*3, position.z, COLLISION_RADIUS - 0.01f).hit)
             {
                 isCrouching = true;
             }
@@ -424,7 +480,22 @@ void Player::step()
         {
             if (landSoundTimer > 0.2f)
             {
-                AudioPlayer::play(49, nullptr);
+                int sfxId = 43;
+                if (latestGroundTriangle != nullptr)
+                {
+                    switch (latestGroundTriangle->sound)
+                    {
+                        case 0: sfxId = 43; break;
+                        case 1: sfxId = 44; break;
+                        case 2: sfxId = 45; break;
+                        case 3: sfxId = 46; break;
+                        case 4: sfxId = 47; break;
+                        case 5: sfxId = 48; break;
+                        case 6: sfxId = 49; break;
+                        default: break;
+                    }
+                }
+                AudioPlayer::play(sfxId, nullptr);
             }
         }
 
@@ -450,7 +521,22 @@ void Player::step()
         if (stepTimerBefore < 2.0f && stepTimer >= 2.0f)
         {
             stepTimer-=2.0f;
-            AudioPlayer::play(36 + (int)(Maths::random()*4), nullptr);
+            int sfxId = 8 + (int)(Maths::random()*5);
+            if (latestGroundTriangle != nullptr)
+            {
+                switch (latestGroundTriangle->sound)
+                {
+                    case 0: sfxId =  8 + (int)(Maths::random()*5); break;
+                    case 1: sfxId = 13 + (int)(Maths::random()*4); break;
+                    case 2: sfxId = 17 + (int)(Maths::random()*4); break;
+                    case 3: sfxId = 21 + (int)(Maths::random()*5); break;
+                    case 4: sfxId = 26 + (int)(Maths::random()*5); break;
+                    case 5: sfxId = 31 + (int)(Maths::random()*5); break;
+                    case 6: sfxId = 36 + (int)(Maths::random()*4); break;
+                    default: break;
+                }
+            }
+            AudioPlayer::play(sfxId, nullptr);
         }
     }
 

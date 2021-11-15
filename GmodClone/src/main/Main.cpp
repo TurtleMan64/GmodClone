@@ -262,10 +262,10 @@ int main(int argc, char** argv)
 
     Global::gameState = STATE_RUNNING;
 
-    std::string folder = "TestMap";
+    std::string folder = "Map1";
 
     std::list<TexturedModel*> modelsStage;
-    ObjLoader::loadModel(&modelsStage, "res/Models/" + folder + "/", "TestMap");
+    ObjLoader::loadModel(&modelsStage, "res/Models/" + folder + "/", "Map1");
     Dummy* entityStage = new Dummy(&modelsStage); INCR_NEW("Entity");
     Global::addEntity(entityStage);
 
@@ -273,44 +273,44 @@ int main(int argc, char** argv)
     ObjLoader::loadModel(&modelsSphere, "res/Models/", "Sphere");
     Global::player = new Player(&modelsSphere); INCR_NEW("Entity");
 
-    CollisionModel* cm = ObjLoader::loadCollisionModel("Models/" + folder + "/", "TestMap");
+    CollisionModel* cm = ObjLoader::loadCollisionModel("Models/" + folder + "/", "Map1");
     for (int i = 0; i < cm->triangles.size(); i++)
     {
         CollisionChecker::addTriangle(cm->triangles[i]);
     }
     CollisionChecker::constructChunkDatastructure();
 
-    OnlinePlayer* npc1 = new OnlinePlayer("Npc1", 73.076897f, 0.313516f, 23.235739f); INCR_NEW("Entity");
-    OnlinePlayer* npc2 = new OnlinePlayer("Npc2", 72.076897f, 0.313516f, 23.235739f); INCR_NEW("Entity");
-    OnlinePlayer* npc3 = new OnlinePlayer("Npc3", 71.076897f, 0.313516f, 23.235739f); INCR_NEW("Entity");
-    OnlinePlayer* npc4 = new OnlinePlayer("Npc4", 70.076897f, 0.313516f, 23.235739f); INCR_NEW("Entity");
+    //OnlinePlayer* npc1 = new OnlinePlayer("Npc1", 73.076897f, 0.313516f, 23.235739f); INCR_NEW("Entity");
+    //OnlinePlayer* npc2 = new OnlinePlayer("Npc2", 72.076897f, 0.313516f, 23.235739f); INCR_NEW("Entity");
+    //OnlinePlayer* npc3 = new OnlinePlayer("Npc3", 71.076897f, 0.313516f, 23.235739f); INCR_NEW("Entity");
+    //OnlinePlayer* npc4 = new OnlinePlayer("Npc4", 70.076897f, 0.313516f, 23.235739f); INCR_NEW("Entity");
 
-    Ball* ball1 = new Ball("Ball1", Vector3f(73.076897f, 1.313516f, 23.235739f), Vector3f(10, 20, 30)); INCR_NEW("Entity");
-    Ball* ball2 = new Ball("Ball2", Vector3f(72.076897f, 1.313516f, 23.235739f), Vector3f(20, 10, 30)); INCR_NEW("Entity");
-    Ball* ball3 = new Ball("Ball3", Vector3f(71.076897f, 1.313516f, 23.235739f), Vector3f(30, 20, 10)); INCR_NEW("Entity");
+    Ball* ball1 = new Ball("B1", Vector3f(72.991318f, 28.784624f, -46.660568f), Vector3f(0, 0, 0)); INCR_NEW("Entity");
+    //Ball* ball2 = new Ball("Ball2", Vector3f(72.076897f, 1.313516f, 23.235739f), Vector3f(20, 10, 30)); INCR_NEW("Entity");
+    //Ball* ball3 = new Ball("Ball3", Vector3f(71.076897f, 1.313516f, 23.235739f), Vector3f(30, 20, 10)); INCR_NEW("Entity");
 
-    CollisionBlock* cb1 = new CollisionBlock("CollisionBlock1", Vector3f(73.076897f, 1.313516f, 23.235739f), 0, 4.0f, 1.0f, 12.0f, false, 0); INCR_NEW("Entity");
-    CollisionBlock* cb2 = new CollisionBlock("CollisionBlock2", Vector3f(73.076897f, 1.313516f, 33.235739f), 0, 4.0f, 1.0f, 12.0f, true,  0); INCR_NEW("Entity");
-    CollisionBlock* cb3 = new CollisionBlock("CollisionBlock3", Vector3f(73.076897f, 1.313516f, 43.235739f), 1, 4.0f, 1.0f, 12.0f, false, 0); INCR_NEW("Entity");
-    CollisionBlock* cb4 = new CollisionBlock("CollisionBlock4", Vector3f(73.076897f, 1.313516f, 53.235739f), 1, 4.0f, 1.0f, 12.0f, true,  0); INCR_NEW("Entity");
+    CollisionBlock* cb1 = new CollisionBlock("CB1", Vector3f(38.7795f,  10.0f, 44.5082f), 0, 4.0f, 1.0f, 14.0f, true, 0); INCR_NEW("Entity");
+    CollisionBlock* cb2 = new CollisionBlock("CB2", Vector3f(-28.9653f, 24.0f, -46.243f), 1, 4.0f, 2.1f, 20.0f, true, 0); INCR_NEW("Entity");
+    //CollisionBlock* cb3 = new CollisionBlock("CollisionBlock3", Vector3f(73.076897f, 1.313516f, 43.235739f), 1, 4.0f, 1.0f, 12.0f, false, 0); INCR_NEW("Entity");
+    //CollisionBlock* cb4 = new CollisionBlock("CollisionBlock4", Vector3f(73.076897f, 1.313516f, 53.235739f), 1, 4.0f, 1.0f, 12.0f, true,  0); INCR_NEW("Entity");
 
-    RedBarrel* barrel1 = new RedBarrel("Barrel1", Vector3f(86.722473f, 0.313497f, -4.892693f)); INCR_NEW("Entity");
+    //RedBarrel* barrel1 = new RedBarrel("Barrel1", Vector3f(86.722473f, 0.313497f, -4.892693f)); INCR_NEW("Entity");
 
-    Global::gameEntities.insert(npc1);
-    Global::gameEntities.insert(npc2);
-    Global::gameEntities.insert(npc3);
-    Global::gameEntities.insert(npc4);
+    //Global::gameEntities.insert(npc1);
+    //Global::gameEntities.insert(npc2);
+    //Global::gameEntities.insert(npc3);
+    //Global::gameEntities.insert(npc4);
 
     Global::gameEntities.insert(ball1);
-    Global::gameEntities.insert(ball2);
-    Global::gameEntities.insert(ball3);
+    //Global::gameEntities.insert(ball2);
+    //Global::gameEntities.insert(ball3);
 
     Global::gameEntities.insert(cb1);
     Global::gameEntities.insert(cb2);
-    Global::gameEntities.insert(cb3);
-    Global::gameEntities.insert(cb4);
+    //Global::gameEntities.insert(cb3);
+    //Global::gameEntities.insert(cb4);
 
-    Global::gameEntities.insert(barrel1);
+    //Global::gameEntities.insert(barrel1);
 
     while (Global::gameState != STATE_EXITING && displayWantsToClose() == 0)
     {

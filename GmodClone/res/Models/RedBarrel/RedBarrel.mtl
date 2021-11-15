@@ -1,6 +1,22 @@
-# Material Count: 1
+# Blender MTL File: 'None'
+# Material Count: 2
 
 newmtl None
-Ns 20
-Ni 0.3
-map_Kd oil_barrel_diffuse.png
+Ns 20.000000
+Ka 0.000000 0.000000 0.000000
+Kd 0.640000 0.640000 0.640000
+Ks 0.300000 0.300000 0.300000
+Ni 0.300000
+d 1.000000
+illum 2
+map_Kd airstrip_material_27.png
+
+newmtl None_airstrip_material_28.png
+Ns 20.000000
+Ka 0.000000 0.000000 0.000000
+Kd 0.640000 0.640000 0.640000
+Ks 0.300000 0.300000 0.300000
+Ni 0.300000
+d 1.000000
+illum 2
+map_Kd airstrip_material_28.png

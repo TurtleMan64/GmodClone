@@ -12,6 +12,8 @@ class Player : public Entity
 public:
     std::list<TexturedModel*>* myModels = nullptr;
 
+    Triangle3D* latestGroundTriangle = nullptr;
+    Triangle3D* latestWallTriangle = nullptr;
     Vector3f groundNormal;
     Vector3f wallNormal;
 
