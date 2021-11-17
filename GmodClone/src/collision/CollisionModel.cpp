@@ -301,6 +301,55 @@ void CollisionModel::transformModelWithScale(CollisionModel* targetModel, Vector
     targetModel->generateMinMaxValues();
 }
 
+void CollisionModel::transformModelWithScale(CollisionModel* targetModel, Vector3f* translate, Vector3f* scale)
+{
+    if (targetModel->triangles.size() != triangles.size())
+    {
+        std::fprintf(stdout, "Warning: Trying to transform a collision model based on another collision model that doesn't have the same amount of triangles.\n");
+        return;
+    }
+
+    int i = 0;
+    for (Triangle3D* tri : triangles)
+    {
+        Vector3f newPoint1(tri->p1X, tri->p1Y, tri->p1Z);
+        newPoint1.x *= scale->x;
+        newPoint1.y *= scale->y;
+        newPoint1.z *= scale->z;
+        newPoint1 = newPoint1 + translate;
+
+        Vector3f newPoint2(tri->p2X, tri->p2Y, tri->p2Z);
+        newPoint2.x *= scale->x;
+        newPoint2.y *= scale->y;
+        newPoint2.z *= scale->z;
+        newPoint2 = newPoint2 + translate;
+
+        Vector3f newPoint3(tri->p3X, tri->p3Y, tri->p3Z);
+        newPoint3.x *= scale->x;
+        newPoint3.y *= scale->y;
+        newPoint3.z *= scale->z;
+        newPoint3 = newPoint3 + translate;
+
+        Triangle3D* newTri = targetModel->triangles[i];
+        newTri->p1X      = newPoint1.x;
+        newTri->p1Y      = newPoint1.y;
+        newTri->p1Z      = newPoint1.z;
+        newTri->p2X      = newPoint2.x;
+        newTri->p2Y      = newPoint2.y;
+        newTri->p2Z      = newPoint2.z;
+        newTri->p3X      = newPoint3.x;
+        newTri->p3Y      = newPoint3.y;
+        newTri->p3Z      = newPoint3.z;
+        newTri->type     = tri->type;
+        newTri->sound    = tri->sound;
+        newTri->particle = tri->particle;
+        newTri->generateValues();
+        i++;
+    }
+
+    targetModel->generateMinMaxValues();
+}
+
 //makes a collision model be the transformed version of this collision model
 void CollisionModel::transformModel(CollisionModel* targetModel, Vector3f* translate)
 {

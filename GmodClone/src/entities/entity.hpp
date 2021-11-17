@@ -17,6 +17,7 @@ class Triangle3D;
 #define ENTITY_ONLINE_PLAYER 3
 #define ENTITY_COLLISION_BLOCK 4
 #define ENTITY_RED_BARREL 5
+#define ENTITY_LADDER 6
 
 class Entity
 {

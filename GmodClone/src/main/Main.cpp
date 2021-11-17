@@ -66,6 +66,7 @@
 #include "../guis/guitextureresources.hpp"
 #include "../guis/guitexture.hpp"
 #include "../toolbox/maths.hpp"
+#include "../entities/ladder.hpp"
 
 std::string Global::pathToEXE;
 
@@ -273,7 +274,7 @@ int main(int argc, char** argv)
     ObjLoader::loadModel(&modelsSphere, "res/Models/", "Sphere");
     Global::player = new Player(&modelsSphere); INCR_NEW("Entity");
 
-    CollisionModel* cm = ObjLoader::loadCollisionModel("Models/" + folder + "/", "Map1");
+    CollisionModel* cm = ObjLoader::loadCollisionModel("Models/" + folder + "/", "Collision");
     for (int i = 0; i < cm->triangles.size(); i++)
     {
         CollisionChecker::addTriangle(cm->triangles[i]);
@@ -296,6 +297,8 @@ int main(int argc, char** argv)
 
     //RedBarrel* barrel1 = new RedBarrel("Barrel1", Vector3f(86.722473f, 0.313497f, -4.892693f)); INCR_NEW("Entity");
 
+    Ladder* ladder1 = new Ladder("L1", Vector3f(-14.7011f, 0.0f, -6.00807f), Vector3f(0.0568f/2, 5.29103f, 0.55678f/2)); INCR_NEW("Entity");
+
     //Global::gameEntities.insert(npc1);
     //Global::gameEntities.insert(npc2);
     //Global::gameEntities.insert(npc3);
@@ -311,6 +314,18 @@ int main(int argc, char** argv)
     //Global::gameEntities.insert(cb4);
 
     //Global::gameEntities.insert(barrel1);
+
+    Global::gameEntities.insert(ladder1);
+
+    //x, y = (0, 0) is top left, (1, 1) is bottom right
+    //size = 1.0 = full screen height
+    //alignment chart:
+    //  0 1 2
+    //  3 4 5
+    //  6 7 8
+    //GUIText(std::string text, float size, FontType* font, float x, float y, int alignment, bool visible);
+
+    GUIText* fpsText = new GUIText("0", 0.02f, Global::gameFont, 1.0f, 0.0f, 2, true);
 
     while (Global::gameState != STATE_EXITING && displayWantsToClose() == 0)
     {
@@ -548,6 +563,9 @@ int main(int argc, char** argv)
         if (timeNew - previousTime >= 1.0)
         {
             Global::currentCalculatedFPS = (int)(std::round(frameCount/(timeNew - previousTime)));
+            fpsText->deleteMe();
+            delete fpsText;
+            fpsText = new GUIText(std::to_string(Global::currentCalculatedFPS), 0.02f, Global::gameFont, 1.0f, 0.0f, 2, true);
             //std::fprintf(stdout, "fps: %f\n", frameCount / (timeNew - previousTime));
             //printf("%f\t%f\n", (float)glfwGetTime(), 36.7816091954f*ball->vel.length());
             //std::fprintf(stdout, "diff: %d\n", Global::countNew - Global::countDelete);

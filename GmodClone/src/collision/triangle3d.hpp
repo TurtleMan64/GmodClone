@@ -45,6 +45,8 @@ public:
 
     Triangle3D(Vector3f* newP1, Vector3f* newP2, Vector3f* newP3, char type, char sound, char particle);
 
+    Triangle3D(float p1x, float p1y, float pz1, float px2, float py2, float pz2, float px3, float py3, float pz3);
+
     void generateValues();
 };
 

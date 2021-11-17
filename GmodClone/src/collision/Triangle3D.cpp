@@ -53,6 +53,27 @@ Triangle3D::Triangle3D(Vector3f* newP1, Vector3f* newP2, Vector3f* newP3, char t
     generateValues();
 }
 
+Triangle3D::Triangle3D(float p1x, float p1y, float p1z, float p2x, float p2y, float p2z, float p3x, float p3y, float p3z)
+{
+    this->p1X = p1x;
+    this->p1Y = p1y;
+    this->p1Z = p1z;
+
+    this->p2X = p2x;
+    this->p2Y = p2y;
+    this->p2Z = p2z;
+
+    this->p3X = p3x;
+    this->p3Y = p3y;
+    this->p3Z = p3z;
+
+    this->type = 0;
+    this->sound = -1;
+    this->particle = -1;
+
+    generateValues();
+}
+
 void Triangle3D::generateValues()
 {
     Vector3f vec1(p1X - p3X, p1Y - p3Y, p1Z - p3Z);

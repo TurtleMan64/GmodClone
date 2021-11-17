@@ -12,6 +12,7 @@
 #include "camera.hpp"
 #include "ball.hpp"
 #include "../audio/audioplayer.hpp"
+#include "ladder.hpp"
 
 extern float dt;
 
@@ -128,7 +129,7 @@ void Player::step()
                     for (int i = 0; i < NUM_ITERATIONS; i++)
                     {
                         float yOff = i*COLLISION_RADIUS*(2.0f/NUM_ITERATIONS);
-                        result = CollisionChecker::checkCollision(position.x, (position.y + COLLISION_RADIUS) - yOff, position.z, COLLISION_RADIUS);
+                        result = CollisionChecker::checkCollision(position.x, (position.y + COLLISION_RADIUS) - yOff, position.z, COLLISION_RADIUS - 0.01f);
                         if (result.hit)
                         {
                             distanceToFloor = yOff;
@@ -204,31 +205,76 @@ void Player::step()
         storedWallNormal = wallNormal;
     }
 
-    if (!onGround && wallJumpTimer >= 0.0f && Input::inputs.INPUT_ACTION1 && !Input::inputs.INPUT_PREVIOUS_ACTION1)
+    if (!onGround && Input::inputs.INPUT_ACTION1 && !Input::inputs.INPUT_PREVIOUS_ACTION1)
     {
-        int sfxId = 43;
-        if (latestWallTriangle != nullptr)
+        bool canWallJump = wallJumpTimer >= 0.0f;
+        if (!canWallJump)
         {
-            switch (latestWallTriangle->sound)
+            CollisionResult result = CollisionChecker::checkCollision(position.x + 0.03f, position.y + COLLISION_RADIUS, position.z, COLLISION_RADIUS);
+            if (result.hit && result.tri->normal.y <= 0.5f)
             {
-                case 0: sfxId = 43; break;
-                case 1: sfxId = 44; break;
-                case 2: sfxId = 45; break;
-                case 3: sfxId = 46; break;
-                case 4: sfxId = 47; break;
-                case 5: sfxId = 48; break;
-                case 6: sfxId = 49; break;
-                default: break;
+                latestWallTriangle = result.tri;
+                storedWallNormal = result.tri->normal;
+                canWallJump = true;
             }
         }
-        AudioPlayer::play(sfxId, nullptr);
+        if (!canWallJump)
+        {
+            CollisionResult result = CollisionChecker::checkCollision(position.x - 0.03f, position.y + COLLISION_RADIUS, position.z, COLLISION_RADIUS);
+            if (result.hit && result.tri->normal.y <= 0.5f)
+            {
+                latestWallTriangle = result.tri;
+                storedWallNormal = result.tri->normal;
+                canWallJump = true;
+            }
+        }
+        if (!canWallJump)
+        {
+            CollisionResult result = CollisionChecker::checkCollision(position.x, position.y + COLLISION_RADIUS, position.z + 0.03f, COLLISION_RADIUS);
+            if (result.hit && result.tri->normal.y <= 0.5f)
+            {
+                latestWallTriangle = result.tri;
+                storedWallNormal = result.tri->normal;
+                canWallJump = true;
+            }
+        }
+        if (!canWallJump)
+        {
+            CollisionResult result = CollisionChecker::checkCollision(position.x, position.y + COLLISION_RADIUS, position.z - 0.03f, COLLISION_RADIUS);
+            if (result.hit && result.tri->normal.y <= 0.5f)
+            {
+                latestWallTriangle = result.tri;
+                storedWallNormal = result.tri->normal;
+                canWallJump = true;
+            }
+        }
 
-        vel = vel + storedWallNormal.scaleCopy(WALL_JUMP_SPEED_HORIZONTAL);
-        vel.y += getJumpValue(dt) - 1.0f;
-        wallJumpTimer = -1.0f;
+        if (canWallJump)
+        {
+            int sfxId = 43;
+            if (latestWallTriangle != nullptr)
+            {
+                switch (latestWallTriangle->sound)
+                {
+                    case 0: sfxId = 43; break;
+                    case 1: sfxId = 44; break;
+                    case 2: sfxId = 45; break;
+                    case 3: sfxId = 46; break;
+                    case 4: sfxId = 47; break;
+                    case 5: sfxId = 48; break;
+                    case 6: sfxId = 49; break;
+                    default: break;
+                }
+            }
+            AudioPlayer::play(sfxId, nullptr);
+
+            vel = vel + storedWallNormal.scaleCopy(WALL_JUMP_SPEED_HORIZONTAL);
+            vel.y += getJumpValue(dt) - 1.0f;
+            wallJumpTimer = -1.0f;
+        }
     }
 
-    // Go through entities and get pushed by NPC's
+    // Go through entities and move / get moved by entities
     for (Entity* e : Global::gameEntities)
     {
         switch (e->getEntityType())
@@ -260,6 +306,57 @@ void Player::step()
                     if (diff.lengthSquared() < COLLISION_RADIUS*COLLISION_RADIUS)
                     {
                         e->vel = e->vel + vel.scaleCopy(1.1f);
+                    }
+                }
+                break;
+            }
+
+            case ENTITY_LADDER:
+            {
+                Ladder* ladder = (Ladder*)e;
+                Vector3f diff = e->position - position;
+                if (fabsf(diff.x) < ladder->size.x + COLLISION_RADIUS &&
+                    fabsf(diff.z) < ladder->size.z + COLLISION_RADIUS &&
+                    position.y + HUMAN_HEIGHT > e->position.y &&
+                    position.y < e->position.y + ladder->size.y)
+                {
+                    bool collided = false;
+
+                    Vector3f center = position;
+                    center.y += COLLISION_RADIUS;
+                    float out1;
+                    Vector3f out2;
+                    for (Triangle3D* tri : ladder->cm->triangles)
+                    {
+                        if (Maths::sphereIntersectsTriangle(&center, COLLISION_RADIUS, tri, &out1, &out2))
+                        {
+                            collided = true;
+                            break;
+                        }
+                    }
+
+                    if (!collided && !isCrouching && slideTimer < 0.0f)
+                    {
+                        center.y += COLLISION_RADIUS*2;
+                        for (Triangle3D* tri : ladder->cm->triangles)
+                        {
+                            if (Maths::sphereIntersectsTriangle(&center, COLLISION_RADIUS, tri, &out1, &out2))
+                            {
+                                collided = true;
+                                break;
+                            }
+                        }
+                    }
+                    
+                    if (collided)
+                    {
+                        float stickAngle = atan2f(Input::inputs.INPUT_Y, Input::inputs.INPUT_X) - Maths::PI/2; //angle you are holding on the stick, with 0 being up
+                        float stickRadius = sqrtf(Input::inputs.INPUT_X*Input::inputs.INPUT_X + Input::inputs.INPUT_Y*Input::inputs.INPUT_Y);
+
+                        Vector3f dirForward = lookDir;
+                        dirForward.setLength(stickRadius*3);
+
+                        vel = Maths::rotatePoint(&dirForward, &Global::gameCamera->up, -stickAngle + Maths::PI);
                     }
                 }
                 break;

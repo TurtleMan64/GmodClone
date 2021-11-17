@@ -213,6 +213,9 @@
     <ClCompile Include="src\guis\GuiTextureResources.cpp">
       <Filter>Source Files\guis</Filter>
     </ClCompile>
+    <ClCompile Include="src\entities\Ladder.cpp">
+      <Filter>Source Files\entities</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\toolbox\getline.hpp">
@@ -355,6 +358,9 @@
     </ClInclude>
     <ClInclude Include="src\guis\guitextureresources.hpp">
       <Filter>Source Files\guis</Filter>
+    </ClInclude>
+    <ClInclude Include="src\entities\ladder.hpp">
+      <Filter>Source Files\entities</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
