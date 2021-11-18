@@ -70,6 +70,11 @@ public:
     // How far you can hit things from
     const float ARM_REACH = 1.9f;
 
+    // > 0 means you cant use a ladder (colldown after jumping)
+    float ladderTimer = 0.0f;
+    const float LADDER_JUMP_COOLDOWN = 1.0f;
+    bool isOnLadder = false;
+
     void updateCamera();
 
     void swingYourArm();

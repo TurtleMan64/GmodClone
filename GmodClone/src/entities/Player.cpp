@@ -176,15 +176,34 @@ void Player::step()
     // Gravity
     vel = vel + yAxis.scaleCopy(FORCE_GRAVITY*dt);
 
+    ladderTimer -= dt;
+
+    bool didLadderJump = false;
+
     // Normal Jump
-    if (Input::inputs.INPUT_ACTION1 && !Input::inputs.INPUT_PREVIOUS_ACTION1 && timeSinceOnGround <= AIR_JUMP_TOLERANCE)
+    if (Input::inputs.INPUT_ACTION1 && !Input::inputs.INPUT_PREVIOUS_ACTION1)
     {
-        bool canJump = true;
-        // Don't jump if there is a ceiling above you
-        if (slideTimer > 0.0f || isCrouching)
+        bool canJump = false;
+
+        if (timeSinceOnGround <= AIR_JUMP_TOLERANCE)
         {
-            CollisionResult result = CollisionChecker::checkCollision(position.x, position.y + COLLISION_RADIUS*3, position.z, COLLISION_RADIUS - 0.01f);
-            canJump = !result.hit;
+            canJump = true;
+
+            // Don't jump if there is a ceiling above you
+            if (slideTimer > 0.0f || isCrouching)
+            {
+                CollisionResult result = CollisionChecker::checkCollision(position.x, position.y + COLLISION_RADIUS*3, position.z, COLLISION_RADIUS - 0.01f);
+                canJump = !result.hit;
+            }
+        }
+        else if (isOnLadder && ladderTimer < 0.0f)
+        {
+            canJump = true;
+            ladderTimer = LADDER_JUMP_COOLDOWN;
+            lastGroundNormal.set(0, 1, 0);
+            onGround = false;
+            isTouchingWall = false;
+            didLadderJump = true;
         }
 
         if (canJump)
@@ -205,7 +224,7 @@ void Player::step()
         storedWallNormal = wallNormal;
     }
 
-    if (!onGround && Input::inputs.INPUT_ACTION1 && !Input::inputs.INPUT_PREVIOUS_ACTION1)
+    if (!onGround && !didLadderJump && Input::inputs.INPUT_ACTION1 && !Input::inputs.INPUT_PREVIOUS_ACTION1)
     {
         bool canWallJump = wallJumpTimer >= 0.0f;
         if (!canWallJump)
@@ -274,6 +293,8 @@ void Player::step()
         }
     }
 
+    isOnLadder = false;
+
     // Go through entities and move / get moved by entities
     for (Entity* e : Global::gameEntities)
     {
@@ -313,6 +334,11 @@ void Player::step()
 
             case ENTITY_LADDER:
             {
+                if (ladderTimer >= 0.0f)
+                {
+                    break;
+                }
+
                 Ladder* ladder = (Ladder*)e;
                 Vector3f diff = e->position - position;
                 if (fabsf(diff.x) < ladder->size.x + COLLISION_RADIUS &&
@@ -357,6 +383,8 @@ void Player::step()
                         dirForward.setLength(stickRadius*3);
 
                         vel = Maths::rotatePoint(&dirForward, &Global::gameCamera->up, -stickAngle + Maths::PI);
+
+                        isOnLadder = true;
                     }
                 }
                 break;

@@ -618,7 +618,9 @@ int main(int argc, char** argv)
 
 void Global::addEntity(Entity* entityToAdd)
 {
+    gameEntitiesAddMutex.lock();
     gameEntitiesToAdd.push_back(entityToAdd);
+    gameEntitiesAddMutex.unlock();
 }
 
 void Global::deleteEntity(Entity* entityToDelete)
@@ -628,6 +630,7 @@ void Global::deleteEntity(Entity* entityToDelete)
 
 void Global::deleteAllEntites()
 {
+    gameEntitiesAddMutex.lock();
     //Make sure no entities get left behind in transition
     for (Entity* entityToAdd : gameEntitiesToAdd)
     {
@@ -649,6 +652,8 @@ void Global::deleteAllEntites()
         delete entityToDelete; INCR_DEL("Entity");
     }
     gameEntities.clear();
+
+    gameEntitiesAddMutex.unlock();
 
     if (Global::gameStageManager != nullptr)
     {
