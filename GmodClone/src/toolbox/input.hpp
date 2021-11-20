@@ -63,16 +63,19 @@ class Input
 private:
     static void scrollCallback(GLFWwindow* window, double xOff, double yOff);
 
+    static void keyboardCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
+
 public:
     static InputStruct inputs;
+
+    static char* chatInput;
+    static int chatLength;
+    static bool isTypingInChat;
+    static bool localChatHasBeenUpdated;
 
     static void init();
 
     static void pollInputs();
-
-    static std::string getControllerName();
-
-    static bool changeController(int direction);
 };
 
 #endif

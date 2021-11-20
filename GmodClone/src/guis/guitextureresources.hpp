@@ -7,6 +7,7 @@ class GuiTextureResources
 {
 public:
     static GuiTexture* textureChatBG;
+    static GuiTexture* textureLocalChatBG;
 
     static void loadGuiTextures();
 };

@@ -24,6 +24,7 @@
 #include <chrono>
 #include "../renderEngine/renderEngine.hpp"
 #include "../entities/player.hpp"
+#include "split.hpp"
 
 #ifdef DEV_MODE
 #include <iostream>
@@ -47,46 +48,6 @@ float mouseSensitivityY = 0.25f;
 
 float stickSensitivityX = 2.5f;
 float stickSensitivityY = 2.5f;
-
-float triggerSensitivity = 2;
-
-int CONTROLLER_Id = 0; //-1 = no controller. otherwise, controller id
-
-int BUTTON_A      = 0;
-int BUTTON_X      = 1;
-int BUTTON_B      = 2;
-int BUTTON_Y      = 3;
-int BUTTON_LB     = 4;
-int BUTTON_RB     = 5;
-int BUTTON_SELECT = 6;
-int BUTTON_START  = 7;
-int BUTTON_DPADU  = 11;
-int BUTTON_DPADD  = 13;
-
-int   STICK_LX       = 0;
-float STICK_LX_SCALE = 1;
-int   STICK_LY       = 1;
-float STICK_LY_SCALE = 1;
-int   STICK_RX       = 2;
-float STICK_RX_SCALE = 1;
-int   STICK_RY       = 3;
-float STICK_RY_SCALE = 1;
-
-float STICK_LXDEADZONE = 0.1f;
-float STICK_LYDEADZONE = 0.1f;
-float STICK_RXDEADZONE = 0.1f;
-float STICK_RYDEADZONE = 0.1f;
-
-int   TRIGGER_L  =  4;
-float LT_NEUTRAL = -1;
-float LT_MAX     =  1;
-float LT_RANGE   =  2;
-int   TRIGGER_R  =  5;
-float RT_NEUTRAL = -1;
-float RT_MAX     =  1;
-float RT_RANGE   =  2;
-
-float TRIGGER_DEADZONE = 0.3f;
 
 extern GLFWwindow* window;
 
@@ -131,166 +92,6 @@ void Input::pollInputs()
     Input::inputs.INPUT_Y2 = 0;
     Input::inputs.INPUT_L2 = 0;
     Input::inputs.INPUT_R2 = 0;
-
-    bool joystickIsPresent = false;
-
-    #if GLFW_VERSION_MAJOR == 3 && GLFW_VERSION_MINOR == 3
-    if ((CONTROLLER_Id != (GLFW_JOYSTICK_1 - 1)) && glfwJoystickIsGamepad(CONTROLLER_Id)) //joystick is both present and has a pre defined mapping
-    {
-        GLFWgamepadstate state;
-        if (glfwGetGamepadState(CONTROLLER_Id, &state))
-        {
-            joystickIsPresent = true;
-
-            Input::inputs.INPUT_ACTION1 = state.buttons[BUTTON_A];
-            Input::inputs.INPUT_ACTION2 = state.buttons[BUTTON_X];
-            Input::inputs.INPUT_ACTION3 = state.buttons[BUTTON_B];
-            Input::inputs.INPUT_ACTION4 = state.buttons[BUTTON_Y];
-
-            Input::inputs.INPUT_LB      = state.buttons[BUTTON_LB];
-            Input::inputs.INPUT_RB      = state.buttons[BUTTON_RB];
-            Input::inputs.INPUT_SELECT  = state.buttons[BUTTON_SELECT];
-            Input::inputs.INPUT_START   = state.buttons[BUTTON_START];
-
-            Input::inputs.INPUT_DPADU   = state.buttons[BUTTON_DPADU];
-            Input::inputs.INPUT_DPADD   = state.buttons[BUTTON_DPADD];
-
-            Input::inputs.INPUT_X  = state.axes[STICK_LX];
-            Input::inputs.INPUT_Y  = state.axes[STICK_LY];
-            Input::inputs.INPUT_X2 = state.axes[STICK_RX];
-            Input::inputs.INPUT_Y2 = state.axes[STICK_RY];
-            Input::inputs.INPUT_L2 = state.axes[TRIGGER_L];
-            Input::inputs.INPUT_R2 = state.axes[TRIGGER_R];
-        }
-    }
-    #endif
-
-    if (!joystickIsPresent && (CONTROLLER_Id != (GLFW_JOYSTICK_1 - 1)) && glfwJoystickPresent(CONTROLLER_Id))
-    {
-        joystickIsPresent = true;
-
-        int buttonCount;
-        const unsigned char *buttons = glfwGetJoystickButtons(CONTROLLER_Id, &buttonCount);
-
-        Input::inputs.INPUT_ACTION1  = buttons[BUTTON_A];
-        Input::inputs.INPUT_ACTION2  = buttons[BUTTON_B];
-        Input::inputs.INPUT_ACTION3  = buttons[BUTTON_X];
-        Input::inputs.INPUT_ACTION4  = buttons[BUTTON_Y];
-        Input::inputs.INPUT_RB       = buttons[BUTTON_RB];
-        Input::inputs.INPUT_LB       = buttons[BUTTON_LB];
-        Input::inputs.INPUT_START    = buttons[BUTTON_START];
-        Input::inputs.INPUT_DPADU    = buttons[BUTTON_DPADU];
-        Input::inputs.INPUT_DPADD    = buttons[BUTTON_DPADD];
-
-        int axesCount;
-        const float *axes = glfwGetJoystickAxes(CONTROLLER_Id, &axesCount);
-
-        Input::inputs.INPUT_X = axes[STICK_LX];
-        Input::inputs.INPUT_Y = axes[STICK_LY];
-
-        Input::inputs.INPUT_X2 = axes[STICK_RX];
-        Input::inputs.INPUT_Y2 = axes[STICK_RY];
-
-        Input::inputs.INPUT_L2 = axes[TRIGGER_L];
-        Input::inputs.INPUT_R2 = axes[TRIGGER_R];
-    }
-
-    if (joystickIsPresent) //apply scaling and deadzones
-    {
-        if (abs(Input::inputs.INPUT_X)  < STICK_LXDEADZONE)
-        { 
-            Input::inputs.INPUT_X  = 0;
-        }
-        else
-        {
-            const float RANGE = 1.0f - STICK_LXDEADZONE;
-            if (Input::inputs.INPUT_X >= 0)
-            {
-                Input::inputs.INPUT_X = (Input::inputs.INPUT_X - STICK_LXDEADZONE)/RANGE;
-            }
-            else
-            {
-                Input::inputs.INPUT_X = (Input::inputs.INPUT_X + STICK_LXDEADZONE)/RANGE;
-            }
-        }
-
-        if (abs(Input::inputs.INPUT_Y)  < STICK_LYDEADZONE)
-        {
-            Input::inputs.INPUT_Y  = 0;
-        }
-        else
-        {
-            const float RANGE = 1.0f - STICK_LYDEADZONE;
-            if (Input::inputs.INPUT_Y >= 0)
-            {
-                Input::inputs.INPUT_Y = (Input::inputs.INPUT_Y - STICK_LYDEADZONE)/RANGE;
-            }
-            else
-            {
-                Input::inputs.INPUT_Y = (Input::inputs.INPUT_Y + STICK_LYDEADZONE)/RANGE;
-            }
-        }
-
-        if (abs(Input::inputs.INPUT_X2) < STICK_RXDEADZONE)
-        {
-            Input::inputs.INPUT_X2 = 0;
-        }
-        else
-        {
-            const float RANGE = 1.0f - STICK_RXDEADZONE;
-            if (Input::inputs.INPUT_X2 >= 0)
-            {
-                Input::inputs.INPUT_X2 = (Input::inputs.INPUT_X2 - STICK_RXDEADZONE)/RANGE;
-            }
-            else
-            {
-                Input::inputs.INPUT_X2 = (Input::inputs.INPUT_X2 + STICK_RXDEADZONE)/RANGE;
-            }
-        }
-
-
-        if (abs(Input::inputs.INPUT_Y2) < STICK_RYDEADZONE)
-        {
-            Input::inputs.INPUT_Y2 = 0;
-        }
-        else
-        {
-            const float RANGE = 1.0f - STICK_RYDEADZONE;
-            if (Input::inputs.INPUT_Y2 >= 0)
-            {
-                Input::inputs.INPUT_Y2 = (Input::inputs.INPUT_Y2 - STICK_RYDEADZONE)/RANGE;
-            }
-            else
-            {
-                Input::inputs.INPUT_Y2 = (Input::inputs.INPUT_Y2 + STICK_RYDEADZONE)/RANGE;
-            }
-        }
-
-        Input::inputs.INPUT_X  *= STICK_LX_SCALE;
-        Input::inputs.INPUT_Y  *= STICK_LY_SCALE;
-        Input::inputs.INPUT_X2 *= STICK_RX_SCALE;
-        Input::inputs.INPUT_Y2 *= STICK_RY_SCALE;
-
-        Input::inputs.INPUT_X2 *= stickSensitivityX;
-        Input::inputs.INPUT_Y2 *= stickSensitivityY;
-
-
-        float triggerLValue = 0;
-        float triggerRValue = 0;
-
-
-        float rawValue = (Input::inputs.INPUT_L2 - LT_NEUTRAL) / LT_RANGE;
-        if (rawValue >= TRIGGER_DEADZONE) { triggerLValue = rawValue; }
-
-        rawValue = (Input::inputs.INPUT_R2 - RT_NEUTRAL) / RT_RANGE;
-        if (rawValue >= TRIGGER_DEADZONE) { triggerRValue = rawValue; }
-
-
-        Input::inputs.INPUT_X2 += triggerSensitivity * (triggerLValue - triggerRValue);
-
-        Input::inputs.INPUT_L2 = triggerLValue;
-        Input::inputs.INPUT_R2 = triggerRValue;
-    }
 
     double xpos, ypos;
     glfwGetCursorPos(window, &xpos, &ypos);
@@ -519,13 +320,21 @@ void Input::init()
     Input::inputs.uniqueVar = 1149650285; //Value that is very easy to find with a memory scan
 
     glfwSetInputMode(window, GLFW_STICKY_MOUSE_BUTTONS, GLFW_TRUE);
+    glfwSetInputMode(window, GLFW_LOCK_KEY_MODS, GLFW_TRUE);
 
     if (glfwRawMouseMotionSupported())
     {
         glfwSetInputMode(window, GLFW_RAW_MOUSE_MOTION, GLFW_TRUE);
     }
 
+    Input::chatInput = new char[100];
+    for (int i = 0; i < 100; i++)
+    {
+        Input::chatInput[i] = 0;
+    }
+
     glfwSetScrollCallback(window, Input::scrollCallback);
+    glfwSetKeyCallback(window, Input::keyboardCallback);
 
     //load sensitivity and button mappings from external file
 
@@ -559,18 +368,6 @@ void Input::init()
                 {
                     mouseSensitivityY = std::stof(lineSplit[1], nullptr);
                 }
-                else if (strcmp(lineSplit[0], "Stick_X") == 0)
-                {
-                    stickSensitivityX = std::stof(lineSplit[1], nullptr);
-                }
-                else if (strcmp(lineSplit[0], "Stick_Y") == 0)
-                {
-                    stickSensitivityY = std::stof(lineSplit[1], nullptr);
-                }
-                else if (strcmp(lineSplit[0], "Triggers") == 0)
-                {
-                    triggerSensitivity = std::stof(lineSplit[1], nullptr);
-                }
             }
 
             free(lineSplit);
@@ -578,258 +375,168 @@ void Input::init()
         file.close();
     }
 
-
-    std::ifstream file2(Global::pathToEXE + "Settings/ControllerConfig.ini");
-    if (!file2.is_open())
-    {
-        std::fprintf(stdout, "Error: Cannot load file '%s'\n", (Global::pathToEXE + "Settings/ControllerConfig.ini").c_str());
-        file2.close();
-    }
-    else
-    {
-        std::string line;
-
-        while (!file2.eof())
-        {
-            getlineSafe(file2, line);
-
-            char lineBuf[512];
-            memcpy(lineBuf, line.c_str(), line.size()+1);
-
-            int splitLength = 0;
-            char** lineSplit = split(lineBuf, ' ', &splitLength);
-
-            if (splitLength == 2)
-            {
-                if (strcmp(lineSplit[0], "A") == 0)
-                {
-                    BUTTON_A = std::stoi(lineSplit[1], nullptr, 10);
-                }
-                else if (strcmp(lineSplit[0], "B") == 0)
-                {
-                    BUTTON_B = std::stoi(lineSplit[1], nullptr, 10);
-                }
-                else if (strcmp(lineSplit[0], "X") == 0)
-                {
-                    BUTTON_X = std::stoi(lineSplit[1], nullptr, 10);
-                }
-                else if (strcmp(lineSplit[0], "Y") == 0)
-                {
-                    BUTTON_Y = std::stoi(lineSplit[1], nullptr, 10);
-                }
-                else if (strcmp(lineSplit[0], "LB") == 0)
-                {
-                    BUTTON_LB = std::stoi(lineSplit[1], nullptr, 10);
-                }
-                else if (strcmp(lineSplit[0], "RB") == 0)
-                {
-                    BUTTON_RB = std::stoi(lineSplit[1], nullptr, 10);
-                }
-                else if (strcmp(lineSplit[0], "Start") == 0)
-                {
-                    BUTTON_START = std::stoi(lineSplit[1], nullptr, 10);
-                }
-                else if (strcmp(lineSplit[0], "DpadU") == 0)
-                {
-                    BUTTON_DPADU = std::stoi(lineSplit[1], nullptr, 10);
-                }
-                else if (strcmp(lineSplit[0], "DpadD") == 0)
-                {
-                    BUTTON_DPADD = std::stoi(lineSplit[1], nullptr, 10);
-                }
-                else if (strcmp(lineSplit[0], "Controller_Id") == 0)
-                {
-                    int raw = std::stoi(lineSplit[1], nullptr, 10);
-                    switch (raw)
-                    {
-                        case 0:  CONTROLLER_Id = GLFW_JOYSTICK_1;  break;
-                        case 1:  CONTROLLER_Id = GLFW_JOYSTICK_2;  break;
-                        case 2:  CONTROLLER_Id = GLFW_JOYSTICK_3;  break;
-                        case 3:  CONTROLLER_Id = GLFW_JOYSTICK_4;  break;
-                        case 4:  CONTROLLER_Id = GLFW_JOYSTICK_5;  break;
-                        case 5:  CONTROLLER_Id = GLFW_JOYSTICK_6;  break;
-                        case 6:  CONTROLLER_Id = GLFW_JOYSTICK_7;  break;
-                        case 7:  CONTROLLER_Id = GLFW_JOYSTICK_8;  break;
-                        case 8:  CONTROLLER_Id = GLFW_JOYSTICK_9;  break;
-                        case 9:  CONTROLLER_Id = GLFW_JOYSTICK_10; break;
-                        case 10: CONTROLLER_Id = GLFW_JOYSTICK_11; break;
-                        case 11: CONTROLLER_Id = GLFW_JOYSTICK_12; break;
-                        case 12: CONTROLLER_Id = GLFW_JOYSTICK_13; break;
-                        case 13: CONTROLLER_Id = GLFW_JOYSTICK_14; break;
-                        case 14: CONTROLLER_Id = GLFW_JOYSTICK_15; break;
-                        case 15: CONTROLLER_Id = GLFW_JOYSTICK_16; break;
-                        default: CONTROLLER_Id = GLFW_JOYSTICK_1-1;break;
-                    }
-                }
-            }
-            else if (splitLength == 4)
-            {
-                if (strcmp(lineSplit[0], "Stick_LX") == 0)
-                {
-                    STICK_LX = std::stoi(lineSplit[1], nullptr, 10);
-                    STICK_LXDEADZONE = std::stof(lineSplit[2], nullptr);
-                    STICK_LX_SCALE = std::stof(lineSplit[3], nullptr);
-                }
-                else if (strcmp(lineSplit[0], "Stick_LY") == 0)
-                {
-                    STICK_LY = std::stoi(lineSplit[1], nullptr, 10);
-                    STICK_LYDEADZONE = std::stof(lineSplit[2], nullptr);
-                    STICK_LY_SCALE = std::stof(lineSplit[3], nullptr);
-                }
-                else if (strcmp(lineSplit[0], "Stick_RX") == 0)
-                {
-                    STICK_RX = std::stoi(lineSplit[1], nullptr, 10);
-                    STICK_RXDEADZONE = std::stof(lineSplit[2], nullptr);
-                    STICK_RX_SCALE = std::stof(lineSplit[3], nullptr);
-                }
-                else if (strcmp(lineSplit[0], "Stick_RY") == 0)
-                {
-                    STICK_RY = std::stoi(lineSplit[1], nullptr, 10);
-                    STICK_RYDEADZONE = std::stof(lineSplit[2], nullptr);
-                    STICK_RY_SCALE = std::stof(lineSplit[3], nullptr);
-                }
-            }
-            else if (splitLength == 5)
-            {
-                if (strcmp(lineSplit[0], "Trigger_L") == 0)
-                {
-                    TRIGGER_L = std::stoi(lineSplit[1], nullptr, 10);
-                    LT_NEUTRAL = std::stof(lineSplit[2], nullptr);
-                    LT_MAX = std::stof(lineSplit[3], nullptr);
-                    TRIGGER_DEADZONE = std::stof(lineSplit[4], nullptr);
-                    LT_RANGE = LT_MAX - LT_NEUTRAL;
-                }
-                else if (strcmp(lineSplit[0], "Trigger_R") == 0)
-                {
-                    TRIGGER_R = std::stoi(lineSplit[1], nullptr, 10);
-                    RT_NEUTRAL = std::stof(lineSplit[2], nullptr);
-                    RT_MAX = std::stof(lineSplit[3], nullptr);
-                    TRIGGER_DEADZONE = std::stof(lineSplit[4], nullptr);
-                    RT_RANGE = RT_MAX - RT_NEUTRAL;
-                }
-            }
-
-            free(lineSplit);
-        }
-        file2.close();
-    }
-
     glfwPollEvents();
-
-    //make sure no index goes out of bounds
-    if ((CONTROLLER_Id != (GLFW_JOYSTICK_1 - 1)) && glfwJoystickPresent(CONTROLLER_Id) == GLFW_TRUE)
-    {
-        int axesCount;
-        glfwGetJoystickAxes(CONTROLLER_Id, &axesCount);
-        STICK_LX  = std::min(STICK_LX,  axesCount - 1);
-        STICK_LY  = std::min(STICK_LY,  axesCount - 1);
-        STICK_RX  = std::min(STICK_RX,  axesCount - 1);
-        STICK_RY  = std::min(STICK_RY,  axesCount - 1);
-        TRIGGER_L = std::min(TRIGGER_L, axesCount - 1);
-        TRIGGER_R = std::min(TRIGGER_R, axesCount - 1);
-
-        int buttonCount;
-        glfwGetJoystickButtons(CONTROLLER_Id, &buttonCount);
-        BUTTON_A     = std::min(BUTTON_A,     buttonCount - 1);
-        BUTTON_B     = std::min(BUTTON_B,     buttonCount - 1);
-        BUTTON_X     = std::min(BUTTON_X,     buttonCount - 1);
-        BUTTON_Y     = std::min(BUTTON_Y,     buttonCount - 1);
-        BUTTON_LB    = std::min(BUTTON_LB,    buttonCount - 1);
-        BUTTON_RB    = std::min(BUTTON_RB,    buttonCount - 1);
-        BUTTON_START = std::min(BUTTON_START, buttonCount - 1);
-        BUTTON_DPADU = std::min(BUTTON_DPADU, buttonCount - 1);
-        BUTTON_DPADD = std::min(BUTTON_DPADD, buttonCount - 1);
-    }
-
-    //log the controllers we see for humans if needed
-    std::ofstream joyLog;
-    joyLog.open((Global::pathToEXE + "Settings/ControllerLog.txt").c_str(), std::ios::out | std::ios::trunc);
-
-    if (!joyLog.is_open())
-    {
-        std::fprintf(stderr, "Error: Failed to create/access '%s'\n", (Global::pathToEXE + "Settings/ControllerLog.txt").c_str());
-        joyLog.close();
-    }
-    else
-    {
-        for (int i = GLFW_JOYSTICK_1; i < GLFW_JOYSTICK_LAST; i++)
-        {
-            joyLog << "Controller " + std::to_string(i) + " Name: ";
-            const char* name = glfwGetJoystickName(i);
-            if (name != nullptr)
-            {
-                joyLog << name;
-            }
-            joyLog << "\n";
-        }
-
-        joyLog.close();
-    }
-}
-
-std::string Input::getControllerName()
-{
-    if (CONTROLLER_Id == (GLFW_JOYSTICK_1 - 1))
-    {
-        return "None";    
-    }
-
-    #if GLFW_VERSION_MAJOR == 3 && GLFW_VERSION_MINOR == 3
-    const char* nameGamepad = glfwGetGamepadName(CONTROLLER_Id);
-    if (nameGamepad != nullptr)
-    {
-        return nameGamepad;
-    }
-    #endif
-
-    const char* nameJoystick = glfwGetJoystickName(CONTROLLER_Id);
-    if (nameJoystick != nullptr)
-    {
-        return nameJoystick;
-    }
-
-    return "None";
-}
-
-bool Input::changeController(int direction)
-{
-    int originalControllerId = CONTROLLER_Id;
-    int maxAttempts = (GLFW_JOYSTICK_LAST - GLFW_JOYSTICK_1) + 1;
-    int currentAttempt = 0;
-    if (direction >= 0)
-    {
-        direction = 1;
-    }
-    else
-    {
-        direction = -1;
-    }
-
-    while (currentAttempt < maxAttempts)
-    {
-        CONTROLLER_Id = (CONTROLLER_Id + direction);
-        if (CONTROLLER_Id < GLFW_JOYSTICK_1 - 1)
-        {
-            CONTROLLER_Id = GLFW_JOYSTICK_LAST;
-        }
-        else if (CONTROLLER_Id > GLFW_JOYSTICK_LAST)
-        {
-            CONTROLLER_Id = GLFW_JOYSTICK_1 - 1;
-        }
-
-        if (CONTROLLER_Id == GLFW_JOYSTICK_1 - 1 || glfwJoystickPresent(CONTROLLER_Id))
-        {
-            return true;
-        }
-
-        currentAttempt++;
-    }
-
-    CONTROLLER_Id = originalControllerId;
-    return false;
 }
 
 void Input::scrollCallback(GLFWwindow* /*w*/, double /*xOff*/, double yOff)
 {
     mouseScroll = yOff;
+}
+
+char* Input::chatInput = nullptr;
+int Input::chatLength = 0;
+bool Input::isTypingInChat = false;
+bool Input::localChatHasBeenUpdated = false;
+
+void Input::keyboardCallback(GLFWwindow* /**/, int key, int /**/, int action, int mods)
+{
+    if (action == GLFW_PRESS)
+    {
+        switch (key)
+        {
+            case GLFW_KEY_GRAVE_ACCENT:
+            {
+                Input::isTypingInChat = !Input::isTypingInChat;
+                Input::localChatHasBeenUpdated = true;
+                break;
+            }
+
+            case GLFW_KEY_ENTER:
+            {
+                if (Input::isTypingInChat && Input::chatLength > 0)
+                {
+                    try
+                    {
+                        if (Input::chatLength >= 5 && strncmp("fov ", Input::chatInput, 4) == 0 ||
+                            Input::chatLength >= 5 && strncmp("FOV ", Input::chatInput, 4) == 0)
+                        {
+                            std::vector<std::string> tokens = split(Input::chatInput, ' ');
+                            if (tokens.size() > 1)
+                            {
+                                extern float VFOV_BASE;
+                                VFOV_BASE = Maths::clamp(30.0f, std::stof(tokens[1]), 120.0f);
+                                Master_makeProjectionMatrix();
+                            }
+                        }
+                        else if (Input::chatLength >= 9 && strncmp("fps_cap ", Input::chatInput, 8) == 0 ||
+                                 Input::chatLength >= 9 && strncmp("FPS_CAP ", Input::chatInput, 8) == 0 ||
+                                 Input::chatLength >= 9 && strncmp("fps-cap ", Input::chatInput, 8) == 0 ||
+                                 Input::chatLength >= 9 && strncmp("FPS-CAP ", Input::chatInput, 8) == 0)
+                        {
+                            std::vector<std::string> tokens = split(Input::chatInput, ' ');
+                            if (tokens.size() > 1)
+                            {
+                                float newFps = std::stof(tokens[1]);
+                                if (newFps <= 0.0f)
+                                {
+                                    Global::fpsLimit = -1.0f;
+                                }
+                                else
+                                {
+                                    Global::fpsLimit = Maths::clamp(30.0f, newFps, 99999999999.0f);
+                                }
+                            }
+                        }
+                        else if (Input::chatLength >= 7 && strncmp("vsync ", Input::chatInput, 6) == 0 ||
+                                 Input::chatLength >= 7 && strncmp("VSYNC ", Input::chatInput, 6) == 0)
+                        {
+                            std::vector<std::string> tokens = split(Input::chatInput, ' ');
+                            if (tokens.size() > 1)
+                            {
+                                float fpsUnlock = std::stof(tokens[1]);
+                                if (fpsUnlock > 0.5f)
+                                {
+                                    Global::framerateUnlock = false;
+                                }
+                                else
+                                {
+                                    Global::framerateUnlock = true;
+                                }
+                            }
+                        }
+                    }
+                    catch (std::exception e)
+                    {
+                        
+                    }
+
+                    Global::addChatMessage(Input::chatInput, Vector3f(1, 1, 1));
+                    Input::chatLength = 0;
+                    Input::chatInput[0] = 0;
+                    Input::localChatHasBeenUpdated = true;
+                    Input::isTypingInChat = false;
+                }
+                break;
+            }
+
+            case GLFW_KEY_BACKSPACE:
+            {
+                if (Input::isTypingInChat)
+                {
+                    if (Input::chatLength > 0)
+                    {
+                        Input::chatInput[Input::chatLength] = 0;
+                        Input::chatInput[Input::chatLength-1] = 0;
+                        Input::chatLength--;
+                        Input::localChatHasBeenUpdated = true;
+                    }
+                }
+                break;
+            }
+
+            default:
+            {
+                if (Input::isTypingInChat && key >= 32 && key <= 126)
+                {
+                    if (Input::chatLength < 44)
+                    {
+                        char ascii = (char)key;
+                        bool shift = mods & GLFW_MOD_SHIFT;
+                        bool caps = mods & GLFW_MOD_CAPS_LOCK;
+
+                        if (key >= 65 && key <= 90)
+                        {
+                            if (shift == caps)
+                            {
+                                ascii += 32;
+                            }
+                        }
+                        else if (shift)
+                        {
+                            switch (key)
+                            {
+                                case GLFW_KEY_1:             ascii = '!'; break;
+                                case GLFW_KEY_2:             ascii = '@'; break;
+                                case GLFW_KEY_3:             ascii = '#'; break;
+                                case GLFW_KEY_4:             ascii = '$'; break;
+                                case GLFW_KEY_5:             ascii = '%'; break;
+                                case GLFW_KEY_6:             ascii = '^'; break;
+                                case GLFW_KEY_7:             ascii = '&'; break;
+                                case GLFW_KEY_8:             ascii = '*'; break;
+                                case GLFW_KEY_9:             ascii = '('; break;
+                                case GLFW_KEY_0:             ascii = ')'; break;
+                                case GLFW_KEY_MINUS:         ascii = '_'; break;
+                                case GLFW_KEY_EQUAL:         ascii = '+'; break;
+                                case GLFW_KEY_LEFT_BRACKET:  ascii = '{'; break;
+                                case GLFW_KEY_RIGHT_BRACKET: ascii = '}'; break;
+                                case GLFW_KEY_BACKSLASH:     ascii = '|'; break;
+                                case GLFW_KEY_SEMICOLON:     ascii = ':'; break;
+                                case GLFW_KEY_APOSTROPHE:    ascii = '"'; break;
+                                case GLFW_KEY_COMMA:         ascii = '<'; break;
+                                case GLFW_KEY_PERIOD:        ascii = '>'; break;
+                                case GLFW_KEY_SLASH:         ascii = '?'; break;
+                                default: break;
+                            }
+                        }
+
+                        Input::chatInput[Input::chatLength] = ascii;
+                        Input::chatInput[Input::chatLength+1] = 0;
+                        Input::chatLength++;
+                        Input::localChatHasBeenUpdated = true;
+                    }
+                }
+                break;   
+            }
+        }
+    }
 }

@@ -1210,13 +1210,12 @@ void Global::writeThreadBehavior(TcpClient* client)
     printf("Write thread all done\n");
 }
 
-//float lastChatMessageTime = 0.0f;
-
 std::mutex chatMsgMutex;
 std::vector<std::string> chatMessagesToAdd;
 std::vector<Vector3f> chatColorsToAdd;
 std::vector<float> chatMessagesTimestamp;
 std::vector<GUIText*> chatTexts;
+GUIText* localChatText = nullptr;
 
 void Global::addChatMessage(std::string msg, Vector3f color)
 {
@@ -1246,7 +1245,7 @@ void Global::updateChatMessages()
             msg = buf;
         }
 
-        GUIText* tex = new GUIText(msg, 0.02f, Global::gameFont, 0.01f, 0.99f, 6, true); INCR_NEW("GUIText");
+        GUIText* tex = new GUIText(msg, 0.02f, Global::gameFont, 0.01f, 0.99f-0.025f, 6, true); INCR_NEW("GUIText");
         tex->color = chatColorsToAdd[i];
 
         for (int c = 0; c < chatTexts.size(); c++)
@@ -1326,6 +1325,26 @@ void Global::updateChatMessages()
         GuiManager::addGuiToRender(GuiTextureResources::textureChatBG);
         GuiTextureResources::textureChatBG->size.y = chatTexts.size()*0.025f;
         GuiTextureResources::textureChatBG->alpha = highestAlpha*0.7f;
+    }
+
+    if (Input::localChatHasBeenUpdated)
+    {
+        if (localChatText != nullptr)
+        {
+            localChatText->deleteMe();
+            delete localChatText; INCR_DEL("GUIText");
+            localChatText = nullptr;
+        }
+
+        if (Input::isTypingInChat)
+        {
+            GuiManager::addGuiToRender(GuiTextureResources::textureLocalChatBG);
+
+            if (Input::chatLength > 0)
+            {
+                localChatText = new GUIText(Input::chatInput, 0.02f, Global::gameFont, 0.01f, 0.99f, 6, true); INCR_NEW("GUIText");
+            }
+        }
     }
 }
 
