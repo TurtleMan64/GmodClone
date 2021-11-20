@@ -8,6 +8,7 @@ class Fbo;
 class Player;
 class OnlinePlayer;
 class FontType;
+class TcpClient;
 
 #include <string>
 #include <random>
@@ -16,6 +17,7 @@ class FontType;
 #include <unordered_map>
 #include <unordered_set>
 #include <utility>
+#include <mutex>
 
 #include "../toolbox/vector.hpp"
 
@@ -48,17 +50,22 @@ class FontType;
     #define ANALYSIS_REPORT()    ;
 #endif
 
+class Message
+{
+public:
+    int length = 0;
+    char buf[100] = {0};
+    Message(const Message &other);
+    Message();
+};
 
 class Global
 {
 public:
     static std::string pathToEXE;
-    static std::string nickname;
     // Time in seconds that is synced between us and the server and the other players.
     static double syncedGlobalTime;
     static std::unordered_set<Entity*> gameEntities;
-    static std::unordered_map<std::string, OnlinePlayer*> gameOnlinePlayers;
-    static std::vector<std::string> serverSettings;
     //static MenuManager menuManager;
     //static Timer* mainHudTimer;
     static Camera* gameCamera;
@@ -157,8 +164,20 @@ public:
 
     static void performanceAnalysisReport();
 
+    static std::string nickname;
+    static std::unordered_map<std::string, OnlinePlayer*> gameOnlinePlayers;
+    static std::vector<std::string> serverSettings;
+
     static void addChatMessage(std::string msg, Vector3f color);
 
     static void updateChatMessages();
+
+    static void readThreadBehavoir(TcpClient* client);
+
+    static void writeThreadBehavior(TcpClient* client);
+
+    static std::vector<Message> messagesToSend;
+    static std::mutex msgOutMutex;
+    static void sendMessageToServer(Message msg);
 };
 #endif

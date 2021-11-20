@@ -936,3 +936,96 @@ bool Maths::lineSegmentIntersectsSphere(Vector3f* p1, Vector3f* p2, Vector3f* sc
 
     return false;
 }
+
+bool Maths::lineSegmentIntersectsCylinder(Vector3f* p1, Vector3f* p2, Vector3f* cylinderEnd1, Vector3f* cylinderEnd2, float cylinderRadius, Vector3f* outCollisionPosition)
+{
+    //https://stackoverflow.com/questions/4078401/trying-to-optimize-line-vs-cylinder-intersection
+    //    bool d3RayCylinderIntersection(const DCylinder &cylinder,const DVector3 &org,const DVector3 &dir,float &lambda,DVector3 &normal,DVector3 &newPosition)
+    // Ray and cylinder intersection
+    // If hit, returns true and the intersection point in 'newPosition' with a normal and distance along
+    // the ray ('lambda')
+    //{
+    //  DVector3 RC;
+    //  float d;
+    //  float t,s;
+    //  DVector3 n,D,O;
+    //  float ln;
+    //  float in,out;
+    //
+    //  RC=org; RC.Subtract(&cylinder.position);
+    //  n.Cross(&dir,&cylinder.axis);
+    //
+    //  ln=n.Length();
+    //
+    //  // Parallel? (?)
+    //  if((ln<D3_EPSILON)&&(ln>-D3_EPSILON))
+    //    return false;
+    //
+    //  n.Normalize();
+    //
+    //  d=fabs(RC.Dot(n));
+    //
+    //  if (d<=cylinder.radius)
+    //  {
+    //    O.Cross(&RC,&cylinder.axis);
+    //    //TVector::cross(RC,cylinder._Axis,O);
+    //    t=-O.Dot(n)/ln;
+    //    //TVector::cross(n,cylinder._Axis,O);
+    //    O.Cross(&n,&cylinder.axis);
+    //    O.Normalize();
+    //    s=fabs( sqrtf(cylinder.radius*cylinder.radius-d*d) / dir.Dot(O) );
+    //
+    //    in=t-s;
+    //    out=t+s;
+    //
+    //    if (in<-D3_EPSILON)
+    //    {
+    //      if(out<-D3_EPSILON)
+    //        return false;
+    //      else lambda=out;
+    //    } else if(out<-D3_EPSILON)
+    //    {
+    //      lambda=in;
+    //    } else if(in<out)
+    //    {
+    //      lambda=in;
+    //    } else
+    //    {
+    //      lambda=out;
+    //    }
+    //
+    //    // Calculate intersection point
+    //    newPosition=org;
+    //    newPosition.x+=dir.x*lambda;
+    //    newPosition.y+=dir.y*lambda;
+    //    newPosition.z+=dir.z*lambda;
+    //    DVector3 HB;
+    //    HB=newPosition;
+    //    HB.Subtract(&cylinder.position);
+    //
+    //    float scale=HB.Dot(&cylinder.axis);
+    //    normal.x=HB.x-cylinder.axis.x*scale;
+    //    normal.y=HB.y-cylinder.axis.y*scale;
+    //    normal.z=HB.z-cylinder.axis.z*scale;
+    //    normal.Normalize();
+    //    return true;
+    //  }
+    //
+    //  return false;
+    //}
+
+    Vector3f diff = *p2 - *p1;
+    diff.scale(1/100.0f);
+    //LOL
+    for (int i = 0; i < 100; i++)
+    {
+        Vector3f p = *p1 + diff.scaleCopy((float)i);
+        if (Maths::pointIsInCylinder(&p, cylinderEnd1, cylinderEnd2, cylinderRadius))
+        {
+            outCollisionPosition->set(&p);
+            return true;
+        }
+    }
+
+    return false;
+}

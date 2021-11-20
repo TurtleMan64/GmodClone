@@ -69,6 +69,8 @@ public:
 
     // How far you can hit things from
     const float ARM_REACH = 1.9f;
+    float swingArmTimer = 0.0f;
+    const float SWING_ARM_COOLDOWN  = 1.0f;
 
     // > 0 means you cant use a ladder (colldown after jumping)
     float ladderTimer = 0.0f;

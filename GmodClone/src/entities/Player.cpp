@@ -13,6 +13,7 @@
 #include "ball.hpp"
 #include "../audio/audioplayer.hpp"
 #include "ladder.hpp"
+#include "onlineplayer.hpp"
 
 extern float dt;
 
@@ -46,9 +47,11 @@ void Player::step()
         }
     }
 
-    if (Input::inputs.INPUT_LEFT_CLICK && !Input::inputs.INPUT_PREVIOUS_LEFT_CLICK)
+    swingArmTimer-=dt;
+    if (Input::inputs.INPUT_LEFT_CLICK && !Input::inputs.INPUT_PREVIOUS_LEFT_CLICK && swingArmTimer < 0.0f)
     {
         swingYourArm();
+        swingArmTimer = SWING_ARM_COOLDOWN;
     }
 
     // Sliding
@@ -85,11 +88,6 @@ void Player::step()
     // If you are in the air, cancel slide
     if (timeSinceOnGround > AIR_JUMP_TOLERANCE)
     {
-        if (slideTimer > 0.0f && Input::inputs.INPUT_ACTION4)
-        {
-            isCrouching = true;
-        }
-
         slideTimer = -SLIDE_TIMER_COOLDOWN;
     }
 
@@ -211,7 +209,6 @@ void Player::step()
             AudioPlayer::play(60, nullptr);
             vel = vel + lastGroundNormal.scaleCopy(getJumpValue(dt));
             timeSinceOnGround = AIR_JUMP_TOLERANCE + 0.0001f;
-
             Global::addChatMessage("Jump at " + std::to_string(position.x) + ", " + std::to_string(position.y) + ", " + std::to_string(position.z), Vector3f(1,1,1));
         }
     }
@@ -380,7 +377,16 @@ void Player::step()
                         float stickRadius = sqrtf(Input::inputs.INPUT_X*Input::inputs.INPUT_X + Input::inputs.INPUT_Y*Input::inputs.INPUT_Y);
 
                         Vector3f dirForward = lookDir;
-                        dirForward.setLength(stickRadius*3);
+                        dirForward.setLength(stickRadius);
+
+                        if (Input::inputs.INPUT_ACTION3)
+                        {
+                            dirForward.scale(5);
+                        }
+                        else
+                        {
+                            dirForward.scale(3);
+                        }
 
                         vel = Maths::rotatePoint(&dirForward, &Global::gameCamera->up, -stickAngle + Maths::PI);
 
@@ -434,10 +440,12 @@ void Player::step()
             if (result.tri->type == 1)
             {
                 vel = Maths::bounceVector(&vel, &result.tri->normal, 1.0f);
-                if (vel.lengthSquared() < MIN_BOUNCE_SPD*MIN_BOUNCE_SPD)
+
+                Vector3f velAlongLine = Maths::projectAlongLine(&vel, &result.tri->normal);
+                if (velAlongLine.lengthSquared() < MIN_BOUNCE_SPD*MIN_BOUNCE_SPD)
                 {
-                    vel = result.tri->normal;
-                    vel.setLength(MIN_BOUNCE_SPD);
+                    vel = Maths::projectOntoPlane(&vel, &result.tri->normal);
+                    vel = vel + result.tri->normal.scaleCopy(MIN_BOUNCE_SPD);
                 }
                 AudioPlayer::play((int)(2*Maths::random()) + 57, nullptr);
                 break;
@@ -841,6 +849,31 @@ void Player::swingYourArm()
                     }
                 }
                 break;
+            }
+
+            case ENTITY_ONLINE_PLAYER:
+            {
+                Vector3f otherHead = e->position;
+                OnlinePlayer* onlinePlayer = (OnlinePlayer*)e;
+                if (onlinePlayer->isCrouching || onlinePlayer->isSliding)
+                {
+                    otherHead.y += COLLISION_RADIUS*2;
+                }
+                else
+                {
+                    otherHead.y += COLLISION_RADIUS*4;
+                }
+
+                Vector3f playerCollisionSpot;
+                if (Maths::lineSegmentIntersectsCylinder(&Global::gameCamera->eye, &target, &e->position, &otherHead, COLLISION_RADIUS, &playerCollisionSpot))
+                {
+                    float thisDistSquared = (Global::gameCamera->eye - playerCollisionSpot).lengthSquared();
+                    if (thisDistSquared < distToCollisionSquared)
+                    {
+                        distToCollisionSquared = thisDistSquared;
+                        hitEntity = e;
+                    }
+                }
             }
 
             default:

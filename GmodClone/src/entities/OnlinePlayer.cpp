@@ -112,6 +112,30 @@ int OnlinePlayer::getEntityType()
     return ENTITY_ONLINE_PLAYER;
 }
 
+void OnlinePlayer::getHit(Vector3f* hitPos, Vector3f* hitDir, int wpn)
+{
+    Message msg;
+    msg.buf[0] = 4;
+
+    int nameLen = (int)name.size();
+    memcpy(&msg.buf[1], &nameLen, 4);
+    memcpy(&msg.buf[5], name.c_str(), nameLen);
+
+    memcpy(&msg.buf[ 5 + nameLen], &hitPos->x, 4);
+    memcpy(&msg.buf[ 9 + nameLen], &hitPos->y, 4);
+    memcpy(&msg.buf[13 + nameLen], &hitPos->z, 4);
+    memcpy(&msg.buf[17 + nameLen], &hitDir->x, 4);
+    memcpy(&msg.buf[21 + nameLen], &hitDir->y, 4);
+    memcpy(&msg.buf[25 + nameLen], &hitDir->z, 4);
+
+    char dub = (char)wpn;
+    memcpy(&msg.buf[29 + nameLen], &dub, 1);
+
+    msg.length = 1 + 4 + nameLen + 24 + 1;
+
+    Global::sendMessageToServer(msg);
+}
+
 void OnlinePlayer::loadModels()
 {
     if (OnlinePlayer::modelsStand.size() == 0)

@@ -68,6 +68,21 @@
 #include "../toolbox/maths.hpp"
 #include "../entities/ladder.hpp"
 
+
+Message::Message(const Message &other)
+{
+    length = other.length;
+    for (int i = 0; i < 100; i++)
+    {
+        buf[i] = other.buf[i];
+    }
+}
+
+Message::Message()
+{
+    
+}
+
 std::string Global::pathToEXE;
 
 std::string Global::nickname;
@@ -156,10 +171,6 @@ int Global::displaySizeChanged = 0;
 
 void increaseProcessPriority();
 
-void readThreadBehavoir(TcpClient* client);
-
-void writeThreadBehavior(TcpClient* client);
-
 int main(int argc, char** argv)
 {
     if (argc > 0)
@@ -240,8 +251,8 @@ int main(int argc, char** argv)
     std::thread* t2 = nullptr;
     if (client->isOpen())
     {
-        t1 = new std::thread(readThreadBehavoir, client);  INCR_NEW("std::thread");
-        t2 = new std::thread(writeThreadBehavior, client); INCR_NEW("std::thread");
+        t1 = new std::thread(Global::readThreadBehavoir,  client); INCR_NEW("std::thread");
+        t2 = new std::thread(Global::writeThreadBehavior, client); INCR_NEW("std::thread");
     }
     else
     {
@@ -386,19 +397,25 @@ int main(int argc, char** argv)
         ANALYSIS_START("Entity Management");
         //entities managment
         gameEntitiesAddMutex.lock();
-        for (auto entityToAdd : gameEntitiesToAdd)
+        for (Entity* entityToAdd : gameEntitiesToAdd)
         {
             Global::gameEntities.insert(entityToAdd);
         }
         gameEntitiesToAdd.clear();
 
-        for (auto entityToDelete : gameEntitiesToDelete)
+        std::unordered_set<Entity*> entitiesImGoingToDelete;
+        for (Entity* entityToDelete : gameEntitiesToDelete)
         {
+            entitiesImGoingToDelete.insert(entityToDelete);
             Global::gameEntities.erase(entityToDelete);
-            delete entityToDelete; INCR_DEL("Entity");
         }
         gameEntitiesToDelete.clear();
         gameEntitiesAddMutex.unlock();
+
+        for (Entity* e : entitiesImGoingToDelete)
+        {
+            delete e; INCR_DEL("Entity");
+        }
 
         ANALYSIS_DONE("Entity Management");
 
@@ -625,33 +642,39 @@ void Global::addEntity(Entity* entityToAdd)
 
 void Global::deleteEntity(Entity* entityToDelete)
 {
+    gameEntitiesAddMutex.lock();
     gameEntitiesToDelete.push_back(entityToDelete);
+    gameEntitiesAddMutex.unlock();
 }
 
 void Global::deleteAllEntites()
 {
+    std::unordered_set<Entity*> entitiesImGoingToDelete;
+
     gameEntitiesAddMutex.lock();
     //Make sure no entities get left behind in transition
     for (Entity* entityToAdd : gameEntitiesToAdd)
     {
-        gameEntities.insert(entityToAdd);
+        entitiesImGoingToDelete.insert(entityToAdd);
     }
     gameEntitiesToAdd.clear();
 
     for (Entity* entityToDelete : gameEntitiesToDelete)
     {
-        gameEntities.erase(entityToDelete);
-        delete entityToDelete; INCR_DEL("Entity");
+        entitiesImGoingToDelete.insert(entityToDelete);
     }
     gameEntitiesToDelete.clear();
 
-
-    //Delete all the rest
     for (Entity* entityToDelete : gameEntities)
     {
-        delete entityToDelete; INCR_DEL("Entity");
+        entitiesImGoingToDelete.insert(entityToDelete);
     }
     gameEntities.clear();
+
+    for (Entity* e : entitiesImGoingToDelete)
+    {
+        delete e; INCR_DEL("Entity");
+    }
 
     gameEntitiesAddMutex.unlock();
 
@@ -919,7 +942,7 @@ void Global::performanceAnalysisReport()
     operationTotalTimes.clear();
 }
 
-void readThreadBehavoir(TcpClient* client)
+void Global::readThreadBehavoir(TcpClient* client)
 {
     while (Global::gameState != STATE_EXITING && client->isOpen())
     {
@@ -939,6 +962,7 @@ void readThreadBehavoir(TcpClient* client)
                     break;
 
                 case 1: //time msg
+                {
                     numRead = client->read((char*)&Global::syncedGlobalTime, 8, 5);
                     if (numRead != 8)
                     {
@@ -947,8 +971,11 @@ void readThreadBehavoir(TcpClient* client)
                         return;
                     }
                     break;
+                }
 
-                case 2: //player update
+                //case 2 - 3 are all related to players
+                case  2: //player update
+                case  3:
                 {
                     int nameLen;
                     numRead = client->read((char*)&nameLen, 4, 5);
@@ -977,93 +1004,101 @@ void readThreadBehavoir(TcpClient* client)
 
                     std::string name = nameBuf;
 
-                    OnlinePlayer* player = nullptr;
+                    OnlinePlayer* onlinePlayer = nullptr;
 
                     if (Global::gameOnlinePlayers.find(name) != Global::gameOnlinePlayers.end())
                     {
-                        player = Global::gameOnlinePlayers[name];
+                        onlinePlayer = Global::gameOnlinePlayers[name];
                     }
 
-                    if (player == nullptr)
+                    switch (cmd)
                     {
-                        player = new OnlinePlayer(name, 0, 0, 0); INCR_NEW("Entity");
+                        case 2: //general purpose player update
+                            if (onlinePlayer == nullptr)
+                            {
+                                onlinePlayer = new OnlinePlayer(name, 0, 0, 0); INCR_NEW("Entity");
 
-                        gameEntitiesAddMutex.lock();
-                        gameEntitiesToAdd.push_back(player);
-                        gameEntitiesAddMutex.unlock();
+                                gameEntitiesAddMutex.lock();
+                                gameEntitiesToAdd.push_back(onlinePlayer);
+                                gameEntitiesAddMutex.unlock();
 
-                        Global::gameOnlinePlayers[name] = player;
-                        printf("%s connected!", name.c_str());
-                        Global::addChatMessage(name + " joined", Vector3f(0.5f, 1, 0.5f));
+                                Global::gameOnlinePlayers[name] = onlinePlayer;
+                                printf("%s connected!", name.c_str());
+                                Global::addChatMessage(name + " joined", Vector3f(0.5f, 1, 0.5f));
+                            }
+
+                            client->read((char*)&onlinePlayer->position.x,  4, 5);
+                            client->read((char*)&onlinePlayer->position.y,  4, 5);
+                            client->read((char*)&onlinePlayer->position.z,  4, 5);
+                            client->read((char*)&onlinePlayer->vel.x,       4, 5);
+                            client->read((char*)&onlinePlayer->vel.y,       4, 5);
+                            client->read((char*)&onlinePlayer->vel.z,       4, 5);
+                            client->read((char*)&onlinePlayer->lookDir.x,   4, 5);
+                            client->read((char*)&onlinePlayer->lookDir.y,   4, 5);
+                            client->read((char*)&onlinePlayer->lookDir.z,   4, 5);
+                            client->read((char*)&onlinePlayer->health,      1, 5);
+                            client->read((char*)&onlinePlayer->weapon,      1, 5);
+                            client->read((char*)&onlinePlayer->isCrouching, 1, 5);
+                            client->read((char*)&onlinePlayer->isSliding,   1, 5);
+                            break;
+
+                        case 3: //player disconnected
+                            if (Global::gameOnlinePlayers.find(name) != Global::gameOnlinePlayers.end())
+                            {
+                                onlinePlayer = Global::gameOnlinePlayers[name];
+                                Global::gameOnlinePlayers.erase(name);
+                                printf("%s Disconnected.\n", name.c_str());
+                                Global::addChatMessage(name + " left", Vector3f(1, 1, 0.5f));
+                            }
+
+                            if (onlinePlayer != nullptr)
+                            {
+                                gameEntitiesAddMutex.lock();
+                                gameEntitiesToDelete.push_back(onlinePlayer);
+                                gameEntitiesAddMutex.unlock();
+                            }
+                            else
+                            {
+                                printf("There is no player named %s\n", name.c_str());
+                            }
+                            break;
+
+                        default:
+                            break;
                     }
-
-                    client->read((char*)&player->position.x,  4, 5);
-                    client->read((char*)&player->position.y,  4, 5);
-                    client->read((char*)&player->position.z,  4, 5);
-                    client->read((char*)&player->vel.x,       4, 5);
-                    client->read((char*)&player->vel.y,       4, 5);
-                    client->read((char*)&player->vel.z,       4, 5);
-                    client->read((char*)&player->lookDir.x,   4, 5);
-                    client->read((char*)&player->lookDir.y,   4, 5);
-                    client->read((char*)&player->lookDir.z,   4, 5);
-                    client->read((char*)&player->health,      1, 5);
-                    client->read((char*)&player->weapon,      1, 5);
-                    client->read((char*)&player->isCrouching, 1, 5);
-                    client->read((char*)&player->isSliding,   1, 5);
-
                     break;
                 }
 
-                case 3: //player disconnected
+                case 4: //we have been hit by another player
                 {
-                    int nameLen;
-                    numRead = client->read((char*)&nameLen, 4, 5);
-                    if (numRead != 4)
+                    float x;
+                    float y;
+                    float z;
+                    float xDir;
+                    float yDir;
+                    float zDir;
+                    char weapon;
+
+                    client->read((char*)&x,      4, 5);
+                    client->read((char*)&y,      4, 5);
+                    client->read((char*)&z,      4, 5);
+                    client->read((char*)&xDir,   4, 5);
+                    client->read((char*)&yDir,   4, 5);
+                    client->read((char*)&zDir,   4, 5);
+                    client->read((char*)&weapon, 1, 5);
+
+                    Vector3f velToAdd(xDir, yDir, zDir);
+                    if (weapon == 0)
                     {
-                        printf("Could not read name len from server\n");
-                        Global::addChatMessage("Disconnected from Server", Vector3f(1, 0.5f, 0.5f));
-                        return;
-                    }
-
-                    if (nameLen >= 32)
-                    {
-                        printf("Name length is too big\n");
-                        Global::addChatMessage("Disconnected from Server", Vector3f(1, 0.5f, 0.5f));
-                        return;
-                    }
-
-                    char nameBuf[32] = {0};
-                    numRead = client->read(nameBuf, nameLen, 5);
-                    if (numRead != nameLen)
-                    {
-                        printf("Could not read name from server\n");
-                        Global::addChatMessage("Disconnected from Server", Vector3f(1, 0.5f, 0.5f));
-                        return;
-                    }
-
-                    std::string name = nameBuf;
-
-                    OnlinePlayer* player = nullptr;
-
-                    if (Global::gameOnlinePlayers.find(name) != Global::gameOnlinePlayers.end())
-                    {
-                        player = Global::gameOnlinePlayers[name];
-                        Global::gameOnlinePlayers.erase(name);
-                        printf("%s Disconnected.\n", name.c_str());
-                        Global::addChatMessage(name + " left", Vector3f(1, 1, 0.5f));
-                    }
-
-                    if (player != nullptr)
-                    {
-                        gameEntitiesAddMutex.lock();
-                        gameEntitiesToDelete.push_back(player);
-                        gameEntitiesAddMutex.unlock();
+                        velToAdd.setLength(6.0f);
                     }
                     else
                     {
-                        printf("There is no player named %s\n", name.c_str());
+                        velToAdd.setLength(30.0f);
                     }
 
+                    Global::player->vel = Global::player->vel + velToAdd;
+                    Global::player->health -= 10;
                     break;
                 }
 
@@ -1082,7 +1117,7 @@ void readThreadBehavoir(TcpClient* client)
     printf("Read thread all done\n");
 }
 
-void writeThreadBehavior(TcpClient* client)
+void Global::writeThreadBehavior(TcpClient* client)
 {
     // Send name message
     int nameLen = (int)Global::nickname.size();
@@ -1106,9 +1141,17 @@ void writeThreadBehavior(TcpClient* client)
 
     while (Global::gameState != STATE_EXITING && client->isOpen())
     {
-        Sleep(1);
-
-        if (glfwGetTime() - lastSentMsg > 0.03)
+        if (Global::messagesToSend.size() > 0)
+        {
+            Global::msgOutMutex.lock();
+            for (Message msg : Global::messagesToSend)
+            {
+                client->write(msg.buf, msg.length, 5);
+            }
+            Global::messagesToSend.clear();
+            Global::msgOutMutex.unlock();
+        }
+        else if (glfwGetTime() - lastSentMsg > 0.03)
         {
             // Send time message
             char cmd = 1;
@@ -1144,7 +1187,7 @@ void writeThreadBehavior(TcpClient* client)
                 client->write((char*)&Global::player->lookDir.y,  4, 5);
                 client->write((char*)&Global::player->lookDir.z,  4, 5);
                 char health = 100;
-                char weapon = 1;
+                char weapon = (char)Global::player->weapon;
                 client->write(&health, 1, 5);
                 client->write(&weapon, 1, 5);
                 client->write((char*)&Global::player->isCrouching, 1, 5);
@@ -1157,6 +1200,10 @@ void writeThreadBehavior(TcpClient* client)
             }
 
             lastSentMsg = glfwGetTime();
+        }
+        else
+        {
+            Sleep(1);
         }
     }
 
@@ -1280,4 +1327,14 @@ void Global::updateChatMessages()
         GuiTextureResources::textureChatBG->size.y = chatTexts.size()*0.025f;
         GuiTextureResources::textureChatBG->alpha = highestAlpha*0.7f;
     }
+}
+
+std::vector<Message> Global::messagesToSend;
+std::mutex Global::msgOutMutex;
+
+void Global::sendMessageToServer(Message msg)
+{
+    Global::msgOutMutex.lock();
+    Global::messagesToSend.push_back(msg);
+    Global::msgOutMutex.unlock();
 }

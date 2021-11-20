@@ -180,6 +180,8 @@ public:
     static bool raycastIntersectsTriangle(Vector3f* rayOrigin, Vector3f* rayDir, Triangle3D* tri, Vector3f* outCollisionPosition);
 
     static bool lineSegmentIntersectsSphere(Vector3f* p1, Vector3f* p2, Vector3f* sphereCenter, float radius, Vector3f* outCollisionPosition);
+
+    static bool lineSegmentIntersectsCylinder(Vector3f* p1, Vector3f* p2, Vector3f* cylinderEnd1, Vector3f* cylinderEnd2, float cylinderRadius, Vector3f* outCollisionPosition);
 };
 
 #endif

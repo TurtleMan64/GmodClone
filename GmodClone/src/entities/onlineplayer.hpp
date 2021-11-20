@@ -36,5 +36,7 @@ public:
     static void loadModels();
 
     int getEntityType();
+
+    void getHit(Vector3f* hitPos, Vector3f* hitDir, int weapon);
 };
 #endif
