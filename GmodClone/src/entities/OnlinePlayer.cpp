@@ -503,7 +503,7 @@ void OnlinePlayer::step()
     rotZ = 0;
 
     //printf("%f\t%f\n", glfwGetTime(), position.x);
-    printf("dt = %f vel = %f pos = %f\n", dt, vel.x, position.x);
+    //printf("dt = %f vel = %f pos = %f\n", dt, vel.x, position.x);
 
     updateTransformationMatrix();
     head->updateTransformationMatrix();
