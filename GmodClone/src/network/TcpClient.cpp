@@ -245,7 +245,7 @@ int TcpClient::read(char* buffer, int numBytesToRead, int timeoutSec)
 
         int flags = 0;
 
-        int numBytesRead = recv(sd, buffer, numBytesToRead, flags);
+        int numBytesRead = recv(sd, &buffer[currentBytesRead], numBytesToRead - currentBytesRead, flags);
 
         if (numBytesRead == -1)
         {

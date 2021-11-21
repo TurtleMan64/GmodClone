@@ -72,7 +72,7 @@
 Message::Message(const Message &other)
 {
     length = other.length;
-    for (int i = 0; i < 100; i++)
+    for (int i = 0; i < 188; i++)
     {
         buf[i] = other.buf[i];
     }
@@ -269,6 +269,8 @@ int main(int argc, char** argv)
 
     glfwSetTime(0);
 
+    Global::serverStartTime = Global::getRawUtcSystemTime();
+
     int frameCount = 0;
     double previousTime = 0;
 
@@ -281,9 +283,9 @@ int main(int argc, char** argv)
     Dummy* entityStage = new Dummy(&modelsStage); INCR_NEW("Entity");
     Global::addEntity(entityStage);
 
-    std::list<TexturedModel*> modelsSphere;
-    ObjLoader::loadModel(&modelsSphere, "res/Models/", "Sphere");
-    Global::player = new Player(&modelsSphere); INCR_NEW("Entity");
+    //std::list<TexturedModel*> modelsSphere;
+    //ObjLoader::loadModel(&modelsSphere, "res/Models/", "Sphere");
+    Global::player = new Player; INCR_NEW("Entity");
 
     CollisionModel* cm = ObjLoader::loadCollisionModel("Models/" + folder + "/", "Collision");
     for (int i = 0; i < cm->triangles.size(); i++)
@@ -590,6 +592,13 @@ int main(int argc, char** argv)
             //std::fprintf(stdout, "entity counts: %d %d %d\n", gameEntities.size(), gameEntitiesPass2.size(), gameTransparentEntities.size());
             frameCount = 0;
             previousTime = timeNew;
+
+
+            unsigned long long totalT = Global::getRawUtcSystemTime() - Global::serverStartTime;
+
+            Global::syncedGlobalTime = totalT/10000000.0;
+
+            //printf("time = %f\n", Global::syncedGlobalTime);
         }
 
         Global::displaySizeChanged = std::max(0, Global::displaySizeChanged - 1);
@@ -942,6 +951,23 @@ void Global::performanceAnalysisReport()
     operationTotalTimes.clear();
 }
 
+unsigned long long Global::serverStartTime = 0;
+
+unsigned long long Global::getRawUtcSystemTime()
+{
+    FILETIME ft;
+    GetSystemTimeAsFileTime(&ft);
+
+    unsigned long high = (unsigned long)ft.dwHighDateTime;
+    unsigned long low  = (unsigned long)ft.dwLowDateTime;
+
+    unsigned long long totalT;
+    memcpy(&totalT, &low, 4);
+    memcpy(((char*)&totalT) + 4, &high, 4);
+
+    return totalT;
+}
+
 void Global::readThreadBehavoir(TcpClient* client)
 {
     while (Global::gameState != STATE_EXITING && client->isOpen())
@@ -963,7 +989,7 @@ void Global::readThreadBehavoir(TcpClient* client)
 
                 case 1: //time msg
                 {
-                    numRead = client->read((char*)&Global::syncedGlobalTime, 8, 5);
+                    numRead = client->read((char*)&Global::serverStartTime, 8, 5);
                     if (numRead != 8)
                     {
                         printf("Could not read time from server\n");
@@ -1014,6 +1040,7 @@ void Global::readThreadBehavoir(TcpClient* client)
                     switch (cmd)
                     {
                         case 2: //general purpose player update
+                        {
                             if (onlinePlayer == nullptr)
                             {
                                 onlinePlayer = new OnlinePlayer(name, 0, 0, 0); INCR_NEW("Entity");
@@ -1027,20 +1054,56 @@ void Global::readThreadBehavoir(TcpClient* client)
                                 Global::addChatMessage(name + " joined", Vector3f(0.5f, 1, 0.5f));
                             }
 
-                            client->read((char*)&onlinePlayer->position.x,  4, 5);
-                            client->read((char*)&onlinePlayer->position.y,  4, 5);
-                            client->read((char*)&onlinePlayer->position.z,  4, 5);
-                            client->read((char*)&onlinePlayer->vel.x,       4, 5);
-                            client->read((char*)&onlinePlayer->vel.y,       4, 5);
-                            client->read((char*)&onlinePlayer->vel.z,       4, 5);
-                            client->read((char*)&onlinePlayer->lookDir.x,   4, 5);
-                            client->read((char*)&onlinePlayer->lookDir.y,   4, 5);
-                            client->read((char*)&onlinePlayer->lookDir.z,   4, 5);
-                            client->read((char*)&onlinePlayer->health,      1, 5);
-                            client->read((char*)&onlinePlayer->weapon,      1, 5);
-                            client->read((char*)&onlinePlayer->isCrouching, 1, 5);
-                            client->read((char*)&onlinePlayer->isSliding,   1, 5);
+                            char buf[144];
+                            client->read(buf, 144, 5);
+
+                            int idx = 0;
+
+                            memcpy((char*)&onlinePlayer->inputAction3,       &buf[idx], 1); idx+=1;
+                            memcpy((char*)&onlinePlayer->inputAction4,       &buf[idx], 1); idx+=1;
+                            memcpy((char*)&onlinePlayer->inputX,             &buf[idx], 4); idx+=4;
+                            memcpy((char*)&onlinePlayer->inputY,             &buf[idx], 4); idx+=4;
+                            memcpy((char*)&onlinePlayer->inputX2,            &buf[idx], 4); idx+=4;
+                            memcpy((char*)&onlinePlayer->inputY2,            &buf[idx], 4); idx+=4;
+                            memcpy((char*)&onlinePlayer->position.x,         &buf[idx], 4); idx+=4;
+                            memcpy((char*)&onlinePlayer->position.y,         &buf[idx], 4); idx+=4;
+                            memcpy((char*)&onlinePlayer->position.z,         &buf[idx], 4); idx+=4;
+                            memcpy((char*)&onlinePlayer->vel.x,              &buf[idx], 4); idx+=4;
+                            memcpy((char*)&onlinePlayer->vel.y,              &buf[idx], 4); idx+=4;
+                            memcpy((char*)&onlinePlayer->vel.z,              &buf[idx], 4); idx+=4;
+                            memcpy((char*)&onlinePlayer->groundNormal.x,     &buf[idx], 4); idx+=4;
+                            memcpy((char*)&onlinePlayer->groundNormal.y,     &buf[idx], 4); idx+=4;
+                            memcpy((char*)&onlinePlayer->groundNormal.z,     &buf[idx], 4); idx+=4;
+                            memcpy((char*)&onlinePlayer->wallNormal.x,       &buf[idx], 4); idx+=4;
+                            memcpy((char*)&onlinePlayer->wallNormal.y,       &buf[idx], 4); idx+=4;
+                            memcpy((char*)&onlinePlayer->wallNormal.z,       &buf[idx], 4); idx+=4;
+                            memcpy((char*)&onlinePlayer->onGround,           &buf[idx], 1); idx+=1;
+                            memcpy((char*)&onlinePlayer->isTouchingWall,     &buf[idx], 1); idx+=1;
+                            memcpy((char*)&onlinePlayer->slideTimer,         &buf[idx], 4); idx+=4;
+                            memcpy((char*)&onlinePlayer->storedSlideSpeed,   &buf[idx], 4); idx+=4;
+                            memcpy((char*)&onlinePlayer->wallJumpTimer,      &buf[idx], 4); idx+=4;
+                            memcpy((char*)&onlinePlayer->storedWallNormal.x, &buf[idx], 4); idx+=4;
+                            memcpy((char*)&onlinePlayer->storedWallNormal.y, &buf[idx], 4); idx+=4;
+                            memcpy((char*)&onlinePlayer->storedWallNormal.z, &buf[idx], 4); idx+=4;
+                            memcpy((char*)&onlinePlayer->eyeHeightSmooth,    &buf[idx], 4); idx+=4;
+                            memcpy((char*)&onlinePlayer->timeSinceOnGround,  &buf[idx], 4); idx+=4;
+                            memcpy((char*)&onlinePlayer->lastGroundNormal.x, &buf[idx], 4); idx+=4;
+                            memcpy((char*)&onlinePlayer->lastGroundNormal.y, &buf[idx], 4); idx+=4;
+                            memcpy((char*)&onlinePlayer->lastGroundNormal.z, &buf[idx], 4); idx+=4;
+                            memcpy((char*)&onlinePlayer->ladderTimer,        &buf[idx], 4); idx+=4;
+                            memcpy((char*)&onlinePlayer->isOnLadder,         &buf[idx], 1); idx+=1;
+                            memcpy((char*)&onlinePlayer->externalVel.x,      &buf[idx], 4); idx+=4;
+                            memcpy((char*)&onlinePlayer->externalVel.y,      &buf[idx], 4); idx+=4;
+                            memcpy((char*)&onlinePlayer->externalVel.z,      &buf[idx], 4); idx+=4;
+                            memcpy((char*)&onlinePlayer->lookDir.x,          &buf[idx], 4); idx+=4;
+                            memcpy((char*)&onlinePlayer->lookDir.y,          &buf[idx], 4); idx+=4;
+                            memcpy((char*)&onlinePlayer->lookDir.z,          &buf[idx], 4); idx+=4;
+                            memcpy((char*)&onlinePlayer->isCrouching,        &buf[idx], 1); idx+=1;
+                            memcpy((char*)&onlinePlayer->weapon,             &buf[idx], 1); idx+=1;
+                            memcpy((char*)&onlinePlayer->health,             &buf[idx], 1);
+
                             break;
+                        }
 
                         case 3: //player disconnected
                             if (Global::gameOnlinePlayers.find(name) != Global::gameOnlinePlayers.end())
@@ -1102,6 +1165,20 @@ void Global::readThreadBehavoir(TcpClient* client)
                     break;
                 }
 
+                case 5: //someone is sending us audio
+                {
+                    int sfxId;
+                    Vector3f pos;
+
+                    client->read((char*)&sfxId, 4, 5);
+                    client->read((char*)&pos.x, 4, 5);
+                    client->read((char*)&pos.y, 4, 5);
+                    client->read((char*)&pos.z, 4, 5);
+
+                    AudioPlayer::play(sfxId, &pos);
+                    break;
+                }
+
                 default:
                     break;
             }
@@ -1137,7 +1214,8 @@ void Global::writeThreadBehavior(TcpClient* client)
         return;
     }
 
-    double lastSentMsg = glfwGetTime();
+    double lastSentTimeMsg = glfwGetTime();
+    double lastSentPlayerMsg = glfwGetTime();
 
     while (Global::gameState != STATE_EXITING && client->isOpen())
     {
@@ -1151,8 +1229,14 @@ void Global::writeThreadBehavior(TcpClient* client)
             Global::messagesToSend.clear();
             Global::msgOutMutex.unlock();
         }
-        else if (glfwGetTime() - lastSentMsg > 0.03)
+        else
         {
+            //Sleep(1);
+        }
+
+        if (glfwGetTime() - lastSentTimeMsg > 1.0)
+        {
+            unsigned long long time = getRawUtcSystemTime();
             // Send time message
             char cmd = 1;
             numWritten = client->write(&cmd, 1, 5);
@@ -1162,9 +1246,9 @@ void Global::writeThreadBehavior(TcpClient* client)
                 Global::addChatMessage("Disconnected from Server", Vector3f(1, 0.5f, 0.5f));
                 return;
             }
-
-            numWritten = client->write((char*)&Global::syncedGlobalTime, 8, 5);
-
+            
+            numWritten = client->write((char*)&time, 8, 5);
+            
             if (numWritten != 8)
             {
                 printf("Could not write time to server\n");
@@ -1172,38 +1256,68 @@ void Global::writeThreadBehavior(TcpClient* client)
                 return;
             }
 
+            lastSentTimeMsg = glfwGetTime();
+        }
+
+        if (glfwGetTime() - lastSentPlayerMsg > 0.01)
+        {
             //Send main player message
             if (Global::player != nullptr)
             {
-                cmd = 2;
-                client->write(&cmd, 1, 5);
-                client->write((char*)&Global::player->position.x, 4, 5);
-                client->write((char*)&Global::player->position.y, 4, 5);
-                client->write((char*)&Global::player->position.z, 4, 5);
-                client->write((char*)&Global::player->vel.x,      4, 5);
-                client->write((char*)&Global::player->vel.y,      4, 5);
-                client->write((char*)&Global::player->vel.z,      4, 5);
-                client->write((char*)&Global::player->lookDir.x,  4, 5);
-                client->write((char*)&Global::player->lookDir.y,  4, 5);
-                client->write((char*)&Global::player->lookDir.z,  4, 5);
-                char health = 100;
-                char weapon = (char)Global::player->weapon;
-                client->write(&health, 1, 5);
-                client->write(&weapon, 1, 5);
-                client->write((char*)&Global::player->isCrouching, 1, 5);
-                char slide = 0;
-                if (Global::player->slideTimer > 0.0f)
-                {
-                    slide = 1;
-                }
-                client->write(&slide, 1, 5);
+                char buf[145];
+                buf[0] = 2;
+
+                int idx = 1;
+
+                memcpy(&buf[idx], (char*)&Input::inputs.INPUT_ACTION3,        1); idx += 1;
+                memcpy(&buf[idx], (char*)&Input::inputs.INPUT_ACTION4,        1); idx += 1;
+                memcpy(&buf[idx], (char*)&Input::inputs.INPUT_X,              4); idx += 4;
+                memcpy(&buf[idx], (char*)&Input::inputs.INPUT_Y,              4); idx += 4;
+                memcpy(&buf[idx], (char*)&Input::inputs.INPUT_X2,             4); idx += 4;
+                memcpy(&buf[idx], (char*)&Input::inputs.INPUT_Y2,             4); idx += 4;
+                memcpy(&buf[idx], (char*)&Global::player->position.x,         4); idx += 4;
+                memcpy(&buf[idx], (char*)&Global::player->position.y,         4); idx += 4;
+                memcpy(&buf[idx], (char*)&Global::player->position.z,         4); idx += 4;
+                memcpy(&buf[idx], (char*)&Global::player->vel.x,              4); idx += 4;
+                memcpy(&buf[idx], (char*)&Global::player->vel.y,              4); idx += 4;
+                memcpy(&buf[idx], (char*)&Global::player->vel.z,              4); idx += 4;
+                memcpy(&buf[idx], (char*)&Global::player->groundNormal.x,     4); idx += 4;
+                memcpy(&buf[idx], (char*)&Global::player->groundNormal.y,     4); idx += 4;
+                memcpy(&buf[idx], (char*)&Global::player->groundNormal.z,     4); idx += 4;
+                memcpy(&buf[idx], (char*)&Global::player->wallNormal.x,       4); idx += 4;
+                memcpy(&buf[idx], (char*)&Global::player->wallNormal.y,       4); idx += 4;
+                memcpy(&buf[idx], (char*)&Global::player->wallNormal.z,       4); idx += 4;
+                memcpy(&buf[idx], (char*)&Global::player->onGround,           1); idx += 1;
+                memcpy(&buf[idx], (char*)&Global::player->isTouchingWall,     1); idx += 1;
+                memcpy(&buf[idx], (char*)&Global::player->slideTimer,         4); idx += 4;
+                memcpy(&buf[idx], (char*)&Global::player->storedSlideSpeed,   4); idx += 4;
+                memcpy(&buf[idx], (char*)&Global::player->wallJumpTimer,      4); idx += 4;
+                memcpy(&buf[idx], (char*)&Global::player->storedWallNormal.x, 4); idx += 4;
+                memcpy(&buf[idx], (char*)&Global::player->storedWallNormal.y, 4); idx += 4;
+                memcpy(&buf[idx], (char*)&Global::player->storedWallNormal.z, 4); idx += 4;
+                memcpy(&buf[idx], (char*)&Global::player->eyeHeightSmooth,    4); idx += 4;
+                memcpy(&buf[idx], (char*)&Global::player->timeSinceOnGround,  4); idx += 4;
+                memcpy(&buf[idx], (char*)&Global::player->lastGroundNormal.x, 4); idx += 4;
+                memcpy(&buf[idx], (char*)&Global::player->lastGroundNormal.y, 4); idx += 4;
+                memcpy(&buf[idx], (char*)&Global::player->lastGroundNormal.z, 4); idx += 4;
+                memcpy(&buf[idx], (char*)&Global::player->ladderTimer,        4); idx += 4;
+                memcpy(&buf[idx], (char*)&Global::player->isOnLadder,         1); idx += 1;
+                memcpy(&buf[idx], (char*)&Global::player->externalVelPrev.x,  4); idx += 4;
+                memcpy(&buf[idx], (char*)&Global::player->externalVelPrev.y,  4); idx += 4;
+                memcpy(&buf[idx], (char*)&Global::player->externalVelPrev.z,  4); idx += 4;
+                memcpy(&buf[idx], (char*)&Global::player->lookDir.x,          4); idx += 4;
+                memcpy(&buf[idx], (char*)&Global::player->lookDir.y,          4); idx += 4;
+                memcpy(&buf[idx], (char*)&Global::player->lookDir.z,          4); idx += 4;
+                memcpy(&buf[idx], (char*)&Global::player->isCrouching,        1); idx += 1;
+                memcpy(&buf[idx], (char*)&Global::player->weapon,             1); idx += 1;
+                memcpy(&buf[idx], (char*)&Global::player->health,             1);
+
+                //printf("external vel length = %f\n", Global::player->externalVel.length());
+
+                client->write(buf, 145, 5);
             }
 
-            lastSentMsg = glfwGetTime();
-        }
-        else
-        {
-            Sleep(1);
+            lastSentPlayerMsg = glfwGetTime();
         }
     }
 
@@ -1356,4 +1470,17 @@ void Global::sendMessageToServer(Message msg)
     Global::msgOutMutex.lock();
     Global::messagesToSend.push_back(msg);
     Global::msgOutMutex.unlock();
+}
+
+void Global::sendAudioMessageToServer(int sfxId, Vector3f* position)
+{
+    Message msg;
+    msg.buf[0] = 5;
+    msg.length = 1 + 4 + 12;
+    memcpy(&msg.buf[ 1], &sfxId, 4);
+    memcpy(&msg.buf[ 5], &position->x, 4);
+    memcpy(&msg.buf[ 9], &position->y, 4);
+    memcpy(&msg.buf[13], &position->z, 4);
+
+    Global::sendMessageToServer(msg);
 }

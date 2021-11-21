@@ -26,6 +26,8 @@ private:
     bool sinusoidal = false;
     float timeOffset = 0.0f;
 
+
+
 public:
     //direction: 0 = x axis, 1 = y axis, 2 = z axis
     //radius: radius of block

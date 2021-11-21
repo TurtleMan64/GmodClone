@@ -17,9 +17,8 @@
 
 extern float dt;
 
-Player::Player(std::list<TexturedModel*>* models)
+Player::Player()
 {
-    myModels = models;
     scale = 0.5f;
     position.set(-4.85623f, 1.5322f, -12.5412f);
     vel.set(0.000001f, 0, 0);
@@ -39,7 +38,8 @@ void Player::step()
     if (Input::inputs.INPUT_SCROLL != 0)
     {
         AudioPlayer::play(56, nullptr);
-        weapon += Input::inputs.INPUT_SCROLL;
+
+        weapon += (char)Input::inputs.INPUT_SCROLL;
         weapon = weapon % 2;
         if (weapon < 0)
         {
@@ -62,6 +62,7 @@ void Player::step()
         if (timeSinceOnGround <= AIR_JUMP_TOLERANCE && !isCrouching && vel.lengthSquared() > SLIDE_SPEED_REQUIRED*SLIDE_SPEED_REQUIRED && slideTimer <= -SLIDE_TIMER_COOLDOWN)
         {
             AudioPlayer::play(1, nullptr);
+            Global::sendAudioMessageToServer(1, &position);
             slideTimer = SLIDE_TIMER_DURATION;
             storedSlideSpeed = vel.length() + SLIDE_SPEED_ADDITION;
             vel = Maths::projectOntoPlane(&vel, &groundNormal);
@@ -176,7 +177,7 @@ void Player::step()
 
     ladderTimer -= dt;
 
-    bool didLadderJump = false;
+    bool alreadyJumpedThisFrame = false;
 
     // Normal Jump
     if (Input::inputs.INPUT_ACTION1 && !Input::inputs.INPUT_PREVIOUS_ACTION1)
@@ -201,14 +202,16 @@ void Player::step()
             lastGroundNormal.set(0, 1, 0);
             onGround = false;
             isTouchingWall = false;
-            didLadderJump = true;
+            //didLadderJump = true;
         }
 
         if (canJump)
         {
             AudioPlayer::play(60, nullptr);
+            Global::sendAudioMessageToServer(60, &position);
             vel = vel + lastGroundNormal.scaleCopy(getJumpValue(dt));
             timeSinceOnGround = AIR_JUMP_TOLERANCE + 0.0001f;
+            alreadyJumpedThisFrame = true;
             Global::addChatMessage("Jump at " + std::to_string(position.x) + ", " + std::to_string(position.y) + ", " + std::to_string(position.z), Vector3f(1,1,1));
         }
     }
@@ -221,7 +224,7 @@ void Player::step()
         storedWallNormal = wallNormal;
     }
 
-    if (!onGround && !didLadderJump && Input::inputs.INPUT_ACTION1 && !Input::inputs.INPUT_PREVIOUS_ACTION1)
+    if (!onGround && !alreadyJumpedThisFrame && Input::inputs.INPUT_ACTION1 && !Input::inputs.INPUT_PREVIOUS_ACTION1)
     {
         bool canWallJump = wallJumpTimer >= 0.0f;
         if (!canWallJump)
@@ -283,6 +286,7 @@ void Player::step()
                 }
             }
             AudioPlayer::play(sfxId, nullptr);
+            Global::sendAudioMessageToServer(sfxId, &position);
 
             vel = vel + storedWallNormal.scaleCopy(WALL_JUMP_SPEED_HORIZONTAL);
             vel.y += getJumpValue(dt) - 1.0f;
@@ -447,7 +451,9 @@ void Player::step()
                     vel = Maths::projectOntoPlane(&vel, &result.tri->normal);
                     vel = vel + result.tri->normal.scaleCopy(MIN_BOUNCE_SPD);
                 }
-                AudioPlayer::play((int)(2*Maths::random()) + 57, nullptr);
+                int sfxId = (int)(2*Maths::random()) + 57;
+                AudioPlayer::play(sfxId, nullptr);
+                Global::sendAudioMessageToServer(sfxId, &position);
                 break;
             }
             else if (result.tri->type == 2)
@@ -506,7 +512,9 @@ void Player::step()
                         vel = result.tri->normal;
                         vel.setLength(MIN_BOUNCE_SPD);
                     }
-                    AudioPlayer::play((int)(2*Maths::random()) + 57, nullptr);
+                    int sfxId = (int)(2*Maths::random()) + 57;
+                    AudioPlayer::play(sfxId, nullptr);
+                    Global::sendAudioMessageToServer(sfxId, &position);
                     break;
                 }
                 else if (result.tri->type == 2)
@@ -541,6 +549,7 @@ void Player::step()
     //    vel = vel + externalVelPrevious;
     //}
     //externalVelPrevious = externalVel;
+    externalVelPrev = externalVel;
     externalVel.set(0, 0, 0);
 
     bool onGroundBefore = onGround;
@@ -607,6 +616,7 @@ void Player::step()
             if (landSoundTimer > 0.2f)
             {
                 AudioPlayer::play(51, nullptr);
+                Global::sendAudioMessageToServer(51, &position);
             }
         }
         else if (ouchness.lengthSquared() > 4.0f*4.0f)
@@ -629,6 +639,7 @@ void Player::step()
                     }
                 }
                 AudioPlayer::play(sfxId, nullptr);
+                Global::sendAudioMessageToServer(sfxId, &position);
             }
         }
 
@@ -670,6 +681,7 @@ void Player::step()
                 }
             }
             AudioPlayer::play(sfxId, nullptr);
+            Global::sendAudioMessageToServer(sfxId, &position);
         }
     }
 
@@ -855,7 +867,7 @@ void Player::swingYourArm()
             {
                 Vector3f otherHead = e->position;
                 OnlinePlayer* onlinePlayer = (OnlinePlayer*)e;
-                if (onlinePlayer->isCrouching || onlinePlayer->isSliding)
+                if (onlinePlayer->isCrouching || onlinePlayer->slideTimer > 0.0f)
                 {
                     otherHead.y += COLLISION_RADIUS*2;
                 }
@@ -890,33 +902,22 @@ void Player::swingYourArm()
     else if (result.hit)
     {
         AudioPlayer::play(50, nullptr);
+        Global::sendAudioMessageToServer(50, &position);
     }
     else //miss
     {
         AudioPlayer::play(52, nullptr);
+        Global::sendAudioMessageToServer(52, &position);
     }
-}
-
-void Player::setRotation(float xr, float yr, float zr, float sr)
-{
-    rotX = xr;
-    rotY = yr;
-    rotZ = zr;
-    rotRoll = sr;
 }
 
 std::list<TexturedModel*>* Player::getModels()
 {
-    return myModels;
-}
-
-void Player::setModels(std::list<TexturedModel*>* newModels)
-{
-    myModels = newModels;
+    return nullptr;
 }
 
 void Player::die()
 {
-    health = 0.0f;
+    health = 0;
     AudioPlayer::play(59, nullptr);
 }

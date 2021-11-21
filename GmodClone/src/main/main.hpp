@@ -54,7 +54,7 @@ class Message
 {
 public:
     int length = 0;
-    char buf[100] = {0};
+    char buf[188] = {0};
     Message(const Message &other);
     Message();
 };
@@ -172,6 +172,10 @@ public:
 
     static void updateChatMessages();
 
+    static unsigned long long serverStartTime; //when the server started up
+
+    static unsigned long long getRawUtcSystemTime();
+
     static void readThreadBehavoir(TcpClient* client);
 
     static void writeThreadBehavior(TcpClient* client);
@@ -179,5 +183,7 @@ public:
     static std::vector<Message> messagesToSend;
     static std::mutex msgOutMutex;
     static void sendMessageToServer(Message msg);
+
+    static void sendAudioMessageToServer(int sfxId, Vector3f* position);
 };
 #endif

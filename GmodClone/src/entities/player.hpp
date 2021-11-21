@@ -2,6 +2,7 @@
 #define PLAYER_H
 
 class TexturedModel;
+class Triangle3D;
 
 #include <list>
 #include "entity.hpp"
@@ -10,8 +11,6 @@ class TexturedModel;
 class Player : public Entity
 {
 public:
-    std::list<TexturedModel*>* myModels = nullptr;
-
     Triangle3D* latestGroundTriangle = nullptr;
     Triangle3D* latestWallTriangle = nullptr;
     Vector3f groundNormal;
@@ -70,7 +69,7 @@ public:
     // How far you can hit things from
     const float ARM_REACH = 1.9f;
     float swingArmTimer = 0.0f;
-    const float SWING_ARM_COOLDOWN  = 1.0f;
+    const float SWING_ARM_COOLDOWN  = 0.4f;
 
     // > 0 means you cant use a ladder (colldown after jumping)
     float ladderTimer = 0.0f;
@@ -87,26 +86,21 @@ public:
 
     float getJumpValue(float deltaTime);
 
-public:
     Entity* collideEntityImTouching = nullptr;
     Vector3f externalVel;
+    Vector3f externalVelPrev;
     Vector3f lookDir;
     bool isCrouching = false;
 
-    int weapon = 0;
+    char weapon = 0;
 
-    float health = 1.0f;
-    //Vector3f externalVelPrevious;
+    char health = 100;
 
-    Player(std::list<TexturedModel*>* models);
+    Player();
 
     void step();
 
-    void setRotation(float xr, float yr, float zr, float sr);
-
     std::list<TexturedModel*>* getModels();
-
-    void setModels(std::list<TexturedModel*>* newModels);
 
     void die();
 };

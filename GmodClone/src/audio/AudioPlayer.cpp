@@ -171,7 +171,7 @@ Source* AudioPlayer::play(int buffer, Vector3f* pos, float pitch, bool loop, flo
 {
     if (buffer >= (int)AudioPlayer::buffersSFX.size())
     {
-        std::fprintf(stderr, "Error: Index out of bounds on SE buffers\n");
+        std::fprintf(stderr, "Error: Index out of bounds on SE buffers (%d / %d)\n", buffer, (int)AudioPlayer::buffersSFX.size());
         return nullptr;
     }
 
@@ -222,7 +222,7 @@ Source* AudioPlayer::playBGM(int bufferLoop)
 {
     if (bufferLoop >= (int)AudioPlayer::buffersBGM.size() || bufferLoop < 0)
     {
-        std::fprintf(stderr, "Error: Index out of bounds on BGM buffers\n");
+        std::fprintf(stderr, "Error: Index out of bounds on BGM buffers (%d / %d)\n", bufferLoop, (int)AudioPlayer::buffersBGM.size());
         return nullptr;
     }
 
@@ -255,7 +255,7 @@ Source* AudioPlayer::playBGMWithIntro(int bufferIntro, int bufferLoop)
         bufferIntro < 0 ||
         bufferLoop  < 0)
     {
-        std::fprintf(stderr, "Error: Index out of bounds on BGM buffers\n");
+        std::fprintf(stderr, "Error: Index out of bounds on BGM buffers (%d / %d), (%d / %d)\n", bufferLoop, (int)AudioPlayer::buffersBGM.size(), bufferIntro, (int)AudioPlayer::buffersBGM.size());
         return nullptr;
     }
 
