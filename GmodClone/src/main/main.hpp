@@ -18,6 +18,7 @@ class TcpClient;
 #include <unordered_set>
 #include <utility>
 #include <mutex>
+#include <condition_variable>
 
 #include "../toolbox/vector.hpp"
 
@@ -182,6 +183,7 @@ public:
 
     static std::vector<Message> messagesToSend;
     static std::mutex msgOutMutex;
+    static std::condition_variable msgCondVar;
     static void sendMessageToServer(Message msg);
 
     static void sendAudioMessageToServer(int sfxId, Vector3f* position);

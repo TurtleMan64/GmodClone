@@ -22,6 +22,7 @@
 #include <utility>
 #include <thread>
 #include <mutex>
+#include <condition_variable>
 
 #include <chrono>
 #include <ctime>
@@ -1217,22 +1218,30 @@ void Global::writeThreadBehavior(TcpClient* client)
     double lastSentTimeMsg = glfwGetTime();
     double lastSentPlayerMsg = glfwGetTime();
 
+    const double PLAYER_UPDATE_INTERVAL = 0.01;
+
     while (Global::gameState != STATE_EXITING && client->isOpen())
     {
+        std::unique_lock<std::mutex> lock{Global::msgOutMutex};
+        Global::msgCondVar.wait_for(lock, std::chrono::milliseconds(1), [&]()
+        {
+            // If any of these conditions are true, aquire the lock
+            return (Global::messagesToSend.size() > 0                          ||
+                    glfwGetTime() - lastSentPlayerMsg > PLAYER_UPDATE_INTERVAL ||
+                    Global::gameState == STATE_EXITING                         ||
+                    !client->isOpen());
+        });
+
         if (Global::messagesToSend.size() > 0)
         {
-            Global::msgOutMutex.lock();
             for (Message msg : Global::messagesToSend)
             {
                 client->write(msg.buf, msg.length, 5);
             }
             Global::messagesToSend.clear();
-            Global::msgOutMutex.unlock();
         }
-        else
-        {
-            //Sleep(1);
-        }
+
+        lock.unlock();
 
         if (glfwGetTime() - lastSentTimeMsg > 1.0)
         {
@@ -1259,7 +1268,7 @@ void Global::writeThreadBehavior(TcpClient* client)
             lastSentTimeMsg = glfwGetTime();
         }
 
-        if (glfwGetTime() - lastSentPlayerMsg > 0.01)
+        if (glfwGetTime() - lastSentPlayerMsg > PLAYER_UPDATE_INTERVAL)
         {
             //Send main player message
             if (Global::player != nullptr)
@@ -1464,6 +1473,7 @@ void Global::updateChatMessages()
 
 std::vector<Message> Global::messagesToSend;
 std::mutex Global::msgOutMutex;
+std::condition_variable Global::msgCondVar;
 
 void Global::sendMessageToServer(Message msg)
 {
