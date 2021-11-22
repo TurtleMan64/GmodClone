@@ -1,5 +1,6 @@
 #include <list>
 #include <set>
+#include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
 #include "../toolbox/vector.hpp"
@@ -14,8 +15,11 @@
 #include "../audio/audioplayer.hpp"
 #include "ladder.hpp"
 #include "onlineplayer.hpp"
+#include "../loader/objloader.hpp"
 
 extern float dt;
+
+std::list<TexturedModel*> modelsGun;
 
 Player::Player()
 {
@@ -27,6 +31,13 @@ Player::Player()
     wallNormal.set(1, 0, 0);
     lookDir.set(0, 0, -1);
     visible = false;
+
+    ObjLoader::loadModel(&modelsGun , "res/Models/Gun/", "GunOffset");
+
+    weaponModel = new Dummy(&modelsGun);
+
+    Global::addEntity(weaponModel);
+    weaponModel->visible = false;
 }
 
 void Player::step()
@@ -724,6 +735,20 @@ void Player::step()
         Ball* b = new Ball("Ball0", position, lookDir.scaleCopy(10));
         b->position.y += HUMAN_HEIGHT;
         Global::addEntity(b);
+    }
+
+    if (weapon == 1)
+    {
+        weaponModel->visible = true;
+        weaponModel->position = Global::gameCamera->eye;
+
+        Maths::sphereAnglesFromPosition(&lookDir, &weaponModel->rotY, &weaponModel->rotZ);
+
+        weaponModel->updateTransformationMatrix();
+    }
+    else
+    {
+        weaponModel->visible = false;
     }
     
     updateTransformationMatrix();

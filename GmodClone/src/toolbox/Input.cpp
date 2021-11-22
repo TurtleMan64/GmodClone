@@ -476,6 +476,25 @@ void Input::keyboardCallback(GLFWwindow* /**/, int key, int /**/, int action, in
                                 }
                             }
                         }
+                        else if (Input::chatLength >= 10 && strncmp("fps-show ", Input::chatInput, 9) == 0 ||
+                                 Input::chatLength >= 10 && strncmp("FPS-SHOW ", Input::chatInput, 9) == 0 ||
+                                 Input::chatLength >= 10 && strncmp("fps_show ", Input::chatInput, 9) == 0 ||
+                                 Input::chatLength >= 10 && strncmp("FPS_SHOW ", Input::chatInput, 9) == 0)
+                        {
+                            std::vector<std::string> tokens = split(Input::chatInput, ' ');
+                            if (tokens.size() > 1)
+                            {
+                                float fpsShow = std::stof(tokens[1]);
+                                if (fpsShow > 0.5f)
+                                {
+                                    Global::displayFPS = true;
+                                }
+                                else
+                                {
+                                    Global::displayFPS = false;
+                                }
+                            }
+                        }
                     }
                     catch (std::exception e)
                     {

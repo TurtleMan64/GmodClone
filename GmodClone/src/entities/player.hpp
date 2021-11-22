@@ -3,6 +3,7 @@
 
 class TexturedModel;
 class Triangle3D;
+class Dummy;
 
 #include <list>
 #include "entity.hpp"
@@ -95,6 +96,8 @@ public:
     char weapon = 0;
 
     char health = 100;
+
+    Dummy* weaponModel = nullptr;
 
     Player();
 

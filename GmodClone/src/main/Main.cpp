@@ -453,6 +453,11 @@ int main(int argc, char** argv)
 
         Global::updateChatMessages();
 
+        if (Global::player->weapon == 1)
+        {
+            GuiManager::addGuiToRender(GuiTextureResources::textureCrosshair);
+        }
+
         GuiManager::render();
         GuiManager::clearGuisToRender();
 
@@ -468,9 +473,17 @@ int main(int argc, char** argv)
         if (timeNew - previousTime >= 1.0)
         {
             Global::currentCalculatedFPS = (int)(std::round(frameCount/(timeNew - previousTime)));
-            fpsText->deleteMe();
-            delete fpsText;
-            fpsText = new GUIText(std::to_string(Global::currentCalculatedFPS), 0.02f, Global::fontConsolas, 1.0f, 0.0f, 2, true);
+            if (fpsText != nullptr)
+            {
+                fpsText->deleteMe();
+                delete fpsText; INCR_DEL("GUIText");
+                fpsText = nullptr;
+            }
+
+            if (Global::displayFPS)
+            {
+                fpsText = new GUIText(std::to_string(Global::currentCalculatedFPS), 0.02f, Global::fontConsolas, 1.0f, 0.0f, 2, true);
+            }
             //std::fprintf(stdout, "fps: %f\n", frameCount / (timeNew - previousTime));
             //printf("%f\t%f\n", (float)glfwGetTime(), 36.7816091954f*ball->vel.length());
             //std::fprintf(stdout, "diff: %d\n", Global::countNew - Global::countDelete);

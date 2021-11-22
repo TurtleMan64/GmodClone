@@ -8,6 +8,7 @@ class GuiTextureResources
 public:
     static GuiTexture* textureChatBG;
     static GuiTexture* textureLocalChatBG;
+    static GuiTexture* textureCrosshair;
 
     static void loadGuiTextures();
 };

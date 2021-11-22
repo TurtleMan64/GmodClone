@@ -10,5 +10,5 @@ uniform float alpha;
 void main(void)
 {
 	out_Color = texture(guiTexture, textureCoords);
-    out_Color.a = alpha;
+    out_Color.a = alpha*out_Color.a;
 }
