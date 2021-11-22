@@ -34,7 +34,7 @@ void EntityRenderer::renderNEW(std::unordered_map<TexturedModel*, std::list<Enti
         //shader->loadToShadowSpaceMatrixClose(toShadowSpaceClose);
     }
 
-    clockTime = Global::gameClock;
+    clockTime = (float)glfwGetTime();
 
     for (auto entry : (*entitiesMap))
     {

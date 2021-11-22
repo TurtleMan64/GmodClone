@@ -197,7 +197,8 @@ void Master_render(Camera* camera, float clipX, float clipY, float clipZ, float 
     shader->loadViewMatrix(camera);
     shader->loadIsRenderingTransparent(false);
     shader->loadIsRenderingDepth(false);
-    shader->loadWaterColor(&Global::stageWaterColor);
+    Vector3f waterColor(1,1,1);
+    shader->loadWaterColor(&waterColor);
     shader->loadWaterBlendAmount(waterBlendAmount);
     shader->connectTextureUnits();
 

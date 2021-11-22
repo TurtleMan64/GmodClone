@@ -210,7 +210,7 @@ void framebuffer_size_callback(GLFWwindow* /*windowHandle*/, int width, int heig
 
 void window_close_callback(GLFWwindow* /*windowHandle*/)
 {
-    Global::gameState = STATE_EXITING;
+    Global::gameState = GAME_STATE_EXITING;
 }
 
 void loadDisplaySettings()

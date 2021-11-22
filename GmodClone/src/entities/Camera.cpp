@@ -26,7 +26,7 @@ void Camera::mirrorForWater()
     newUp.neg();
     up = newUp;
 
-    float yDiff = eye.y - Global::waterHeight;
+    float yDiff = eye.y - 0.0f;
     eye.y -= yDiff*2;
     target = eye+view;
 }
