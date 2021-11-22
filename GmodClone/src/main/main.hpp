@@ -111,6 +111,7 @@ public:
     static std::string nickname;
     static std::unordered_map<std::string, OnlinePlayer*> gameOnlinePlayers;
     static std::vector<std::string> serverSettings;
+    static TcpClient* serverClient;
 
     static void addChatMessage(std::string msg, Vector3f color);
 

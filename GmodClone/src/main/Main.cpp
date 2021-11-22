@@ -95,6 +95,7 @@ std::unordered_set<Entity*> Global::gameEntities;
 std::unordered_map<std::string, OnlinePlayer*> Global::gameOnlinePlayers;
 
 std::vector<std::string> Global::serverSettings;
+TcpClient* Global::serverClient = nullptr;
 
 std::mutex gameEntitiesAddMutex;
 std::vector<Entity*> gameEntitiesToAdd;
@@ -206,13 +207,13 @@ int main(int argc, char** argv)
     RedBarrel::loadModels();
 
     Global::serverSettings = readFileLines("ServerSettings.ini");
-    TcpClient* client = new TcpClient(Global::serverSettings[0].c_str(), std::stoi(Global::serverSettings[1]), 2); INCR_NEW("TcpClient");
+    Global::serverClient = new TcpClient(Global::serverSettings[0].c_str(), std::stoi(Global::serverSettings[1]), 1); INCR_NEW("TcpClient");
     std::thread* t1 = nullptr;
     std::thread* t2 = nullptr;
-    if (client->isOpen())
+    if (Global::serverClient->isOpen())
     {
-        t1 = new std::thread(Global::readThreadBehavoir,  client); INCR_NEW("std::thread");
-        t2 = new std::thread(Global::writeThreadBehavior, client); INCR_NEW("std::thread");
+        t1 = new std::thread(Global::readThreadBehavoir,  Global::serverClient); INCR_NEW("std::thread");
+        t2 = new std::thread(Global::writeThreadBehavior, Global::serverClient); INCR_NEW("std::thread");
     }
     else
     {
