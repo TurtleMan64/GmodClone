@@ -1,0 +1,14 @@
+# Material Count: 2
+
+newmtl Hand
+Ns 20
+Ni 0.000000
+d 1.000000
+map_Kd Hand.png
+
+newmtl pistol
+Ns 20.000000
+Ni 0.02
+d 1.000000
+map_Kd pistol.png
+

@@ -16,6 +16,7 @@
 #include "ladder.hpp"
 #include "onlineplayer.hpp"
 #include "../loader/objloader.hpp"
+#include "dummy.hpp"
 
 extern float dt;
 
@@ -32,7 +33,7 @@ Player::Player()
     lookDir.set(0, 0, -1);
     visible = false;
 
-    ObjLoader::loadModel(&modelsGun , "res/Models/Gun/", "GunOffset");
+    ObjLoader::loadModel(&modelsGun , "res/Models/Gun/", "GunInHand");
 
     weaponModel = new Dummy(&modelsGun);
 
@@ -744,7 +745,21 @@ void Player::step()
 
         Maths::sphereAnglesFromPosition(&lookDir, &weaponModel->rotY, &weaponModel->rotZ);
 
-        weaponModel->updateTransformationMatrix();
+        Matrix4f* mat = &weaponModel->transformationMatrix;
+
+        mat->setIdentity();
+        mat->translate(&weaponModel->position);
+        Vector3f vec;
+
+        vec.set(0, 1, 0);
+        mat->rotate(Maths::toRadians(weaponModel->rotY), &vec);
+
+        vec.set(0, 0, 1);
+        mat->rotate(Maths::toRadians(weaponModel->rotZ), &vec);
+
+        Vector3f armOffset(-0.103481f, -0.158837f, 0.132962f);
+
+        mat->translate(&armOffset);
     }
     else
     {
