@@ -95,6 +95,9 @@ public:
 
     char weapon = 0;
 
+    const float FALL_DAMAGE_SPEED_START = 16.0f;
+    const float FALL_DAMAGE_SPEED_FATAL = 50.0f;
+
     char health = 100;
 
     Dummy* weaponModel = nullptr;

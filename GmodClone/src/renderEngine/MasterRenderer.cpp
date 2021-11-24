@@ -204,7 +204,8 @@ void Master_render(Camera* camera, float clipX, float clipY, float clipZ, float 
 
     //change this back
     glDepthMask(true);
-    renderer->renderNEW(&entitiesMap, nullptr, nullptr);
+    renderer->renderNEW(&entitiesMap,      nullptr, nullptr);
+    renderer->renderNEW(&entitiesMapPass2, nullptr, nullptr);
     glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
     glBindTexture(GL_TEXTURE_2D, 0);
     shader->stop();

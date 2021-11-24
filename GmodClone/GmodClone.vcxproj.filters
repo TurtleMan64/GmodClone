@@ -216,6 +216,12 @@
     <ClCompile Include="src\entities\Ladder.cpp">
       <Filter>Source Files\entities</Filter>
     </ClCompile>
+    <ClCompile Include="src\entities\HealthCube.cpp">
+      <Filter>Source Files\entities</Filter>
+    </ClCompile>
+    <ClCompile Include="src\entities\Glass.cpp">
+      <Filter>Source Files\entities</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\toolbox\getline.hpp">
@@ -360,6 +366,12 @@
       <Filter>Source Files\guis</Filter>
     </ClInclude>
     <ClInclude Include="src\entities\ladder.hpp">
+      <Filter>Source Files\entities</Filter>
+    </ClInclude>
+    <ClInclude Include="src\entities\healthcube.hpp">
+      <Filter>Source Files\entities</Filter>
+    </ClInclude>
+    <ClInclude Include="src\entities\glass.hpp">
       <Filter>Source Files\entities</Filter>
     </ClInclude>
   </ItemGroup>

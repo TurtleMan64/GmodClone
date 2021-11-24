@@ -9,6 +9,8 @@ public:
     static GuiTexture* textureChatBG;
     static GuiTexture* textureLocalChatBG;
     static GuiTexture* textureCrosshair;
+    static GuiTexture* textureHealthbar;
+    static GuiTexture* textureHealthbarBG;
 
     static void loadGuiTextures();
 };

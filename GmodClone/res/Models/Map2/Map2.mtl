@@ -1,0 +1,42 @@
+# Blender MTL File: 'Map2.blend'
+# Material Count: 4
+
+newmtl None
+Ns 20
+Ka 0.000000 0.000000 0.000000
+Kd 0.8 0.8 0.8
+Ks 0.8 0.8 0.8
+Ni 0.02
+d 1
+illum 2
+map_Kd green.png
+
+newmtl None_bushsky.png
+Ns 20
+Ka 0.000000 0.000000 0.000000
+Kd 0.8 0.8 0.8
+Ks 0.8 0.8 0.8
+Ni 0.02
+d 1
+illum 2
+map_Kd bushsky.png
+
+newmtl None_grass.png
+Ns 20
+Ka 0.000000 0.000000 0.000000
+Kd 0.8 0.8 0.8
+Ks 0.8 0.8 0.8
+Ni 0.02
+d 1
+illum 2
+map_Kd grass.png
+
+newmtl None_sky.png
+Ns 20
+Ka 0.000000 0.000000 0.000000
+Kd 0.8 0.8 0.8
+Ks 0.8 0.8 0.8
+Ni 0.02
+d 1
+illum 2
+map_Kd sky.png

@@ -1,0 +1,13 @@
+res/Models/Map1/Map1.obj        # Visual Stage Model
+res/Models/Map1/Collision.obj   # Collision Stage Model
+-6.8 0 6.8     0 0 6.8          # Player Spawning Zone
+
+# Glass Platforms
+8 G1 12.8 0 -2.4
+8 G2 12.8 0  2.4
+8 G3 19.2 0 -2.4
+8 G4 19.2 0  2.4
+8 G5 25.6 0 -2.4
+8 G6 25.6 0  2.4
+8 G7 32.0 0 -2.4
+8 G8 32.0 0  2.4

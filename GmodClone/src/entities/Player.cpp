@@ -17,6 +17,10 @@
 #include "onlineplayer.hpp"
 #include "../loader/objloader.hpp"
 #include "dummy.hpp"
+#include "../guis/guimanager.hpp"
+#include "../guis/guitextureresources.hpp"
+#include "../guis/guitexture.hpp"
+#include "../network/tcpclient.hpp"
 
 extern float dt;
 
@@ -412,6 +416,24 @@ void Player::step()
                 break;
             }
 
+            case ENTITY_HEALTH_CUBE:
+            {
+                if (e->visible && health < 100 && !Global::serverClient->isOpen()) //if we are in a server, the server decides if we pick up the item
+                {
+                    Vector3f mySpot = position;
+                    mySpot.y += COLLISION_RADIUS;
+
+                    Vector3f diff = mySpot - e->position;
+
+                    if (diff.lengthSquared() < (COLLISION_RADIUS + 0.3f)*(COLLISION_RADIUS + 0.3f))
+                    {
+                        health = (char)Maths::clamp(0, health + 25, 100);
+                        e->visible = false;
+                        AudioPlayer::play(61, nullptr);
+                    }
+                }
+            }
+
             default:
                 break;
         }
@@ -619,11 +641,21 @@ void Player::step()
     landSoundTimer+=dt;
     if (!onGroundBefore && onGround)
     {
-        Vector3f ouchness = Maths::projectAlongLine(&velBefore, &groundNormal);
+        float impactSpeed = Maths::projectAlongLine(&velBefore, &groundNormal).length();
 
-        if (ouchness.lengthSquared() > 14.0f*14.0f)
+        if (impactSpeed > FALL_DAMAGE_SPEED_START)
         {
-            //TODO calculate and apply fall damage;
+            float perc = (impactSpeed - FALL_DAMAGE_SPEED_START)/(FALL_DAMAGE_SPEED_FATAL - FALL_DAMAGE_SPEED_START);
+
+            int newHealth = (int)health;
+
+            newHealth -= (int)(perc*100);
+
+            if (newHealth < 0)
+            {
+                newHealth = 0;
+            }
+            health = (char)newHealth;
 
             if (landSoundTimer > 0.2f)
             {
@@ -631,7 +663,7 @@ void Player::step()
                 Global::sendAudioMessageToServer(51, &position);
             }
         }
-        else if (ouchness.lengthSquared() > 4.0f*4.0f)
+        else if (impactSpeed > 4.0f)
         {
             if (landSoundTimer > 0.2f)
             {
@@ -764,6 +796,14 @@ void Player::step()
     else
     {
         weaponModel->visible = false;
+    }
+
+    if (health < 100)
+    {
+        float perc = (float)health/100.0f;
+        GuiTextureResources::textureHealthbar->size.x = perc*(0.425f);
+        GuiManager::addGuiToRender(GuiTextureResources::textureHealthbarBG);
+        GuiManager::addGuiToRender(GuiTextureResources::textureHealthbar);
     }
     
     updateTransformationMatrix();

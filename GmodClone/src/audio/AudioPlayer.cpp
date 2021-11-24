@@ -83,6 +83,7 @@ void AudioPlayer::loadSoundEffects()
     AudioPlayer::buffersSFX.push_back(AudioMaster::loadWAV("res/Audio/SFX/SplatFruit/boing2.wav"));             //58
     AudioPlayer::buffersSFX.push_back(AudioMaster::loadWAV("res/Audio/SFX/SplatFruit/splat.wav"));              //59
     AudioPlayer::buffersSFX.push_back(AudioMaster::loadWAV("res/Audio/SFX/HL2/footstep/hard_boot6_short.wav")); //60
+    AudioPlayer::buffersSFX.push_back(AudioMaster::loadWAV("res/Audio/SFX/HL2/misc/smallmedkit1.wav"));         //61
 }
 
 void AudioPlayer::loadBGM(char* fileName)

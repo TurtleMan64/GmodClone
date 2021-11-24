@@ -21,7 +21,7 @@
 #include <list>
 #include <utility>
 #include <thread>
-#include <mutex>
+#include <shared_mutex>
 #include <condition_variable>
 
 #include <chrono>
@@ -68,7 +68,8 @@
 #include "../guis/guitexture.hpp"
 #include "../toolbox/maths.hpp"
 #include "../entities/ladder.hpp"
-
+#include "../entities/healthcube.hpp"
+#include "../entities/glass.hpp"
 
 Message::Message(const Message &other)
 {
@@ -97,7 +98,7 @@ std::unordered_map<std::string, OnlinePlayer*> Global::gameOnlinePlayers;
 std::vector<std::string> Global::serverSettings;
 TcpClient* Global::serverClient = nullptr;
 
-std::mutex gameEntitiesAddMutex;
+std::shared_mutex gameEntitiesSharedMutex;
 std::vector<Entity*> gameEntitiesToAdd;
 std::vector<Entity*> gameEntitiesToDelete;
 
@@ -205,6 +206,8 @@ int main(int argc, char** argv)
     CollisionBlock::loadModels();
     OnlinePlayer::loadModels();
     RedBarrel::loadModels();
+    HealthCube::loadModels();
+    Glass::loadModels();
 
     Global::serverSettings = readFileLines("ServerSettings.ini");
     Global::serverClient = new TcpClient(Global::serverSettings[0].c_str(), std::stoi(Global::serverSettings[1]), 1); INCR_NEW("TcpClient");
@@ -273,6 +276,23 @@ int main(int argc, char** argv)
 
     Ladder* ladder1 = new Ladder("L1", Vector3f(-14.7011f, 0.0f, -6.00807f), Vector3f(0.0568f/2, 5.29103f, 0.55678f/2)); INCR_NEW("Entity");
 
+    HealthCube* health1 = new HealthCube("H1", Vector3f(0, 0.5f, 0));
+    HealthCube* health2 = new HealthCube("H2", Vector3f(10.300812f, 4.3f, 3.992104f));
+    HealthCube* health3 = new HealthCube("H3", Vector3f(10.300812f, 4.3f, 2.470885f));
+    HealthCube* health4 = new HealthCube("H4", Vector3f(10.300812f, 4.3f, 0.799089f));
+    HealthCube* health5 = new HealthCube("H5", Vector3f(10.300812f, 4.3f, -0.852117f));
+    HealthCube* health6 = new HealthCube("H6", Vector3f(10.300812f, 4.3f, -2.527918f));
+    HealthCube* health7 = new HealthCube("H7", Vector3f(10.300812f, 4.3f, -4.364767f));
+
+    Glass* glass1 = new Glass("G1", Vector3f(12.8f, 0.0f, -2.4f)); glass1->isReal = true;
+    Glass* glass2 = new Glass("G2", Vector3f(12.8f, 0.0f,  2.4f)); glass2->isReal = false;
+    Glass* glass3 = new Glass("G3", Vector3f(19.2f, 0.0f, -2.4f)); glass3->isReal = false;
+    Glass* glass4 = new Glass("G4", Vector3f(19.2f, 0.0f,  2.4f)); glass4->isReal = true;
+    Glass* glass5 = new Glass("G5", Vector3f(25.6f, 0.0f, -2.4f)); glass5->isReal = true;
+    Glass* glass6 = new Glass("G6", Vector3f(25.6f, 0.0f,  2.4f)); glass6->isReal = false;
+    Glass* glass7 = new Glass("G7", Vector3f(32.0f, 0.0f, -2.4f)); glass7->isReal = false;
+    Glass* glass8 = new Glass("G8", Vector3f(32.0f, 0.0f,  2.4f)); glass8->isReal = true;
+
     //Global::gameEntities.insert(npc1);
     //Global::gameEntities.insert(npc2);
     //Global::gameEntities.insert(npc3);
@@ -291,6 +311,23 @@ int main(int argc, char** argv)
 
     Global::gameEntities.insert(ladder1);
 
+    Global::gameEntities.insert(health1);
+    Global::gameEntities.insert(health2);
+    Global::gameEntities.insert(health3);
+    Global::gameEntities.insert(health4);
+    Global::gameEntities.insert(health5);
+    Global::gameEntities.insert(health6);
+    Global::gameEntities.insert(health7);
+
+    Global::gameEntities.insert(glass1);
+    Global::gameEntities.insert(glass2);
+    Global::gameEntities.insert(glass3);
+    Global::gameEntities.insert(glass4);
+    Global::gameEntities.insert(glass5);
+    Global::gameEntities.insert(glass6);
+    Global::gameEntities.insert(glass7);
+    Global::gameEntities.insert(glass8);
+
     //x, y = (0, 0) is top left, (1, 1) is bottom right
     //size = 1.0 = full screen height
     //alignment chart:
@@ -299,7 +336,7 @@ int main(int argc, char** argv)
     //  6 7 8
     //GUIText(std::string text, float size, FontType* font, float x, float y, int alignment, bool visible);
 
-    GUIText* fpsText = new GUIText("0", 0.02f, Global::fontConsolas, 1.0f, 0.0f, 2, true);
+    GUIText* fpsText = new GUIText("0", 0.02f, Global::fontConsolas, 1.0f, 0.0f, 2, true); INCR_NEW("GUIText");
 
     while (Global::gameState != GAME_STATE_EXITING && displayWantsToClose() == 0)
     {
@@ -351,25 +388,33 @@ int main(int argc, char** argv)
 
         ANALYSIS_START("Entity Management");
         //entities managment
-        gameEntitiesAddMutex.lock();
-        for (Entity* entityToAdd : gameEntitiesToAdd)
+        if (gameEntitiesToAdd.size() > 0)
         {
-            Global::gameEntities.insert(entityToAdd);
+            gameEntitiesSharedMutex.lock();
+            for (Entity* entityToAdd : gameEntitiesToAdd)
+            {
+                Global::gameEntities.insert(entityToAdd);
+            }
+            gameEntitiesToAdd.clear();
+            gameEntitiesSharedMutex.unlock();
         }
-        gameEntitiesToAdd.clear();
 
-        std::unordered_set<Entity*> entitiesImGoingToDelete;
-        for (Entity* entityToDelete : gameEntitiesToDelete)
+        if (gameEntitiesToDelete.size() > 0)
         {
-            entitiesImGoingToDelete.insert(entityToDelete);
-            Global::gameEntities.erase(entityToDelete);
-        }
-        gameEntitiesToDelete.clear();
-        gameEntitiesAddMutex.unlock();
+            gameEntitiesSharedMutex.lock();
+            std::unordered_set<Entity*> entitiesImGoingToDelete;
+            for (Entity* entityToDelete : gameEntitiesToDelete)
+            {
+                entitiesImGoingToDelete.insert(entityToDelete);
+                Global::gameEntities.erase(entityToDelete);
+            }
+            gameEntitiesToDelete.clear();
+            gameEntitiesSharedMutex.unlock();
 
-        for (Entity* e : entitiesImGoingToDelete)
-        {
-            delete e; INCR_DEL("Entity");
+            for (Entity* e : entitiesImGoingToDelete)
+            {
+                delete e; INCR_DEL("Entity");
+            }
         }
 
         ANALYSIS_DONE("Entity Management");
@@ -530,23 +575,23 @@ int main(int argc, char** argv)
 
 void Global::addEntity(Entity* entityToAdd)
 {
-    gameEntitiesAddMutex.lock();
+    gameEntitiesSharedMutex.lock();
     gameEntitiesToAdd.push_back(entityToAdd);
-    gameEntitiesAddMutex.unlock();
+    gameEntitiesSharedMutex.unlock();
 }
 
 void Global::deleteEntity(Entity* entityToDelete)
 {
-    gameEntitiesAddMutex.lock();
+    gameEntitiesSharedMutex.lock();
     gameEntitiesToDelete.push_back(entityToDelete);
-    gameEntitiesAddMutex.unlock();
+    gameEntitiesSharedMutex.unlock();
 }
 
 void Global::deleteAllEntites()
 {
     std::unordered_set<Entity*> entitiesImGoingToDelete;
 
-    gameEntitiesAddMutex.lock();
+    gameEntitiesSharedMutex.lock();
     //Make sure no entities get left behind in transition
     for (Entity* entityToAdd : gameEntitiesToAdd)
     {
@@ -571,7 +616,7 @@ void Global::deleteAllEntites()
         delete e; INCR_DEL("Entity");
     }
 
-    gameEntitiesAddMutex.unlock();
+    gameEntitiesSharedMutex.unlock();
 }
 
 void increaseProcessPriority()
@@ -813,9 +858,9 @@ void Global::readThreadBehavoir(TcpClient* client)
                             {
                                 onlinePlayer = new OnlinePlayer(name, 0, 0, 0); INCR_NEW("Entity");
 
-                                gameEntitiesAddMutex.lock();
+                                gameEntitiesSharedMutex.lock();
                                 gameEntitiesToAdd.push_back(onlinePlayer);
-                                gameEntitiesAddMutex.unlock();
+                                gameEntitiesSharedMutex.unlock();
 
                                 Global::gameOnlinePlayers[name] = onlinePlayer;
                                 printf("%s connected!", name.c_str());
@@ -884,9 +929,9 @@ void Global::readThreadBehavoir(TcpClient* client)
 
                             if (onlinePlayer != nullptr)
                             {
-                                gameEntitiesAddMutex.lock();
+                                gameEntitiesSharedMutex.lock();
                                 gameEntitiesToDelete.push_back(onlinePlayer);
-                                gameEntitiesAddMutex.unlock();
+                                gameEntitiesSharedMutex.unlock();
                             }
                             else
                             {
@@ -947,8 +992,57 @@ void Global::readThreadBehavoir(TcpClient* client)
                     break;
                 }
 
-                default:
+                case 6: //we have picked up a health pack
+                {
+                    int healthNameLen;
+                    char healthName[33] = {0};
+                    char healAmount;
+
+                    client->read((char*)&healthNameLen, 4, 5);
+                    client->read(healthName, healthNameLen, 5);
+                    client->read(&healAmount, 1, 5);
+
+                    if (healAmount > 0)
+                    {
+                        int newHealth = (int)Global::player->health;
+
+                        newHealth = Maths::clamp(0, newHealth + (int)healAmount, 100);
+
+                        Global::player->health = (char)newHealth;
+                        AudioPlayer::play(61, nullptr);
+                    }
+
+                    std::string healthNameToDelete = healthName;
+
+                    gameEntitiesSharedMutex.lock_shared();
+                    for (Entity* e : Global::gameEntities)
+                    {
+                        switch (e->getEntityType())
+                        {
+                            case ENTITY_HEALTH_CUBE:
+                            {
+                                if (e->name == healthNameToDelete)
+                                {
+                                    e->visible = false;
+                                }
+                                break;
+                            }
+
+                            default:
+                                break;
+                        }
+                    }
+                    gameEntitiesSharedMutex.unlock_shared();
+
                     break;
+                }
+
+                default:
+                {
+                    printf("Error: Received unknown command %d from server\n", cmd);
+                    Global::addChatMessage("Disconnected from Server", Vector3f(1, 0.5f, 0.5f));
+                    return;
+                }
             }
         }
         else

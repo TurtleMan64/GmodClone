@@ -18,6 +18,8 @@ class Triangle3D;
 #define ENTITY_COLLISION_BLOCK 4
 #define ENTITY_RED_BARREL 5
 #define ENTITY_LADDER 6
+#define ENTITY_HEALTH_CUBE 7
+#define ENTITY_GLASS 8
 
 class Entity
 {
