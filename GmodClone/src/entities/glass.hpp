@@ -9,6 +9,7 @@ class CollisionModel;
 #include <vector>
 #include "entity.hpp"
 #include "../toolbox/vector.hpp"
+#include "../audio/audioplayer.hpp"
 
 class Glass : public Entity
 {

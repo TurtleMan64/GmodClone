@@ -13,6 +13,8 @@
 #include "../audio/source.hpp"
 #include "../entities/entity.hpp"
 #include "../entities/player.hpp"
+#include "../audio/audioplayer.hpp"
+#include "../network/tcpclient.hpp"
 
 std::list<TexturedModel*> Glass::models;
 CollisionModel* Glass::baseCM = nullptr;
@@ -35,7 +37,27 @@ Glass::Glass(std::string name, Vector3f pos)
 
 void Glass::step()
 {
-    
+    if (!hasBroken && !isReal)
+    {
+        if (!Global::serverClient->isOpen())
+        {
+            Vector3f playerCenter = Global::player->position;
+            const float COLLISION_RADIUS = 1.74f/4;
+            playerCenter.y += COLLISION_RADIUS;
+
+            for (Triangle3D* tri : cm->triangles)
+            {
+                float d;
+                Vector3f g;
+                if (Maths::sphereIntersectsTriangle(&playerCenter, COLLISION_RADIUS, tri, &d, &g))
+                {
+                    AudioPlayer::play(62, nullptr);
+                    hasBroken = true;
+                    visible = false;
+                }
+            }
+        }
+    }
 }
 
 std::list<TexturedModel*>* Glass::getModels()

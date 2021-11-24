@@ -126,6 +126,8 @@ int Global::gameState = 0;
 
 int Global::gameTotalPlaytime = 0;
 
+int Global::levelId = 1;
+
 bool Global::renderWithCulling = true;
 bool Global::displayFPS = true;
 //float Global::fpsTarget = 120.0f;
@@ -240,10 +242,10 @@ int main(int argc, char** argv)
 
     Global::gameState = GAME_STATE_RUNNING;
 
-    std::string folder = "Map1";
+    std::string folder = "Map2";
 
     std::list<TexturedModel*> modelsStage;
-    ObjLoader::loadModel(&modelsStage, "res/Models/" + folder + "/", "Map1");
+    ObjLoader::loadModel(&modelsStage, "res/Models/" + folder + "/", "Map2");
     Dummy* entityStage = new Dummy(&modelsStage); INCR_NEW("Entity");
     Global::addEntity(entityStage);
 
@@ -251,7 +253,7 @@ int main(int argc, char** argv)
     //ObjLoader::loadModel(&modelsSphere, "res/Models/", "Sphere");
     Global::player = new Player; INCR_NEW("Entity");
 
-    CollisionModel* cm = ObjLoader::loadCollisionModel("Models/" + folder + "/", "Collision");
+    CollisionModel* cm = ObjLoader::loadCollisionModel("Models/" + folder + "/", "Map2");
     for (int i = 0; i < cm->triangles.size(); i++)
     {
         CollisionChecker::addTriangle(cm->triangles[i]);
@@ -284,14 +286,14 @@ int main(int argc, char** argv)
     HealthCube* health6 = new HealthCube("H6", Vector3f(10.300812f, 4.3f, -2.527918f));
     HealthCube* health7 = new HealthCube("H7", Vector3f(10.300812f, 4.3f, -4.364767f));
 
-    Glass* glass1 = new Glass("G1", Vector3f(12.8f, 0.0f, -2.4f)); glass1->isReal = true;
-    Glass* glass2 = new Glass("G2", Vector3f(12.8f, 0.0f,  2.4f)); glass2->isReal = false;
-    Glass* glass3 = new Glass("G3", Vector3f(19.2f, 0.0f, -2.4f)); glass3->isReal = false;
-    Glass* glass4 = new Glass("G4", Vector3f(19.2f, 0.0f,  2.4f)); glass4->isReal = true;
-    Glass* glass5 = new Glass("G5", Vector3f(25.6f, 0.0f, -2.4f)); glass5->isReal = true;
-    Glass* glass6 = new Glass("G6", Vector3f(25.6f, 0.0f,  2.4f)); glass6->isReal = false;
-    Glass* glass7 = new Glass("G7", Vector3f(32.0f, 0.0f, -2.4f)); glass7->isReal = false;
-    Glass* glass8 = new Glass("G8", Vector3f(32.0f, 0.0f,  2.4f)); glass8->isReal = true;
+    Glass* glass1 = new Glass("G1", Vector3f(13.8f, 0.0f, -2.4f)); glass1->isReal = true;
+    Glass* glass2 = new Glass("G2", Vector3f(13.8f, 0.0f,  2.4f)); glass2->isReal = false;
+    Glass* glass3 = new Glass("G3", Vector3f(21.2f, 0.0f, -2.4f)); glass3->isReal = false;
+    Glass* glass4 = new Glass("G4", Vector3f(21.2f, 0.0f,  2.4f)); glass4->isReal = true;
+    Glass* glass5 = new Glass("G5", Vector3f(28.6f, 0.0f, -2.4f)); glass5->isReal = true;
+    Glass* glass6 = new Glass("G6", Vector3f(28.6f, 0.0f,  2.4f)); glass6->isReal = false;
+    Glass* glass7 = new Glass("G7", Vector3f(36.0f, 0.0f, -2.4f)); glass7->isReal = false;
+    Glass* glass8 = new Glass("G8", Vector3f(36.0f, 0.0f,  2.4f)); glass8->isReal = true;
 
     //Global::gameEntities.insert(npc1);
     //Global::gameEntities.insert(npc2);

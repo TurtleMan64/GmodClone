@@ -60,6 +60,10 @@ public:
     Message();
 };
 
+#define LVL_HUB  0
+#define LVL_MAP1 1
+#define LVL_MAP2 2
+
 class Global
 {
 public:
@@ -69,6 +73,8 @@ public:
     static std::unordered_set<Entity*> gameEntities;
 
     static int gameState;
+
+    static int levelId;
 
     static Camera* gameCamera;
     static Player* player;

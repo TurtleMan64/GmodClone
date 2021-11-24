@@ -6,7 +6,7 @@ Ns 20
 Ka 0.000000 0.000000 0.000000
 Kd 0.8 0.8 0.8
 Ks 0.8 0.8 0.8
-Ni 0.02
+Ni 0.0
 d 1
 illum 2
 map_Kd green.png
@@ -16,7 +16,7 @@ Ns 20
 Ka 0.000000 0.000000 0.000000
 Kd 0.8 0.8 0.8
 Ks 0.8 0.8 0.8
-Ni 0.02
+Ni 0.0
 d 1
 illum 2
 map_Kd bushsky.png
@@ -26,7 +26,7 @@ Ns 20
 Ka 0.000000 0.000000 0.000000
 Kd 0.8 0.8 0.8
 Ks 0.8 0.8 0.8
-Ni 0.02
+Ni 0.0
 d 1
 illum 2
 map_Kd grass.png
@@ -36,7 +36,7 @@ Ns 20
 Ka 0.000000 0.000000 0.000000
 Kd 0.8 0.8 0.8
 Ks 0.8 0.8 0.8
-Ni 0.02
+Ni 0.0
 d 1
 illum 2
 map_Kd sky.png
