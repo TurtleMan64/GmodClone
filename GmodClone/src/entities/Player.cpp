@@ -39,10 +39,19 @@ Player::Player()
 
     ObjLoader::loadModel(&modelsGun , "res/Models/Gun/", "GunInHand");
 
-    weaponModel = new Dummy(&modelsGun);
-
-    Global::addEntity(weaponModel);
+    weaponModel = new Dummy(&modelsGun); INCR_NEW("Dummy");
     weaponModel->visible = false;
+
+    entitiesToRender.push_back(weaponModel);
+}
+
+Player::~Player() //this should never actually get called
+{
+    if (weaponModel != nullptr)
+    {
+        delete weaponModel; INCR_DEL("Dummy");
+        weaponModel = nullptr;
+    }
 }
 
 void Player::step()
@@ -765,9 +774,9 @@ void Player::step()
 
     if (Input::inputs.INPUT_LB && !Input::inputs.INPUT_PREVIOUS_LB)
     {
-        Ball* b = new Ball("Ball0", position, lookDir.scaleCopy(10));
-        b->position.y += HUMAN_HEIGHT;
-        Global::addEntity(b);
+        //Ball* b = new Ball("Ball0", position, lookDir.scaleCopy(10)); INCR_NEW("Entity");
+        //b->position.y += HUMAN_HEIGHT;
+        //Global::addEntity(b);
     }
 
     if (weapon == 1)
@@ -989,6 +998,11 @@ void Player::swingYourArm()
         AudioPlayer::play(52, nullptr);
         Global::sendAudioMessageToServer(52, &position);
     }
+}
+
+std::vector<Entity*>* Player::getEntitiesToRender()
+{
+    return &entitiesToRender;
 }
 
 std::list<TexturedModel*>* Player::getModels()

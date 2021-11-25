@@ -90,6 +90,8 @@ public:
 
     void step();
 
+    std::vector<Entity*>* getEntitiesToRender();
+
     std::list<TexturedModel*>* getModels();
 
     static void loadModels();

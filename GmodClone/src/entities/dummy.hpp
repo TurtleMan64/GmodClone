@@ -18,6 +18,8 @@ public:
 
     void setRotation(float xr, float yr, float zr, float sr);
 
+    std::vector<Entity*>* getEntitiesToRender();
+
     std::list<TexturedModel*>* getModels();
 
     void setModels(std::list<TexturedModel*>* newModels);

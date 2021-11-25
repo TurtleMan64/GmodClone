@@ -30,9 +30,20 @@ Glass::Glass(std::string name, Vector3f pos)
     position = pos;
     visible = true;
 
+    entitiesToRender.push_back(this);
+
     baseCM->transformModel(cm, &position, 0);
 
     updateTransformationMatrix();
+}
+
+Glass::~Glass()
+{
+    if (cm != nullptr)
+    {
+        cm->deleteMe();
+        delete cm; INCR_DEL("CollisionModel");
+    }
 }
 
 void Glass::step()
@@ -58,6 +69,11 @@ void Glass::step()
             }
         }
     }
+}
+
+std::vector<Entity*>* Glass::getEntitiesToRender()
+{
+    return &entitiesToRender;
 }
 
 std::list<TexturedModel*>* Glass::getModels()

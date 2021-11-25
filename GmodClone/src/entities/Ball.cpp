@@ -24,6 +24,8 @@ Ball::Ball(std::string name, Vector3f pos, Vector3f vel)
     this->vel = vel;
     visible = true;
 
+    entitiesToRender.push_back(this);
+
     //src = AudioPlayer::play(12, &position, 1.0f, true);
 }
 
@@ -71,6 +73,11 @@ void Ball::step()
     //}
 
     updateTransformationMatrix();
+}
+
+std::vector<Entity*>* Ball::getEntitiesToRender()
+{
+    return &entitiesToRender;
 }
 
 std::list<TexturedModel*>* Ball::getModels()

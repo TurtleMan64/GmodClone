@@ -349,7 +349,7 @@ void Input::init()
         glfwSetInputMode(window, GLFW_RAW_MOUSE_MOTION, GLFW_TRUE);
     }
 
-    Input::chatInput = new char[100];
+    Input::chatInput = new char[100]; INCR_NEW("CHAR ARRAY");
     for (int i = 0; i < 100; i++)
     {
         Input::chatInput[i] = 0;

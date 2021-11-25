@@ -32,9 +32,9 @@
 #include "../entities/redbarrel.hpp"
 #include "../loader/objloader.hpp"
 
-void LevelLoader::loadLevel(std::string levelFilename)
+void LevelLoader::loadLevel(std::string mapName)
 {
-    std::string fname = levelFilename;
+    std::string fname = mapName + ".map";
 
     std::ifstream file(Global::pathToEXE + "res/Maps/" + fname);
     if (!file.is_open())
@@ -51,9 +51,9 @@ void LevelLoader::loadLevel(std::string levelFilename)
     std::chrono::high_resolution_clock::time_point timeStart = std::chrono::high_resolution_clock::now();
     bool waitForSomeTime = true;
 
-    if      (levelFilename == "Hub.map")  Global::levelId = LVL_HUB;
-    else if (levelFilename == "Map1.map") Global::levelId = LVL_MAP1;
-    else if (levelFilename == "Map2.map") Global::levelId = LVL_MAP2;
+    if      (fname == "Hub.map")  Global::levelId = LVL_HUB;
+    else if (fname == "Map1.map") Global::levelId = LVL_MAP1;
+    else if (fname == "Map2.map") Global::levelId = LVL_MAP2;
 
     //Run through the header content
 

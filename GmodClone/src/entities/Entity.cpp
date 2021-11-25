@@ -109,6 +109,11 @@ void Entity::increaseRotation(float dx, float dy, float dz)
     rotZ += dz;
 }
 
+std::vector<Entity*>* Entity::getEntitiesToRender()
+{
+    return nullptr;
+}
+
 std::list<TexturedModel*>* Entity::getModels()
 {
     return nullptr;

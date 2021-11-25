@@ -19,6 +19,8 @@ HealthCube::HealthCube(std::string name, Vector3f pos)
     position = pos;
     visible = true;
 
+    entitiesToRender.push_back(this);
+
     updateTransformationMatrix();
 }
 
@@ -32,6 +34,11 @@ void HealthCube::step()
     position.y = ogY + 0.125f*sinf(5*floatTimer);
     updateTransformationMatrix();
     position.y = ogY;
+}
+
+std::vector<Entity*>* HealthCube::getEntitiesToRender()
+{
+    return &entitiesToRender;
 }
 
 std::list<TexturedModel*>* HealthCube::getModels()

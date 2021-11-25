@@ -35,6 +35,18 @@ CollisionBlock::CollisionBlock(std::string name, Vector3f pos, int direction, fl
     position = pos;
     startPos = pos;
     visible = true;
+
+    entitiesToRender.push_back(this);
+}
+
+CollisionBlock::~CollisionBlock()
+{
+    if (cm != nullptr)
+    {
+        cm->deleteMe();
+        delete cm; INCR_DEL("CollisionModel");
+        cm = nullptr;
+    }
 }
 
 float prevPosX = 0.0f;
@@ -182,6 +194,11 @@ void CollisionBlock::step()
     baseCM->transformModelWithScale(cm, &position, 0, scale);
 
     updateTransformationMatrix();
+}
+
+std::vector<Entity*>* CollisionBlock::getEntitiesToRender()
+{
+    return &entitiesToRender;
 }
 
 std::list<TexturedModel*>* CollisionBlock::getModels()

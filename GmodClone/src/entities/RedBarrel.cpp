@@ -28,6 +28,8 @@ RedBarrel::RedBarrel(std::string name, Vector3f pos)
     position = pos;
     visible = true;
 
+    entitiesToRender.push_back(this);
+
     baseCM->transformModelWithScale(cm, &position, 0, scale);
 
     updateTransformationMatrix();
@@ -41,6 +43,11 @@ void RedBarrel::step()
         health = 100.0f;
         visible = false;
     }
+}
+
+std::vector<Entity*>* RedBarrel::getEntitiesToRender()
+{
+    return &entitiesToRender;
 }
 
 std::list<TexturedModel*>* RedBarrel::getModels()

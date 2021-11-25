@@ -39,6 +39,8 @@ public:
     //render order is normally set in each TexturedModel, but can be overrided by using this
     char renderOrderOverride = 69;
 
+    std::vector<Entity*> entitiesToRender;
+
     static void deleteModels(std::list<TexturedModel*>* modelsToDelete);
     static void deleteCollisionModel(CollisionModel** colModelToDelete);
     //0 = rendered first (default), 1 = second, 2 = third, 3 = fourth + transparent (no depth testing)
@@ -64,6 +66,8 @@ public:
     void increasePosition(float dx, float dy, float dz);
 
     void increaseRotation(float dx, float dy, float dz);
+
+    virtual std::vector<Entity*>* getEntitiesToRender();
 
     virtual std::list<TexturedModel*>* getModels();
 

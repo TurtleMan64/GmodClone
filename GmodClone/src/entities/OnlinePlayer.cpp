@@ -36,15 +36,17 @@ OnlinePlayer::OnlinePlayer(std::string name, float x, float y, float z)
     lastGroundNormal.set(0, 1, 0);
     updateTransformationMatrix();
 
-    head = new Dummy(&OnlinePlayer::modelsHead);
-    Global::addEntity(head);
+    head = new Dummy(&OnlinePlayer::modelsHead); INCR_NEW("Dummy");
+    
+    entitiesToRender.push_back(this);
+    entitiesToRender.push_back(head);
 }
 
 OnlinePlayer::~OnlinePlayer()
 {
     if (head != nullptr)
     {
-        Global::deleteEntity(head);
+        delete head; INCR_DEL("Dummy");
         head = nullptr;
     }
 }
@@ -507,6 +509,11 @@ void OnlinePlayer::step()
 
     updateTransformationMatrix();
     head->updateTransformationMatrix();
+}
+
+std::vector<Entity*>* OnlinePlayer::getEntitiesToRender()
+{
+    return &entitiesToRender;
 }
 
 std::list<TexturedModel*>* OnlinePlayer::getModels()

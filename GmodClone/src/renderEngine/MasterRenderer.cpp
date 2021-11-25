@@ -206,44 +206,27 @@ void Master_render(Camera* camera, float clipX, float clipY, float clipZ, float 
     ANALYSIS_DONE("Master Render");
 }
 
-void Master_processEntity(Entity* entity)
+void Master_processEntity(Entity* e)
 {
-    if (!entity->visible)
+    std::vector<Entity*>* entitiesToRender = e->getEntitiesToRender();
+
+    if (entitiesToRender == nullptr)
     {
         return;
     }
 
-    if (entity->renderOrderOverride <= 4)
+    for (Entity* entity : *entitiesToRender)
     {
-        std::unordered_map<TexturedModel*, std::list<Entity*>>* mapToUse = nullptr;
-
-        switch (entity->renderOrderOverride)
+        if (!entity->visible)
         {
-            case 0: mapToUse = &entitiesMap;            break;
-            case 1: mapToUse = &entitiesMapPass2;       break;
-            case 2: mapToUse = &entitiesMapPass3;       break;
-            case 3: mapToUse = &entitiesMapTransparent; break;
-            case 4: mapToUse = &entitiesMapNoDepth;     break;
-            default: break;
+            continue;
         }
 
-        std::list<TexturedModel*>* modellist = entity->getModels();
-
-        for (TexturedModel* entityModel : (*modellist))
-        {
-            std::list<Entity*>* list = &(*mapToUse)[entityModel];
-            list->push_back(entity);
-        }
-    }
-    else
-    {
-        std::list<TexturedModel*>* modellist = entity->getModels();
-
-        for (TexturedModel* entityModel : (*modellist))
+        if (entity->renderOrderOverride <= 4)
         {
             std::unordered_map<TexturedModel*, std::list<Entity*>>* mapToUse = nullptr;
 
-            switch (entityModel->renderOrder)
+            switch (entity->renderOrderOverride)
             {
                 case 0: mapToUse = &entitiesMap;            break;
                 case 1: mapToUse = &entitiesMapPass2;       break;
@@ -253,8 +236,35 @@ void Master_processEntity(Entity* entity)
                 default: break;
             }
 
-            std::list<Entity*>* list = &(*mapToUse)[entityModel];
-            list->push_back(entity);
+            std::list<TexturedModel*>* modellist = entity->getModels();
+
+            for (TexturedModel* entityModel : (*modellist))
+            {
+                std::list<Entity*>* list = &(*mapToUse)[entityModel];
+                list->push_back(entity);
+            }
+        }
+        else
+        {
+            std::list<TexturedModel*>* modellist = entity->getModels();
+
+            for (TexturedModel* entityModel : (*modellist))
+            {
+                std::unordered_map<TexturedModel*, std::list<Entity*>>* mapToUse = nullptr;
+
+                switch (entityModel->renderOrder)
+                {
+                    case 0: mapToUse = &entitiesMap;            break;
+                    case 1: mapToUse = &entitiesMapPass2;       break;
+                    case 2: mapToUse = &entitiesMapPass3;       break;
+                    case 3: mapToUse = &entitiesMapTransparent; break;
+                    case 4: mapToUse = &entitiesMapNoDepth;     break;
+                    default: break;
+                }
+
+                std::list<Entity*>* list = &(*mapToUse)[entityModel];
+                list->push_back(entity);
+            }
         }
     }
 }

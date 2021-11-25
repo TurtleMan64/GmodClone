@@ -11,6 +11,9 @@ class Triangle3D;
 
 class Ladder : public Entity
 {
+private:
+    static CollisionModel* cmBase;
+
 public:
     // Radius of each dimension of rectangular prism
     Vector3f size;
@@ -22,5 +25,7 @@ public:
     void step();
 
     int getEntityType();
+
+    static void loadModels();
 };
 #endif

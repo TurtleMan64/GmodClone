@@ -15,6 +15,6 @@ private:
     static void processLine(std::vector<std::string>& tokens);
 
 public:
-    static void loadLevel(std::string levelFilename);
+    static void loadLevel(std::string mapName);
 };
 #endif

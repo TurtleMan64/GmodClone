@@ -35,8 +35,11 @@ public:
     //distance: distance traveled in the full cycle
     //sinusoidal: false for linear
     CollisionBlock(std::string name, Vector3f pos, int direction, float radius, float timePeriod, float distance, bool sinusoidal, float timeOffset);
+    ~CollisionBlock();
 
     void step();
+
+    std::vector<Entity*>* getEntitiesToRender();
 
     std::list<TexturedModel*>* getModels();
 

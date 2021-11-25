@@ -103,8 +103,11 @@ public:
     Dummy* weaponModel = nullptr;
 
     Player();
+    ~Player();
 
     void step();
+
+    std::vector<Entity*>* getEntitiesToRender();
 
     std::list<TexturedModel*>* getModels();
 

@@ -8,6 +8,8 @@ Dummy::Dummy(std::list<TexturedModel*>* models)
     myModels = models;
     scale = 1;
     visible = true;
+
+    entitiesToRender.push_back(this);
 }
 
 void Dummy::step()
@@ -21,6 +23,11 @@ void Dummy::setRotation(float xr, float yr, float zr, float sr)
     rotY = yr;
     rotZ = zr;
     rotRoll = sr;
+}
+
+std::vector<Entity*>* Dummy::getEntitiesToRender()
+{
+    return &entitiesToRender;
 }
 
 std::list<TexturedModel*>* Dummy::getModels()

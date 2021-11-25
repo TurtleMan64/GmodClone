@@ -10,6 +10,8 @@
 
 extern float dt;
 
+CollisionModel* Ladder::cmBase = nullptr;
+
 Ladder::Ladder(std::string name, Vector3f pos, Vector3f size)
 {
     this->name = name;
@@ -20,14 +22,9 @@ Ladder::Ladder(std::string name, Vector3f pos, Vector3f size)
 
     updateTransformationMatrix(size.x, size.y, size.z);
 
-    CollisionModel* baseCM = ObjLoader::loadCollisionModel("res/Models/Ladder/", "Ladder");
+    cm = Ladder::cmBase->duplicateMe();
 
-    cm = baseCM->duplicateMe();
-
-    baseCM->transformModelWithScale(cm, &position, &size);
-    
-    baseCM->deleteMe();
-    delete baseCM; INCR_DEL("CollisionModel");
+    Ladder::cmBase->transformModelWithScale(cm, &position, &size);
 }
 
 Ladder::~Ladder()
@@ -47,4 +44,12 @@ void Ladder::step()
 int Ladder::getEntityType()
 {
     return ENTITY_LADDER;
+}
+
+void Ladder::loadModels()
+{
+    if (Ladder::cmBase == nullptr)
+    {
+        Ladder::cmBase = ObjLoader::loadCollisionModel("res/Models/Ladder/", "Ladder");
+    }
 }

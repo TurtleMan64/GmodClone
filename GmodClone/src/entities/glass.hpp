@@ -24,8 +24,11 @@ public:
     bool hasBroken = false;
 
     Glass(std::string name, Vector3f pos);
+    ~Glass();
 
     void step();
+
+    std::vector<Entity*>* getEntitiesToRender();
 
     std::list<TexturedModel*>* getModels();
 

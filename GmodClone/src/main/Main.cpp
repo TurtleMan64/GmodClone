@@ -142,6 +142,8 @@ float Global::fpsLimit = 60.0f;
 int Global::currentCalculatedFPS = 0;
 int Global::renderCount = 0;
 
+std::unordered_map<std::string, int> heapObjects;
+
 void increaseProcessPriority();
 
 int main(int argc, char** argv)
@@ -217,6 +219,7 @@ int main(int argc, char** argv)
     RedBarrel::loadModels();
     HealthCube::loadModels();
     Glass::loadModels();
+    Ladder::loadModels();
 
     Global::serverSettings = readFileLines("ServerSettings.ini");
     Global::serverClient = new TcpClient(Global::serverSettings[0].c_str(), std::stoi(Global::serverSettings[1]), 1); INCR_NEW("TcpClient");
@@ -233,7 +236,7 @@ int main(int argc, char** argv)
     }
 
     //This light never gets deleted.
-    Global::gameLightSun = new Light();
+    Global::gameLightSun = new Light(); INCR_NEW("Light");
     Global::gameLightSun->direction.set(-0.2f, -1, -0.4f);
     Global::gameLightSun->direction.normalize();
 
@@ -248,103 +251,11 @@ int main(int argc, char** argv)
 
     Global::gameState = GAME_STATE_RUNNING;
 
-    std::string folder = "Map2";
-
-    //std::list<TexturedModel*> modelsStage;
-    //ObjLoader::loadModel(&Global::stageModels, "res/Models/" + folder + "/", "Map2");
     Global::stageEntity = new Dummy(&Global::stageModels); INCR_NEW("Entity");
-    //Global::stageEntity->visible = true;
 
-    //std::list<TexturedModel*> modelsSphere;
-    //ObjLoader::loadModel(&modelsSphere, "res/Models/", "Sphere");
     Global::player = new Player; INCR_NEW("Entity");
 
-    //CollisionModel* cm = ObjLoader::loadCollisionModel("res/Models/" + folder + "/", "Map2");
-    //for (int i = 0; i < cm->triangles.size(); i++)
-    //{
-    //    CollisionChecker::addTriangle(cm->triangles[i]);
-    //}
-    //CollisionChecker::constructChunkDatastructure();
-
-    //OnlinePlayer* npc1 = new OnlinePlayer("Npc1", 73.076897f, 0.313516f, 23.235739f); INCR_NEW("Entity");
-    //OnlinePlayer* npc2 = new OnlinePlayer("Npc2", 72.076897f, 0.313516f, 23.235739f); INCR_NEW("Entity");
-    //OnlinePlayer* npc3 = new OnlinePlayer("Npc3", 71.076897f, 0.313516f, 23.235739f); INCR_NEW("Entity");
-    //OnlinePlayer* npc4 = new OnlinePlayer("Npc4", 70.076897f, 0.313516f, 23.235739f); INCR_NEW("Entity");
-
-    //Ball* ball1 = new Ball("B1", Vector3f(72.991318f, 28.784624f, -46.660568f), Vector3f(0, 0, 0)); INCR_NEW("Entity");
-    //Ball* ball2 = new Ball("Ball2", Vector3f(72.076897f, 1.313516f, 23.235739f), Vector3f(20, 10, 30)); INCR_NEW("Entity");
-    //Ball* ball3 = new Ball("Ball3", Vector3f(71.076897f, 1.313516f, 23.235739f), Vector3f(30, 20, 10)); INCR_NEW("Entity");
-
-    //CollisionBlock* cb1 = new CollisionBlock("CB1", Vector3f(38.7795f,  10.0f, 44.5082f), 0, 4.0f, 1.0f, 14.0f, true, 0); INCR_NEW("Entity");
-    //CollisionBlock* cb2 = new CollisionBlock("CB2", Vector3f(-28.9653f, 24.0f, -46.243f), 1, 4.0f, 2.1f, 20.0f, true, 0); INCR_NEW("Entity");
-    //CollisionBlock* cb3 = new CollisionBlock("CollisionBlock3", Vector3f(73.076897f, 1.313516f, 43.235739f), 1, 4.0f, 1.0f, 12.0f, false, 0); INCR_NEW("Entity");
-    //CollisionBlock* cb4 = new CollisionBlock("CollisionBlock4", Vector3f(73.076897f, 1.313516f, 53.235739f), 1, 4.0f, 1.0f, 12.0f, true,  0); INCR_NEW("Entity");
-
-    //RedBarrel* barrel1 = new RedBarrel("Barrel1", Vector3f(86.722473f, 0.313497f, -4.892693f)); INCR_NEW("Entity");
-
-    //Ladder* ladder1 = new Ladder("L1", Vector3f(-14.7011f, 0.0f, -6.00807f), Vector3f(0.0568f/2, 5.29103f, 0.55678f/2)); INCR_NEW("Entity");
-
-    //HealthCube* health1 = new HealthCube("H1", Vector3f(0, 0.5f, 0));
-    //HealthCube* health2 = new HealthCube("H2", Vector3f(10.300812f, 4.3f, 3.992104f));
-    //HealthCube* health3 = new HealthCube("H3", Vector3f(10.300812f, 4.3f, 2.470885f));
-    //HealthCube* health4 = new HealthCube("H4", Vector3f(10.300812f, 4.3f, 0.799089f));
-    //HealthCube* health5 = new HealthCube("H5", Vector3f(10.300812f, 4.3f, -0.852117f));
-    //HealthCube* health6 = new HealthCube("H6", Vector3f(10.300812f, 4.3f, -2.527918f));
-    //HealthCube* health7 = new HealthCube("H7", Vector3f(10.300812f, 4.3f, -4.364767f));
-
-    //Glass* glass1 = new Glass("G1", Vector3f(13.8f, 0.0f, -2.4f)); glass1->isReal = true;
-    //Glass* glass2 = new Glass("G2", Vector3f(13.8f, 0.0f,  2.4f)); glass2->isReal = false;
-    //Glass* glass3 = new Glass("G3", Vector3f(21.2f, 0.0f, -2.4f)); glass3->isReal = false;
-    //Glass* glass4 = new Glass("G4", Vector3f(21.2f, 0.0f,  2.4f)); glass4->isReal = true;
-    //Glass* glass5 = new Glass("G5", Vector3f(28.6f, 0.0f, -2.4f)); glass5->isReal = true;
-    //Glass* glass6 = new Glass("G6", Vector3f(28.6f, 0.0f,  2.4f)); glass6->isReal = false;
-    //Glass* glass7 = new Glass("G7", Vector3f(36.0f, 0.0f, -2.4f)); glass7->isReal = false;
-    //Glass* glass8 = new Glass("G8", Vector3f(36.0f, 0.0f,  2.4f)); glass8->isReal = true;
-
-    //Global::gameEntities.insert(npc1);
-    //Global::gameEntities.insert(npc2);
-    //Global::gameEntities.insert(npc3);
-    //Global::gameEntities.insert(npc4);
-
-    //Global::gameEntities.insert(ball1);
-    //Global::gameEntities.insert(ball2);
-    //Global::gameEntities.insert(ball3);
-
-    //Global::gameEntities.insert(cb1);
-    //Global::gameEntities.insert(cb2);
-    //Global::gameEntities.insert(cb3);
-    //Global::gameEntities.insert(cb4);
-
-    //Global::gameEntities.insert(barrel1);
-
-    //Global::gameEntities.insert(ladder1);
-
-    //Global::gameEntities.insert(health1);
-    //Global::gameEntities.insert(health2);
-    //Global::gameEntities.insert(health3);
-    //Global::gameEntities.insert(health4);
-    //Global::gameEntities.insert(health5);
-    //Global::gameEntities.insert(health6);
-    //Global::gameEntities.insert(health7);
-
-    //Global::gameEntities.insert(glass1);
-    //Global::gameEntities.insert(glass2);
-    //Global::gameEntities.insert(glass3);
-    //Global::gameEntities.insert(glass4);
-    //Global::gameEntities.insert(glass5);
-    //Global::gameEntities.insert(glass6);
-    //Global::gameEntities.insert(glass7);
-    //Global::gameEntities.insert(glass8);
-
-    //x, y = (0, 0) is top left, (1, 1) is bottom right
-    //size = 1.0 = full screen height
-    //alignment chart:
-    //  0 1 2
-    //  3 4 5
-    //  6 7 8
-    //GUIText(std::string text, float size, FontType* font, float x, float y, int alignment, bool visible);
-
-    LevelLoader::loadLevel("Map1.map");
+    LevelLoader::loadLevel("Map1");
 
     GUIText* fpsText = new GUIText("0", 0.02f, Global::fontConsolas, 1.0f, 0.0f, 2, true); INCR_NEW("GUIText");
 
@@ -532,11 +443,19 @@ int main(int argc, char** argv)
 
             if (Global::displayFPS)
             {
-                fpsText = new GUIText(std::to_string(Global::currentCalculatedFPS), 0.02f, Global::fontConsolas, 1.0f, 0.0f, 2, true);
+                fpsText = new GUIText(std::to_string(Global::currentCalculatedFPS), 0.02f, Global::fontConsolas, 1.0f, 0.0f, 2, true); INCR_NEW("GUIText");
             }
             //std::fprintf(stdout, "fps: %f\n", frameCount / (timeNew - previousTime));
             //printf("%f\t%f\n", (float)glfwGetTime(), 36.7816091954f*ball->vel.length());
+
             //std::fprintf(stdout, "diff: %d\n", Global::countNew - Global::countDelete);
+            //std::unordered_map<std::string, int>::iterator it;
+            //for (it = heapObjects.begin(); it != heapObjects.end(); it++)
+            //{
+                //printf("%s: %d\n", it->first.c_str(), it->second);
+            //}
+            //printf("\n");
+
             //Loader::printInfo();
             //std::fprintf(stdout, "entity counts: %d %d %d\n", gameEntities.size(), gameEntitiesPass2.size(), gameTransparentEntities.size());
             frameCount = 0;
@@ -572,13 +491,13 @@ int main(int argc, char** argv)
     if (t1 != nullptr)
     {
         t1->join();
-        delete t1;
+        delete t1; INCR_DEL("std::thread");
     }
 
     if (t2 != nullptr)
     {
         t2->join();
-        delete t2;
+        delete t2; INCR_DEL("std::thread");
     }
 
     return 0;
@@ -672,8 +591,6 @@ float Global::calcAspectRatio()
     extern unsigned int SCR_HEIGHT;
     return ((float)SCR_WIDTH)/SCR_HEIGHT;
 }
-
-std::unordered_map<std::string, int> heapObjects;
 
 void Global::debugNew(const char* name)
 {
