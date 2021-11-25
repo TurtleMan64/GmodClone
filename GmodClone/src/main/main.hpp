@@ -11,6 +11,7 @@ class FontType;
 class TcpClient;
 class Dummy;
 class TexturedModel;
+class GUIText;
 
 #include <string>
 #include <random>
@@ -125,6 +126,7 @@ public:
     static void performanceAnalysisReport();
 
     static std::string nickname;
+    static std::shared_mutex gameOnlinePlayersSharedMutex;
     static std::unordered_map<std::string, OnlinePlayer*> gameOnlinePlayers;
     static std::vector<std::string> serverSettings;
     static TcpClient* serverClient;
@@ -147,5 +149,8 @@ public:
     static void sendMessageToServer(Message msg);
 
     static void sendAudioMessageToServer(int sfxId, Vector3f* position);
+
+    static float timeUntilRoundStarts;
+    static GUIText* timeUntilRoundStartsText;
 };
 #endif

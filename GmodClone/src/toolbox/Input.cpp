@@ -335,6 +335,25 @@ void Input::pollInputs()
         Input::inputs.INPUT_L2 = 0;
         Input::inputs.INPUT_R2 = 0;
     }
+
+    if (Global::timeUntilRoundStarts > 0.0f)
+    {
+        Input::inputs.INPUT_ACTION1     = false;
+        Input::inputs.INPUT_ACTION2     = false;
+        Input::inputs.INPUT_ACTION3     = false;
+        Input::inputs.INPUT_ACTION4     = false;
+        Input::inputs.INPUT_LEFT_CLICK  = false;
+        Input::inputs.INPUT_RIGHT_CLICK = false;
+        Input::inputs.INPUT_LB          = false;
+        Input::inputs.INPUT_RB          = false;
+        Input::inputs.INPUT_SELECT      = false;
+        Input::inputs.INPUT_START       = false;
+
+        Input::inputs.INPUT_X  = 0;
+        Input::inputs.INPUT_Y  = 0;
+        Input::inputs.INPUT_L2 = 0;
+        Input::inputs.INPUT_R2 = 0;
+    }
 }
 
 void Input::init()

@@ -94,57 +94,56 @@ void CollisionBlock::step()
 
     const float eps = scale + 0.01f;
 
-    for (Entity* e : Global::gameEntities)
+    Global::gameOnlinePlayersSharedMutex.lock_shared();
+    for (auto const& e : Global::gameOnlinePlayers)
     {
-        if (e->getEntityType() == ENTITY_ONLINE_PLAYER)
+        OnlinePlayer* onlinePlayer = (OnlinePlayer*)e.second;
+        if (direction == 0)
         {
-            OnlinePlayer* onlinePlayer = (OnlinePlayer*)e;
-            if (direction == 0)
+            if (onlinePlayer->collideEntityImTouching == this)
             {
-                if (onlinePlayer->collideEntityImTouching == this)
+                if (onlinePlayer->position.y >= (position.y + scale) - eps)
                 {
-                    if (onlinePlayer->position.y >= (position.y + scale) - eps)
-                    {
-                        onlinePlayer->externalVel.set(spd, 0, 0);
-                    }
-                    else if (onlinePlayer->position.x >= (position.x + scale) - eps && spd > 0)
-                    {
-                        onlinePlayer->externalVel.set(spd, 0, 0);
-                    }
-                    else if (onlinePlayer->position.x <= (position.x - scale) + eps && spd < 0)
-                    {
-                        onlinePlayer->externalVel.set(spd, 0, 0);
-                    }
+                    onlinePlayer->externalVel.set(spd, 0, 0);
+                }
+                else if (onlinePlayer->position.x >= (position.x + scale) - eps && spd > 0)
+                {
+                    onlinePlayer->externalVel.set(spd, 0, 0);
+                }
+                else if (onlinePlayer->position.x <= (position.x - scale) + eps && spd < 0)
+                {
+                    onlinePlayer->externalVel.set(spd, 0, 0);
                 }
             }
-            else if (direction == 1)
+        }
+        else if (direction == 1)
+        {
+            if (onlinePlayer->collideEntityImTouching == this && 
+                onlinePlayer->position.y >= (position.y + scale) - scale)
             {
-                if (onlinePlayer->collideEntityImTouching == this && 
-                    onlinePlayer->position.y >= (position.y + scale) - scale)
-                {
-                    onlinePlayer->externalVel.set(0, spd, 0);
-                }
+                onlinePlayer->externalVel.set(0, spd, 0);
             }
-            else if (direction == 2)
+        }
+        else if (direction == 2)
+        {
+            if (onlinePlayer->collideEntityImTouching == this)
             {
-                if (onlinePlayer->collideEntityImTouching == this)
+                if (onlinePlayer->position.y >= (position.y + scale) - eps)
                 {
-                    if (onlinePlayer->position.y >= (position.y + scale) - eps)
-                    {
-                        onlinePlayer->externalVel.set(0, 0, spd);
-                    }
-                    else if (onlinePlayer->position.z >= (position.z + scale) - eps && spd > 0)
-                    {
-                        onlinePlayer->externalVel.set(0, 0, spd);
-                    }
-                    else if (onlinePlayer->position.z <= (position.z - scale) + eps && spd < 0)
-                    {
-                        onlinePlayer->externalVel.set(0, 0, spd);
-                    }
+                    onlinePlayer->externalVel.set(0, 0, spd);
+                }
+                else if (onlinePlayer->position.z >= (position.z + scale) - eps && spd > 0)
+                {
+                    onlinePlayer->externalVel.set(0, 0, spd);
+                }
+                else if (onlinePlayer->position.z <= (position.z - scale) + eps && spd < 0)
+                {
+                    onlinePlayer->externalVel.set(0, 0, spd);
                 }
             }
         }
     }
+    Global::gameOnlinePlayersSharedMutex.unlock_shared();
 
     if (direction == 0)
     {

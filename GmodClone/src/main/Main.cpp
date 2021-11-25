@@ -92,6 +92,7 @@ std::string Global::nickname;
 
 double Global::syncedGlobalTime = 0.0;
 
+std::shared_mutex Global::gameOnlinePlayersSharedMutex;
 std::unordered_map<std::string, OnlinePlayer*> Global::gameOnlinePlayers;
 
 std::vector<std::string> Global::serverSettings;
@@ -283,6 +284,47 @@ int main(int argc, char** argv)
         //dt*=0.2f;
         timeOld = timeNew;
 
+        float timeUntilRoundStartsBefore = Global::timeUntilRoundStarts;
+        Global::timeUntilRoundStarts -= dt;
+
+        if (timeUntilRoundStartsBefore > 3.0f && Global::timeUntilRoundStarts <= 3.0f)
+        {
+            AudioPlayer::play(63, nullptr);
+            if (Global::timeUntilRoundStartsText != nullptr)
+            {
+                Global::timeUntilRoundStartsText->deleteMe();
+                delete Global::timeUntilRoundStartsText; INCR_DEL("GUIText");
+            }
+            Global::timeUntilRoundStartsText = new GUIText("3", 0.333f, Global::fontConsolas, 0.5f, 0.5f, 4, true);
+        }
+        if (timeUntilRoundStartsBefore > 2.0f && Global::timeUntilRoundStarts <= 2.0f)
+        {
+            if (Global::timeUntilRoundStartsText != nullptr)
+            {
+                Global::timeUntilRoundStartsText->deleteMe();
+                delete Global::timeUntilRoundStartsText; INCR_DEL("GUIText");
+            }
+            Global::timeUntilRoundStartsText = new GUIText("2", 0.333f, Global::fontConsolas, 0.5f, 0.5f, 4, true);
+        }
+        if (timeUntilRoundStartsBefore > 1.0f && Global::timeUntilRoundStarts <= 1.0f)
+        {
+            if (Global::timeUntilRoundStartsText != nullptr)
+            {
+                Global::timeUntilRoundStartsText->deleteMe();
+                delete Global::timeUntilRoundStartsText; INCR_DEL("GUIText");
+            }
+            Global::timeUntilRoundStartsText = new GUIText("1", 0.333f, Global::fontConsolas, 0.5f, 0.5f, 4, true);
+        }
+        if (Global::timeUntilRoundStarts <= 0.0f)
+        {
+            if (Global::timeUntilRoundStartsText != nullptr)
+            {
+                Global::timeUntilRoundStartsText->deleteMe();
+                delete Global::timeUntilRoundStartsText; INCR_DEL("GUIText");
+                Global::timeUntilRoundStartsText = nullptr;
+            }
+        }
+
         Input::pollInputs();
 
         frameCount++;
@@ -362,6 +404,13 @@ int main(int argc, char** argv)
                     e->step();
                 }
 
+                Global::gameOnlinePlayersSharedMutex.lock_shared();
+                for (auto const& e : Global::gameOnlinePlayers)
+                {
+                    e.second->step();
+                }
+                Global::gameOnlinePlayersSharedMutex.unlock_shared();
+
                 Global::player->step();
 
                 ModelTexture::updateAnimations(dt);
@@ -401,6 +450,13 @@ int main(int argc, char** argv)
         {
             Master_processEntity(e);
         }
+
+        Global::gameOnlinePlayersSharedMutex.lock_shared();
+        for (auto const& e : Global::gameOnlinePlayers)
+        {
+            Master_processEntity(e.second);
+        }
+        Global::gameOnlinePlayersSharedMutex.unlock_shared();
 
         Master_processEntity(Global::player);
         Master_processEntity(Global::stageEntity);
@@ -773,10 +829,12 @@ void Global::readThreadBehavoir(TcpClient* client)
 
                     OnlinePlayer* onlinePlayer = nullptr;
 
+                    Global::gameOnlinePlayersSharedMutex.lock_shared();
                     if (Global::gameOnlinePlayers.find(name) != Global::gameOnlinePlayers.end())
                     {
                         onlinePlayer = Global::gameOnlinePlayers[name];
                     }
+                    Global::gameOnlinePlayersSharedMutex.unlock_shared();
 
                     switch (cmd)
                     {
@@ -786,12 +844,10 @@ void Global::readThreadBehavoir(TcpClient* client)
                             {
                                 onlinePlayer = new OnlinePlayer(name, 0, 0, 0); INCR_NEW("Entity");
 
-                                Global::gameEntitiesSharedMutex.lock();
-                                gameEntitiesToAdd.push_back(onlinePlayer);
-                                Global::gameEntitiesSharedMutex.unlock();
-
+                                Global::gameOnlinePlayersSharedMutex.lock();
                                 Global::gameOnlinePlayers[name] = onlinePlayer;
-                                printf("%s connected!", name.c_str());
+                                Global::gameOnlinePlayersSharedMutex.unlock();
+                                printf("%s connected.\n", name.c_str());
                                 Global::addChatMessage(name + " joined", Vector3f(0.5f, 1, 0.5f));
                             }
 
@@ -847,19 +903,21 @@ void Global::readThreadBehavoir(TcpClient* client)
                         }
 
                         case 3: //player disconnected
+                            Global::gameOnlinePlayersSharedMutex.lock();
                             if (Global::gameOnlinePlayers.find(name) != Global::gameOnlinePlayers.end())
                             {
                                 onlinePlayer = Global::gameOnlinePlayers[name];
                                 Global::gameOnlinePlayers.erase(name);
-                                printf("%s Disconnected.\n", name.c_str());
+                                printf("%s disconnected.\n", name.c_str());
                                 Global::addChatMessage(name + " left", Vector3f(1, 1, 0.5f));
                             }
+                            Global::gameOnlinePlayersSharedMutex.unlock();
 
                             if (onlinePlayer != nullptr)
                             {
-                                Global::gameEntitiesSharedMutex.lock();
-                                gameEntitiesToDelete.push_back(onlinePlayer);
-                                Global::gameEntitiesSharedMutex.unlock();
+                                printf("Deleting player %s\n", onlinePlayer->name.c_str());
+                                delete onlinePlayer; INCR_DEL("OnlinePlayer");
+                                onlinePlayer = nullptr;
                             }
                             else
                             {
@@ -1281,3 +1339,6 @@ void Global::sendAudioMessageToServer(int sfxId, Vector3f* position)
 
     Global::sendMessageToServer(msg);
 }
+
+float Global::timeUntilRoundStarts = 0.0f;
+GUIText* Global::timeUntilRoundStartsText = nullptr;

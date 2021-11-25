@@ -48,6 +48,10 @@ void LevelLoader::loadLevel(std::string mapName)
 
     Global::deleteAllEntites();
 
+    Global::player->health = 100;
+
+    Global::timeUntilRoundStarts = 4.0f;
+
     std::chrono::high_resolution_clock::time_point timeStart = std::chrono::high_resolution_clock::now();
     bool waitForSomeTime = true;
 

@@ -952,35 +952,39 @@ void Player::swingYourArm()
                 break;
             }
 
-            case ENTITY_ONLINE_PLAYER:
-            {
-                Vector3f otherHead = e->position;
-                OnlinePlayer* onlinePlayer = (OnlinePlayer*)e;
-                if (onlinePlayer->isCrouching || onlinePlayer->slideTimer > 0.0f)
-                {
-                    otherHead.y += COLLISION_RADIUS*2;
-                }
-                else
-                {
-                    otherHead.y += COLLISION_RADIUS*4;
-                }
-
-                Vector3f playerCollisionSpot;
-                if (Maths::lineSegmentIntersectsCylinder(&Global::gameCamera->eye, &target, &e->position, &otherHead, COLLISION_RADIUS, &playerCollisionSpot))
-                {
-                    float thisDistSquared = (Global::gameCamera->eye - playerCollisionSpot).lengthSquared();
-                    if (thisDistSquared < distToCollisionSquared)
-                    {
-                        distToCollisionSquared = thisDistSquared;
-                        hitEntity = e;
-                    }
-                }
-            }
-
             default:
                 break;
         }
     }
+
+    Global::gameOnlinePlayersSharedMutex.lock_shared();
+    for (auto const& pair : Global::gameOnlinePlayers)
+    {
+        Entity* e = pair.second;
+
+        Vector3f otherHead = e->position;
+        OnlinePlayer* onlinePlayer = (OnlinePlayer*)e;
+        if (onlinePlayer->isCrouching || onlinePlayer->slideTimer > 0.0f)
+        {
+            otherHead.y += COLLISION_RADIUS*2;
+        }
+        else
+        {
+            otherHead.y += COLLISION_RADIUS*4;
+        }
+
+        Vector3f playerCollisionSpot;
+        if (Maths::lineSegmentIntersectsCylinder(&Global::gameCamera->eye, &target, &e->position, &otherHead, COLLISION_RADIUS, &playerCollisionSpot))
+        {
+            float thisDistSquared = (Global::gameCamera->eye - playerCollisionSpot).lengthSquared();
+            if (thisDistSquared < distToCollisionSquared)
+            {
+                distToCollisionSquared = thisDistSquared;
+                hitEntity = e;
+            }
+        }
+    }
+    Global::gameOnlinePlayersSharedMutex.unlock_shared();
 
     if (hitEntity != nullptr)
     {
