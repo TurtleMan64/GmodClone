@@ -85,6 +85,6 @@ void Glass::loadModels()
     if (Glass::models.size() == 0)
     {
         ObjLoader::loadModel(&Glass::models, "res/Models/Glass/", "Glass");
-        Glass::baseCM = ObjLoader::loadCollisionModel("Models/Glass/", "Glass");
+        Glass::baseCM = ObjLoader::loadCollisionModel("res/Models/Glass/", "Glass");
     }
 }

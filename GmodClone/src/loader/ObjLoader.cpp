@@ -1241,10 +1241,10 @@ CollisionModel* ObjLoader::loadCollisionModel(std::string filePath, std::string 
     char currSound = 0;
     char currParticle = 0;
 
-    std::ifstream file(Global::pathToEXE + "res/" + filePath + fileName + ".obj");
+    std::ifstream file(Global::pathToEXE + filePath + fileName + ".obj");
     if (!file.is_open())
     {
-        std::fprintf(stdout, "Error: Cannot load file '%s'\n", (Global::pathToEXE + "res/" + filePath + fileName + ".obj").c_str());
+        std::fprintf(stdout, "Error: Cannot load file '%s'\n", (Global::pathToEXE + filePath + fileName + ".obj").c_str());
         file.close();
         return collisionModel;
     }
@@ -1312,10 +1312,10 @@ CollisionModel* ObjLoader::loadCollisionModel(std::string filePath, std::string 
             }
             else if (strcmp(lineSplit[0], "mtllib") == 0)
             {
-                std::ifstream fileMTL(Global::pathToEXE + "res/" + filePath + lineSplit[1]);
+                std::ifstream fileMTL(Global::pathToEXE + filePath + lineSplit[1]);
                 if (!fileMTL.is_open())
                 {
-                    std::fprintf(stdout, "Error: Cannot load file '%s'\n", (Global::pathToEXE + "res/" + filePath + lineSplit[1]).c_str());
+                    std::fprintf(stdout, "Error: Cannot load file '%s'\n", (Global::pathToEXE + filePath + lineSplit[1]).c_str());
                     fileMTL.close();
                     file.close();
                     return collisionModel;
@@ -1416,10 +1416,10 @@ CollisionModel* ObjLoader::loadBinaryCollisionModel(std::string filePath, std::s
     char currParticle = 0;
 
     FILE* file = nullptr;
-    int err = fopen_s(&file, (Global::pathToEXE + "res/" + filePath+fileName+".bincol").c_str(), "rb");
+    int err = fopen_s(&file, (Global::pathToEXE + filePath+fileName+".bincol").c_str(), "rb");
     if (file == nullptr || err != 0)
     {
-        std::fprintf(stdout, "Error: Cannot load file '%s'\n", (Global::pathToEXE + "res/" + filePath+fileName+".bincol").c_str());
+        std::fprintf(stdout, "Error: Cannot load file '%s'\n", (Global::pathToEXE + filePath+fileName+".bincol").c_str());
         return nullptr;
     }
 
@@ -1432,7 +1432,7 @@ CollisionModel* ObjLoader::loadBinaryCollisionModel(std::string filePath, std::s
         fileType[2] != 'l' ||
         fileType[3] != 0)
     {
-        std::fprintf(stdout, "Error: File '%s' is not a valid .bincol file\n", (Global::pathToEXE + "res/" + filePath+fileName+".bincol").c_str());
+        std::fprintf(stdout, "Error: File '%s' is not a valid .bincol file\n", (Global::pathToEXE + filePath+fileName+".bincol").c_str());
         return collisionModel;
     }
 
@@ -1447,10 +1447,10 @@ CollisionModel* ObjLoader::loadBinaryCollisionModel(std::string filePath, std::s
     }
 
     {
-        std::ifstream fileMTL(Global::pathToEXE + "res/" + filePath + mtlname);
+        std::ifstream fileMTL(Global::pathToEXE + filePath + mtlname);
         if (!fileMTL.is_open())
         {
-            std::fprintf(stdout, "Error: Cannot load file '%s'\n", (Global::pathToEXE + "res/" + filePath + mtlname).c_str());
+            std::fprintf(stdout, "Error: Cannot load file '%s'\n", (Global::pathToEXE + filePath + mtlname).c_str());
             fileMTL.close();
             fclose(file);
             return collisionModel;

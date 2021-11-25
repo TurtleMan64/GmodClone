@@ -20,14 +20,14 @@ Ladder::Ladder(std::string name, Vector3f pos, Vector3f size)
 
     updateTransformationMatrix(size.x, size.y, size.z);
 
-    CollisionModel* baseCM = ObjLoader::loadCollisionModel("Models/Ladder/", "Ladder");
+    CollisionModel* baseCM = ObjLoader::loadCollisionModel("res/Models/Ladder/", "Ladder");
 
     cm = baseCM->duplicateMe();
 
     baseCM->transformModelWithScale(cm, &position, &size);
     
     baseCM->deleteMe();
-    delete baseCM;
+    delete baseCM; INCR_DEL("CollisionModel");
 }
 
 Ladder::~Ladder()
@@ -35,7 +35,7 @@ Ladder::~Ladder()
     if (cm != nullptr)
     {
         cm->deleteMe();
-        delete cm;
+        delete cm; INCR_DEL("CollisionModel");
     }
 }
 

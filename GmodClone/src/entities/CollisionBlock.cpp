@@ -204,6 +204,6 @@ void CollisionBlock::loadModels()
     if (CollisionBlock::models.size() == 0)
     {
         ObjLoader::loadModel(&CollisionBlock::models, "res/Models/Cheese/", "Cheese");
-        CollisionBlock::baseCM = ObjLoader::loadCollisionModel("Models/Cheese/", "Cheese");
+        CollisionBlock::baseCM = ObjLoader::loadCollisionModel("res/Models/Cheese/", "Cheese");
     }
 }

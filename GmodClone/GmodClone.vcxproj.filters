@@ -222,6 +222,9 @@
     <ClCompile Include="src\entities\Glass.cpp">
       <Filter>Source Files\entities</Filter>
     </ClCompile>
+    <ClCompile Include="src\toolbox\LevelLoader.cpp">
+      <Filter>Source Files\toolbox</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\toolbox\getline.hpp">
@@ -373,6 +376,9 @@
     </ClInclude>
     <ClInclude Include="src\entities\glass.hpp">
       <Filter>Source Files\entities</Filter>
+    </ClInclude>
+    <ClInclude Include="src\toolbox\levelloader.hpp">
+      <Filter>Source Files\toolbox</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

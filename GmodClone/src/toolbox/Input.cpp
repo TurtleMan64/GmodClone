@@ -495,6 +495,17 @@ void Input::keyboardCallback(GLFWwindow* /**/, int key, int /**/, int action, in
                                 }
                             }
                         }
+                        else if (Input::chatLength >= 10 && strncmp("load-map ", Input::chatInput, 9) == 0 ||
+                                 Input::chatLength >= 10 && strncmp("LOAD-MAP ", Input::chatInput, 9) == 0 ||
+                                 Input::chatLength >= 10 && strncmp("load_map ", Input::chatInput, 9) == 0 ||
+                                 Input::chatLength >= 10 && strncmp("LOAD_MAP ", Input::chatInput, 9) == 0)
+                        {
+                            std::vector<std::string> tokens = split(Input::chatInput, ' ');
+                            if (tokens.size() > 1)
+                            {
+                                Global::levelToLoad = tokens[1];
+                            }
+                        }
                     }
                     catch (std::exception e)
                     {

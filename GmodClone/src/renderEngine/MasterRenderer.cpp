@@ -34,10 +34,6 @@ float VFOV_ADDITION = 0; //additional fov due to the vehicle going fast
 const float NEAR_PLANE = 0.05f; //0.5
 const float FAR_PLANE = 3000.0f; //15000
 
-float RED = 0.9f;
-float GREEN = 0.95f;
-float BLUE = 1.0f;
-
 void prepare();
 void prepareTransparentRender();
 void prepareRenderDepthOnly();
@@ -185,10 +181,7 @@ void Master_render(Camera* camera, float clipX, float clipY, float clipZ, float 
     Vector4f plane = Maths::calcPlaneValues(&startPos, &lookDir);
     shader->loadClipPlaneBehind(plane.x, plane.y, plane.z, plane.w);
 
-    RED = 1.0f;
-    GREEN = 1.0f;
-    BLUE = 1.0f;
-    shader->loadSkyColor(RED, GREEN, BLUE);
+    shader->loadSkyColor(Global::skyColor.x, Global::skyColor.y, Global::skyColor.z);
     shader->loadSun(Global::gameLightSun);
     shader->loadFogGradient(0.0000000000000005f);
     shader->loadFogDensity(2.0f);
@@ -286,7 +279,7 @@ void prepare()
     glEnable(GL_DEPTH_TEST);
     glDepthMask(true);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    glClearColor(RED, GREEN, BLUE, 1);
+    glClearColor(Global::skyColor.x, Global::skyColor.y, Global::skyColor.z, 1);
 
     //glActiveTexture(GL_TEXTURE5);
     //glBindTexture(GL_TEXTURE_2D, Master_getShadowMapTexture());

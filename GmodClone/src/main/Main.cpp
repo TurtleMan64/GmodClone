@@ -70,6 +70,7 @@
 #include "../entities/ladder.hpp"
 #include "../entities/healthcube.hpp"
 #include "../entities/glass.hpp"
+#include "../toolbox/levelloader.hpp"
 
 Message::Message(const Message &other)
 {
@@ -91,14 +92,13 @@ std::string Global::nickname;
 
 double Global::syncedGlobalTime = 0.0;
 
-std::unordered_set<Entity*> Global::gameEntities;
-
 std::unordered_map<std::string, OnlinePlayer*> Global::gameOnlinePlayers;
 
 std::vector<std::string> Global::serverSettings;
 TcpClient* Global::serverClient = nullptr;
 
-std::shared_mutex gameEntitiesSharedMutex;
+std::shared_mutex Global::gameEntitiesSharedMutex;
+std::unordered_set<Entity*> Global::gameEntities;
 std::vector<Entity*> gameEntitiesToAdd;
 std::vector<Entity*> gameEntitiesToDelete;
 
@@ -107,7 +107,13 @@ double timeOld = 0;
 double timeNew = 0;
 Camera* Global::gameCamera   = nullptr;
 Player* Global::player       = nullptr;
+
+std::list<TexturedModel*> Global::stageModels;
+Dummy* Global::stageEntity  = nullptr;
+
 Light*  Global::gameLightSun = nullptr;
+
+Vector3f Global::skyColor(1, 1, 1);
 
 FontType* Global::fontConsolas = nullptr;
 
@@ -127,6 +133,7 @@ int Global::gameState = 0;
 int Global::gameTotalPlaytime = 0;
 
 int Global::levelId = 1;
+std::string Global::levelToLoad = "";
 
 bool Global::renderWithCulling = true;
 bool Global::displayFPS = true;
@@ -226,10 +233,9 @@ int main(int argc, char** argv)
     }
 
     //This light never gets deleted.
-    Light lightSun;
-    Global::gameLightSun = &lightSun;
-    lightSun.direction.set(-0.2f, -1, -0.4f);
-    lightSun.direction.normalize();
+    Global::gameLightSun = new Light();
+    Global::gameLightSun->direction.set(-0.2f, -1, -0.4f);
+    Global::gameLightSun->direction.normalize();
 
     long long secSinceEpoch = std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now().time_since_epoch()).count();
 
@@ -244,91 +250,91 @@ int main(int argc, char** argv)
 
     std::string folder = "Map2";
 
-    std::list<TexturedModel*> modelsStage;
-    ObjLoader::loadModel(&modelsStage, "res/Models/" + folder + "/", "Map2");
-    Dummy* entityStage = new Dummy(&modelsStage); INCR_NEW("Entity");
-    Global::addEntity(entityStage);
+    //std::list<TexturedModel*> modelsStage;
+    //ObjLoader::loadModel(&Global::stageModels, "res/Models/" + folder + "/", "Map2");
+    Global::stageEntity = new Dummy(&Global::stageModels); INCR_NEW("Entity");
+    //Global::stageEntity->visible = true;
 
     //std::list<TexturedModel*> modelsSphere;
     //ObjLoader::loadModel(&modelsSphere, "res/Models/", "Sphere");
     Global::player = new Player; INCR_NEW("Entity");
 
-    CollisionModel* cm = ObjLoader::loadCollisionModel("Models/" + folder + "/", "Map2");
-    for (int i = 0; i < cm->triangles.size(); i++)
-    {
-        CollisionChecker::addTriangle(cm->triangles[i]);
-    }
-    CollisionChecker::constructChunkDatastructure();
+    //CollisionModel* cm = ObjLoader::loadCollisionModel("res/Models/" + folder + "/", "Map2");
+    //for (int i = 0; i < cm->triangles.size(); i++)
+    //{
+    //    CollisionChecker::addTriangle(cm->triangles[i]);
+    //}
+    //CollisionChecker::constructChunkDatastructure();
 
     //OnlinePlayer* npc1 = new OnlinePlayer("Npc1", 73.076897f, 0.313516f, 23.235739f); INCR_NEW("Entity");
     //OnlinePlayer* npc2 = new OnlinePlayer("Npc2", 72.076897f, 0.313516f, 23.235739f); INCR_NEW("Entity");
     //OnlinePlayer* npc3 = new OnlinePlayer("Npc3", 71.076897f, 0.313516f, 23.235739f); INCR_NEW("Entity");
     //OnlinePlayer* npc4 = new OnlinePlayer("Npc4", 70.076897f, 0.313516f, 23.235739f); INCR_NEW("Entity");
 
-    Ball* ball1 = new Ball("B1", Vector3f(72.991318f, 28.784624f, -46.660568f), Vector3f(0, 0, 0)); INCR_NEW("Entity");
+    //Ball* ball1 = new Ball("B1", Vector3f(72.991318f, 28.784624f, -46.660568f), Vector3f(0, 0, 0)); INCR_NEW("Entity");
     //Ball* ball2 = new Ball("Ball2", Vector3f(72.076897f, 1.313516f, 23.235739f), Vector3f(20, 10, 30)); INCR_NEW("Entity");
     //Ball* ball3 = new Ball("Ball3", Vector3f(71.076897f, 1.313516f, 23.235739f), Vector3f(30, 20, 10)); INCR_NEW("Entity");
 
-    CollisionBlock* cb1 = new CollisionBlock("CB1", Vector3f(38.7795f,  10.0f, 44.5082f), 0, 4.0f, 1.0f, 14.0f, true, 0); INCR_NEW("Entity");
-    CollisionBlock* cb2 = new CollisionBlock("CB2", Vector3f(-28.9653f, 24.0f, -46.243f), 1, 4.0f, 2.1f, 20.0f, true, 0); INCR_NEW("Entity");
+    //CollisionBlock* cb1 = new CollisionBlock("CB1", Vector3f(38.7795f,  10.0f, 44.5082f), 0, 4.0f, 1.0f, 14.0f, true, 0); INCR_NEW("Entity");
+    //CollisionBlock* cb2 = new CollisionBlock("CB2", Vector3f(-28.9653f, 24.0f, -46.243f), 1, 4.0f, 2.1f, 20.0f, true, 0); INCR_NEW("Entity");
     //CollisionBlock* cb3 = new CollisionBlock("CollisionBlock3", Vector3f(73.076897f, 1.313516f, 43.235739f), 1, 4.0f, 1.0f, 12.0f, false, 0); INCR_NEW("Entity");
     //CollisionBlock* cb4 = new CollisionBlock("CollisionBlock4", Vector3f(73.076897f, 1.313516f, 53.235739f), 1, 4.0f, 1.0f, 12.0f, true,  0); INCR_NEW("Entity");
 
     //RedBarrel* barrel1 = new RedBarrel("Barrel1", Vector3f(86.722473f, 0.313497f, -4.892693f)); INCR_NEW("Entity");
 
-    Ladder* ladder1 = new Ladder("L1", Vector3f(-14.7011f, 0.0f, -6.00807f), Vector3f(0.0568f/2, 5.29103f, 0.55678f/2)); INCR_NEW("Entity");
+    //Ladder* ladder1 = new Ladder("L1", Vector3f(-14.7011f, 0.0f, -6.00807f), Vector3f(0.0568f/2, 5.29103f, 0.55678f/2)); INCR_NEW("Entity");
 
-    HealthCube* health1 = new HealthCube("H1", Vector3f(0, 0.5f, 0));
-    HealthCube* health2 = new HealthCube("H2", Vector3f(10.300812f, 4.3f, 3.992104f));
-    HealthCube* health3 = new HealthCube("H3", Vector3f(10.300812f, 4.3f, 2.470885f));
-    HealthCube* health4 = new HealthCube("H4", Vector3f(10.300812f, 4.3f, 0.799089f));
-    HealthCube* health5 = new HealthCube("H5", Vector3f(10.300812f, 4.3f, -0.852117f));
-    HealthCube* health6 = new HealthCube("H6", Vector3f(10.300812f, 4.3f, -2.527918f));
-    HealthCube* health7 = new HealthCube("H7", Vector3f(10.300812f, 4.3f, -4.364767f));
+    //HealthCube* health1 = new HealthCube("H1", Vector3f(0, 0.5f, 0));
+    //HealthCube* health2 = new HealthCube("H2", Vector3f(10.300812f, 4.3f, 3.992104f));
+    //HealthCube* health3 = new HealthCube("H3", Vector3f(10.300812f, 4.3f, 2.470885f));
+    //HealthCube* health4 = new HealthCube("H4", Vector3f(10.300812f, 4.3f, 0.799089f));
+    //HealthCube* health5 = new HealthCube("H5", Vector3f(10.300812f, 4.3f, -0.852117f));
+    //HealthCube* health6 = new HealthCube("H6", Vector3f(10.300812f, 4.3f, -2.527918f));
+    //HealthCube* health7 = new HealthCube("H7", Vector3f(10.300812f, 4.3f, -4.364767f));
 
-    Glass* glass1 = new Glass("G1", Vector3f(13.8f, 0.0f, -2.4f)); glass1->isReal = true;
-    Glass* glass2 = new Glass("G2", Vector3f(13.8f, 0.0f,  2.4f)); glass2->isReal = false;
-    Glass* glass3 = new Glass("G3", Vector3f(21.2f, 0.0f, -2.4f)); glass3->isReal = false;
-    Glass* glass4 = new Glass("G4", Vector3f(21.2f, 0.0f,  2.4f)); glass4->isReal = true;
-    Glass* glass5 = new Glass("G5", Vector3f(28.6f, 0.0f, -2.4f)); glass5->isReal = true;
-    Glass* glass6 = new Glass("G6", Vector3f(28.6f, 0.0f,  2.4f)); glass6->isReal = false;
-    Glass* glass7 = new Glass("G7", Vector3f(36.0f, 0.0f, -2.4f)); glass7->isReal = false;
-    Glass* glass8 = new Glass("G8", Vector3f(36.0f, 0.0f,  2.4f)); glass8->isReal = true;
+    //Glass* glass1 = new Glass("G1", Vector3f(13.8f, 0.0f, -2.4f)); glass1->isReal = true;
+    //Glass* glass2 = new Glass("G2", Vector3f(13.8f, 0.0f,  2.4f)); glass2->isReal = false;
+    //Glass* glass3 = new Glass("G3", Vector3f(21.2f, 0.0f, -2.4f)); glass3->isReal = false;
+    //Glass* glass4 = new Glass("G4", Vector3f(21.2f, 0.0f,  2.4f)); glass4->isReal = true;
+    //Glass* glass5 = new Glass("G5", Vector3f(28.6f, 0.0f, -2.4f)); glass5->isReal = true;
+    //Glass* glass6 = new Glass("G6", Vector3f(28.6f, 0.0f,  2.4f)); glass6->isReal = false;
+    //Glass* glass7 = new Glass("G7", Vector3f(36.0f, 0.0f, -2.4f)); glass7->isReal = false;
+    //Glass* glass8 = new Glass("G8", Vector3f(36.0f, 0.0f,  2.4f)); glass8->isReal = true;
 
     //Global::gameEntities.insert(npc1);
     //Global::gameEntities.insert(npc2);
     //Global::gameEntities.insert(npc3);
     //Global::gameEntities.insert(npc4);
 
-    Global::gameEntities.insert(ball1);
+    //Global::gameEntities.insert(ball1);
     //Global::gameEntities.insert(ball2);
     //Global::gameEntities.insert(ball3);
 
-    Global::gameEntities.insert(cb1);
-    Global::gameEntities.insert(cb2);
+    //Global::gameEntities.insert(cb1);
+    //Global::gameEntities.insert(cb2);
     //Global::gameEntities.insert(cb3);
     //Global::gameEntities.insert(cb4);
 
     //Global::gameEntities.insert(barrel1);
 
-    Global::gameEntities.insert(ladder1);
+    //Global::gameEntities.insert(ladder1);
 
-    Global::gameEntities.insert(health1);
-    Global::gameEntities.insert(health2);
-    Global::gameEntities.insert(health3);
-    Global::gameEntities.insert(health4);
-    Global::gameEntities.insert(health5);
-    Global::gameEntities.insert(health6);
-    Global::gameEntities.insert(health7);
+    //Global::gameEntities.insert(health1);
+    //Global::gameEntities.insert(health2);
+    //Global::gameEntities.insert(health3);
+    //Global::gameEntities.insert(health4);
+    //Global::gameEntities.insert(health5);
+    //Global::gameEntities.insert(health6);
+    //Global::gameEntities.insert(health7);
 
-    Global::gameEntities.insert(glass1);
-    Global::gameEntities.insert(glass2);
-    Global::gameEntities.insert(glass3);
-    Global::gameEntities.insert(glass4);
-    Global::gameEntities.insert(glass5);
-    Global::gameEntities.insert(glass6);
-    Global::gameEntities.insert(glass7);
-    Global::gameEntities.insert(glass8);
+    //Global::gameEntities.insert(glass1);
+    //Global::gameEntities.insert(glass2);
+    //Global::gameEntities.insert(glass3);
+    //Global::gameEntities.insert(glass4);
+    //Global::gameEntities.insert(glass5);
+    //Global::gameEntities.insert(glass6);
+    //Global::gameEntities.insert(glass7);
+    //Global::gameEntities.insert(glass8);
 
     //x, y = (0, 0) is top left, (1, 1) is bottom right
     //size = 1.0 = full screen height
@@ -337,6 +343,8 @@ int main(int argc, char** argv)
     //  3 4 5
     //  6 7 8
     //GUIText(std::string text, float size, FontType* font, float x, float y, int alignment, bool visible);
+
+    LevelLoader::loadLevel("Map1.map");
 
     GUIText* fpsText = new GUIText("0", 0.02f, Global::fontConsolas, 1.0f, 0.0f, 2, true); INCR_NEW("GUIText");
 
@@ -392,18 +400,18 @@ int main(int argc, char** argv)
         //entities managment
         if (gameEntitiesToAdd.size() > 0)
         {
-            gameEntitiesSharedMutex.lock();
+            Global::gameEntitiesSharedMutex.lock();
             for (Entity* entityToAdd : gameEntitiesToAdd)
             {
                 Global::gameEntities.insert(entityToAdd);
             }
             gameEntitiesToAdd.clear();
-            gameEntitiesSharedMutex.unlock();
+            Global::gameEntitiesSharedMutex.unlock();
         }
 
         if (gameEntitiesToDelete.size() > 0)
         {
-            gameEntitiesSharedMutex.lock();
+            Global::gameEntitiesSharedMutex.lock();
             std::unordered_set<Entity*> entitiesImGoingToDelete;
             for (Entity* entityToDelete : gameEntitiesToDelete)
             {
@@ -411,7 +419,7 @@ int main(int argc, char** argv)
                 Global::gameEntities.erase(entityToDelete);
             }
             gameEntitiesToDelete.clear();
-            gameEntitiesSharedMutex.unlock();
+            Global::gameEntitiesSharedMutex.unlock();
 
             for (Entity* e : entitiesImGoingToDelete)
             {
@@ -443,10 +451,7 @@ int main(int argc, char** argv)
                     e->step();
                 }
 
-                if (Global::player != nullptr)
-                {
-                    Global::player->step();
-                }
+                Global::player->step();
 
                 ModelTexture::updateAnimations(dt);
                 Global::gameCamera->refresh();
@@ -486,10 +491,8 @@ int main(int argc, char** argv)
             Master_processEntity(e);
         }
 
-        if (Global::player != nullptr)
-        {
-            Master_processEntity(Global::player);
-        }
+        Master_processEntity(Global::player);
+        Master_processEntity(Global::stageEntity);
 
         //glEnable(GL_CLIP_DISTANCE1);
         Master_render(&cam, 0, 0, 0, 0, 0.0f);
@@ -545,6 +548,12 @@ int main(int argc, char** argv)
             Global::syncedGlobalTime = totalT/10000000.0;
 
             //printf("time = %f\n", Global::syncedGlobalTime);
+
+            if (Global::levelToLoad != "")
+            {
+                LevelLoader::loadLevel(Global::levelToLoad);
+                Global::levelToLoad = "";
+            }
         }
 
         //std::fprintf(stdout, "dt: %f\n", dt);
@@ -577,23 +586,23 @@ int main(int argc, char** argv)
 
 void Global::addEntity(Entity* entityToAdd)
 {
-    gameEntitiesSharedMutex.lock();
+    Global::gameEntitiesSharedMutex.lock();
     gameEntitiesToAdd.push_back(entityToAdd);
-    gameEntitiesSharedMutex.unlock();
+    Global::gameEntitiesSharedMutex.unlock();
 }
 
 void Global::deleteEntity(Entity* entityToDelete)
 {
-    gameEntitiesSharedMutex.lock();
+    Global::gameEntitiesSharedMutex.lock();
     gameEntitiesToDelete.push_back(entityToDelete);
-    gameEntitiesSharedMutex.unlock();
+    Global::gameEntitiesSharedMutex.unlock();
 }
 
 void Global::deleteAllEntites()
 {
     std::unordered_set<Entity*> entitiesImGoingToDelete;
 
-    gameEntitiesSharedMutex.lock();
+    Global::gameEntitiesSharedMutex.lock();
     //Make sure no entities get left behind in transition
     for (Entity* entityToAdd : gameEntitiesToAdd)
     {
@@ -618,7 +627,7 @@ void Global::deleteAllEntites()
         delete e; INCR_DEL("Entity");
     }
 
-    gameEntitiesSharedMutex.unlock();
+    Global::gameEntitiesSharedMutex.unlock();
 }
 
 void increaseProcessPriority()
@@ -860,9 +869,9 @@ void Global::readThreadBehavoir(TcpClient* client)
                             {
                                 onlinePlayer = new OnlinePlayer(name, 0, 0, 0); INCR_NEW("Entity");
 
-                                gameEntitiesSharedMutex.lock();
+                                Global::gameEntitiesSharedMutex.lock();
                                 gameEntitiesToAdd.push_back(onlinePlayer);
-                                gameEntitiesSharedMutex.unlock();
+                                Global::gameEntitiesSharedMutex.unlock();
 
                                 Global::gameOnlinePlayers[name] = onlinePlayer;
                                 printf("%s connected!", name.c_str());
@@ -931,9 +940,9 @@ void Global::readThreadBehavoir(TcpClient* client)
 
                             if (onlinePlayer != nullptr)
                             {
-                                gameEntitiesSharedMutex.lock();
+                                Global::gameEntitiesSharedMutex.lock();
                                 gameEntitiesToDelete.push_back(onlinePlayer);
-                                gameEntitiesSharedMutex.unlock();
+                                Global::gameEntitiesSharedMutex.unlock();
                             }
                             else
                             {
@@ -1016,7 +1025,7 @@ void Global::readThreadBehavoir(TcpClient* client)
 
                     std::string healthNameToDelete = healthName;
 
-                    gameEntitiesSharedMutex.lock_shared();
+                    Global::gameEntitiesSharedMutex.lock_shared();
                     for (Entity* e : Global::gameEntities)
                     {
                         switch (e->getEntityType())
@@ -1034,7 +1043,7 @@ void Global::readThreadBehavoir(TcpClient* client)
                                 break;
                         }
                     }
-                    gameEntitiesSharedMutex.unlock_shared();
+                    Global::gameEntitiesSharedMutex.unlock_shared();
 
                     break;
                 }

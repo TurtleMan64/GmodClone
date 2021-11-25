@@ -9,6 +9,8 @@ class Player;
 class OnlinePlayer;
 class FontType;
 class TcpClient;
+class Dummy;
+class TexturedModel;
 
 #include <string>
 #include <random>
@@ -18,6 +20,7 @@ class TcpClient;
 #include <unordered_set>
 #include <utility>
 #include <mutex>
+#include <shared_mutex>
 #include <condition_variable>
 
 #include "../toolbox/vector.hpp"
@@ -70,16 +73,23 @@ public:
     static std::string pathToEXE;
     // Time in seconds that is synced between us and the server and the other players.
     static double syncedGlobalTime;
+
+    static std::shared_mutex gameEntitiesSharedMutex;
     static std::unordered_set<Entity*> gameEntities;
 
     static int gameState;
 
     static int levelId;
+    static std::string levelToLoad;
 
     static Camera* gameCamera;
     static Player* player;
 
+    static std::list<TexturedModel*> stageModels;
+    static Dummy* stageEntity;
+
     static Light* gameLightSun;
+    static Vector3f skyColor;
 
     static FontType* fontConsolas;
     static int countNew;

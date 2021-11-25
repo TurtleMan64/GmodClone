@@ -199,6 +199,7 @@
     <ClCompile Include="src\textures\ModelTexture.cpp" />
     <ClCompile Include="src\toolbox\Getline.cpp" />
     <ClCompile Include="src\toolbox\Input.cpp" />
+    <ClCompile Include="src\toolbox\LevelLoader.cpp" />
     <ClCompile Include="src\toolbox\Maths.cpp" />
     <ClCompile Include="src\toolbox\Matrix.cpp" />
     <ClCompile Include="src\toolbox\Split.cpp" />
@@ -251,6 +252,7 @@
     <ClInclude Include="src\textures\modeltexture.hpp" />
     <ClInclude Include="src\toolbox\getline.hpp" />
     <ClInclude Include="src\toolbox\input.hpp" />
+    <ClInclude Include="src\toolbox\levelloader.hpp" />
     <ClInclude Include="src\toolbox\maths.hpp" />
     <ClInclude Include="src\toolbox\matrix.hpp" />
     <ClInclude Include="src\toolbox\split.hpp" />

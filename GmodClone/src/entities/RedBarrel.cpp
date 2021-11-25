@@ -84,6 +84,6 @@ void RedBarrel::loadModels()
     if (RedBarrel::models.size() == 0)
     {
         ObjLoader::loadModel(&RedBarrel::models, "res/Models/RedBarrel/", "RedBarrel");
-        RedBarrel::baseCM = ObjLoader::loadCollisionModel("Models/RedBarrel/", "RedBarrel");
+        RedBarrel::baseCM = ObjLoader::loadCollisionModel("res/Models/RedBarrel/", "RedBarrel");
     }
 }
