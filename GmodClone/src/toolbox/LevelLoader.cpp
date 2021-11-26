@@ -31,6 +31,7 @@
 #include "../entities/ladder.hpp"
 #include "../entities/redbarrel.hpp"
 #include "../loader/objloader.hpp"
+#include "../entities/boombox.hpp"
 
 void LevelLoader::loadLevel(std::string mapName)
 {
@@ -204,6 +205,13 @@ void LevelLoader::processLine(std::vector<std::string>& dat)
         {
             Glass* glass = new Glass(dat[1], Vector3f(toF(dat[2]), toF(dat[3]), toF(dat[4]))); INCR_NEW("Entity");
             Global::addEntity(glass);
+            break;
+        }
+
+        case ENTITY_BOOM_BOX:
+        {
+            BoomBox* box = new BoomBox(dat[1], Vector3f(toF(dat[2]), toF(dat[3]), toF(dat[4])), toF(dat[5])); INCR_NEW("Entity");
+            Global::addEntity(box);
             break;
         }
 

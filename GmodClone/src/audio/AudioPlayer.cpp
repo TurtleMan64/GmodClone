@@ -86,6 +86,8 @@ void AudioPlayer::loadSoundEffects()
     AudioPlayer::buffersSFX.push_back(AudioMaster::loadWAV("res/Audio/SFX/HL2/misc/smallmedkit1.wav"));               //61
     AudioPlayer::buffersSFX.push_back(AudioMaster::loadWAV("res/Audio/SFX/HL2/physics/glass_largesheet_break1.wav")); //62
     AudioPlayer::buffersSFX.push_back(AudioMaster::loadOGG("res/Audio/SFX/mixkit/Countdown.ogg"));                    //63
+    AudioPlayer::buffersSFX.push_back(AudioMaster::loadOGG("res/Audio/BGM/musicbox_mono.ogg"));                       //64
+    AudioPlayer::buffersSFX.push_back(AudioMaster::loadOGG("res/Audio/BGM/sheeshflp_mono.ogg"));                      //65
 }
 
 void AudioPlayer::loadBGM(char* fileName)
@@ -130,13 +132,13 @@ void AudioPlayer::deleteBuffersBGM()
 void AudioPlayer::createSources()
 {
     //First 7 sources are for sound effects with relative effects (usually for sounds coming from the environment, other players)
-    sources.push_back(new Source(1, 5, 40)); INCR_NEW("Source");
-    sources.push_back(new Source(1, 5, 40)); INCR_NEW("Source");
-    sources.push_back(new Source(1, 5, 40)); INCR_NEW("Source");
-    sources.push_back(new Source(1, 5, 40)); INCR_NEW("Source");
-    sources.push_back(new Source(1, 5, 40)); INCR_NEW("Source");
-    sources.push_back(new Source(1, 5, 40)); INCR_NEW("Source");
-    sources.push_back(new Source(1, 5, 40)); INCR_NEW("Source");
+    sources.push_back(new Source(1, 0.0f, 40.0f)); INCR_NEW("Source");
+    sources.push_back(new Source(1, 0.0f, 40.0f)); INCR_NEW("Source");
+    sources.push_back(new Source(1, 0.0f, 40.0f)); INCR_NEW("Source");
+    sources.push_back(new Source(1, 0.0f, 40.0f)); INCR_NEW("Source");
+    sources.push_back(new Source(1, 0.0f, 40.0f)); INCR_NEW("Source");
+    sources.push_back(new Source(1, 0.0f, 40.0f)); INCR_NEW("Source");
+    sources.push_back(new Source(1, 0.0f, 40.0f)); INCR_NEW("Source");
 
     //Next 7 sources are for sound effects without any relative effects (usually for noises made by the player)
     sources.push_back(new Source(0, 0, 0)); INCR_NEW("Source");

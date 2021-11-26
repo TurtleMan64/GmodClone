@@ -8,6 +8,8 @@ res/Models/Map1/ Collision # Collision Stage Model
 # Soccer Ball
 2 B1 72.991318 28.784624 -46.660568
 
+9 BB1 77.514198 27.784624 -51.580788 225
+
 # Collision Blocks
 4 CB1  38.7795 10.0  44.5082     0 4.0 1.0 14.0 1 0
 4 CB2 -28.9653 24.0 -46.243      1 4.0 2.1 20.0 1 0

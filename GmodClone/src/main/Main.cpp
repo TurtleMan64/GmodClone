@@ -71,6 +71,7 @@
 #include "../entities/healthcube.hpp"
 #include "../entities/glass.hpp"
 #include "../toolbox/levelloader.hpp"
+#include "../entities/boombox.hpp"
 
 Message::Message(const Message &other)
 {
@@ -221,6 +222,7 @@ int main(int argc, char** argv)
     HealthCube::loadModels();
     Glass::loadModels();
     Ladder::loadModels();
+    BoomBox::loadModels();
 
     Global::serverSettings = readFileLines("ServerSettings.ini");
     Global::serverClient = new TcpClient(Global::serverSettings[0].c_str(), std::stoi(Global::serverSettings[1]), 1); INCR_NEW("TcpClient");

@@ -26,6 +26,7 @@ Source::Source(float rolloff, float referencedist, float max)
         alSourcef(sourceId, AL_ROLLOFF_FACTOR, rolloff);
         alSourcef(sourceId, AL_REFERENCE_DISTANCE, referencedist);
         alSourcef(sourceId, AL_MAX_DISTANCE, max);
+        //alSourcef(sourceId, AL_MAX_DISTANCE, 1000000000.0f);
     }
 
     bufferId = AL_NONE;
