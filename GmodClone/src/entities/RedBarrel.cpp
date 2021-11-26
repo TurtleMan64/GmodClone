@@ -12,7 +12,6 @@
 #include "../audio/audioplayer.hpp"
 #include "../audio/source.hpp"
 #include "../entities/entity.hpp"
-#include "../entities/player.hpp"
 
 std::list<TexturedModel*> RedBarrel::models;
 CollisionModel* RedBarrel::baseCM = nullptr;

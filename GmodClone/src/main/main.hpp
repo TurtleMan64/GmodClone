@@ -152,5 +152,10 @@ public:
 
     static float timeUntilRoundStarts;
     static GUIText* timeUntilRoundStartsText;
+    static float timeUntilRoundEnds;
+    static GUIText* timeUntilRoundEndText;
+
+    static Vector3f safeZoneStart;
+    static Vector3f safeZoneEnd;
 };
 #endif

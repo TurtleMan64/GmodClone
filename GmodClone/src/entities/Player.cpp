@@ -58,7 +58,36 @@ void Player::step()
 {
     Vector3f yAxis(0, -1, 0);
 
-    updateCamera();
+    //If we are dead, fly around as a ghost
+    if (health <= 0)
+    {
+        float stickAngle = atan2f(Input::inputs.INPUT_Y, Input::inputs.INPUT_X) - Maths::PI/2; //angle you are holding on the stick, with 0 being up
+        float stickRadius = sqrtf(Input::inputs.INPUT_X*Input::inputs.INPUT_X + Input::inputs.INPUT_Y*Input::inputs.INPUT_Y);
+
+        Vector3f perpen = lookDir.cross(&yAxis);
+        Vector3f actualUp = Maths::rotatePoint(&lookDir, &perpen, Maths::PI/2);
+        Vector3f toMove = Maths::rotatePoint(&lookDir, &actualUp, stickAngle + Maths::PI);
+
+        toMove.setLength(stickRadius*dt);
+
+        if (Input::inputs.INPUT_ACTION3)
+        {
+            toMove.scale(20.0f);
+        }
+        else
+        {
+            toMove.scale(8.0f);
+        }
+
+        position = position + toMove;
+
+        updateCamera();
+
+        GuiManager::addGuiToRender(GuiTextureResources::textureHealthbarBG);
+        weaponModel->visible = false;
+
+        return;
+    }
 
     if (Input::inputs.INPUT_SCROLL != 0)
     {
@@ -778,6 +807,8 @@ void Player::step()
         //b->position.y += HUMAN_HEIGHT;
         //Global::addEntity(b);
     }
+
+    updateCamera();
 
     if (weapon == 1)
     {

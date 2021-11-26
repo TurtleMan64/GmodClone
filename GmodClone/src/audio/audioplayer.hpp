@@ -27,7 +27,7 @@ public:
 
     static void loadSoundEffects();
 
-    static void loadBGM(char* fileName);
+    static void loadBGM();
 
     static void deleteSources();
 

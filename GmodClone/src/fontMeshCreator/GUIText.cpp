@@ -3,28 +3,28 @@
 #include "../fontRendering/textmaster.hpp"
 #include "fonttype.hpp"
 
-GUIText::GUIText(std::string text, float fontSize, FontType* font, float x, float y, float maxLineLength, bool centered, bool rightAligned, bool visible)
-{
-    this->color.set(1, 1, 1);
-    this->textString.assign(text);
-    this->fontSize = fontSize;
-    this->font = font;
-    this->position.set(x, y);
-    alignment = 0;
-    this->lineMaxSizeConstraint = maxLineLength;
-    if (centered)
-    {
-        alignment = 1;
-        position.x += maxLineLength/2;
-    }
-    else if (rightAligned)
-    {
-        alignment = 2;
-        position.x += maxLineLength;
-    }
-    this->visible = visible;
-    TextMaster::loadText(this);
-}
+//GUIText::GUIText(std::string text, float fontSize, FontType* font, float x, float y, float maxLineLength, bool centered, bool rightAligned, bool visible)
+//{
+//    this->color.set(1, 1, 1);
+//    this->textString.assign(text);
+//    this->fontSize = fontSize;
+//    this->font = font;
+//    this->position.set(x, y);
+//    alignment = 0;
+//    this->lineMaxSizeConstraint = maxLineLength;
+//    if (centered)
+//    {
+//        alignment = 1;
+//        position.x += maxLineLength/2;
+//    }
+//    else if (rightAligned)
+//    {
+//        alignment = 2;
+//        position.x += maxLineLength;
+//    }
+//    this->visible = visible;
+//    TextMaster::loadText(this);
+//}
 
 GUIText::GUIText(std::string text, float fontSize, FontType* font, float x, float y, int alignment, bool visible)
 {

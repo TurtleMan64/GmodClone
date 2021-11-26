@@ -6,7 +6,6 @@
 #include "../toolbox/maths.hpp"
 #include "../loader/objloader.hpp"
 #include "../entities/entity.hpp"
-#include "../entities/player.hpp"
 
 std::list<TexturedModel*> HealthCube::models;
 

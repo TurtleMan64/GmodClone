@@ -98,6 +98,11 @@ void CollisionBlock::step()
     for (auto const& e : Global::gameOnlinePlayers)
     {
         OnlinePlayer* onlinePlayer = (OnlinePlayer*)e.second;
+        if (onlinePlayer->health <= 0)
+        {
+            continue;
+        }
+
         if (direction == 0)
         {
             if (onlinePlayer->collideEntityImTouching == this)
@@ -145,6 +150,14 @@ void CollisionBlock::step()
     }
     Global::gameOnlinePlayersSharedMutex.unlock_shared();
 
+    baseCM->transformModelWithScale(cm, &position, 0, scale);
+    updateTransformationMatrix();
+
+    if (Global::player->health <= 0)
+    {
+        return;
+    }
+
     if (direction == 0)
     {
         if (Global::player->collideEntityImTouching == this)
@@ -189,10 +202,6 @@ void CollisionBlock::step()
             }
         }
     }
-
-    baseCM->transformModelWithScale(cm, &position, 0, scale);
-
-    updateTransformationMatrix();
 }
 
 std::vector<Entity*>* CollisionBlock::getEntitiesToRender()

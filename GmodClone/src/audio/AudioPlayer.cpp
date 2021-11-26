@@ -88,11 +88,12 @@ void AudioPlayer::loadSoundEffects()
     AudioPlayer::buffersSFX.push_back(AudioMaster::loadOGG("res/Audio/SFX/mixkit/Countdown.ogg"));                    //63
     AudioPlayer::buffersSFX.push_back(AudioMaster::loadOGG("res/Audio/BGM/musicbox_mono.ogg"));                       //64
     AudioPlayer::buffersSFX.push_back(AudioMaster::loadOGG("res/Audio/BGM/sheeshflp_mono.ogg"));                      //65
+    AudioPlayer::buffersSFX.push_back(AudioMaster::loadOGG("res/Audio/SFX/freesound/splat.ogg"));                     //66
 }
 
-void AudioPlayer::loadBGM(char* fileName)
+void AudioPlayer::loadBGM()
 {
-    AudioPlayer::buffersBGM.push_back(AudioMaster::loadOGG(fileName));
+    AudioPlayer::buffersBGM.push_back(AudioMaster::loadOGG("res/Audio/BGM/mixkit_happytimer.ogg"));
 }
 
 void AudioPlayer::deleteSources()

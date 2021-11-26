@@ -52,6 +52,11 @@ void Glass::step()
     {
         if (!Global::serverClient->isOpen())
         {
+            if (Global::player->health <= 0)
+            {
+                return;
+            }
+
             Vector3f playerCenter = Global::player->position;
             const float COLLISION_RADIUS = 1.74f/4;
             playerCenter.y += COLLISION_RADIUS;

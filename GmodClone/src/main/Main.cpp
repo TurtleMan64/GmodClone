@@ -72,6 +72,7 @@
 #include "../entities/glass.hpp"
 #include "../toolbox/levelloader.hpp"
 #include "../entities/boombox.hpp"
+#include "../audio/source.hpp"
 
 Message::Message(const Message &other)
 {
@@ -214,6 +215,7 @@ int main(int argc, char** argv)
 
     AudioMaster::init();
     AudioPlayer::loadSoundEffects();
+    AudioPlayer::loadBGM();
 
     Ball::loadModels();
     CollisionBlock::loadModels();
@@ -324,6 +326,37 @@ int main(int argc, char** argv)
                 Global::timeUntilRoundStartsText->deleteMe();
                 delete Global::timeUntilRoundStartsText; INCR_DEL("GUIText");
                 Global::timeUntilRoundStartsText = nullptr;
+            }
+        }
+
+        if (Global::timeUntilRoundEnds > 0.0f && Global::timeUntilRoundStarts <= 0.0f)
+        {
+            Global::timeUntilRoundEnds -= dt;
+
+            if (Global::timeUntilRoundEnds <= 0.0f)
+            {
+                float px = Global::player->position.x;
+                float py = Global::player->position.y;
+                float pz = Global::player->position.z;
+
+                if (px > Global::safeZoneStart.x &&
+                    py > Global::safeZoneStart.y && 
+                    pz > Global::safeZoneStart.z &&
+                    px < Global::safeZoneEnd.x   &&
+                    py < Global::safeZoneEnd.y   &&
+                    pz < Global::safeZoneEnd.z)
+                {
+                    //safe
+                }
+                else
+                {
+                    //dead
+                    if (Global::player->health > 0)
+                    {
+                        AudioPlayer::play(66, nullptr);
+                        Global::player->health = 0;
+                    }
+                }
             }
         }
 
@@ -446,6 +479,65 @@ int main(int argc, char** argv)
         Vector3f camVel = cam.vel.scaleCopy(0.016666f);
         AudioMaster::updateListenerData(&cam.eye, &cam.target, &cam.up, &camVel);
         AudioPlayer::setListenerIsUnderwater(false);
+
+        // Update the music when time gets low
+        Source* bgmSource = AudioPlayer::getSource(14);
+        if (Global::timeUntilRoundEnds > 30.0f)
+        {
+            if (bgmSource->isPlaying())
+            {
+                AudioPlayer::stopBGM();
+                bgmSource->setPitch(1.0f);
+            }
+        }
+        else if (Global::timeUntilRoundEnds > 15.0f)
+        {
+            if (!bgmSource->isPlaying())
+            {
+                AudioPlayer::playBGM(0);
+                bgmSource->setPitch(1.0f);
+            }
+        }
+        else if (Global::timeUntilRoundEnds > 0.0f)
+        {
+            if (!bgmSource->isPlaying())
+            {
+                AudioPlayer::playBGM(0);
+            }
+            bgmSource->setPitch(1.0f + (15.0f - Global::timeUntilRoundEnds)/15.0f);
+        }
+        else
+        {
+            if (bgmSource->isPlaying())
+            {
+                AudioPlayer::stopBGM();
+                bgmSource->setPitch(1.0f);
+                //TODO play end buzzer sound
+            }
+        }
+
+        if (Global::timeUntilRoundEnds > 1000.0f)
+        {
+            if (Global::timeUntilRoundEndText != nullptr)
+            {
+                Global::timeUntilRoundEndText->deleteMe();
+                delete Global::timeUntilRoundEndText; INCR_DEL("GUIText");
+            }
+        }
+        else
+        {
+            std::string timeLeft = std::to_string((int)Global::timeUntilRoundEnds);
+            if (Global::timeUntilRoundEndText == nullptr)
+            {
+                Global::timeUntilRoundEndText = new GUIText(timeLeft, 0.05f, Global::fontConsolas, 0.993f, 0.965f - 0.05f, 8, true); INCR_NEW("GUIText");
+            }
+            else if (Global::timeUntilRoundEndText->textString != timeLeft)
+            {
+                Global::timeUntilRoundEndText->deleteMe();
+                delete Global::timeUntilRoundEndText; INCR_DEL("GUIText");
+                Global::timeUntilRoundEndText = new GUIText(timeLeft, 0.05f, Global::fontConsolas, 0.993f, 0.965f - 0.05f, 8, true); INCR_NEW("GUIText");
+            }
+        }
 
         //prepare entities to render
         for (Entity* e : Global::gameEntities)
@@ -1344,3 +1436,9 @@ void Global::sendAudioMessageToServer(int sfxId, Vector3f* position)
 
 float Global::timeUntilRoundStarts = 0.0f;
 GUIText* Global::timeUntilRoundStartsText = nullptr;
+float Global::timeUntilRoundEnds = 100.0f;
+GUIText* Global::timeUntilRoundEndText = nullptr;
+
+Vector3f Global::safeZoneStart;
+Vector3f Global::safeZoneEnd;
+

@@ -64,8 +64,8 @@ public:
     *            - whether the text should be centered or not.
     */
     //old version constructor
-    GUIText(std::string text, float fontSize, FontType* font, float x, float y, float maxLineLength,
-        bool centered, bool rightAlign, bool visible);
+    //GUIText(std::string text, float fontSize, FontType* font, float x, float y, float maxLineLength,
+    //    bool centered, bool rightAlign, bool visible);
 
     //new version
     //x, y = (0, 0) is top left, (1, 1) is bottom right

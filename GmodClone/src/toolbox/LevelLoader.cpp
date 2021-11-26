@@ -49,9 +49,13 @@ void LevelLoader::loadLevel(std::string mapName)
 
     Global::deleteAllEntites();
 
-    Global::player->health = 100;
+    if (Global::player->health > 0)
+    {
+        Global::player->health = 100;
+    }
+    Global::player->vel.set(0, 0, 0);
 
-    Global::timeUntilRoundStarts = 4.0f;
+    Global::timeUntilRoundStarts = 6.0f;
 
     std::chrono::high_resolution_clock::time_point timeStart = std::chrono::high_resolution_clock::now();
     bool waitForSomeTime = true;
@@ -91,6 +95,12 @@ void LevelLoader::loadLevel(std::string mapName)
     Global::player->position.y += Maths::random()*spawnZone.y;
     Global::player->position.z += Maths::random()*spawnZone.z;
 
+    std::string playerSafeZoneLine;
+    getlineSafe(file, playerSafeZoneLine);
+    std::vector<std::string> safeZones = split(playerSafeZoneLine, ' ');
+    Global::safeZoneStart = Vector3f(toF(safeZones[0]), toF(safeZones[1]), toF(safeZones[2]));
+    Global::safeZoneEnd   = Vector3f(toF(safeZones[3]), toF(safeZones[4]), toF(safeZones[5]));
+
     std::string skyColorLine;
     getlineSafe(file, skyColorLine);
     std::vector<std::string> skyColors = split(skyColorLine, ' ');
@@ -107,6 +117,11 @@ void LevelLoader::loadLevel(std::string mapName)
     std::vector<std::string> camOrientation = split(camOrientationLine, ' ');
     Global::player->lookDir = Vector3f(toF(camOrientation[0]), toF(camOrientation[1]), toF(camOrientation[2]));
     Global::player->lookDir.normalize();
+
+    std::string roundTimeLine;
+    getlineSafe(file, roundTimeLine);
+    std::vector<std::string> roundTime = split(roundTimeLine, ' ');
+    Global::timeUntilRoundEnds = toF(roundTime[0]);
 
     //Now read through all the objects defined in the file
 
@@ -203,8 +218,26 @@ void LevelLoader::processLine(std::vector<std::string>& dat)
 
         case ENTITY_GLASS:
         {
-            Glass* glass = new Glass(dat[1], Vector3f(toF(dat[2]), toF(dat[3]), toF(dat[4]))); INCR_NEW("Entity");
-            Global::addEntity(glass);
+            Vector3f centerPos(Vector3f(toF(dat[3]), toF(dat[4]), toF(dat[5])));
+
+            Vector3f topPos = centerPos; topPos.z += 2.4f;
+            Vector3f botPos = centerPos; botPos.z -= 2.4f;
+
+            Glass* glassTop = new Glass(dat[1], topPos); INCR_NEW("Entity");
+            Glass* glassBot = new Glass(dat[2], botPos); INCR_NEW("Entity");
+
+            float ran = Maths::random();
+            if (ran > 0.5f)
+            {
+                glassTop->isReal = false;
+            }
+            else
+            {
+                glassBot->isReal = false;
+            }
+
+            Global::addEntity(glassTop);
+            Global::addEntity(glassBot);
             break;
         }
 
