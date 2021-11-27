@@ -1,7 +1,7 @@
 res/Models/Bedroom/ Bedroom   # Visual Stage Model
 res/Models/Bedroom/ Collision # Collision Stage Model
 -23 8 11.5     -3 8 24        # Player Spawning Zone Endpoints
-41.8 -1 -8    51.8 20 8       # Player Safe Zone Endpoints
+0 0 0 0 0 0                   # Player Safe Zone Endpoints
 1.0 1.0 1.0                   # Sky Color
 -0.2 -1 -0.4                  # Sun Direction
 1 0 0                         # Camera Direction

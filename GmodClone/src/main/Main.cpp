@@ -138,7 +138,7 @@ int Global::gameTotalPlaytime = 0;
 int Global::levelId = 1;
 std::string Global::levelToLoad = "";
 
-bool Global::renderWithCulling = true;
+bool Global::renderWithCulling = false;
 bool Global::displayFPS = true;
 //float Global::fpsTarget = 120.0f;
 float Global::fpsLimit = 60.0f;

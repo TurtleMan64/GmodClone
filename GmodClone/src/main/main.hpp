@@ -68,6 +68,7 @@ public:
 #define LVL_MAP1 1
 #define LVL_MAP2 2
 #define LVL_MAP3 3
+#define LVL_EQ   4
 
 class Global
 {

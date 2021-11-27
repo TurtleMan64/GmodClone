@@ -35,7 +35,25 @@
 
 void LevelLoader::loadLevel(std::string mapName)
 {
-    std::string fname = mapName + ".map";
+    //convert name to lowercase name
+    char nameLower[32] = {0};
+    if ((int)mapName.size() < 32)
+    {
+        for (int i = 0; i < (int)mapName.size(); i++)
+        {
+            char c = mapName[i];
+
+            if (c >= 65 && c <= 90)
+            {
+                c += 32;
+            }
+
+            nameLower[i] = c;
+        }
+    }
+
+    std::string lower = nameLower;
+    std::string fname = lower + ".map";
 
     std::ifstream file(Global::pathToEXE + "res/Maps/" + fname);
     if (!file.is_open())
@@ -60,10 +78,11 @@ void LevelLoader::loadLevel(std::string mapName)
     std::chrono::high_resolution_clock::time_point timeStart = std::chrono::high_resolution_clock::now();
     bool waitForSomeTime = true;
 
-    if      (fname == "Hub.map")  Global::levelId = LVL_HUB;
-    else if (fname == "Map1.map") Global::levelId = LVL_MAP1;
-    else if (fname == "Map2.map") Global::levelId = LVL_MAP2;
-    else if (fname == "Map3.map") Global::levelId = LVL_MAP3;
+    if      (fname == "hub.map")  Global::levelId = LVL_HUB;
+    else if (fname == "map1.map") Global::levelId = LVL_MAP1;
+    else if (fname == "map2.map") Global::levelId = LVL_MAP2;
+    else if (fname == "map3.map") Global::levelId = LVL_MAP3;
+    else if (fname == "eq.map")   Global::levelId = LVL_EQ;
 
     //Run through the header content
 
@@ -158,6 +177,14 @@ void LevelLoader::loadLevel(std::string mapName)
             std::this_thread::sleep_for(std::chrono::milliseconds(waitForMs));
         }
     }
+
+    switch (Global::levelId)
+    {
+        case LVL_EQ: Global::renderWithCulling = false; break;
+        default:     Global::renderWithCulling =  true; break;
+    }
+
+    //printf("lvlid = %d culling = %d\n", Global::levelId, Global::renderWithCulling);
 
     //glfwSetTime(0);
     //extern double timeOld;
