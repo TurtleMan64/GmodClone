@@ -1004,6 +1004,11 @@ void Player::swingYourArm()
             otherHead.y += COLLISION_RADIUS*4;
         }
 
+        if (onlinePlayer->health <= 0)
+        {
+            continue;
+        }
+
         Vector3f playerCollisionSpot;
         if (Maths::lineSegmentIntersectsCylinder(&Global::gameCamera->eye, &target, &e->position, &otherHead, COLLISION_RADIUS, &playerCollisionSpot))
         {

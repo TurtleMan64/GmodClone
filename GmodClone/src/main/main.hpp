@@ -67,6 +67,7 @@ public:
 #define LVL_HUB  0
 #define LVL_MAP1 1
 #define LVL_MAP2 2
+#define LVL_MAP3 3
 
 class Global
 {

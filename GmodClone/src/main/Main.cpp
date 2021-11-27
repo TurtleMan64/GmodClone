@@ -261,6 +261,8 @@ int main(int argc, char** argv)
     Global::player = new Player; INCR_NEW("Entity");
 
     LevelLoader::loadLevel("Map1");
+    Global::timeUntilRoundStarts = -1.0f;
+    Global::timeUntilRoundEnds = 10000000.0f;
 
     GUIText* fpsText = new GUIText("0", 0.02f, Global::fontConsolas, 1.0f, 0.0f, 2, true); INCR_NEW("GUIText");
 
@@ -522,6 +524,7 @@ int main(int argc, char** argv)
             {
                 Global::timeUntilRoundEndText->deleteMe();
                 delete Global::timeUntilRoundEndText; INCR_DEL("GUIText");
+                Global::timeUntilRoundEndText = nullptr;
             }
         }
         else
@@ -861,17 +864,15 @@ unsigned long long Global::getRawUtcSystemTime()
 
 void Global::readThreadBehavoir(TcpClient* client)
 {
+    #define CHECK_CONNECTION(NUM_BYTES) if (!client->isOpen() || numRead != NUM_BYTES) { Global::addChatMessage("Disconnected from Server", Vector3f(1, 0.5f, 0.5f)); return; }
+
     while (Global::gameState != GAME_STATE_EXITING && client->isOpen())
     {
         char cmd;
         int numRead = client->read(&cmd, 1, 5);
-        if (numRead < 0)
-        {
-            printf("Could not read cmd from server\n");
-            Global::addChatMessage("Disconnected from Server", Vector3f(1, 0.5f, 0.5f));
-            return;
-        }
-        else if (numRead == 1)
+        if (!client->isOpen()) { Global::addChatMessage("Disconnected from Server", Vector3f(1, 0.5f, 0.5f)); return; }
+        
+        if (numRead == 1)
         {
             switch (cmd)
             {
@@ -880,13 +881,7 @@ void Global::readThreadBehavoir(TcpClient* client)
 
                 case 1: //time msg
                 {
-                    numRead = client->read((char*)&Global::serverStartTime, 8, 5);
-                    if (numRead != 8)
-                    {
-                        printf("Could not read time from server\n");
-                        Global::addChatMessage("Disconnected from Server", Vector3f(1, 0.5f, 0.5f));
-                        return;
-                    }
+                    numRead = client->read((char*)&Global::serverStartTime, 8, 5); CHECK_CONNECTION(8);
                     break;
                 }
 
@@ -895,13 +890,7 @@ void Global::readThreadBehavoir(TcpClient* client)
                 case  3:
                 {
                     int nameLen;
-                    numRead = client->read((char*)&nameLen, 4, 5);
-                    if (numRead != 4)
-                    {
-                        printf("Could not read name len from server\n");
-                        Global::addChatMessage("Disconnected from Server", Vector3f(1, 0.5f, 0.5f));
-                        return;
-                    }
+                    numRead = client->read((char*)&nameLen, 4, 5); CHECK_CONNECTION(4);
 
                     if (nameLen >= 32)
                     {
@@ -911,13 +900,7 @@ void Global::readThreadBehavoir(TcpClient* client)
                     }
 
                     char nameBuf[32] = {0};
-                    numRead = client->read(nameBuf, nameLen, 5);
-                    if (numRead != nameLen)
-                    {
-                        printf("Could not read name from server\n");
-                        Global::addChatMessage("Disconnected from Server", Vector3f(1, 0.5f, 0.5f));
-                        return;
-                    }
+                    numRead = client->read(nameBuf, nameLen, 5); CHECK_CONNECTION(nameLen);
 
                     std::string name = nameBuf;
 
@@ -936,7 +919,7 @@ void Global::readThreadBehavoir(TcpClient* client)
                         {
                             if (onlinePlayer == nullptr)
                             {
-                                onlinePlayer = new OnlinePlayer(name, 0, 0, 0); INCR_NEW("Entity");
+                                onlinePlayer = new OnlinePlayer(name, 0, 0, 0); INCR_NEW("OnlinePlayer");
 
                                 Global::gameOnlinePlayersSharedMutex.lock();
                                 Global::gameOnlinePlayers[name] = onlinePlayer;
@@ -946,7 +929,7 @@ void Global::readThreadBehavoir(TcpClient* client)
                             }
 
                             char buf[144];
-                            client->read(buf, 144, 5);
+                            numRead = client->read(buf, 144, 5); CHECK_CONNECTION(144);
 
                             int idx = 0;
 
@@ -1035,26 +1018,27 @@ void Global::readThreadBehavoir(TcpClient* client)
                     float zDir;
                     char weapon;
 
-                    client->read((char*)&x,      4, 5);
-                    client->read((char*)&y,      4, 5);
-                    client->read((char*)&z,      4, 5);
-                    client->read((char*)&xDir,   4, 5);
-                    client->read((char*)&yDir,   4, 5);
-                    client->read((char*)&zDir,   4, 5);
-                    client->read((char*)&weapon, 1, 5);
+                    numRead = client->read((char*)&x,      4, 5); CHECK_CONNECTION(4);
+                    numRead = client->read((char*)&y,      4, 5); CHECK_CONNECTION(4);
+                    numRead = client->read((char*)&z,      4, 5); CHECK_CONNECTION(4);
+                    numRead = client->read((char*)&xDir,   4, 5); CHECK_CONNECTION(4);
+                    numRead = client->read((char*)&yDir,   4, 5); CHECK_CONNECTION(4);
+                    numRead = client->read((char*)&zDir,   4, 5); CHECK_CONNECTION(4);
+                    numRead = client->read((char*)&weapon, 1, 5); CHECK_CONNECTION(1);
 
                     Vector3f velToAdd(xDir, yDir, zDir);
-                    if (weapon == 0)
+                    if (weapon == 0) //unarmed punch
                     {
-                        velToAdd.setLength(6.0f);
+                        velToAdd.setLength(3.0f);
+                        Global::player->vel = Global::player->vel + velToAdd;
                     }
                     else
                     {
-                        velToAdd.setLength(30.0f);
+                        velToAdd.setLength(18.0f);
+                        Global::player->vel = Global::player->vel + velToAdd;
+                        Global::player->health -= 10;
                     }
 
-                    Global::player->vel = Global::player->vel + velToAdd;
-                    Global::player->health -= 10;
                     break;
                 }
 
@@ -1063,10 +1047,10 @@ void Global::readThreadBehavoir(TcpClient* client)
                     int sfxId;
                     Vector3f pos;
 
-                    client->read((char*)&sfxId, 4, 5);
-                    client->read((char*)&pos.x, 4, 5);
-                    client->read((char*)&pos.y, 4, 5);
-                    client->read((char*)&pos.z, 4, 5);
+                    numRead = client->read((char*)&sfxId, 4, 5); CHECK_CONNECTION(4);
+                    numRead = client->read((char*)&pos.x, 4, 5); CHECK_CONNECTION(4);
+                    numRead = client->read((char*)&pos.y, 4, 5); CHECK_CONNECTION(4);
+                    numRead = client->read((char*)&pos.z, 4, 5); CHECK_CONNECTION(4);
 
                     AudioPlayer::play(sfxId, &pos);
                     break;
@@ -1078,9 +1062,9 @@ void Global::readThreadBehavoir(TcpClient* client)
                     char healthName[33] = {0};
                     char healAmount;
 
-                    client->read((char*)&healthNameLen, 4, 5);
-                    client->read(healthName, healthNameLen, 5);
-                    client->read(&healAmount, 1, 5);
+                    numRead = client->read((char*)&healthNameLen, 4, 5);  CHECK_CONNECTION(4);
+                    numRead = client->read(healthName, healthNameLen, 5); CHECK_CONNECTION(healthNameLen);
+                    numRead = client->read(&healAmount, 1, 5);            CHECK_CONNECTION(1);
 
                     if (healAmount > 0)
                     {
@@ -1114,6 +1098,70 @@ void Global::readThreadBehavoir(TcpClient* client)
                     }
                     Global::gameEntitiesSharedMutex.unlock_shared();
 
+                    break;
+                }
+
+                case 7: // round time start
+                {
+                    numRead = client->read((char*)&Global::timeUntilRoundStarts, 4, 5); CHECK_CONNECTION(4);
+                    break;
+                }
+
+                case 8: //set the status of a glass plane
+                {
+                    int glassNameLen;
+                    char glassName[33] = {0};
+                    char isReal;
+                    char isBroken;
+
+                    numRead = client->read((char*)&glassNameLen, 4, 5); CHECK_CONNECTION(4);
+                    numRead = client->read(glassName, glassNameLen, 5); CHECK_CONNECTION(glassNameLen);
+                    numRead = client->read(&isReal,   1, 5);            CHECK_CONNECTION(1);
+                    numRead = client->read(&isBroken, 1, 5);            CHECK_CONNECTION(1);
+
+                    std::string glassNameToUpdate = glassName;
+
+                    Global::gameEntitiesSharedMutex.lock_shared();
+                    for (Entity* e : Global::gameEntities)
+                    {
+                        switch (e->getEntityType())
+                        {
+                            case ENTITY_GLASS:
+                            {
+                                if (e->name == glassNameToUpdate)
+                                {
+                                    Glass* g = (Glass*)e;
+                                    g->isReal = (bool)isReal;
+                                    g->hasBroken = (bool)isBroken;
+                                }
+                                break;
+                            }
+
+                            default:
+                                break;
+                        }
+                    }
+                    Global::gameEntitiesSharedMutex.unlock_shared();
+
+                    break;
+                }
+
+                case 9: //load a new level
+                {
+                    int levelNameLen;
+                    char levelName[33] = {0};
+
+                    numRead = client->read((char*)&levelNameLen, 4, 5); CHECK_CONNECTION(4);
+                    numRead = client->read(levelName, levelNameLen, 5); CHECK_CONNECTION(levelNameLen);
+
+                    Global::levelToLoad = levelName; //TODO maybe put a mutex around this
+
+                    break;
+                }
+
+                case 10: // round end messages
+                {
+                    numRead = client->read((char*)&Global::timeUntilRoundEnds, 4, 5); CHECK_CONNECTION(4);
                     break;
                 }
 

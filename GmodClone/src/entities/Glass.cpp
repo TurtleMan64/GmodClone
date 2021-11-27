@@ -48,9 +48,18 @@ Glass::~Glass()
 
 void Glass::step()
 {
+    if (hasBroken)
+    {
+        visible = false;
+    }
+    else
+    {
+        visible = true;
+    }
+
     if (!hasBroken && !isReal)
     {
-        if (!Global::serverClient->isOpen())
+        //if (!Global::serverClient->isOpen())
         {
             if (Global::player->health <= 0)
             {
@@ -68,8 +77,24 @@ void Glass::step()
                 if (Maths::sphereIntersectsTriangle(&playerCenter, COLLISION_RADIUS, tri, &d, &g))
                 {
                     AudioPlayer::play(62, nullptr);
+                    Global::sendAudioMessageToServer(62, &position);
                     hasBroken = true;
-                    visible = false;
+
+                    if (Global::serverClient->isOpen())
+                    {
+                        int nameLen = (int)name.size();
+            
+                        Message msg;
+                        msg.length = 5 + nameLen + 2;
+            
+                        msg.buf[0] = 8;
+                        memcpy(&msg.buf[1], &nameLen, 4);
+                        memcpy(&msg.buf[5], name.c_str(), nameLen);
+                        msg.buf[5 + nameLen    ] = (char)isReal;
+                        msg.buf[5 + nameLen + 1] = (char)hasBroken;
+
+                        Global::sendMessageToServer(msg);
+                    }
                 }
             }
         }

@@ -509,6 +509,12 @@ void OnlinePlayer::step()
 
     updateTransformationMatrix();
     head->updateTransformationMatrix();
+
+    if (health <= 0)
+    {
+        visible = false;
+        head->visible = false;
+    }
 }
 
 std::vector<Entity*>* OnlinePlayer::getEntitiesToRender()

@@ -25,6 +25,7 @@
 #include "../renderEngine/renderEngine.hpp"
 #include "../entities/player.hpp"
 #include "split.hpp"
+#include "../network/tcpclient.hpp"
 
 #ifdef DEV_MODE
 #include <iostream>
@@ -519,10 +520,24 @@ void Input::keyboardCallback(GLFWwindow* /**/, int key, int /**/, int action, in
                                  Input::chatLength >= 10 && strncmp("load_map ", Input::chatInput, 9) == 0 ||
                                  Input::chatLength >= 10 && strncmp("LOAD_MAP ", Input::chatInput, 9) == 0)
                         {
+                            if (!Global::serverClient->isOpen())
+                            {
+                                std::vector<std::string> tokens = split(Input::chatInput, ' ');
+                                if (tokens.size() > 1)
+                                {
+                                    Global::levelToLoad = tokens[1];
+                                }
+                            }
+                        }
+                        else if (Input::chatLength >= 6 && strncmp("heal ", Input::chatInput, 5) == 0 ||
+                                 Input::chatLength >= 6 && strncmp("HEAL ", Input::chatInput, 5) == 0)
+                        {
                             std::vector<std::string> tokens = split(Input::chatInput, ' ');
                             if (tokens.size() > 1)
                             {
-                                Global::levelToLoad = tokens[1];
+                                #ifdef DEV_MODE
+                                Global::player->health = (char)Maths::clamp(0, (int)Global::player->health + stoi(tokens[1]), 100);
+                                #endif
                             }
                         }
                     }

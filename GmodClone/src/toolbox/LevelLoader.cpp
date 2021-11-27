@@ -55,7 +55,7 @@ void LevelLoader::loadLevel(std::string mapName)
     }
     Global::player->vel.set(0, 0, 0);
 
-    Global::timeUntilRoundStarts = 6.0f;
+    Global::timeUntilRoundStarts = 7.0f;
 
     std::chrono::high_resolution_clock::time_point timeStart = std::chrono::high_resolution_clock::now();
     bool waitForSomeTime = true;
@@ -63,6 +63,7 @@ void LevelLoader::loadLevel(std::string mapName)
     if      (fname == "Hub.map")  Global::levelId = LVL_HUB;
     else if (fname == "Map1.map") Global::levelId = LVL_MAP1;
     else if (fname == "Map2.map") Global::levelId = LVL_MAP2;
+    else if (fname == "Map3.map") Global::levelId = LVL_MAP3;
 
     //Run through the header content
 
