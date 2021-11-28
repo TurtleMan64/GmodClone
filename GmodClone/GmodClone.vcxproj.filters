@@ -228,6 +228,9 @@
     <ClCompile Include="src\entities\BoomBox.cpp">
       <Filter>Source Files\entities</Filter>
     </ClCompile>
+    <ClCompile Include="src\entities\RockPlatform.cpp">
+      <Filter>Source Files\entities</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\toolbox\getline.hpp">
@@ -384,6 +387,9 @@
       <Filter>Source Files\toolbox</Filter>
     </ClInclude>
     <ClInclude Include="src\entities\boombox.hpp">
+      <Filter>Source Files\entities</Filter>
+    </ClInclude>
+    <ClInclude Include="src\entities\rockplatform.hpp">
       <Filter>Source Files\entities</Filter>
     </ClInclude>
   </ItemGroup>

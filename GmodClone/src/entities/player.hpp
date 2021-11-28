@@ -105,6 +105,8 @@ public:
     Player();
     ~Player();
 
+    void reset();
+
     void step();
 
     std::vector<Entity*>* getEntitiesToRender();

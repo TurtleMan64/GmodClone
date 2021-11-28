@@ -32,6 +32,8 @@
 #include "../entities/redbarrel.hpp"
 #include "../loader/objloader.hpp"
 #include "../entities/boombox.hpp"
+#include "../entities/rockplatform.hpp"
+#include "../network/tcpclient.hpp"
 
 void LevelLoader::loadLevel(std::string mapName)
 {
@@ -71,7 +73,7 @@ void LevelLoader::loadLevel(std::string mapName)
     {
         Global::player->health = 100;
     }
-    Global::player->vel.set(0, 0, 0);
+    Global::player->reset();
 
     Global::timeUntilRoundStarts = 7.0f;
 
@@ -83,6 +85,8 @@ void LevelLoader::loadLevel(std::string mapName)
     else if (fname == "map2.map") Global::levelId = LVL_MAP2;
     else if (fname == "map3.map") Global::levelId = LVL_MAP3;
     else if (fname == "eq.map")   Global::levelId = LVL_EQ;
+    else if (fname == "map4.map") Global::levelId = LVL_MAP4;
+    else if (fname == "test.map") Global::levelId = LVL_TEST;
 
     //Run through the header content
 
@@ -162,6 +166,46 @@ void LevelLoader::loadLevel(std::string mapName)
     }
 
     file.close();
+
+    // Spawn rock platforms
+    if (Global::levelId == LVL_MAP4)
+    {
+        std::vector<RockPlatform*> rocks;
+        for (int x = 0; x < 6; x++)
+        {
+            for (int z = 0; z < 6; z++)
+            {
+                int idx = z + 10*x;
+
+                std::string id = std::to_string(idx);
+                id = "RP" + id;
+
+                RockPlatform* rock = new RockPlatform(id, Vector3f((x-3)*8.0f, 0, (z-3)*8.0f)); INCR_NEW("Entity");
+                rocks.push_back(rock);
+                Global::addEntity(rock);
+            }
+        }
+
+        if (!Global::serverClient->isOpen())
+        {
+            // Put the player on a random rock
+            int playerRock = (int)(rocks.size()*Maths::random());
+            Global::player->position.x = rocks[playerRock]->position.x;
+            Global::player->position.y = rocks[playerRock]->position.y;
+            Global::player->position.z = rocks[playerRock]->position.z;
+            Global::player->vel.scale(0);
+
+            // Set timer for rocks that will break
+            int rocksToDie = (int)rocks.size() - 5;
+
+            for (int i = 0; i < rocksToDie; i++)
+            {
+                int idx = (int)(rocks.size()*Maths::random());
+                rocks[idx]->timeUntilBreaks = 3.0f + 40*Maths::random();
+                rocks.erase(rocks.begin() + idx);
+            }
+        }
+    }
 
     if (waitForSomeTime)
     {
@@ -273,6 +317,13 @@ void LevelLoader::processLine(std::vector<std::string>& dat)
         {
             BoomBox* box = new BoomBox(dat[1], Vector3f(toF(dat[2]), toF(dat[3]), toF(dat[4])), toF(dat[5])); INCR_NEW("Entity");
             Global::addEntity(box);
+            break;
+        }
+
+        case ENTITY_ROCK_PLATFORM:
+        {
+            RockPlatform* rock = new RockPlatform(dat[1], Vector3f(toF(dat[2]), toF(dat[3]), toF(dat[4]))); INCR_NEW("Entity");
+            Global::addEntity(rock);
             break;
         }
 

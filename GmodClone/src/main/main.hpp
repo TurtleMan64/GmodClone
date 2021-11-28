@@ -59,7 +59,7 @@ class Message
 {
 public:
     int length = 0;
-    char buf[188] = {0};
+    char buf[200] = {0};
     Message(const Message &other);
     Message();
 };
@@ -69,6 +69,8 @@ public:
 #define LVL_MAP2 2
 #define LVL_MAP3 3
 #define LVL_EQ   4
+#define LVL_MAP4 5
+#define LVL_TEST 6
 
 class Global
 {
@@ -130,6 +132,7 @@ public:
     static std::string nickname;
     static std::shared_mutex gameOnlinePlayersSharedMutex;
     static std::unordered_map<std::string, OnlinePlayer*> gameOnlinePlayers;
+    static std::vector<GUIText*> gameOnlinePlayerPingTexts;
     static std::vector<std::string> serverSettings;
     static TcpClient* serverClient;
 

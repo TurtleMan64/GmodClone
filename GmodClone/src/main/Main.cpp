@@ -73,11 +73,12 @@
 #include "../toolbox/levelloader.hpp"
 #include "../entities/boombox.hpp"
 #include "../audio/source.hpp"
+#include "../entities/rockplatform.hpp"
 
 Message::Message(const Message &other)
 {
     length = other.length;
-    for (int i = 0; i < 188; i++)
+    for (int i = 0; i < 200; i++)
     {
         buf[i] = other.buf[i];
     }
@@ -96,6 +97,7 @@ double Global::syncedGlobalTime = 0.0;
 
 std::shared_mutex Global::gameOnlinePlayersSharedMutex;
 std::unordered_map<std::string, OnlinePlayer*> Global::gameOnlinePlayers;
+std::vector<GUIText*> Global::gameOnlinePlayerPingTexts;
 
 std::vector<std::string> Global::serverSettings;
 TcpClient* Global::serverClient = nullptr;
@@ -225,6 +227,7 @@ int main(int argc, char** argv)
     Glass::loadModels();
     Ladder::loadModels();
     BoomBox::loadModels();
+    RockPlatform::loadModels();
 
     Global::serverSettings = readFileLines("ServerSettings.ini");
     Global::serverClient = new TcpClient(Global::serverSettings[0].c_str(), std::stoi(Global::serverSettings[1]), 1); INCR_NEW("TcpClient");
@@ -260,7 +263,7 @@ int main(int argc, char** argv)
 
     Global::player = new Player; INCR_NEW("Entity");
 
-    LevelLoader::loadLevel("Map1");
+    LevelLoader::loadLevel("Test");
     Global::timeUntilRoundStarts = -1.0f;
     Global::timeUntilRoundEnds = 10000000.0f;
 
@@ -570,6 +573,48 @@ int main(int argc, char** argv)
         if (Global::player->weapon == 1)
         {
             GuiManager::addGuiToRender(GuiTextureResources::textureCrosshair);
+        }
+
+        extern GLFWwindow* window;
+        if (glfwGetKey(window, GLFW_KEY_LEFT_ALT) == GLFW_PRESS)
+        {
+            if (Global::gameOnlinePlayerPingTexts.size() == 0)
+            {
+                int n = 0;
+                Global::gameOnlinePlayersSharedMutex.lock_shared();
+                for (auto const& entry : Global::gameOnlinePlayers)
+                {
+                    std::string t = entry.first;
+                    int p = entry.second->pingMs;
+
+                    for (int i = (int)entry.first.size() - Maths::numDigits(p); i < 20; i++)
+                    {
+                        t = t + " ";
+                    }
+
+                    t = t + std::to_string(p);
+
+                    t = t + "ms";
+
+                    GUIText* text = new GUIText(t, 0.05f, Global::fontConsolas, 0.5f, 0.1f + 0.05f*n, 4, true); INCR_NEW("GUIText");
+                    Global::gameOnlinePlayerPingTexts.push_back(text);
+
+                    n++;
+                }
+                Global::gameOnlinePlayersSharedMutex.unlock_shared();
+            }
+        }
+        else
+        {
+            if (Global::gameOnlinePlayerPingTexts.size() > 0)
+            {
+                for (GUIText* t : Global::gameOnlinePlayerPingTexts)
+                {
+                    t->deleteMe();
+                    delete t; INCR_DEL("GUIText");
+                }
+                Global::gameOnlinePlayerPingTexts.clear();
+            }
         }
 
         GuiManager::render();
@@ -928,8 +973,8 @@ void Global::readThreadBehavoir(TcpClient* client)
                                 Global::addChatMessage(name + " joined", Vector3f(0.5f, 1, 0.5f));
                             }
 
-                            char buf[144];
-                            numRead = client->read(buf, 144, 5); CHECK_CONNECTION(144);
+                            char buf[148];
+                            numRead = client->read(buf, 148, 5); CHECK_CONNECTION(148);
 
                             int idx = 0;
 
@@ -974,7 +1019,8 @@ void Global::readThreadBehavoir(TcpClient* client)
                             memcpy((char*)&onlinePlayer->lookDir.z,          &buf[idx], 4); idx+=4;
                             memcpy((char*)&onlinePlayer->isCrouching,        &buf[idx], 1); idx+=1;
                             memcpy((char*)&onlinePlayer->weapon,             &buf[idx], 1); idx+=1;
-                            memcpy((char*)&onlinePlayer->health,             &buf[idx], 1);
+                            memcpy((char*)&onlinePlayer->health,             &buf[idx], 1); idx+=1;
+                            memcpy((char*)&onlinePlayer->pingMs,             &buf[idx], 4);
 
                             break;
                         }
@@ -1162,6 +1208,54 @@ void Global::readThreadBehavoir(TcpClient* client)
                 case 10: // round end messages
                 {
                     numRead = client->read((char*)&Global::timeUntilRoundEnds, 4, 5); CHECK_CONNECTION(4);
+                    break;
+                }
+
+                case 11: //set the status of a rock platform
+                {
+                    int rockNameLen;
+                    char rockName[33] = {0};
+                    float rockBreakTimer;
+
+                    numRead = client->read((char*)&rockNameLen,    4, 5); CHECK_CONNECTION(4);
+                    numRead = client->read(rockName,     rockNameLen, 5); CHECK_CONNECTION(rockNameLen);
+                    numRead = client->read((char*)&rockBreakTimer, 4, 5); CHECK_CONNECTION(4);
+
+                    std::string rockNameToUpdate = rockName;
+
+                    Global::gameEntitiesSharedMutex.lock_shared();
+                    for (Entity* e : Global::gameEntities)
+                    {
+                        switch (e->getEntityType())
+                        {
+                            case ENTITY_ROCK_PLATFORM:
+                            {
+                                if (e->name == rockNameToUpdate)
+                                {
+                                    RockPlatform* r = (RockPlatform*)e;
+                                    r->timeUntilBreaks = rockBreakTimer;
+                                }
+                                break;
+                            }
+
+                            default:
+                                break;
+                        }
+                    }
+                    Global::gameEntitiesSharedMutex.unlock_shared();
+
+                    break;
+                }
+
+                case 12: // Set the position and vel of the player
+                {
+                    numRead = client->read((char*)&Global::player->position.x, 4, 5); CHECK_CONNECTION(4);
+                    numRead = client->read((char*)&Global::player->position.y, 4, 5); CHECK_CONNECTION(4);
+                    numRead = client->read((char*)&Global::player->position.z, 4, 5); CHECK_CONNECTION(4);
+                    numRead = client->read((char*)&Global::player->vel     .x, 4, 5); CHECK_CONNECTION(4);
+                    numRead = client->read((char*)&Global::player->vel     .y, 4, 5); CHECK_CONNECTION(4);
+                    numRead = client->read((char*)&Global::player->vel     .z, 4, 5); CHECK_CONNECTION(4);
+
                     break;
                 }
 

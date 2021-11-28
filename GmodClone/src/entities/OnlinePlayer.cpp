@@ -463,6 +463,8 @@ void OnlinePlayer::step()
 
     position = position + vel.scaleCopy(dt) + externalVel.scaleCopy(dt);
 
+    visible = true;
+
     if (isCrouching)
     {
         Vector3f dir = lookDir;

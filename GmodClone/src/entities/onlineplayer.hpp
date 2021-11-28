@@ -28,6 +28,8 @@ public:
     float inputX2 = 0.0f;
     float inputY2 = 0.0f;
 
+    int pingMs = 0;
+
     Vector3f groundNormal;
     Vector3f wallNormal;
 

@@ -350,29 +350,35 @@ void Player::step()
 
     isOnLadder = false;
 
-    // Go through entities and move / get moved by entities
+    // Go through online players and get pushed by them
+    Global::gameOnlinePlayersSharedMutex.lock_shared();
+    for (auto const& player : Global::gameOnlinePlayers)
+    {
+        OnlinePlayer* e = player.second;
+        if (e->health > 0)
+        {
+            Vector3f diff = e->position - position;
+            if (fabsf(diff.y) < HUMAN_HEIGHT)
+            {
+                diff.y = 0;
+                if (diff.lengthSquared() < COLLISION_RADIUS*COLLISION_RADIUS)
+                {
+                    float percent = (COLLISION_RADIUS - diff.length())/COLLISION_RADIUS;
+                    float power = 200*dt*percent;
+                    diff.setLength(power);
+                    diff.scale(-1);
+                    vel = vel + diff;
+                }
+            }
+        }
+    }
+    Global::gameOnlinePlayersSharedMutex.unlock_shared();
+
+    // Go through entities and interact with them
     for (Entity* e : Global::gameEntities)
     {
         switch (e->getEntityType())
         {
-            case ENTITY_ONLINE_PLAYER:
-            {
-                Vector3f diff = e->position - position;
-                if (fabsf(diff.y) < HUMAN_HEIGHT)
-                {
-                    diff.y = 0;
-                    if (diff.lengthSquared() < COLLISION_RADIUS*COLLISION_RADIUS)
-                    {
-                        float percent = (COLLISION_RADIUS - diff.length())/COLLISION_RADIUS;
-                        float power = 200*dt*percent;
-                        diff.setLength(power);
-                        diff.scale(-1);
-                        vel = vel + diff;
-                    }
-                }
-                break;
-            }
-
             case ENTITY_BALL:
             {
                 Vector3f diff = e->position - position;
@@ -1054,4 +1060,49 @@ void Player::die()
 {
     health = 0;
     AudioPlayer::play(59, nullptr);
+}
+
+void Player::reset()
+{
+    latestGroundTriangle = nullptr;
+    latestWallTriangle = nullptr;
+
+    onGround = false;
+
+    isTouchingWall = false;
+
+    stepTimer = 0.0f;
+    landSoundTimer = 0.0f;
+
+    slideTimer = 0.0f;
+    storedSlideSpeed = 0.0f;
+
+    wallJumpTimer = 0.0f;
+    storedWallNormal.set(1, 0, 0);
+
+    eyeHeightSmooth = HUMAN_HEIGHT;
+
+    timeSinceOnGround = 0.0f;
+    lastGroundNormal.set(0, 1, 0);
+
+    swingArmTimer = 0.0f;
+
+    ladderTimer = 0.0f;
+    isOnLadder = false;
+
+    collideEntityImTouching = nullptr;
+
+    isCrouching = false;
+
+    weapon = 0;
+
+    vel.set(0, 0, 0);
+    groundNormal.set(0, 1, 0);  
+    lastGroundNormal.set(0, 1, 0);
+    wallNormal.set(1, 0, 0);
+    lookDir.set(0, 0, -1);
+    externalVel.set(0, 0, 0);
+    externalVelPrev.set(0, 0, 0);
+    visible = false;
+    weaponModel->visible = false;
 }
