@@ -579,6 +579,8 @@ int main(int argc, char** argv)
         extern GLFWwindow* window;
         if (glfwGetKey(window, GLFW_KEY_LEFT_ALT) == GLFW_PRESS)
         {
+            GuiManager::addGuiToRender(GuiTextureResources::texturePlayersBG);
+            GuiTextureResources::texturePlayersBG->size.y = 0.05f*(1 + (int)Global::gameOnlinePlayers.size()) + 0.01f;
             if (Global::gameOnlinePlayerPingTexts.size() == 0)
             {
                 {
@@ -594,7 +596,7 @@ int main(int argc, char** argv)
 
                     t = t + "ms";
 
-                    GUIText* mePing = new GUIText(t, 0.05f, Global::fontConsolas, 0.5f, 0.1f, 4, true); INCR_NEW("GUIText");
+                    GUIText* mePing = new GUIText(t, 0.05f, Global::fontConsolas, 0.5f, 0.1f, 1, true); INCR_NEW("GUIText");
                     Global::gameOnlinePlayerPingTexts.push_back(mePing);
                 }
 
@@ -614,7 +616,7 @@ int main(int argc, char** argv)
 
                     t = t + "ms";
 
-                    GUIText* text = new GUIText(t, 0.05f, Global::fontConsolas, 0.5f, 0.1f + 0.05f*n, 4, true); INCR_NEW("GUIText");
+                    GUIText* text = new GUIText(t, 0.05f, Global::fontConsolas, 0.5f, 0.1f + 0.05f*n, 1, true); INCR_NEW("GUIText");
                     Global::gameOnlinePlayerPingTexts.push_back(text);
 
                     n++;

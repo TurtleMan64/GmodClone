@@ -1,22 +1,41 @@
-# Blender MTL File: 'None'
-# Material Count: 2
+# Material Count: 5
+
+newmtl CA_PillarWater02_01_CA_Wall02_02.png_CA_Wall02_02.png
+Ns 20.000000
+Ni 0.000000
+Tr 0
+renderOrder 1
+scrollY -0.2
+d 1.000000
+map_Kd CA_Wall02_02.png
+
+newmtl CA_PillarWater02_01_CA_Wall02_02.png
+Ns 20.000000
+Ni 0.000000
+d 0.000000
+map_Kd Sky.png
+
+newmtl CA_PillarWater02_01_CA_Wall02_03.png
+Ns 20.000000
+Ni 0.000000
+Tr 0
+renderOrder 2
+scrollY 0.2
+d 1.000000
+map_Kd CA_Wall02_03.png
 
 newmtl CA_PillarWater02_01
 Ns 20.000000
-Ka 0.000000 0.000000 0.000000
-Kd 0.640000 0.640000 0.640000
-Ks 0.000000 0.000000 0.000000
 Ni 0.000000
 d 1.000000
-illum 1
+map_Kd CA_Wall04_01.png
+
+newmtl CA_PillarWater02_01_CA_Wall02_01.png
+Ns 20.000000
+Ni 0.000000
+Tr 0
+renderOrder 0
+scrollY 0.2
+d 1.000000
 map_Kd CA_Wall02_01.png
 
-newmtl CA_PillarWater02_01_CA_MoonStone01_01.png
-Ns 20.000000
-Ka 0.000000 0.000000 0.000000
-Kd 0.640000 0.640000 0.640000
-Ks 0.000000 0.000000 0.000000
-Ni 0.000000
-d 1.000000
-illum 1
-map_Kd CA_Wall04_01.png

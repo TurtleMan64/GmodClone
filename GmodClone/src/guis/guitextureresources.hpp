@@ -11,6 +11,7 @@ public:
     static GuiTexture* textureCrosshair;
     static GuiTexture* textureHealthbar;
     static GuiTexture* textureHealthbarBG;
+    static GuiTexture* texturePlayersBG;
 
     static void loadGuiTextures();
 };
