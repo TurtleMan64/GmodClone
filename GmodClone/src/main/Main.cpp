@@ -101,6 +101,7 @@ std::vector<GUIText*> Global::gameOnlinePlayerPingTexts;
 
 std::vector<std::string> Global::serverSettings;
 TcpClient* Global::serverClient = nullptr;
+int Global::pingToServer = 0;
 
 std::shared_mutex Global::gameEntitiesSharedMutex;
 std::unordered_set<Entity*> Global::gameEntities;
@@ -517,7 +518,7 @@ int main(int argc, char** argv)
             {
                 AudioPlayer::stopBGM();
                 bgmSource->setPitch(1.0f);
-                //TODO play end buzzer sound
+                AudioPlayer::play(67, nullptr);
             }
         }
 
@@ -580,7 +581,24 @@ int main(int argc, char** argv)
         {
             if (Global::gameOnlinePlayerPingTexts.size() == 0)
             {
-                int n = 0;
+                {
+                    std::string t = Global::nickname;
+                    int p = Global::pingToServer;
+
+                    for (int i = (int)Global::nickname.size() - Maths::numDigits(p); i < 20; i++)
+                    {
+                        t = t + " ";
+                    }
+
+                    t = t + std::to_string(p);
+
+                    t = t + "ms";
+
+                    GUIText* mePing = new GUIText(t, 0.05f, Global::fontConsolas, 0.5f, 0.1f, 4, true); INCR_NEW("GUIText");
+                    Global::gameOnlinePlayerPingTexts.push_back(mePing);
+                }
+
+                int n = 1;
                 Global::gameOnlinePlayersSharedMutex.lock_shared();
                 for (auto const& entry : Global::gameOnlinePlayers)
                 {
@@ -1073,6 +1091,12 @@ void Global::readThreadBehavoir(TcpClient* client)
                     numRead = client->read((char*)&weapon, 1, 5); CHECK_CONNECTION(1);
 
                     Vector3f velToAdd(xDir, yDir, zDir);
+                    velToAdd.normalize();
+                    if (velToAdd.y < 0 && Global::player->onGround)
+                    {
+                        velToAdd.y =  0.2f;
+                    }
+
                     if (weapon == 0) //unarmed punch
                     {
                         velToAdd.setLength(3.0f);
@@ -1256,6 +1280,12 @@ void Global::readThreadBehavoir(TcpClient* client)
                     numRead = client->read((char*)&Global::player->vel     .y, 4, 5); CHECK_CONNECTION(4);
                     numRead = client->read((char*)&Global::player->vel     .z, 4, 5); CHECK_CONNECTION(4);
 
+                    break;
+                }
+
+                case 13: // We have been sent our ping to the server
+                {
+                    numRead = client->read((char*)&Global::pingToServer, 4, 5); CHECK_CONNECTION(4);
                     break;
                 }
 

@@ -89,6 +89,7 @@ void AudioPlayer::loadSoundEffects()
     AudioPlayer::buffersSFX.push_back(AudioMaster::loadOGG("res/Audio/BGM/musicbox_mono.ogg"));                       //64
     AudioPlayer::buffersSFX.push_back(AudioMaster::loadOGG("res/Audio/BGM/sheeshflp_mono.ogg"));                      //65
     AudioPlayer::buffersSFX.push_back(AudioMaster::loadOGG("res/Audio/SFX/freesound/splat.ogg"));                     //66
+    AudioPlayer::buffersSFX.push_back(AudioMaster::loadOGG("res/Audio/SFX/youtube/buzzer.ogg"));                      //67
 }
 
 void AudioPlayer::loadBGM()

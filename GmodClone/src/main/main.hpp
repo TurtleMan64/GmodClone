@@ -135,6 +135,7 @@ public:
     static std::vector<GUIText*> gameOnlinePlayerPingTexts;
     static std::vector<std::string> serverSettings;
     static TcpClient* serverClient;
+    static int pingToServer;
 
     static void addChatMessage(std::string msg, Vector3f color);
 
