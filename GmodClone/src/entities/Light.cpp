@@ -9,4 +9,5 @@ Light::Light()
     color.set(1, 1, 1);
     direction.set(-0.1f, -1, -0.2f);
     direction.normalize();
+    attenuation.set(1, 0.1f, 0.00f);
 }

@@ -2,6 +2,7 @@
 #define VERTEX_H
 
 #include "../toolbox/vector.hpp"
+#include <vector>
 
 class Vertex
 {
@@ -12,15 +13,21 @@ public:
     Vector4f color;
     int textureIndex = NO_INDEX;
     int normalIndex = NO_INDEX;
-    Vertex* duplicateVertex;
-    int index;
-    float length;
+    Vertex* duplicateVertex = nullptr;
+    int index = -1;
+    float length = 0.0f;
+    std::vector<Vector3f> tangents;
+    Vector3f averagedTangent;
 
 public:
 
     Vertex(int index, Vector3f* position, Vector4f* color);
 
     Vertex(int index, Vector3f* position);
+
+    void addTangent(Vector3f tangent);
+
+    void averageTangents();
 
     int getIndex();
 

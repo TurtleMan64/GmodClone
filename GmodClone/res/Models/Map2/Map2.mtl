@@ -2,9 +2,9 @@
 
 newmtl None_grass.png
 Ns 20.000000
-Ni 0.000000
+Ni 0.4
 d 1.000000
-map_Kd TexturesCom_Carpet0047_1_seamless_S.jpg
+map_Kd TexturesCom_Marble_TilesDiagonal_1K_albedo.png
 
 newmtl None
 Ns 20.000000

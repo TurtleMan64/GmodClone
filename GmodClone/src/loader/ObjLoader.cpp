@@ -183,9 +183,11 @@ int ObjLoader::loadBinaryModel(std::list<TexturedModel*>* models, std::string fi
 
             fread(&f[0], sizeof(int), 9, file);
 
-            processVertexBinary(f[0], f[1], f[2], &vertices, &indices);
-            processVertexBinary(f[3], f[4], f[5], &vertices, &indices);
-            processVertexBinary(f[6], f[7], f[8], &vertices, &indices);
+            Vertex* v0 = processVertexBinary(f[0], f[1], f[2], &vertices, &indices);
+            Vertex* v1 = processVertexBinary(f[3], f[4], f[5], &vertices, &indices);
+            Vertex* v2 = processVertexBinary(f[6], f[7], f[8], &vertices, &indices);
+
+            calculateTangents(v0, v1, v2, &textures);
         }
 
         //save the model we've been building so far...
@@ -195,8 +197,9 @@ int ObjLoader::loadBinaryModel(std::list<TexturedModel*>* models, std::string fi
         std::vector<float> texturesArray;
         std::vector<float> normalsArray;
         std::vector<float> colorsArray;
-        convertDataToArrays(&vertices, &textures, &normals, &verticesArray, &texturesArray, &normalsArray, &colorsArray);
-        rawModelsList.push_back(Loader::loadToVAO(&verticesArray, &texturesArray, &normalsArray, &colorsArray, &indices));
+        std::vector<float> tangentsArray;
+        convertDataToArrays(&vertices, &textures, &normals, &verticesArray, &texturesArray, &normalsArray, &colorsArray, &tangentsArray);
+        rawModelsList.push_back(Loader::loadToVAO(&verticesArray, &texturesArray, &normalsArray, &colorsArray, &tangentsArray, &indices));
     }
 
     fclose(file);
@@ -349,9 +352,11 @@ int ObjLoader::loadVclModel(std::list<TexturedModel*>* models, std::string fileP
 
             fread(&f[0], sizeof(int), 6, file);
 
-            processVertexBinary(f[0], f[1], 1, &vertices, &indices);
-            processVertexBinary(f[2], f[3], 1, &vertices, &indices);
-            processVertexBinary(f[4], f[5], 1, &vertices, &indices);
+            Vertex* v0 = processVertexBinary(f[0], f[1], 1, &vertices, &indices);
+            Vertex* v1 = processVertexBinary(f[2], f[3], 1, &vertices, &indices);
+            Vertex* v2 = processVertexBinary(f[4], f[5], 1, &vertices, &indices);
+
+            calculateTangents(v0, v1, v2, &textures);
         }
 
         //save the model we've been building so far...
@@ -361,8 +366,9 @@ int ObjLoader::loadVclModel(std::list<TexturedModel*>* models, std::string fileP
         std::vector<float> texturesArray;
         std::vector<float> normalsArray;
         std::vector<float> colorsArray;
-        convertDataToArrays(&vertices, &textures, &normals, &verticesArray, &texturesArray, &normalsArray, &colorsArray);
-        rawModelsList.push_back(Loader::loadToVAO(&verticesArray, &texturesArray, &normalsArray, &colorsArray, &indices));
+        std::vector<float> tangentsArray;
+        convertDataToArrays(&vertices, &textures, &normals, &verticesArray, &texturesArray, &normalsArray, &colorsArray, &tangentsArray);
+        rawModelsList.push_back(Loader::loadToVAO(&verticesArray, &texturesArray, &normalsArray, &colorsArray, &tangentsArray, &indices));
     }
 
     //printf("%d new vertices\n", numAdditionalVertices);
@@ -516,9 +522,11 @@ int ObjLoader::loadObjModel(std::list<TexturedModel*>* models, std::string fileP
                     char** vertex2 = split(lineSplit[2], '/', &dummy);
                     char** vertex3 = split(lineSplit[3], '/', &dummy);
 
-                    processVertex(vertex1, &vertices, &indices);
-                    processVertex(vertex2, &vertices, &indices);
-                    processVertex(vertex3, &vertices, &indices);
+                    Vertex* v0 = processVertex(vertex1, &vertices, &indices);
+                    Vertex* v1 = processVertex(vertex2, &vertices, &indices);
+                    Vertex* v2 = processVertex(vertex3, &vertices, &indices);
+
+                    calculateTangents(v0, v1, v2, &textures);
 
                     free(vertex1);
                     free(vertex2);
@@ -534,9 +542,11 @@ int ObjLoader::loadObjModel(std::list<TexturedModel*>* models, std::string fileP
                     std::vector<float> texturesArray;
                     std::vector<float> normalsArray;
                     std::vector<float> colorsArray;
+                    std::vector<float> tangentsArray;
 
-                    convertDataToArrays(&vertices, &textures, &normals, &verticesArray, &texturesArray, &normalsArray, &colorsArray);
-                    rawModelsList.push_back(Loader::loadToVAO(&verticesArray, &texturesArray, &normalsArray, &colorsArray, &indices));
+                    //NORMAL_  
+                    convertDataToArrays(&vertices, &textures, &normals, &verticesArray, &texturesArray, &normalsArray, &colorsArray, &tangentsArray);
+                    rawModelsList.push_back(Loader::loadToVAO(&verticesArray, &texturesArray, &normalsArray, &colorsArray, &tangentsArray, &indices));
 
                     indices.clear();
                 }
@@ -555,8 +565,9 @@ int ObjLoader::loadObjModel(std::list<TexturedModel*>* models, std::string fileP
     std::vector<float> texturesArray;
     std::vector<float> normalsArray;
     std::vector<float> colorsArray;
-    convertDataToArrays(&vertices, &textures, &normals, &verticesArray, &texturesArray, &normalsArray, &colorsArray);
-    rawModelsList.push_back(Loader::loadToVAO(&verticesArray, &texturesArray, &normalsArray, &colorsArray, &indices));
+    std::vector<float> tangentsArray;
+    convertDataToArrays(&vertices, &textures, &normals, &verticesArray, &texturesArray, &normalsArray, &colorsArray, &tangentsArray);
+    rawModelsList.push_back(Loader::loadToVAO(&verticesArray, &texturesArray, &normalsArray, &colorsArray, &tangentsArray, &indices));
 
     //go through rawModelsList and modelTextures to construct and add to the given TexturedModel list
     for (unsigned int i = 0; i < rawModelsList.size(); i++)
@@ -645,11 +656,19 @@ void ObjLoader::parseMtl(std::string filePath, std::string fileName, std::unorde
             }
             else if (strcmp(lineSplit[0], "\tmap_Kd") == 0 || strcmp(lineSplit[0], "map_Kd") == 0) //end of material found, generate it with all its attrributes
             {
-                std::string imageFilenameString = filePath+lineSplit[1];
+                std::string imageFilenameString = filePath + lineSplit[1];
                 char* fname = (char*)imageFilenameString.c_str();
 
                 std::vector<GLuint> textureIds;
                 textureIds.push_back(Loader::loadTexture(fname)); //generate new texture
+
+                GLuint normalMapId = GL_NONE;
+
+                if (splitLength >= 3)
+                {
+                    std::string normalMapFilename = filePath + lineSplit[2];
+                    normalMapId = Loader::loadTexture(normalMapFilename.c_str());
+                }
 
                 currentNumImages--;
                 while (currentNumImages > 0)
@@ -678,6 +697,7 @@ void ObjLoader::parseMtl(std::string filePath, std::string fileName, std::unorde
 
                 ModelTexture newTexture(&textureIds);
 
+                newTexture.normalMapId = normalMapId;
                 newTexture.shineDamper = currentShineDamperValue;
                 newTexture.reflectivity = currentReflectivityValue;
                 newTexture.hasTransparency = true;
@@ -891,9 +911,11 @@ int ObjLoader::loadObjModelWithMTL(std::list<TexturedModel*>* models, std::strin
                     char** vertex2 = split(lineSplit[2], '/', &dummy);
                     char** vertex3 = split(lineSplit[3], '/', &dummy);
 
-                    processVertex(vertex1, &vertices, &indices);
-                    processVertex(vertex2, &vertices, &indices);
-                    processVertex(vertex3, &vertices, &indices);
+                    Vertex* v0 = processVertex(vertex1, &vertices, &indices);
+                    Vertex* v1 = processVertex(vertex2, &vertices, &indices);
+                    Vertex* v2 = processVertex(vertex3, &vertices, &indices);
+
+                    calculateTangents(v0, v1, v2, &textures);
 
                     free(vertex1);
                     free(vertex2);
@@ -909,8 +931,9 @@ int ObjLoader::loadObjModelWithMTL(std::list<TexturedModel*>* models, std::strin
                     std::vector<float> texturesArray;
                     std::vector<float> normalsArray;
                     std::vector<float> colorsArray;
-                    convertDataToArrays(&vertices, &textures, &normals, &verticesArray, &texturesArray, &normalsArray, &colorsArray);
-                    rawModelsList.push_back(Loader::loadToVAO(&verticesArray, &texturesArray, &normalsArray, &colorsArray, &indices));
+                    std::vector<float> tangentsArray;
+                    convertDataToArrays(&vertices, &textures, &normals, &verticesArray, &texturesArray, &normalsArray, &colorsArray, &tangentsArray);
+                    rawModelsList.push_back(Loader::loadToVAO(&verticesArray, &texturesArray, &normalsArray, &colorsArray, &tangentsArray, &indices));
 
                     indices.clear();
                 }
@@ -925,8 +948,9 @@ int ObjLoader::loadObjModelWithMTL(std::list<TexturedModel*>* models, std::strin
     std::vector<float> texturesArray;
     std::vector<float> normalsArray;
     std::vector<float> colorsArray;
-    convertDataToArrays(&vertices, &textures, &normals, &verticesArray, &texturesArray, &normalsArray, &colorsArray);
-    rawModelsList.push_back(Loader::loadToVAO(&verticesArray, &texturesArray, &normalsArray, &colorsArray, &indices)); //put a copy of the final model into rawModelsList
+    std::vector<float> tangentsArray;
+    convertDataToArrays(&vertices, &textures, &normals, &verticesArray, &texturesArray, &normalsArray, &colorsArray, &tangentsArray);
+    rawModelsList.push_back(Loader::loadToVAO(&verticesArray, &texturesArray, &normalsArray, &colorsArray, &tangentsArray, &indices)); //put a copy of the final model into rawModelsList
 
     //go through rawModelsList and modelTextures to construct and add to the given TexturedModel list
     for (unsigned int i = 0; i < rawModelsList.size(); i++)
@@ -1078,9 +1102,11 @@ int ObjLoader::loadBinaryModelWithMTL(std::list<TexturedModel*>* models, std::st
 
             fread(&f[0], sizeof(int), 9, file);
 
-            processVertexBinary(f[0], f[1], f[2], &vertices, &indices);
-            processVertexBinary(f[3], f[4], f[5], &vertices, &indices);
-            processVertexBinary(f[6], f[7], f[8], &vertices, &indices);
+            Vertex* v0 = processVertexBinary(f[0], f[1], f[2], &vertices, &indices);
+            Vertex* v1 = processVertexBinary(f[3], f[4], f[5], &vertices, &indices);
+            Vertex* v2 = processVertexBinary(f[6], f[7], f[8], &vertices, &indices);
+
+            calculateTangents(v0, v1, v2, &textures);
         }
 
         //save the model we've been building so far...
@@ -1090,8 +1116,9 @@ int ObjLoader::loadBinaryModelWithMTL(std::list<TexturedModel*>* models, std::st
         std::vector<float> texturesArray;
         std::vector<float> normalsArray;
         std::vector<float> colorsArray;
-        convertDataToArrays(&vertices, &textures, &normals, &verticesArray, &texturesArray, &normalsArray, &colorsArray);
-        rawModelsList.push_back(Loader::loadToVAO(&verticesArray, &texturesArray, &normalsArray, &colorsArray, &indices));
+        std::vector<float> tangentsArray;
+        convertDataToArrays(&vertices, &textures, &normals, &verticesArray, &texturesArray, &normalsArray, &colorsArray, &tangentsArray);
+        rawModelsList.push_back(Loader::loadToVAO(&verticesArray, &texturesArray, &normalsArray, &colorsArray, &tangentsArray, &indices));
     }
 
     fclose(file);
@@ -1115,7 +1142,7 @@ int ObjLoader::loadBinaryModelWithMTL(std::list<TexturedModel*>* models, std::st
     return 0;
 }
 
-void ObjLoader::processVertex(char** vertex,
+Vertex* ObjLoader::processVertex(char** vertex,
     std::vector<Vertex*>* vertices,
     std::vector<int>* indices)
 {
@@ -1129,14 +1156,15 @@ void ObjLoader::processVertex(char** vertex,
         currentVertex->setTextureIndex(textureIndex);
         currentVertex->setNormalIndex(normalIndex);
         indices->push_back(index);
+        return currentVertex;
     }
     else
     {
-        dealWithAlreadyProcessedVertex(currentVertex, textureIndex, normalIndex, indices, vertices);
+        return dealWithAlreadyProcessedVertex(currentVertex, textureIndex, normalIndex, indices, vertices);
     }
 }
 
-void ObjLoader::processVertexBinary(int vIndex, int tIndex, int nIndex,
+Vertex* ObjLoader::processVertexBinary(int vIndex, int tIndex, int nIndex,
     std::vector<Vertex*>* vertices,
     std::vector<int>* indices)
 {
@@ -1150,14 +1178,16 @@ void ObjLoader::processVertexBinary(int vIndex, int tIndex, int nIndex,
         currentVertex->setTextureIndex(tIndex);
         currentVertex->setNormalIndex(nIndex);
         indices->push_back(vIndex);
+
+        return currentVertex;
     }
     else
     {
-        dealWithAlreadyProcessedVertex(currentVertex, tIndex, nIndex, indices, vertices);
+        return dealWithAlreadyProcessedVertex(currentVertex, tIndex, nIndex, indices, vertices);
     }
 }
 
-void ObjLoader::dealWithAlreadyProcessedVertex(
+Vertex* ObjLoader::dealWithAlreadyProcessedVertex(
     Vertex* previousVertex,
     int newTextureIndex,
     int newNormalIndex,
@@ -1167,13 +1197,14 @@ void ObjLoader::dealWithAlreadyProcessedVertex(
     if (previousVertex->hasSameTextureAndNormal(newTextureIndex, newNormalIndex))
     {
         indices->push_back(previousVertex->getIndex());
+        return previousVertex;
     }
     else
     {
         Vertex* anotherVertex = previousVertex->getDuplicateVertex();
         if (anotherVertex != nullptr)
         {
-            dealWithAlreadyProcessedVertex(anotherVertex, newTextureIndex, newNormalIndex, indices, vertices);
+            return dealWithAlreadyProcessedVertex(anotherVertex, newTextureIndex, newNormalIndex, indices, vertices);
         }
         else
         {
@@ -1185,10 +1216,31 @@ void ObjLoader::dealWithAlreadyProcessedVertex(
             previousVertex->setDuplicateVertex(duplicateVertex);
             vertices->push_back(duplicateVertex);
             indices->push_back(duplicateVertex->getIndex());
+
+            return duplicateVertex;
         }
     }
 }
 
+void ObjLoader::calculateTangents(Vertex* v0, Vertex* v1, Vertex* v2, std::vector<Vector2f>* textures)
+{
+    Vector3f delatPos1 = v1->position - v0->position;
+	Vector3f delatPos2 = v2->position - v0->position;
+	Vector2f uv0 = (*textures)[v0->getTextureIndex()];
+	Vector2f uv1 = (*textures)[v1->getTextureIndex()];
+	Vector2f uv2 = (*textures)[v2->getTextureIndex()];
+	Vector2f deltaUv1 = uv1 - uv0;
+	Vector2f deltaUv2 = uv2 - uv0;
+
+	float r = 1.0f / (deltaUv1.x * deltaUv2.y - deltaUv1.y * deltaUv2.x);
+	delatPos1.scale(deltaUv2.y);
+	delatPos2.scale(deltaUv1.y);
+	Vector3f tangent = delatPos1 - delatPos2;
+	tangent.scale(r);
+	v0->addTangent(tangent);
+	v1->addTangent(tangent);
+	v2->addTangent(tangent);
+}
 
 void ObjLoader::convertDataToArrays(
     std::vector<Vertex*>* vertices, 
@@ -1197,13 +1249,15 @@ void ObjLoader::convertDataToArrays(
     std::vector<float>* verticesArray, 
     std::vector<float>* texturesArray,
     std::vector<float>* normalsArray,
-    std::vector<float>* colorsArray)
+    std::vector<float>* colorsArray,
+    std::vector<float>* tangentsArray)
 {
     for (auto currentVertex : (*vertices))
     {
         Vector3f* position = currentVertex->getPosition();
         Vector2f* textureCoord = &(*textures)[currentVertex->getTextureIndex()];
         Vector3f* normalVector = &(*normals)[currentVertex->getNormalIndex()];
+        Vector3f* tangent = &currentVertex->averagedTangent;
         verticesArray->push_back(position->x);
         verticesArray->push_back(position->y);
         verticesArray->push_back(position->z);
@@ -1216,6 +1270,9 @@ void ObjLoader::convertDataToArrays(
         colorsArray->push_back(currentVertex->color.y);
         colorsArray->push_back(currentVertex->color.z);
         colorsArray->push_back(currentVertex->color.w);
+        tangentsArray->push_back(tangent->x);
+        tangentsArray->push_back(tangent->y);
+        tangentsArray->push_back(tangent->z);
     }
 }
 
@@ -1223,6 +1280,7 @@ void ObjLoader::removeUnusedVertices(std::vector<Vertex*>* vertices)
 {
     for (auto vertex : (*vertices))
     {
+        vertex->averageTangents();
         if (vertex->isSet() == 0)
         {
             vertex->setTextureIndex(0);

@@ -30,6 +30,26 @@ Vertex::Vertex(int index, Vector3f* position)
     this->duplicateVertex = nullptr;
 }
 
+void Vertex::addTangent(Vector3f tangent)
+{
+    tangents.push_back(tangent);
+}
+
+void Vertex::averageTangents()
+{
+    if (tangents.size() == 0)
+    {
+        return;
+    }
+
+    for (Vector3f tan : tangents)
+    {
+        averagedTangent = averagedTangent + tan;
+    }
+
+    averagedTangent.normalize();
+}
+
 int Vertex::getIndex()
 {
     return index;

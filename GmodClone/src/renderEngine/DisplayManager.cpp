@@ -21,7 +21,7 @@ void window_close_callback(GLFWwindow* window);
 unsigned int SCR_WIDTH = 1280;
 unsigned int SCR_HEIGHT = 720;
 
-unsigned int F_WIdTH = 1280;
+unsigned int F_WIDTH = 1280;
 unsigned int F_HEIGHT = 720;
 unsigned int F_BITSRED = 8;
 unsigned int F_BITSGREEN = 8;
@@ -29,6 +29,7 @@ unsigned int F_BITSBLUE = 8;
 unsigned int F_HZ = 60;
 
 unsigned int AA_SAMPLES = 4;
+float ANISOTROPY_LEVEL = 4;
 
 extern float VFOV_BASE;
 
@@ -70,7 +71,7 @@ int createDisplay()
     {
         monitor = glfwGetPrimaryMonitor();
 
-        SCR_WIDTH = F_WIdTH;
+        SCR_WIDTH = F_WIDTH;
         SCR_HEIGHT = F_HEIGHT;
 
         glfwWindowHint(GLFW_REFRESH_RATE, F_HZ);
@@ -131,6 +132,10 @@ int createDisplay()
 
     glfwSwapInterval(1); //1 = vsync. 0 = off. 2 = half monitor refresh rate
     glEnable(GL_MULTISAMPLE);
+
+    //int windowSamples;
+    //glGetIntegerv(GL_MAX_SAMPLES, &windowSamples);
+    //printf("Using MSAA with %d samples\n", windowSamples);
 
     //Center the window
     if (!Global::useFullscreen)
@@ -251,7 +256,7 @@ void loadDisplaySettings()
                 }
                 else if (strcmp(lineSplit[0], "F_Width") == 0)
                 {
-                    F_WIdTH = std::stoi(lineSplit[1], nullptr, 10);
+                    F_WIDTH = std::stoi(lineSplit[1], nullptr, 10);
                 }
                 else if (strcmp(lineSplit[0], "F_Height") == 0)
                 {
@@ -365,6 +370,10 @@ void loadGraphicsSettings()
                 else if (strcmp(lineSplit[0], "Anti-Aliasing_Samples") == 0)
                 {
                     AA_SAMPLES = std::stoi(lineSplit[1], nullptr, 10);
+                }
+                else if (strcmp(lineSplit[0], "Anisotropic_Filtering_Level") == 0)
+                {
+                    ANISOTROPY_LEVEL = (float)((int)std::stof(lineSplit[1], nullptr));
                 }
                 else if (strcmp(lineSplit[0], "Render_Particles") == 0)
                 {

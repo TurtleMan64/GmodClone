@@ -19,8 +19,6 @@ private:
     int location_transformationMatrix;
     int location_projectionMatrix;
     int location_viewMatrix;
-    int location_sunDirInv;
-    int location_sunColor;
     int location_shineDamper;
     int location_reflectivity;
     int location_useFakeLighting;
@@ -51,6 +49,10 @@ private:
     int location_waterBlendAmount;
     int location_waterMurkyAmount;
     int location_isRenderingDepth;
+    int location_normalMap;
+    int location_lightPositionEyeSpace[4];
+    int location_attenuation[4];
+    int location_lightColor[4];
 
 public:
     ShaderProgram(const char*, const char*);
@@ -65,9 +67,9 @@ public:
 
     void loadProjectionMatrix(Matrix4f*);
 
-    void loadViewMatrix(Camera*);
+    void loadViewMatrix(Camera* camera);
 
-    void loadSun(Light*);
+    void loadLights();
 
     void loadShineVariables(float damper, float reflectivity);
 

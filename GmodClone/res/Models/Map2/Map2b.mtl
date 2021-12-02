@@ -1,0 +1,38 @@
+# Material Count: 6
+
+newmtl None_grass.png
+Ns 20.000000
+Ni 0.4
+d 1.000000
+map_Kd TexturesCom_Marble_TilesDiagonal_1K_albedo.png TexturesCom_Marble_TilesDiagonal_1K_normal.png
+
+newmtl None
+Ns 20.000000
+Ni 0.4
+d 1.000000
+map_Kd TexturesCom_Wall_TilesOrnate_2.png TexturesCom_Wall_TilesOrnate_2.6x1.3_512_normal.png
+
+newmtl None_bushsky.png_TexturesCom_OrnamentBorder0093_1_seamless_S.jp
+Ns 20.000000
+Ni 0.1
+d 1.000000
+map_Kd TexturesCom_OrnamentBorder0093_1_seamless_S.jpg
+
+newmtl None_sky.png
+Ns 20.000000
+Ni 0.1
+d 1.000000
+map_Kd TexturesCom_ConcreteStucco0179_1_seamless_S.jpg
+
+newmtl None_TexturesCom_Wood_WallTrim_1K_.png
+Ns 20.000000
+Ni 0.4
+d 1.000000
+map_Kd TexturesCom_Wood_WallTrim_1K_.png TexturesCom_Wood_WallTrim_1K_normal_Blur.png
+
+newmtl None_bushsky.png_TexturesCom_OrnamentBorder0093_1_seamless_S.jp_TexturesCom_WallpaperForties0078_seamless_S.jpg
+Ns 20.000000
+Ni 0.10
+d 1.000000
+map_Kd TexturesCom_WallpaperForties0078_seamless_S.jpg
+

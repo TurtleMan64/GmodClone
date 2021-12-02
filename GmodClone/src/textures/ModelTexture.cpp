@@ -11,6 +11,7 @@ std::unordered_set<ModelTexture*> ModelTexture::animatedTextureReferences;
 
 ModelTexture::ModelTexture()
 {
+    normalMapId = GL_NONE;
     shineDamper = 20.0f;
     reflectivity = 0.0f;
     hasTransparency = false;
@@ -31,6 +32,7 @@ ModelTexture::ModelTexture(std::vector<GLuint>* texIds)
     {
         this->texIds.push_back(id);
     }
+    normalMapId = GL_NONE;
     shineDamper = 20.0f;
     reflectivity = 0.0f;
     hasTransparency = false;
@@ -59,6 +61,7 @@ ModelTexture::ModelTexture(ModelTexture* other)
     {
         texIds.push_back(id);
     }
+    normalMapId         = other->normalMapId;
     shineDamper         = other->shineDamper;
     reflectivity        = other->reflectivity;
     hasTransparency     = other->hasTransparency;
@@ -102,6 +105,11 @@ void ModelTexture::deleteMe()
         Loader::deleteTexture(id);
     }
     texIds.clear();
+    if (normalMapId != GL_NONE)
+    {
+        Loader::deleteTexture(normalMapId);
+        normalMapId = GL_NONE;
+    }
     ModelTexture::animatedTextureReferences.erase(this);
 }
 
@@ -163,5 +171,6 @@ bool ModelTexture::equalTo(ModelTexture* other)
         fogScale        == other->fogScale        &&
         mixingType      == other->mixingType      &&
         animationSpeed  == other->animationSpeed  &&
-        renderOrder     == other->renderOrder);
+        renderOrder     == other->renderOrder     &&
+        normalMapId     == other->normalMapId); //NORMAL_
 }

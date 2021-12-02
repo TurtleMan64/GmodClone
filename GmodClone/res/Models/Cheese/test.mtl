@@ -9,6 +9,5 @@ Ks 0.000000 0.000000 0.000000
 Ni 0.000000
 d 1.000000
 illum 1
-bump tile.png
-map_bump tile.png
 map_Kd tile.png
+map_Ks tile.png

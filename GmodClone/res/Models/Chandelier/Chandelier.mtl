@@ -1,0 +1,26 @@
+# Material Count: 4
+
+newmtl Material.009
+Ns 96.000000
+Ni 0.000000
+d 0
+map_Kd beaded_chandelier_ring.png
+
+newmtl Material
+Ns 96.000000
+Ni 0.000000
+d 0
+map_Kd beaded_chandelier_bead.png
+
+newmtl Material.002
+Ns 96.000000
+Ni 0.000000
+d 0
+map_Kd beaded_chandelier_base.png
+
+newmtl Material.001
+Ns 96.000000
+Ni 0.000000
+d 0
+map_Kd beaded_chandelier_lamp.png
+

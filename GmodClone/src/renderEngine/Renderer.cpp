@@ -14,12 +14,19 @@
 #include <unordered_map>
 #include <list>
 
+GLuint flatNormalMapId = GL_NONE;
+
 EntityRenderer::EntityRenderer(ShaderProgram* shader, Matrix4f* projectionMatrix)
 {
     shader->start();
     shader->loadProjectionMatrix(projectionMatrix);
     shader->stop();
     this->shader = shader;
+
+    if (flatNormalMapId == GL_NONE)
+    {
+        flatNormalMapId = Loader::loadTexture("res/Images/NormalMapFlat.png");
+    }
 }
 
 void EntityRenderer::renderNEW(std::unordered_map<TexturedModel*, std::list<Entity*>>* entitiesMap, Matrix4f* /*toShadowSpaceFar*/, Matrix4f* /*toShadowSpaceClose*/)
@@ -58,31 +65,31 @@ void EntityRenderer::prepareTexturedModel(TexturedModel* model)
     glEnableVertexAttribArray(1);
     glEnableVertexAttribArray(2);
     glEnableVertexAttribArray(3);
+    glEnableVertexAttribArray(4);
 
     ModelTexture* texture = model->getTexture();
-    //if (texture->getHasTransparency() != 0)
-    {
-        //Master_disableCulling();
-    }
-    //else
-    {
-        //Master_enableCulling();
-    }
+
     shader->loadFakeLighting(texture->useFakeLighting);
     shader->loadShineVariables(texture->shineDamper, texture->reflectivity);
     shader->loadTransparency(texture->hasTransparency);
     shader->loadGlowAmount(texture->glowAmount);
     shader->loadTextureOffsets(clockTime * (texture->scrollX), clockTime * (texture->scrollY));
-    //if (texture->hasMultipleImages())
-    {
-        //std::fprintf(stdout, "mix factor = %f\n", texture->animationSpeed);
-    }
     shader->loadMixFactor(texture->mixFactor());
     shader->loadFogScale(texture->fogScale);
+
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, texture->getId());
     glActiveTexture(GL_TEXTURE1);
     glBindTexture(GL_TEXTURE_2D, texture->getId2());
+    glActiveTexture(GL_TEXTURE2);
+    if (texture->normalMapId == GL_NONE)
+    {
+        glBindTexture(GL_TEXTURE_2D, flatNormalMapId);
+    }
+    else
+    {
+        glBindTexture(GL_TEXTURE_2D, texture->normalMapId);
+    }
 }
 
 void EntityRenderer::unbindTexturedModel()
@@ -91,6 +98,7 @@ void EntityRenderer::unbindTexturedModel()
     glDisableVertexAttribArray(1);
     glDisableVertexAttribArray(2);
     glDisableVertexAttribArray(3);
+    glDisableVertexAttribArray(4);
     glBindVertexArray(0);
 }
 

@@ -74,6 +74,7 @@
 #include "../entities/boombox.hpp"
 #include "../audio/source.hpp"
 #include "../entities/rockplatform.hpp"
+#include "../entities/chandelier.hpp"
 
 Message::Message(const Message &other)
 {
@@ -117,8 +118,7 @@ Player* Global::player       = nullptr;
 std::list<TexturedModel*> Global::stageModels;
 Dummy* Global::stageEntity  = nullptr;
 
-Light*  Global::gameLightSun = nullptr;
-
+Light* Global::lights[4] = {nullptr, nullptr, nullptr, nullptr};
 Vector3f Global::skyColor(1, 1, 1);
 
 FontType* Global::fontConsolas = nullptr;
@@ -229,6 +229,7 @@ int main(int argc, char** argv)
     Ladder::loadModels();
     BoomBox::loadModels();
     RockPlatform::loadModels();
+    Chandelier::loadModels();
 
     Global::serverSettings = readFileLines("ServerSettings.ini");
     Global::serverClient = new TcpClient(Global::serverSettings[0].c_str(), std::stoi(Global::serverSettings[1]), 1); INCR_NEW("TcpClient");
@@ -244,10 +245,20 @@ int main(int argc, char** argv)
         Global::addChatMessage("Could not connect to " + Global::serverSettings[0], Vector3f(1, 0.5f, 0.5f));
     }
 
-    //This light never gets deleted.
-    Global::gameLightSun = new Light(); INCR_NEW("Light");
-    Global::gameLightSun->direction.set(-0.2f, -1, -0.4f);
-    Global::gameLightSun->direction.normalize();
+    // These lights never get deleted
+    Global::lights[0] = new Light; INCR_NEW("Light");
+    Global::lights[1] = new Light; INCR_NEW("Light");
+    Global::lights[2] = new Light; INCR_NEW("Light");
+    Global::lights[3] = new Light; INCR_NEW("Light");
+
+    // The sun
+    Global::lights[0]->direction.set(-0.2f, -1, -0.4f);
+    Global::lights[0]->direction.normalize();
+    Global::lights[0]->attenuation.set(1, 0, 0);
+
+    Global::lights[1]->position.set(46.8f, 6.0f, 0);
+    Global::lights[2]->position.set(78.381195f, -0.000010f, -61.671387f);
+    Global::lights[3]->position.set(0, 100000003.0f, 0);
 
     long long secSinceEpoch = std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now().time_since_epoch()).count();
 

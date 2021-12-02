@@ -84,7 +84,7 @@ void AudioPlayer::loadSoundEffects()
     AudioPlayer::buffersSFX.push_back(AudioMaster::loadWAV("res/Audio/SFX/SplatFruit/splat.wav"));                    //59
     AudioPlayer::buffersSFX.push_back(AudioMaster::loadWAV("res/Audio/SFX/kenney_rpgaudio/footstep05_edit.wav"));     //60
     AudioPlayer::buffersSFX.push_back(AudioMaster::loadWAV("res/Audio/SFX/HL2/misc/smallmedkit1.wav"));               //61
-    AudioPlayer::buffersSFX.push_back(AudioMaster::loadWAV("res/Audio/SFX/HL2/physics/glass_largesheet_break1.wav")); //62
+    AudioPlayer::buffersSFX.push_back(AudioMaster::loadOGG("res/Audio/SFX/HL2/physics/glass_largesheet_break1.ogg")); //62
     AudioPlayer::buffersSFX.push_back(AudioMaster::loadOGG("res/Audio/SFX/mixkit/Countdown.ogg"));                    //63
     AudioPlayer::buffersSFX.push_back(AudioMaster::loadOGG("res/Audio/BGM/musicbox_mono.ogg"));                       //64
     AudioPlayer::buffersSFX.push_back(AudioMaster::loadOGG("res/Audio/BGM/sheeshflp_mono.ogg"));                      //65

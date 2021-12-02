@@ -21,15 +21,15 @@ private:
 
     static void deleteUnusedMtl(std::unordered_map<std::string, ModelTexture>* mtlMap, std::vector<ModelTexture>* usedMtls);
 
-    static void processVertex(char** vertex,
+    static Vertex* processVertex(char** vertex,
         std::vector<Vertex*>* vertices,
         std::vector<int>* indices);
 
-    static void processVertexBinary(int, int, int,
+    static Vertex* processVertexBinary(int, int, int,
         std::vector<Vertex*>* vertices,
         std::vector<int>* indices);
 
-    static void dealWithAlreadyProcessedVertex(Vertex*, 
+    static Vertex* dealWithAlreadyProcessedVertex(Vertex*, 
         int, 
         int, 
         std::vector<int>*, 
@@ -44,7 +44,10 @@ private:
         std::vector<float>* verticesArray, 
         std::vector<float>* texturesArray,
         std::vector<float>* normalsArray,
-        std::vector<float>* colorsArray);
+        std::vector<float>* colorsArray,
+        std::vector<float>* tangentsArray);
+
+    static void calculateTangents(Vertex* v0, Vertex* v1, Vertex* v2, std::vector<Vector2f>* textures);
 
 public:
     //Attempts to load a mode as either an OBJ or binary format.

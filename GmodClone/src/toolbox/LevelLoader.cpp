@@ -34,6 +34,7 @@
 #include "../entities/boombox.hpp"
 #include "../entities/rockplatform.hpp"
 #include "../network/tcpclient.hpp"
+#include "../entities/chandelier.hpp"
 
 void LevelLoader::loadLevel(std::string mapName)
 {
@@ -88,6 +89,15 @@ void LevelLoader::loadLevel(std::string mapName)
     else if (fname == "map4.map") Global::levelId = LVL_MAP4;
     else if (fname == "test.map") Global::levelId = LVL_TEST;
 
+    //Reset all lights except sun
+    Global::lights[1]->attenuation.set(10000000, 1, 1);
+    Global::lights[2]->attenuation.set(10000000, 1, 1);
+    Global::lights[3]->attenuation.set(10000000, 1, 1);
+
+    Global::lights[1]->color.set(1, 1, 1);
+    Global::lights[2]->color.set(1, 1, 1);
+    Global::lights[3]->color.set(1, 1, 1);
+
     //Run through the header content
 
     std::string modelVisualLine;
@@ -133,8 +143,8 @@ void LevelLoader::loadLevel(std::string mapName)
     std::string sunDirectionLine;
     getlineSafe(file, sunDirectionLine);
     std::vector<std::string> sunDirection = split(sunDirectionLine, ' ');
-    Global::gameLightSun->direction = Vector3f(toF(sunDirection[0]), toF(sunDirection[1]), toF(sunDirection[2]));
-    Global::gameLightSun->direction.normalize();
+    Global::lights[0]->direction = Vector3f(toF(sunDirection[0]), toF(sunDirection[1]), toF(sunDirection[2]));
+    Global::lights[0]->direction.normalize();
 
     std::string camOrientationLine;
     getlineSafe(file, camOrientationLine);
@@ -324,6 +334,19 @@ void LevelLoader::processLine(std::vector<std::string>& dat)
         {
             RockPlatform* rock = new RockPlatform(dat[1], Vector3f(toF(dat[2]), toF(dat[3]), toF(dat[4]))); INCR_NEW("Entity");
             Global::addEntity(rock);
+            break;
+        }
+
+        case ENTITY_CHANDELIER:
+        {
+            Chandelier* chandelier = new Chandelier(
+                dat[1], //name
+                Vector3f(toF(dat[2]), toF(dat[3]), toF(dat[4])), //position
+                toI(dat[5]), //type
+                toF(dat[6]), //rotY
+                toI(dat[7])); //lightIdx
+            INCR_NEW("Entity");
+            Global::addEntity(chandelier);
             break;
         }
 

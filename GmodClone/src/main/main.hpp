@@ -93,7 +93,7 @@ public:
     static std::list<TexturedModel*> stageModels;
     static Dummy* stageEntity;
 
-    static Light* gameLightSun;
+    static Light* lights[4];
     static Vector3f skyColor;
 
     static FontType* fontConsolas;

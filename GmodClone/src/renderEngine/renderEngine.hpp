@@ -63,6 +63,14 @@ public:
                               std::vector<float>* vertexColors, 
                               std::vector<int>* indices);
 
+    //For 3D models with normal maps
+    static RawModel loadToVAO(std::vector<float>* positions, 
+                              std::vector<float>* textureCoords, 
+                              std::vector<float>* normals, 
+                              std::vector<float>* vertexColors,
+                              std::vector<float>* tangents,
+                              std::vector<int>* indices);
+
     //for text
     //returns a std::vector<int> where the first entry is the vao and the rest are vbos
     static std::vector<int> loadToVAO(std::vector<float>* positions, std::vector<float>* textureCoords);

@@ -814,6 +814,17 @@ void Player::step()
         //Global::addEntity(b);
     }
 
+    extern float VFOV_ADDITION;
+    extern float VFOV_BASE;
+    if (Input::inputs.INPUT_RIGHT_CLICK && weapon == 1)
+    {
+        VFOV_ADDITION = -VFOV_BASE/2;
+    }
+    else
+    {
+        VFOV_ADDITION = 0;
+    }
+
     updateCamera();
 
     if (weapon == 1)
@@ -894,7 +905,16 @@ void Player::updateCamera()
 {
     Vector3f yAxis(0, 1, 0);
 
-    lookDir = Maths::rotatePoint(&lookDir, &yAxis, -Input::inputs.INPUT_X2);
+    float inputX2 = Input::inputs.INPUT_X2;
+    float inputY2 = Input::inputs.INPUT_Y2;
+
+    if (Input::inputs.INPUT_RIGHT_CLICK)
+    {
+        inputX2*=0.5f;
+        inputY2*=0.5f;
+    }
+
+    lookDir = Maths::rotatePoint(&lookDir, &yAxis, -inputX2);
     lookDir.normalize();
 
     Vector3f perpen = lookDir.cross(&yAxis);
@@ -902,14 +922,14 @@ void Player::updateCamera()
 
     const float maxViewAng = Maths::toRadians(0.1f);
 
-    if (Input::inputs.INPUT_Y2 > 0) //mouse is going down
+    if (inputY2 > 0) //mouse is going down
     {
         Vector3f down(0, -1, 0);
         float angBetweenCamAndDown = Maths::angleBetweenVectors(&lookDir, &down);
-        float angToRotate = Input::inputs.INPUT_Y2;
+        float angToRotate = inputY2;
         if (angBetweenCamAndDown - angToRotate > maxViewAng)
         {
-            lookDir = Maths::rotatePoint(&lookDir, &perpen, -Input::inputs.INPUT_Y2);
+            lookDir = Maths::rotatePoint(&lookDir, &perpen, -inputY2);
         }
         else
         {
@@ -920,10 +940,10 @@ void Player::updateCamera()
     {
         Vector3f up(0, 1, 0);
         float angBetweenCamAndUp = Maths::angleBetweenVectors(&lookDir, &up);
-        float angToRotate = -Input::inputs.INPUT_Y2;
+        float angToRotate = -inputY2;
         if (angBetweenCamAndUp - angToRotate > maxViewAng)
         {
-            lookDir = Maths::rotatePoint(&lookDir, &perpen, -Input::inputs.INPUT_Y2);
+            lookDir = Maths::rotatePoint(&lookDir, &perpen, -inputY2);
         }
         else
         {

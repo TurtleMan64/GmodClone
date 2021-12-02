@@ -156,6 +156,7 @@
     <ClCompile Include="src\collision\Triangle3D.cpp" />
     <ClCompile Include="src\entities\Ball.cpp" />
     <ClCompile Include="src\entities\BoomBox.cpp" />
+    <ClCompile Include="src\entities\Chandelier.cpp" />
     <ClCompile Include="src\entities\CollisionBlock.cpp" />
     <ClCompile Include="src\entities\Glass.cpp" />
     <ClCompile Include="src\entities\HealthCube.cpp" />
@@ -216,6 +217,7 @@
     <ClInclude Include="src\collision\triangle3d.hpp" />
     <ClInclude Include="src\entities\ball.hpp" />
     <ClInclude Include="src\entities\boombox.hpp" />
+    <ClInclude Include="src\entities\chandelier.hpp" />
     <ClInclude Include="src\entities\collisionblock.hpp" />
     <ClInclude Include="src\entities\glass.hpp" />
     <ClInclude Include="src\entities\healthcube.hpp" />

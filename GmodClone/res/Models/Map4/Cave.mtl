@@ -26,9 +26,9 @@ map_Kd CA_Wall02_03.png
 
 newmtl CA_PillarWater02_01
 Ns 20.000000
-Ni 0.000000
+Ni 0.1
 d 1.000000
-map_Kd CA_Wall04_01.png
+map_Kd Rock_A.png Rock_N.png
 
 newmtl CA_PillarWater02_01_CA_Wall02_01.png
 Ns 20.000000

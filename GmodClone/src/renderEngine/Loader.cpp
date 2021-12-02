@@ -47,6 +47,29 @@ RawModel Loader::loadToVAO(std::vector<float>* positions,
     return RawModel(vaoId, (int)indicies->size(), &vboIds);
 }
 
+//for 3d models with normal maps //NORMAL_
+RawModel Loader::loadToVAO(std::vector<float>* positions, 
+                           std::vector<float>* textureCoords, 
+                           std::vector<float>* normals, 
+                           std::vector<float>* vertexColors,
+                           std::vector<float>* tangents, 
+                           std::vector<int>* indicies)
+{
+    GLuint vaoId = createVAO();
+    std::list<GLuint> vboIds;
+
+    vboIds.push_back(bindIndiciesBuffer(indicies));
+    vboIds.push_back(storeDataInAttributeList(0, 3, positions));
+    vboIds.push_back(storeDataInAttributeList(1, 2, textureCoords));
+    vboIds.push_back(storeDataInAttributeList(2, 3, normals));
+    vboIds.push_back(storeDataInAttributeList(3, 4, vertexColors));
+    vboIds.push_back(storeDataInAttributeList(4, 3, tangents));
+
+    unbindVAO();
+
+    return RawModel(vaoId, (int)indicies->size(), &vboIds);
+}
+
 //for text
 std::vector<int> Loader::loadToVAO(std::vector<float>* positions, std::vector<float>* textureCoords)
 {
@@ -151,18 +174,26 @@ GLuint Loader::loadTexture(const char* fileName)
     //create mipmap
     glGenerateMipmap(GL_TEXTURE_2D);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_LOD_BIAS, 0.0f); //set to 0 if using anisotropic, around -0.4f if not
 
     if (glfwExtensionSupported("GL_EXT_texture_filter_anisotropic"))
     {
+        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_LOD_BIAS, 0.0f); //set to 0 if using anisotropic, around -0.4f if not
+
         //Not sure why these aren't defined... but I've spent too much time trying to fix it.
         const GLuint GL_TEXTURE_MAX_ANISOTROPY_EXT  = 0x84FE;
         const GLuint GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT = 0x84FF;
-
+    
         float maxAnisotropyLevel;
         glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &maxAnisotropyLevel);
-        float amountToUse = fmin(4.0f, maxAnisotropyLevel);
+
+        extern float ANISOTROPY_LEVEL;
+        float amountToUse = fmin(ANISOTROPY_LEVEL, maxAnisotropyLevel);
+
         glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, amountToUse);
+    }
+    else
+    {
+        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_LOD_BIAS, -0.4f); //set to 0 if using anisotropic, around -0.4f if not
     }
 
     SOIL_free_image_data(image);

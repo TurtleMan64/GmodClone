@@ -9,6 +9,7 @@ public:
     Vector3f position;
     Vector3f direction;
     Vector3f color;
+    Vector3f attenuation;
 
     Light();
 };

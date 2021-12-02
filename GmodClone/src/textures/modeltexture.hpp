@@ -20,6 +20,7 @@ private:
     static std::unordered_set<ModelTexture*> animatedTextureReferences;
 
 public:
+    GLuint normalMapId = GL_NONE; //NORMAL_
     float shineDamper;
     float reflectivity;
     float scrollX;
