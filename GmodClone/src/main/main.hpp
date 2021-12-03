@@ -141,9 +141,9 @@ public:
 
     static void updateChatMessages();
 
-    static unsigned long long serverStartTime; //when the server started up
+    static double serverTimeOffset; //how much time the server had gone through when we connected
 
-    static unsigned long long getRawUtcSystemTime();
+    //static unsigned long long getRawUtcSystemTime();
 
     static void readThreadBehavoir(TcpClient* client);
 

@@ -264,7 +264,7 @@ int main(int argc, char** argv)
 
     glfwSetTime(0);
 
-    Global::serverStartTime = Global::getRawUtcSystemTime();
+    Global::serverTimeOffset = 0.0;
 
     int frameCount = 0;
     double previousTime = 0;
@@ -691,9 +691,9 @@ int main(int argc, char** argv)
             previousTime = timeNew;
 
 
-            unsigned long long totalT = Global::getRawUtcSystemTime() - Global::serverStartTime;
+            //unsigned long long totalT = Global::getRawUtcSystemTime() - Global::serverStartTime;
 
-            Global::syncedGlobalTime = totalT/10000000.0;
+            Global::syncedGlobalTime = glfwGetTime() + Global::serverTimeOffset;
 
             //printf("time = %f\n", Global::syncedGlobalTime);
 
@@ -921,22 +921,22 @@ void Global::performanceAnalysisReport()
     operationTotalTimes.clear();
 }
 
-unsigned long long Global::serverStartTime = 0;
+double Global::serverTimeOffset = 0.0;
 
-unsigned long long Global::getRawUtcSystemTime()
-{
-    FILETIME ft;
-    GetSystemTimeAsFileTime(&ft);
-
-    unsigned long high = (unsigned long)ft.dwHighDateTime;
-    unsigned long low  = (unsigned long)ft.dwLowDateTime;
-
-    unsigned long long totalT;
-    memcpy(&totalT, &low, 4);
-    memcpy(((char*)&totalT) + 4, &high, 4);
-
-    return totalT;
-}
+//unsigned long long Global::getRawUtcSystemTime()
+//{
+//    FILETIME ft;
+//    GetSystemTimeAsFileTime(&ft);
+//
+//    unsigned long high = (unsigned long)ft.dwHighDateTime;
+//    unsigned long low  = (unsigned long)ft.dwLowDateTime;
+//
+//    unsigned long long totalT;
+//    memcpy(&totalT, &low, 4);
+//    memcpy(((char*)&totalT) + 4, &high, 4);
+//
+//    return totalT;
+//}
 
 void Global::readThreadBehavoir(TcpClient* client)
 {
@@ -955,9 +955,9 @@ void Global::readThreadBehavoir(TcpClient* client)
                 case 0: //no nop
                     break;
 
-                case 1: //time msg
+                case 1: //initial server time msg
                 {
-                    numRead = client->read((char*)&Global::serverStartTime, 8, 5); CHECK_CONNECTION(8);
+                    numRead = client->read((char*)&Global::serverTimeOffset, 8, 5); CHECK_CONNECTION(8);
                     break;
                 }
 
@@ -1371,7 +1371,7 @@ void Global::writeThreadBehavior(TcpClient* client)
 
         if (glfwGetTime() - lastSentTimeMsg > 1.0)
         {
-            unsigned long long time = getRawUtcSystemTime();
+            double currTime = glfwGetTime() + Global::serverTimeOffset;
             // Send time message
             char cmd = 1;
             numWritten = client->write(&cmd, 1, 5);
@@ -1382,7 +1382,7 @@ void Global::writeThreadBehavior(TcpClient* client)
                 return;
             }
             
-            numWritten = client->write((char*)&time, 8, 5);
+            numWritten = client->write((char*)&currTime, 8, 5);
             
             if (numWritten != 8)
             {

@@ -1,8 +1,8 @@
-res/Models/Map2/ Map2b     # Visual Stage Model
-res/Models/Map2/ Map2b     # Collision Stage Model
+res/Models/Map2/ Map2d     # Visual Stage Model
+res/Models/Map2/ Map2d     # Collision Stage Model
 -6.8 0 -6.8     0 0 6.8    # Player Spawning Zone Endpoints
 41.8 -1 -8    51.8 20 8    # Player Safe Zone Endpoints
-1.0 1.0 1.0                # Sky Color
+0 0 0                      # Sky Color
 0 -1 0                     # Sun Direction
 1 0 0                      # Camera Direction
 120                        # Round Time Duration (seconds)
@@ -15,5 +15,5 @@ res/Models/Map2/ Map2b     # Collision Stage Model
 
 #Chandelier
 11 CH1 46.8 7.0  0 0   0 1
-11 CH1 25.0 4.5 -8 1 -90 2
-11 CH1 25.0 4.5  8 1  90 3
+11 CH1 24.9 4.5 -8 1 -90 2
+11 CH1 24.9 4.5  8 1  90 3
