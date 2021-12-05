@@ -215,7 +215,7 @@ void framebuffer_size_callback(GLFWwindow* /*windowHandle*/, int width, int heig
 
 void window_close_callback(GLFWwindow* /*windowHandle*/)
 {
-    Global::gameState = GAME_STATE_EXITING;
+    Global::gameState = GAME_STATE_WINDOWCLOSE;
 }
 
 void loadDisplaySettings()
@@ -340,15 +340,15 @@ void loadGraphicsSettings()
                 {
                     VFOV_BASE = std::stof(lineSplit[1], nullptr);
                 }
-                else if (strcmp(lineSplit[0], "Unlock_Framerate") == 0)
+                else if (strcmp(lineSplit[0], "Vsync") == 0)
                 {
                     if (strcmp(lineSplit[1], "on") == 0)
                     {
-                        Global::framerateUnlock = true;
+                        Global::framerateUnlock = false;
                     }
                     else
                     {
-                        Global::framerateUnlock = false;
+                        Global::framerateUnlock = true;
                     }
                 }
                 else if (strcmp(lineSplit[0], "FPS_Limit") == 0)

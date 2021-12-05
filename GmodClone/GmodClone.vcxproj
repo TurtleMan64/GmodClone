@@ -158,6 +158,7 @@
     <ClCompile Include="src\entities\BoomBox.cpp" />
     <ClCompile Include="src\entities\Chandelier.cpp" />
     <ClCompile Include="src\entities\CollisionBlock.cpp" />
+    <ClCompile Include="src\entities\FencePlatform.cpp" />
     <ClCompile Include="src\entities\Glass.cpp" />
     <ClCompile Include="src\entities\HealthCube.cpp" />
     <ClCompile Include="src\entities\Ladder.cpp" />
@@ -169,6 +170,7 @@
     <ClCompile Include="src\entities\Light.cpp" />
     <ClCompile Include="src\entities\RedBarrel.cpp" />
     <ClCompile Include="src\entities\RockPlatform.cpp" />
+    <ClCompile Include="src\entities\StepFallPlatform.cpp" />
     <ClCompile Include="src\fontMeshCreator\Character.cpp" />
     <ClCompile Include="src\fontMeshCreator\FontType.cpp" />
     <ClCompile Include="src\fontMeshCreator\GUINumber.cpp" />
@@ -219,6 +221,7 @@
     <ClInclude Include="src\entities\boombox.hpp" />
     <ClInclude Include="src\entities\chandelier.hpp" />
     <ClInclude Include="src\entities\collisionblock.hpp" />
+    <ClInclude Include="src\entities\fenceplatform.hpp" />
     <ClInclude Include="src\entities\glass.hpp" />
     <ClInclude Include="src\entities\healthcube.hpp" />
     <ClInclude Include="src\entities\ladder.hpp" />
@@ -230,6 +233,7 @@
     <ClInclude Include="src\entities\light.hpp" />
     <ClInclude Include="src\entities\redbarrel.hpp" />
     <ClInclude Include="src\entities\rockplatform.hpp" />
+    <ClInclude Include="src\entities\stepfallplatform.hpp" />
     <ClInclude Include="src\fontMeshCreator\character.hpp" />
     <ClInclude Include="src\fontMeshCreator\fonttype.hpp" />
     <ClInclude Include="src\fontMeshCreator\guinumber.hpp" />

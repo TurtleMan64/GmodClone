@@ -25,7 +25,7 @@ struct InputStruct
     volatile bool INPUT_LB;
     volatile bool INPUT_SELECT;
     volatile bool INPUT_START;
-    volatile bool INPUT_TAB;
+    volatile bool INPUT_ESC;
     volatile bool INPUT_DPADU;
     volatile bool INPUT_DPADD;
 
@@ -45,7 +45,7 @@ struct InputStruct
     volatile bool INPUT_PREVIOUS_RB;
     volatile bool INPUT_PREVIOUS_LB;
     volatile bool INPUT_PREVIOUS_START;
-    volatile bool INPUT_PREVIOUS_TAB;
+    volatile bool INPUT_PREVIOUS_ESC;
 
     volatile int MENU_X;
     volatile int MENU_Y;
@@ -64,6 +64,8 @@ private:
     static void scrollCallback(GLFWwindow* window, double xOff, double yOff);
 
     static void keyboardCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
+
+    static void mouseButtonCallback(GLFWwindow* window, int button, int action, int mods);
 
 public:
     static InputStruct inputs;

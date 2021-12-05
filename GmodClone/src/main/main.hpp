@@ -32,6 +32,7 @@ class GUIText;
 #define GAME_STATE_CUTSCENE 3
 #define GAME_STATE_TITLE 4
 #define GAME_STATE_DEBUG 5
+#define GAME_STATE_WINDOWCLOSE 6
 
 #define DEV_MODE
 //#define PERFORMANCE_ANALYSIS
@@ -71,6 +72,7 @@ public:
 #define LVL_EQ   4
 #define LVL_MAP4 5
 #define LVL_TEST 6
+#define LVL_MAP5 7
 
 class Global
 {

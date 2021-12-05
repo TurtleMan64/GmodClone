@@ -1,0 +1,28 @@
+# Blender MTL File: 'Map5.blend'
+# Material Count: 2
+
+newmtl None_Rock.png
+Ns 20
+Ka 0.000000 0.000000 0.000000
+Kd 0.8 0.8 0.8
+Ks 0.8 0.8 0.8
+Ni 0.4
+d 1
+illum 2
+map_Kd Rock.png Rock_N.png
+
+newmtl None
+Ns 20
+Ka 0.000000 0.000000 0.000000
+Kd 0.8 0.8 0.8
+Ks 0.8 0.8 0.8
+Ni 0.0
+d 1
+numImages 4
+animSpeed 1.5
+mixLinear
+map_Kd LavaBig/Lava1.png
+LavaBig/Lava2.png
+LavaBig/Lava3.png
+LavaBig/Lava4.png
+

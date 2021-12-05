@@ -35,6 +35,8 @@
 #include "../entities/rockplatform.hpp"
 #include "../network/tcpclient.hpp"
 #include "../entities/chandelier.hpp"
+#include "../entities/fenceplatform.hpp"
+#include "../entities/stepfallplatform.hpp"
 
 void LevelLoader::loadLevel(std::string mapName)
 {
@@ -88,6 +90,7 @@ void LevelLoader::loadLevel(std::string mapName)
     else if (fname == "eq.map")   Global::levelId = LVL_EQ;
     else if (fname == "map4.map") Global::levelId = LVL_MAP4;
     else if (fname == "test.map") Global::levelId = LVL_TEST;
+    else if (fname == "map5.map") Global::levelId = LVL_MAP5;
 
     //Reset all lights except sun
     Global::lights[1]->attenuation.set(10000000, 1, 1);
@@ -213,6 +216,27 @@ void LevelLoader::loadLevel(std::string mapName)
                 int idx = (int)(rocks.size()*Maths::random());
                 rocks[idx]->timeUntilBreaks = 3.0f + 40*Maths::random();
                 rocks.erase(rocks.begin() + idx);
+            }
+        }
+    }
+
+    // Spawn step fall platforms
+    if (Global::levelId == LVL_MAP5)
+    {
+        int c = 0;
+        for (int y = 15; y < 34; y+=8)
+        {
+            for (int x = -3; x <= 3; x++)
+            {
+                for (int z = -3; z <= 3; z++)
+                {
+                    std::string id = "SFP" + std::to_string(c);
+
+                    StepFallPlatform* plat = new StepFallPlatform(id, Vector3f(x*3.0f, (float)y, z*3.0f)); INCR_NEW("Entity");
+                    Global::addEntity(plat);
+
+                    c++;
+                }
             }
         }
     }
@@ -347,6 +371,20 @@ void LevelLoader::processLine(std::vector<std::string>& dat)
                 toI(dat[7])); //lightIdx
             INCR_NEW("Entity");
             Global::addEntity(chandelier);
+            break;
+        }
+
+        case ENTITY_FENCE_PLATFORM:
+        {
+            FencePlatform* fence = new FencePlatform(dat[1], Vector3f(toF(dat[2]), toF(dat[3]), toF(dat[4]))); INCR_NEW("Entity");
+            Global::addEntity(fence);
+            break;
+        }
+
+        case ENTITY_STEP_FALL_PLATFORM:
+        {
+            StepFallPlatform* plat = new StepFallPlatform(dat[1], Vector3f(toF(dat[2]), toF(dat[3]), toF(dat[4]))); INCR_NEW("Entity");
+            Global::addEntity(plat);
             break;
         }
 

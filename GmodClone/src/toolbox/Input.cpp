@@ -65,7 +65,7 @@ void Input::pollInputs()
     Input::inputs.INPUT_PREVIOUS_LB          = Input::inputs.INPUT_LB;
     Input::inputs.INPUT_PREVIOUS_RB          = Input::inputs.INPUT_RB;
     Input::inputs.INPUT_PREVIOUS_START       = Input::inputs.INPUT_START;
-    Input::inputs.INPUT_PREVIOUS_TAB         = Input::inputs.INPUT_TAB;
+    Input::inputs.INPUT_PREVIOUS_ESC         = Input::inputs.INPUT_ESC;
 
     Input::inputs.INPUT_PREVIOUS_X  = Input::inputs.INPUT_X;
     Input::inputs.INPUT_PREVIOUS_Y  = Input::inputs.INPUT_Y;
@@ -85,7 +85,7 @@ void Input::pollInputs()
     Input::inputs.INPUT_RB          = false;
     Input::inputs.INPUT_SELECT      = false;
     Input::inputs.INPUT_START       = false;
-    Input::inputs.INPUT_TAB         = false;
+    Input::inputs.INPUT_ESC         = false;
 
     Input::inputs.INPUT_X  = 0;
     Input::inputs.INPUT_Y  = 0;
@@ -132,10 +132,10 @@ void Input::pollInputs()
 
     mouseScroll = 0;
 
-    if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
-    {
-        glfwSetWindowShouldClose(window, true);
-    }
+    //if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+    //{
+        //glfwSetWindowShouldClose(window, true);
+    //}
 
     if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
     {
@@ -167,9 +167,9 @@ void Input::pollInputs()
         extern float dt;
         Global::player->vel.y += 60*dt;
     }
-    if (glfwGetKey(window, GLFW_KEY_TAB) == GLFW_PRESS)
+    if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
     {
-        Input::inputs.INPUT_TAB = true;
+        Input::inputs.INPUT_ESC = true;
     }
 
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
@@ -278,14 +278,14 @@ void Input::pollInputs()
     #endif
 
 
-    if (Input::inputs.INPUT_TAB && !Input::inputs.INPUT_PREVIOUS_TAB)
+    if (Input::inputs.INPUT_ESC && !Input::inputs.INPUT_PREVIOUS_ESC)
     {
-        if (freeMouse)
+        //if (freeMouse)
         {
-            freeMouse = false;
-            glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+            //freeMouse = false;
+            //glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
         }
-        else
+        //else
         {
             freeMouse = true;
             glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
@@ -327,7 +327,7 @@ void Input::pollInputs()
         Input::inputs.INPUT_RB          = false;
         Input::inputs.INPUT_SELECT      = false;
         Input::inputs.INPUT_START       = false;
-        Input::inputs.INPUT_TAB         = false;
+        Input::inputs.INPUT_ESC         = false;
 
         Input::inputs.INPUT_X  = 0;
         Input::inputs.INPUT_Y  = 0;
@@ -377,6 +377,7 @@ void Input::init()
 
     glfwSetScrollCallback(window, Input::scrollCallback);
     glfwSetKeyCallback(window, Input::keyboardCallback);
+    glfwSetMouseButtonCallback(window, Input::mouseButtonCallback);
 
     //load sensitivity and button mappings from external file
 
@@ -418,11 +419,26 @@ void Input::init()
     }
 
     glfwPollEvents();
+
+    freeMouse = true;
+    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 }
 
 void Input::scrollCallback(GLFWwindow* /*w*/, double /*xOff*/, double yOff)
 {
     mouseScroll = yOff;
+}
+
+void Input::mouseButtonCallback(GLFWwindow* /*window*/, int button, int action, int /*mods*/)
+{
+    if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS)
+    {
+        if (freeMouse)
+        {
+            freeMouse = false;
+            glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+        }
+    }
 }
 
 char* Input::chatInput = nullptr;

@@ -23,6 +23,8 @@ class Triangle3D;
 #define ENTITY_BOOM_BOX 9
 #define ENTITY_ROCK_PLATFORM 10
 #define ENTITY_CHANDELIER 11
+#define ENTITY_FENCE_PLATFORM 12
+#define ENTITY_STEP_FALL_PLATFORM 13
 
 class Entity
 {

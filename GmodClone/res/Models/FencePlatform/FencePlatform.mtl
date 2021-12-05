@@ -1,0 +1,11 @@
+# Blender MTL File: 'Map5.blend'
+# Material Count: 1
+
+newmtl None
+Ns 20
+Ni 0.3
+d 0
+Tr 0
+renderOrder 2
+illum 2
+map_Kd Fence.png

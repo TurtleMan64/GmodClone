@@ -75,6 +75,8 @@
 #include "../audio/source.hpp"
 #include "../entities/rockplatform.hpp"
 #include "../entities/chandelier.hpp"
+#include "../entities/fenceplatform.hpp"
+#include "../entities/stepfallplatform.hpp"
 
 Message::Message(const Message &other)
 {
@@ -230,6 +232,8 @@ int main(int argc, char** argv)
     BoomBox::loadModels();
     RockPlatform::loadModels();
     Chandelier::loadModels();
+    FencePlatform::loadModels();
+    StepFallPlatform::loadModels();
 
     Global::serverSettings = readFileLines("ServerSettings.ini");
     Global::serverClient = new TcpClient(Global::serverSettings[0].c_str(), std::stoi(Global::serverSettings[1]), 1); INCR_NEW("TcpClient");
@@ -281,7 +285,9 @@ int main(int argc, char** argv)
 
     GUIText* fpsText = new GUIText("0", 0.02f, Global::fontConsolas, 1.0f, 0.0f, 2, true); INCR_NEW("GUIText");
 
-    while (Global::gameState != GAME_STATE_EXITING && displayWantsToClose() == 0)
+    while (displayWantsToClose() == 0 &&
+           Global::gameState != GAME_STATE_EXITING && 
+           Global::gameState != GAME_STATE_WINDOWCLOSE)
     {
         ANALYSIS_START("Frame Time");
 
@@ -588,7 +594,7 @@ int main(int argc, char** argv)
         }
 
         extern GLFWwindow* window;
-        if (glfwGetKey(window, GLFW_KEY_LEFT_ALT) == GLFW_PRESS)
+        if (glfwGetKey(window, GLFW_KEY_TAB) == GLFW_PRESS)
         {
             GuiManager::addGuiToRender(GuiTextureResources::texturePlayersBG);
             GuiTextureResources::texturePlayersBG->size.y = 0.05f*(1 + (int)Global::gameOnlinePlayers.size()) + 0.01f;
@@ -635,18 +641,6 @@ int main(int argc, char** argv)
                 Global::gameOnlinePlayersSharedMutex.unlock_shared();
             }
         }
-        else
-        {
-            if (Global::gameOnlinePlayerPingTexts.size() > 0)
-            {
-                for (GUIText* t : Global::gameOnlinePlayerPingTexts)
-                {
-                    t->deleteMe();
-                    delete t; INCR_DEL("GUIText");
-                }
-                Global::gameOnlinePlayerPingTexts.clear();
-            }
-        }
 
         GuiManager::render();
         GuiManager::clearGuisToRender();
@@ -658,6 +652,19 @@ int main(int argc, char** argv)
         if (previousTime > timeNew)
         {
             previousTime = timeNew;
+        }
+
+        if (glfwGetKey(window, GLFW_KEY_TAB) != GLFW_PRESS)
+        {
+            if (Global::gameOnlinePlayerPingTexts.size() > 0)
+            {
+                for (GUIText* t : Global::gameOnlinePlayerPingTexts)
+                {
+                    t->deleteMe();
+                    delete t; INCR_DEL("GUIText");
+                }
+                Global::gameOnlinePlayerPingTexts.clear();
+            }
         }
 
         if (timeNew - previousTime >= 1.0)
@@ -695,6 +702,63 @@ int main(int argc, char** argv)
 
             Global::syncedGlobalTime = glfwGetTime() + Global::serverTimeOffset;
 
+            if (glfwGetKey(window, GLFW_KEY_TAB) == GLFW_PRESS)
+            {
+                // Delete the existing player pings
+                if (Global::gameOnlinePlayerPingTexts.size() > 0)
+                {
+                    for (GUIText* t : Global::gameOnlinePlayerPingTexts)
+                    {
+                        t->deleteMe();
+                        delete t; INCR_DEL("GUIText");
+                    }
+                    Global::gameOnlinePlayerPingTexts.clear();
+                }
+
+                GuiManager::addGuiToRender(GuiTextureResources::texturePlayersBG);
+                GuiTextureResources::texturePlayersBG->size.y = 0.05f*(1 + (int)Global::gameOnlinePlayers.size()) + 0.01f;
+
+                {
+                    std::string t = Global::nickname;
+                    int p = Global::pingToServer;
+
+                    for (int i = (int)Global::nickname.size() - Maths::numDigits(p); i < 20; i++)
+                    {
+                        t = t + " ";
+                    }
+
+                    t = t + std::to_string(p);
+
+                    t = t + "ms";
+
+                    GUIText* mePing = new GUIText(t, 0.05f, Global::fontConsolas, 0.5f, 0.1f, 1, true); INCR_NEW("GUIText");
+                    Global::gameOnlinePlayerPingTexts.push_back(mePing);
+                }
+
+                int n = 1;
+                Global::gameOnlinePlayersSharedMutex.lock_shared();
+                for (auto const& entry : Global::gameOnlinePlayers)
+                {
+                    std::string t = entry.first;
+                    int p = entry.second->pingMs;
+
+                    for (int i = (int)entry.first.size() - Maths::numDigits(p); i < 20; i++)
+                    {
+                        t = t + " ";
+                    }
+
+                    t = t + std::to_string(p);
+
+                    t = t + "ms";
+
+                    GUIText* text = new GUIText(t, 0.05f, Global::fontConsolas, 0.5f, 0.1f + 0.05f*n, 1, true); INCR_NEW("GUIText");
+                    Global::gameOnlinePlayerPingTexts.push_back(text);
+
+                    n++;
+                }
+                Global::gameOnlinePlayersSharedMutex.unlock_shared();
+            }
+
             //printf("time = %f\n", Global::syncedGlobalTime);
 
             if (Global::levelToLoad != "")
@@ -729,6 +793,7 @@ int main(int argc, char** argv)
         delete t2; INCR_DEL("std::thread");
     }
 
+    Sleep(100000);
     return 0;
 }
 
@@ -923,41 +988,39 @@ void Global::performanceAnalysisReport()
 
 double Global::serverTimeOffset = 0.0;
 
-//unsigned long long Global::getRawUtcSystemTime()
-//{
-//    FILETIME ft;
-//    GetSystemTimeAsFileTime(&ft);
-//
-//    unsigned long high = (unsigned long)ft.dwHighDateTime;
-//    unsigned long low  = (unsigned long)ft.dwLowDateTime;
-//
-//    unsigned long long totalT;
-//    memcpy(&totalT, &low, 4);
-//    memcpy(((char*)&totalT) + 4, &high, 4);
-//
-//    return totalT;
-//}
+bool checkConnection(int numBytesExpected, int numBytesActual, std::string message, TcpClient* client)
+{
+    if (!client->isOpen() || numBytesActual != numBytesExpected)
+    {
+        printf("Error: Check connection failed because '%s'\n", message.c_str());
+        printf("       Expected bytes: %d. Bytes actual: %d\n", numBytesExpected, numBytesActual);
+
+        return false;
+    }
+    
+    return true;
+}
 
 void Global::readThreadBehavoir(TcpClient* client)
 {
-    #define CHECK_CONNECTION(NUM_BYTES) if (!client->isOpen() || numRead != NUM_BYTES) { Global::addChatMessage("Disconnected from Server", Vector3f(1, 0.5f, 0.5f)); return; }
+    #define CHECK_CONNECTION_R(NUM_BYTES, MESSAGE) if (!checkConnection(NUM_BYTES, numRead, MESSAGE, client)) { Global::addChatMessage("Disconnected from Server", Vector3f(1, 0.5f, 0.5f)); return; }
 
     while (Global::gameState != GAME_STATE_EXITING && client->isOpen())
     {
         char cmd;
         int numRead = client->read(&cmd, 1, 5);
-        if (!client->isOpen()) { Global::addChatMessage("Disconnected from Server", Vector3f(1, 0.5f, 0.5f)); return; }
         
         if (numRead == 1)
         {
             switch (cmd)
             {
                 case 0: //no nop
+                    printf("Warning: Read a No Op messsage from the server.\n");
                     break;
 
                 case 1: //initial server time msg
                 {
-                    numRead = client->read((char*)&Global::serverTimeOffset, 8, 5); CHECK_CONNECTION(8);
+                    numRead = client->read(&Global::serverTimeOffset, 8, 5); CHECK_CONNECTION_R(8, "Could not read initial server time message");
                     break;
                 }
 
@@ -966,17 +1029,17 @@ void Global::readThreadBehavoir(TcpClient* client)
                 case  3:
                 {
                     int nameLen;
-                    numRead = client->read((char*)&nameLen, 4, 5); CHECK_CONNECTION(4);
+                    numRead = client->read(&nameLen, 4, 5); CHECK_CONNECTION_R(4, "Could not read player name len");
 
                     if (nameLen >= 32)
                     {
-                        printf("Player name is too big\n");
+                        printf("Player name is too big (%d)\n", nameLen);
                         Global::addChatMessage("Disconnected from Server", Vector3f(1, 0.5f, 0.5f));
                         return;
                     }
 
-                    char nameBuf[32] = {0};
-                    numRead = client->read(nameBuf, nameLen, 5); CHECK_CONNECTION(nameLen);
+                    char nameBuf[33] = {0};
+                    numRead = client->read(nameBuf, nameLen, 5); CHECK_CONNECTION_R(nameLen, "Could not read player name");
 
                     std::string name = nameBuf;
 
@@ -1005,53 +1068,53 @@ void Global::readThreadBehavoir(TcpClient* client)
                             }
 
                             char buf[148];
-                            numRead = client->read(buf, 148, 5); CHECK_CONNECTION(148);
+                            numRead = client->read(buf, 148, 5); CHECK_CONNECTION_R(148, "Could not read player update");
 
                             int idx = 0;
 
-                            memcpy((char*)&onlinePlayer->inputAction3,       &buf[idx], 1); idx+=1;
-                            memcpy((char*)&onlinePlayer->inputAction4,       &buf[idx], 1); idx+=1;
-                            memcpy((char*)&onlinePlayer->inputX,             &buf[idx], 4); idx+=4;
-                            memcpy((char*)&onlinePlayer->inputY,             &buf[idx], 4); idx+=4;
-                            memcpy((char*)&onlinePlayer->inputX2,            &buf[idx], 4); idx+=4;
-                            memcpy((char*)&onlinePlayer->inputY2,            &buf[idx], 4); idx+=4;
-                            memcpy((char*)&onlinePlayer->position.x,         &buf[idx], 4); idx+=4;
-                            memcpy((char*)&onlinePlayer->position.y,         &buf[idx], 4); idx+=4;
-                            memcpy((char*)&onlinePlayer->position.z,         &buf[idx], 4); idx+=4;
-                            memcpy((char*)&onlinePlayer->vel.x,              &buf[idx], 4); idx+=4;
-                            memcpy((char*)&onlinePlayer->vel.y,              &buf[idx], 4); idx+=4;
-                            memcpy((char*)&onlinePlayer->vel.z,              &buf[idx], 4); idx+=4;
-                            memcpy((char*)&onlinePlayer->groundNormal.x,     &buf[idx], 4); idx+=4;
-                            memcpy((char*)&onlinePlayer->groundNormal.y,     &buf[idx], 4); idx+=4;
-                            memcpy((char*)&onlinePlayer->groundNormal.z,     &buf[idx], 4); idx+=4;
-                            memcpy((char*)&onlinePlayer->wallNormal.x,       &buf[idx], 4); idx+=4;
-                            memcpy((char*)&onlinePlayer->wallNormal.y,       &buf[idx], 4); idx+=4;
-                            memcpy((char*)&onlinePlayer->wallNormal.z,       &buf[idx], 4); idx+=4;
-                            memcpy((char*)&onlinePlayer->onGround,           &buf[idx], 1); idx+=1;
-                            memcpy((char*)&onlinePlayer->isTouchingWall,     &buf[idx], 1); idx+=1;
-                            memcpy((char*)&onlinePlayer->slideTimer,         &buf[idx], 4); idx+=4;
-                            memcpy((char*)&onlinePlayer->storedSlideSpeed,   &buf[idx], 4); idx+=4;
-                            memcpy((char*)&onlinePlayer->wallJumpTimer,      &buf[idx], 4); idx+=4;
-                            memcpy((char*)&onlinePlayer->storedWallNormal.x, &buf[idx], 4); idx+=4;
-                            memcpy((char*)&onlinePlayer->storedWallNormal.y, &buf[idx], 4); idx+=4;
-                            memcpy((char*)&onlinePlayer->storedWallNormal.z, &buf[idx], 4); idx+=4;
-                            memcpy((char*)&onlinePlayer->eyeHeightSmooth,    &buf[idx], 4); idx+=4;
-                            memcpy((char*)&onlinePlayer->timeSinceOnGround,  &buf[idx], 4); idx+=4;
-                            memcpy((char*)&onlinePlayer->lastGroundNormal.x, &buf[idx], 4); idx+=4;
-                            memcpy((char*)&onlinePlayer->lastGroundNormal.y, &buf[idx], 4); idx+=4;
-                            memcpy((char*)&onlinePlayer->lastGroundNormal.z, &buf[idx], 4); idx+=4;
-                            memcpy((char*)&onlinePlayer->ladderTimer,        &buf[idx], 4); idx+=4;
-                            memcpy((char*)&onlinePlayer->isOnLadder,         &buf[idx], 1); idx+=1;
-                            memcpy((char*)&onlinePlayer->externalVel.x,      &buf[idx], 4); idx+=4;
-                            memcpy((char*)&onlinePlayer->externalVel.y,      &buf[idx], 4); idx+=4;
-                            memcpy((char*)&onlinePlayer->externalVel.z,      &buf[idx], 4); idx+=4;
-                            memcpy((char*)&onlinePlayer->lookDir.x,          &buf[idx], 4); idx+=4;
-                            memcpy((char*)&onlinePlayer->lookDir.y,          &buf[idx], 4); idx+=4;
-                            memcpy((char*)&onlinePlayer->lookDir.z,          &buf[idx], 4); idx+=4;
-                            memcpy((char*)&onlinePlayer->isCrouching,        &buf[idx], 1); idx+=1;
-                            memcpy((char*)&onlinePlayer->weapon,             &buf[idx], 1); idx+=1;
-                            memcpy((char*)&onlinePlayer->health,             &buf[idx], 1); idx+=1;
-                            memcpy((char*)&onlinePlayer->pingMs,             &buf[idx], 4);
+                            memcpy(&onlinePlayer->inputAction3,       &buf[idx], 1); idx+=1;
+                            memcpy(&onlinePlayer->inputAction4,       &buf[idx], 1); idx+=1;
+                            memcpy(&onlinePlayer->inputX,             &buf[idx], 4); idx+=4;
+                            memcpy(&onlinePlayer->inputY,             &buf[idx], 4); idx+=4;
+                            memcpy(&onlinePlayer->inputX2,            &buf[idx], 4); idx+=4;
+                            memcpy(&onlinePlayer->inputY2,            &buf[idx], 4); idx+=4;
+                            memcpy(&onlinePlayer->position.x,         &buf[idx], 4); idx+=4;
+                            memcpy(&onlinePlayer->position.y,         &buf[idx], 4); idx+=4;
+                            memcpy(&onlinePlayer->position.z,         &buf[idx], 4); idx+=4;
+                            memcpy(&onlinePlayer->vel.x,              &buf[idx], 4); idx+=4;
+                            memcpy(&onlinePlayer->vel.y,              &buf[idx], 4); idx+=4;
+                            memcpy(&onlinePlayer->vel.z,              &buf[idx], 4); idx+=4;
+                            memcpy(&onlinePlayer->groundNormal.x,     &buf[idx], 4); idx+=4;
+                            memcpy(&onlinePlayer->groundNormal.y,     &buf[idx], 4); idx+=4;
+                            memcpy(&onlinePlayer->groundNormal.z,     &buf[idx], 4); idx+=4;
+                            memcpy(&onlinePlayer->wallNormal.x,       &buf[idx], 4); idx+=4;
+                            memcpy(&onlinePlayer->wallNormal.y,       &buf[idx], 4); idx+=4;
+                            memcpy(&onlinePlayer->wallNormal.z,       &buf[idx], 4); idx+=4;
+                            memcpy(&onlinePlayer->onGround,           &buf[idx], 1); idx+=1;
+                            memcpy(&onlinePlayer->isTouchingWall,     &buf[idx], 1); idx+=1;
+                            memcpy(&onlinePlayer->slideTimer,         &buf[idx], 4); idx+=4;
+                            memcpy(&onlinePlayer->storedSlideSpeed,   &buf[idx], 4); idx+=4;
+                            memcpy(&onlinePlayer->wallJumpTimer,      &buf[idx], 4); idx+=4;
+                            memcpy(&onlinePlayer->storedWallNormal.x, &buf[idx], 4); idx+=4;
+                            memcpy(&onlinePlayer->storedWallNormal.y, &buf[idx], 4); idx+=4;
+                            memcpy(&onlinePlayer->storedWallNormal.z, &buf[idx], 4); idx+=4;
+                            memcpy(&onlinePlayer->eyeHeightSmooth,    &buf[idx], 4); idx+=4;
+                            memcpy(&onlinePlayer->timeSinceOnGround,  &buf[idx], 4); idx+=4;
+                            memcpy(&onlinePlayer->lastGroundNormal.x, &buf[idx], 4); idx+=4;
+                            memcpy(&onlinePlayer->lastGroundNormal.y, &buf[idx], 4); idx+=4;
+                            memcpy(&onlinePlayer->lastGroundNormal.z, &buf[idx], 4); idx+=4;
+                            memcpy(&onlinePlayer->ladderTimer,        &buf[idx], 4); idx+=4;
+                            memcpy(&onlinePlayer->isOnLadder,         &buf[idx], 1); idx+=1;
+                            memcpy(&onlinePlayer->externalVel.x,      &buf[idx], 4); idx+=4;
+                            memcpy(&onlinePlayer->externalVel.y,      &buf[idx], 4); idx+=4;
+                            memcpy(&onlinePlayer->externalVel.z,      &buf[idx], 4); idx+=4;
+                            memcpy(&onlinePlayer->lookDir.x,          &buf[idx], 4); idx+=4;
+                            memcpy(&onlinePlayer->lookDir.y,          &buf[idx], 4); idx+=4;
+                            memcpy(&onlinePlayer->lookDir.z,          &buf[idx], 4); idx+=4;
+                            memcpy(&onlinePlayer->isCrouching,        &buf[idx], 1); idx+=1;
+                            memcpy(&onlinePlayer->weapon,             &buf[idx], 1); idx+=1;
+                            memcpy(&onlinePlayer->health,             &buf[idx], 1); idx+=1;
+                            memcpy(&onlinePlayer->pingMs,             &buf[idx], 4);
 
                             break;
                         }
@@ -1095,13 +1158,13 @@ void Global::readThreadBehavoir(TcpClient* client)
                     float zDir;
                     char weapon;
 
-                    numRead = client->read((char*)&x,      4, 5); CHECK_CONNECTION(4);
-                    numRead = client->read((char*)&y,      4, 5); CHECK_CONNECTION(4);
-                    numRead = client->read((char*)&z,      4, 5); CHECK_CONNECTION(4);
-                    numRead = client->read((char*)&xDir,   4, 5); CHECK_CONNECTION(4);
-                    numRead = client->read((char*)&yDir,   4, 5); CHECK_CONNECTION(4);
-                    numRead = client->read((char*)&zDir,   4, 5); CHECK_CONNECTION(4);
-                    numRead = client->read((char*)&weapon, 1, 5); CHECK_CONNECTION(1);
+                    numRead = client->read(&x,      4, 5); CHECK_CONNECTION_R(4, "Could not read player hit x");
+                    numRead = client->read(&y,      4, 5); CHECK_CONNECTION_R(4, "Could not read player hit y");
+                    numRead = client->read(&z,      4, 5); CHECK_CONNECTION_R(4, "Could not read player hit z");
+                    numRead = client->read(&xDir,   4, 5); CHECK_CONNECTION_R(4, "Could not read player hit xd");
+                    numRead = client->read(&yDir,   4, 5); CHECK_CONNECTION_R(4, "Could not read player hit yd");
+                    numRead = client->read(&zDir,   4, 5); CHECK_CONNECTION_R(4, "Could not read player hit zd");
+                    numRead = client->read(&weapon, 1, 5); CHECK_CONNECTION_R(1, "Could not read player hit weapon");
 
                     Vector3f velToAdd(xDir, yDir, zDir);
                     velToAdd.normalize();
@@ -1130,10 +1193,10 @@ void Global::readThreadBehavoir(TcpClient* client)
                     int sfxId;
                     Vector3f pos;
 
-                    numRead = client->read((char*)&sfxId, 4, 5); CHECK_CONNECTION(4);
-                    numRead = client->read((char*)&pos.x, 4, 5); CHECK_CONNECTION(4);
-                    numRead = client->read((char*)&pos.y, 4, 5); CHECK_CONNECTION(4);
-                    numRead = client->read((char*)&pos.z, 4, 5); CHECK_CONNECTION(4);
+                    numRead = client->read(&sfxId, 4, 5); CHECK_CONNECTION_R(4, "Could not read audio id");
+                    numRead = client->read(&pos.x, 4, 5); CHECK_CONNECTION_R(4, "Could not read audio x");
+                    numRead = client->read(&pos.y, 4, 5); CHECK_CONNECTION_R(4, "Could not read audio y");
+                    numRead = client->read(&pos.z, 4, 5); CHECK_CONNECTION_R(4, "Could not read audio z");
 
                     AudioPlayer::play(sfxId, &pos);
                     break;
@@ -1145,9 +1208,9 @@ void Global::readThreadBehavoir(TcpClient* client)
                     char healthName[33] = {0};
                     char healAmount;
 
-                    numRead = client->read((char*)&healthNameLen, 4, 5);  CHECK_CONNECTION(4);
-                    numRead = client->read(healthName, healthNameLen, 5); CHECK_CONNECTION(healthNameLen);
-                    numRead = client->read(&healAmount, 1, 5);            CHECK_CONNECTION(1);
+                    numRead = client->read(&healthNameLen,         4, 5); CHECK_CONNECTION_R(4,             "Could not heal name len");
+                    numRead = client->read(healthName, healthNameLen, 5); CHECK_CONNECTION_R(healthNameLen, "Could not heal name");
+                    numRead = client->read(&healAmount,            1, 5); CHECK_CONNECTION_R(1,             "Could not heal amount");
 
                     if (healAmount > 0)
                     {
@@ -1186,7 +1249,7 @@ void Global::readThreadBehavoir(TcpClient* client)
 
                 case 7: // round time start
                 {
-                    numRead = client->read((char*)&Global::timeUntilRoundStarts, 4, 5); CHECK_CONNECTION(4);
+                    numRead = client->read(&Global::timeUntilRoundStarts, 4, 5); CHECK_CONNECTION_R(4, "Could not read round time start");
                     break;
                 }
 
@@ -1197,10 +1260,10 @@ void Global::readThreadBehavoir(TcpClient* client)
                     char isReal;
                     char isBroken;
 
-                    numRead = client->read((char*)&glassNameLen, 4, 5); CHECK_CONNECTION(4);
-                    numRead = client->read(glassName, glassNameLen, 5); CHECK_CONNECTION(glassNameLen);
-                    numRead = client->read(&isReal,   1, 5);            CHECK_CONNECTION(1);
-                    numRead = client->read(&isBroken, 1, 5);            CHECK_CONNECTION(1);
+                    numRead = client->read(&glassNameLen,        4, 5); CHECK_CONNECTION_R(4,            "Could not read glass name len");
+                    numRead = client->read(glassName, glassNameLen, 5); CHECK_CONNECTION_R(glassNameLen, "Could not read glass name");
+                    numRead = client->read(&isReal,              1, 5); CHECK_CONNECTION_R(1,            "Could not read glass isReal");
+                    numRead = client->read(&isBroken,            1, 5); CHECK_CONNECTION_R(1,            "Could not read glass isBroken");
 
                     std::string glassNameToUpdate = glassName;
 
@@ -1234,8 +1297,8 @@ void Global::readThreadBehavoir(TcpClient* client)
                     int levelNameLen;
                     char levelName[33] = {0};
 
-                    numRead = client->read((char*)&levelNameLen, 4, 5); CHECK_CONNECTION(4);
-                    numRead = client->read(levelName, levelNameLen, 5); CHECK_CONNECTION(levelNameLen);
+                    numRead = client->read(&levelNameLen,        4, 5); CHECK_CONNECTION_R(4,            "Could not read level name len");
+                    numRead = client->read(levelName, levelNameLen, 5); CHECK_CONNECTION_R(levelNameLen, "Could not read level name");
 
                     Global::levelToLoad = levelName; //TODO maybe put a mutex around this
 
@@ -1244,7 +1307,7 @@ void Global::readThreadBehavoir(TcpClient* client)
 
                 case 10: // round end messages
                 {
-                    numRead = client->read((char*)&Global::timeUntilRoundEnds, 4, 5); CHECK_CONNECTION(4);
+                    numRead = client->read(&Global::timeUntilRoundEnds, 4, 5); CHECK_CONNECTION_R(4, "Could not read round end time");
                     break;
                 }
 
@@ -1254,9 +1317,9 @@ void Global::readThreadBehavoir(TcpClient* client)
                     char rockName[33] = {0};
                     float rockBreakTimer;
 
-                    numRead = client->read((char*)&rockNameLen,    4, 5); CHECK_CONNECTION(4);
-                    numRead = client->read(rockName,     rockNameLen, 5); CHECK_CONNECTION(rockNameLen);
-                    numRead = client->read((char*)&rockBreakTimer, 4, 5); CHECK_CONNECTION(4);
+                    numRead = client->read(&rockNameLen,       4, 5); CHECK_CONNECTION_R(4,           "Could not read rock platform name len");
+                    numRead = client->read(rockName, rockNameLen, 5); CHECK_CONNECTION_R(rockNameLen, "Could not read rock platform name");
+                    numRead = client->read(&rockBreakTimer,    4, 5); CHECK_CONNECTION_R(4,           "Could not read rock platform timer");
 
                     std::string rockNameToUpdate = rockName;
 
@@ -1286,19 +1349,62 @@ void Global::readThreadBehavoir(TcpClient* client)
 
                 case 12: // Set the position and vel of the player
                 {
-                    numRead = client->read((char*)&Global::player->position.x, 4, 5); CHECK_CONNECTION(4);
-                    numRead = client->read((char*)&Global::player->position.y, 4, 5); CHECK_CONNECTION(4);
-                    numRead = client->read((char*)&Global::player->position.z, 4, 5); CHECK_CONNECTION(4);
-                    numRead = client->read((char*)&Global::player->vel     .x, 4, 5); CHECK_CONNECTION(4);
-                    numRead = client->read((char*)&Global::player->vel     .y, 4, 5); CHECK_CONNECTION(4);
-                    numRead = client->read((char*)&Global::player->vel     .z, 4, 5); CHECK_CONNECTION(4);
+                    numRead = client->read(&Global::player->position.x, 4, 5); CHECK_CONNECTION_R(4, "Could not read set player x");
+                    numRead = client->read(&Global::player->position.y, 4, 5); CHECK_CONNECTION_R(4, "Could not read set player y");
+                    numRead = client->read(&Global::player->position.z, 4, 5); CHECK_CONNECTION_R(4, "Could not read set player z");
+                    numRead = client->read(&Global::player->vel     .x, 4, 5); CHECK_CONNECTION_R(4, "Could not read set player vx");
+                    numRead = client->read(&Global::player->vel     .y, 4, 5); CHECK_CONNECTION_R(4, "Could not read set player vy");
+                    numRead = client->read(&Global::player->vel     .z, 4, 5); CHECK_CONNECTION_R(4, "Could not read set player vz");
 
                     break;
                 }
 
                 case 13: // We have been sent our ping to the server
                 {
-                    numRead = client->read((char*)&Global::pingToServer, 4, 5); CHECK_CONNECTION(4);
+                    int p;
+                    numRead = client->read(&p, 4, 5); CHECK_CONNECTION_R(4, "Could not read ping");
+                    if (p < 0)
+                    {
+                        p = 0;
+                    }
+                    Global::pingToServer = p;
+                    break;
+                }
+
+                case 14: // Signal that a step fall platform has been stepped on.
+                {
+                    int platNameLen;
+                    char platName[33] = {0};
+
+                    numRead = client->read(&platNameLen,       4, 5); CHECK_CONNECTION_R(4,           "Could not step fall platform name len");
+                    numRead = client->read(platName, platNameLen, 5); CHECK_CONNECTION_R(platNameLen, "Could not step fall platform name");
+
+                    std::string platNameToUpdate = platName;
+                    
+                    Global::gameEntitiesSharedMutex.lock_shared();
+                    for (Entity* e : Global::gameEntities)
+                    {
+                        switch (e->getEntityType())
+                        {
+                            case ENTITY_STEP_FALL_PLATFORM:
+                            {
+                                if (e->name == platNameToUpdate)
+                                {
+                                    StepFallPlatform* sf = (StepFallPlatform*)e;
+                                    if (sf->timeUntilBreaks > 100.0f)
+                                    {
+                                        sf->timeUntilBreaks = 2.0f;
+                                    }
+                                }
+                                break;
+                            }
+
+                            default:
+                                break;
+                        }
+                    }
+                    Global::gameEntitiesSharedMutex.unlock_shared();
+
                     break;
                 }
 
@@ -1310,36 +1416,29 @@ void Global::readThreadBehavoir(TcpClient* client)
                 }
             }
         }
-        else
+        else if (numRead == 0) //time out
         {
-            //printf("Read timed out\n");
-        }
 
-        //Sleep(1);
+        }
+        else //error, we have been disconnected
+        {
+            break;
+        }
     }
 
+    Global::addChatMessage("Disconnected from Server", Vector3f(1, 0.5f, 0.5f));
     printf("Read thread all done\n");
 }
 
 void Global::writeThreadBehavior(TcpClient* client)
 {
+    #define CHECK_CONNECTION_W(NUM_BYTES, MESSAGE) if (!checkConnection(NUM_BYTES, numWritten, MESSAGE, client)) { Global::addChatMessage("Disconnected from Server", Vector3f(1, 0.5f, 0.5f)); return; }
+
     // Send name message
     int nameLen = (int)Global::nickname.size();
-    int numWritten = client->write((char*)&nameLen, 4, 5);
-    if (numWritten != 4)
-    {
-        printf("Could not write name length to server\n");
-        Global::addChatMessage("Disconnected from Server", Vector3f(1, 0.5f, 0.5f));
-        return;
-    }
+    int numWritten = client->write(&nameLen, 4, 5); CHECK_CONNECTION_W(4, "Could not write name length to server");
 
-    numWritten = client->write((char*)Global::nickname.c_str(), nameLen, 5);
-    if (numWritten != nameLen)
-    {
-        printf("Could not write name to server\n");
-        Global::addChatMessage("Disconnected from Server", Vector3f(1, 0.5f, 0.5f));
-        return;
-    }
+    numWritten = client->write(Global::nickname.c_str(), nameLen, 5); CHECK_CONNECTION_W(nameLen, "Could not write name to server");
 
     double lastSentTimeMsg = glfwGetTime();
     double lastSentPlayerMsg = glfwGetTime();
@@ -1362,7 +1461,7 @@ void Global::writeThreadBehavior(TcpClient* client)
         {
             for (Message msg : Global::messagesToSend)
             {
-                client->write(msg.buf, msg.length, 5);
+                numWritten = client->write(msg.buf, msg.length, 5); CHECK_CONNECTION_W(msg.length, "Could not write command " + std::to_string(msg.buf[0]) + " to the server");
             }
             Global::messagesToSend.clear();
         }
@@ -1372,24 +1471,12 @@ void Global::writeThreadBehavior(TcpClient* client)
         if (glfwGetTime() - lastSentTimeMsg > 1.0)
         {
             double currTime = glfwGetTime() + Global::serverTimeOffset;
+            currTime = currTime - 0.005f;
             // Send time message
             char cmd = 1;
-            numWritten = client->write(&cmd, 1, 5);
-            if (numWritten != 1)
-            {
-                printf("Could not write time command to server\n");
-                Global::addChatMessage("Disconnected from Server", Vector3f(1, 0.5f, 0.5f));
-                return;
-            }
+            numWritten = client->write(&cmd, 1, 5); CHECK_CONNECTION_W(1, "Could not write time command to server");
             
-            numWritten = client->write((char*)&currTime, 8, 5);
-            
-            if (numWritten != 8)
-            {
-                printf("Could not write time to server\n");
-                Global::addChatMessage("Disconnected from Server", Vector3f(1, 0.5f, 0.5f));
-                return;
-            }
+            numWritten = client->write(&currTime, 8, 5); CHECK_CONNECTION_W(8, "Could not write time to server");
 
             lastSentTimeMsg = glfwGetTime();
         }
@@ -1447,12 +1534,18 @@ void Global::writeThreadBehavior(TcpClient* client)
                 memcpy(&buf[idx], (char*)&Global::player->weapon,             1); idx += 1;
                 memcpy(&buf[idx], (char*)&Global::player->health,             1);
 
-                client->write(buf, 145, 5);
+                numWritten = client->write(buf, 145, 5); CHECK_CONNECTION_W(145, "Could not write player update");
             }
 
             lastSentPlayerMsg = glfwGetTime();
         }
     }
+
+    //Send a disconnect message
+    Message msg;
+    msg.length = 1;
+    msg.buf[0] = 15;
+    numWritten = client->write(msg.buf, 1, 2); CHECK_CONNECTION_W(1, "Could not write disconnect message");
 
     printf("Write thread all done\n");
 }
@@ -1601,9 +1694,12 @@ std::condition_variable Global::msgCondVar;
 
 void Global::sendMessageToServer(Message msg)
 {
-    Global::msgOutMutex.lock();
-    Global::messagesToSend.push_back(msg);
-    Global::msgOutMutex.unlock();
+    if (Global::serverClient->isOpen())
+    {
+        Global::msgOutMutex.lock();
+        Global::messagesToSend.push_back(msg);
+        Global::msgOutMutex.unlock();
+    }
 }
 
 void Global::sendAudioMessageToServer(int sfxId, Vector3f* position)
