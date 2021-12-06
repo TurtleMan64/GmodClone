@@ -72,7 +72,8 @@ void FontRenderer::renderText(GUIText* text)
 
     float ratio = ((float)SCR_HEIGHT)/SCR_WIDTH;
 
-    shader->loadScale(ratio);
+    shader->loadRatio(ratio);
+    shader->loadFontHeight(text->fontSize);
     shader->loadColor(text->getColor());
 
     float offX = 0.0f;
@@ -95,13 +96,13 @@ void FontRenderer::renderText(GUIText* text)
         text->alignment == 4 ||
         text->alignment == 7)
     {
-        offX = (-(text->maxLineWidth/2))*ratio;
+        offX = (-(text->maxLineWidth/2))*ratio*text->fontSize;
     }
     else if (text->alignment == 2 ||
              text->alignment == 5 ||
              text->alignment == 8)
     {
-        offX = -(text->maxLineWidth)*ratio;
+        offX = -(text->maxLineWidth)*ratio*text->fontSize;
     }
 
     Vector2f off(offX + text->position.x, offY + text->position.y);
@@ -117,7 +118,7 @@ void FontRenderer::renderText(GUIText* text)
 void FontRenderer::renderNumber(GUINumber* number)
 {
     int numChars = (int)number->meshIds.size();
-    shader->loadScale(number->size);
+    shader->loadFontHeight(number->size);
     for (int i = 0; i < numChars; i++)
     {
         glBindVertexArray(number->meshIds[i]);

@@ -718,7 +718,7 @@ bool Maths::pointIsInCylinder(Vector3f* point, Vector3f* c1, Vector3f* c2, float
             p.y*p.y + p.z*p.z < cRadius*cRadius);
 }
 
-//coordinates are 0,0 for middle of screen, -1, -1 for top left, 1,1 for bot right
+//coordinates are (0, 0) for top left, (0.5, 0.5) for middle, (1, 1) for bot right
 Vector2f Maths::calcScreenCoordsOfWorldPoint(Vector3f* worldPoint)
 {
     Matrix4f viewMatrix;
@@ -735,10 +735,10 @@ Vector2f Maths::calcScreenCoordsOfWorldPoint(Vector3f* worldPoint)
     modelMatrix.m20 = viewMatrix.m02;
     modelMatrix.m21 = viewMatrix.m12;
     modelMatrix.m22 = viewMatrix.m22;
-    Vector3f axis(0, 0, 1);
-    modelMatrix.rotate(Maths::toRadians(0), &axis);
-    Vector3f scaleVec(1, 1, 1);
-    modelMatrix.scale(&scaleVec);
+    //Vector3f axis(0, 0, 1);
+    //modelMatrix.rotate(Maths::toRadians(0), &axis);
+    //Vector3f scaleVec(1, 1, 1);
+    //modelMatrix.scale(&scaleVec);
     Matrix4f modelViewMatrix = Matrix4f(modelMatrix);
     viewMatrix.multiply(&modelViewMatrix, &modelViewMatrix);
 
@@ -747,10 +747,16 @@ Vector2f Maths::calcScreenCoordsOfWorldPoint(Vector3f* worldPoint)
     projectionMatrix->multiply(&modelViewMatrix, &result);
     Vector4f vec4(0, 0, 0, 1);
     Vector4f gl_Position = result.transform(&vec4);
+
+    if (gl_Position.w <= 0.0f) // Point is behind the camera
+    {
+        return Vector2f(10000.0f, 10000.0f); // Some point very far away from viewable screen
+    }
+
     float scl = gl_Position.w;
     gl_Position.scale(1/scl);
 
-    return Vector2f(gl_Position.x, gl_Position.y);
+    return Vector2f(0.5f*(gl_Position.x + 1.0f), 0.5f*(-gl_Position.y + 1.0f));
 }
 
 //https://stackoverflow.com/questions/849211/shortest-distance-between-a-point-and-a-line-segment

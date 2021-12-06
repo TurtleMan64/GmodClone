@@ -100,6 +100,7 @@ double Global::syncedGlobalTime = 0.0;
 
 std::shared_mutex Global::gameOnlinePlayersSharedMutex;
 std::unordered_map<std::string, OnlinePlayer*> Global::gameOnlinePlayers;
+std::vector<GUIText*> Global::gameOnlinePlayerNametagsToDelete;
 std::vector<GUIText*> Global::gameOnlinePlayerPingTexts;
 
 std::vector<std::string> Global::serverSettings;
@@ -140,7 +141,8 @@ int Global::gameState = 0;
 
 int Global::gameTotalPlaytime = 0;
 
-int Global::levelId = 1;
+int Global::levelId = LVL_TEST;
+std::shared_mutex Global::levelMutex;
 std::string Global::levelToLoad = "";
 
 bool Global::renderWithCulling = false;
@@ -503,41 +505,7 @@ int main(int argc, char** argv)
         AudioMaster::updateListenerData(&cam.eye, &cam.target, &cam.up, &camVel);
         AudioPlayer::setListenerIsUnderwater(false);
 
-        // Update the music when time gets low
-        Source* bgmSource = AudioPlayer::getSource(14);
-        if (Global::timeUntilRoundEnds > 30.0f)
-        {
-            if (bgmSource->isPlaying())
-            {
-                AudioPlayer::stopBGM();
-                bgmSource->setPitch(1.0f);
-            }
-        }
-        else if (Global::timeUntilRoundEnds > 15.0f)
-        {
-            if (!bgmSource->isPlaying())
-            {
-                AudioPlayer::playBGM(0);
-                bgmSource->setPitch(1.0f);
-            }
-        }
-        else if (Global::timeUntilRoundEnds > 0.0f)
-        {
-            if (!bgmSource->isPlaying())
-            {
-                AudioPlayer::playBGM(0);
-            }
-            bgmSource->setPitch(1.0f + (15.0f - Global::timeUntilRoundEnds)/15.0f);
-        }
-        else
-        {
-            if (bgmSource->isPlaying())
-            {
-                AudioPlayer::stopBGM();
-                bgmSource->setPitch(1.0f);
-                AudioPlayer::play(67, nullptr);
-            }
-        }
+        Global::updateMusic();
 
         if (Global::timeUntilRoundEnds > 1000.0f)
         {
@@ -642,6 +610,18 @@ int main(int argc, char** argv)
             }
         }
 
+        if (Global::gameOnlinePlayerNametagsToDelete.size() > 0)
+        {
+            Global::gameOnlinePlayersSharedMutex.lock();
+            for (GUIText* text : Global::gameOnlinePlayerNametagsToDelete)
+            {
+                text->deleteMe();
+                delete text; INCR_DEL("GUIText");
+            }
+            Global::gameOnlinePlayerNametagsToDelete.clear();
+            Global::gameOnlinePlayersSharedMutex.unlock();
+        }
+
         GuiManager::render();
         GuiManager::clearGuisToRender();
 
@@ -702,71 +682,16 @@ int main(int argc, char** argv)
 
             Global::syncedGlobalTime = glfwGetTime() + Global::serverTimeOffset;
 
-            if (glfwGetKey(window, GLFW_KEY_TAB) == GLFW_PRESS)
-            {
-                // Delete the existing player pings
-                if (Global::gameOnlinePlayerPingTexts.size() > 0)
-                {
-                    for (GUIText* t : Global::gameOnlinePlayerPingTexts)
-                    {
-                        t->deleteMe();
-                        delete t; INCR_DEL("GUIText");
-                    }
-                    Global::gameOnlinePlayerPingTexts.clear();
-                }
-
-                GuiManager::addGuiToRender(GuiTextureResources::texturePlayersBG);
-                GuiTextureResources::texturePlayersBG->size.y = 0.05f*(1 + (int)Global::gameOnlinePlayers.size()) + 0.01f;
-
-                {
-                    std::string t = Global::nickname;
-                    int p = Global::pingToServer;
-
-                    for (int i = (int)Global::nickname.size() - Maths::numDigits(p); i < 20; i++)
-                    {
-                        t = t + " ";
-                    }
-
-                    t = t + std::to_string(p);
-
-                    t = t + "ms";
-
-                    GUIText* mePing = new GUIText(t, 0.05f, Global::fontConsolas, 0.5f, 0.1f, 1, true); INCR_NEW("GUIText");
-                    Global::gameOnlinePlayerPingTexts.push_back(mePing);
-                }
-
-                int n = 1;
-                Global::gameOnlinePlayersSharedMutex.lock_shared();
-                for (auto const& entry : Global::gameOnlinePlayers)
-                {
-                    std::string t = entry.first;
-                    int p = entry.second->pingMs;
-
-                    for (int i = (int)entry.first.size() - Maths::numDigits(p); i < 20; i++)
-                    {
-                        t = t + " ";
-                    }
-
-                    t = t + std::to_string(p);
-
-                    t = t + "ms";
-
-                    GUIText* text = new GUIText(t, 0.05f, Global::fontConsolas, 0.5f, 0.1f + 0.05f*n, 1, true); INCR_NEW("GUIText");
-                    Global::gameOnlinePlayerPingTexts.push_back(text);
-
-                    n++;
-                }
-                Global::gameOnlinePlayersSharedMutex.unlock_shared();
-            }
-
             //printf("time = %f\n", Global::syncedGlobalTime);
-
-            if (Global::levelToLoad != "")
-            {
-                LevelLoader::loadLevel(Global::levelToLoad);
-                Global::levelToLoad = "";
-            }
         }
+
+        Global::levelMutex.lock();
+        if (Global::levelToLoad != "")
+        {
+            LevelLoader::loadLevel(Global::levelToLoad);
+            Global::levelToLoad = "";
+        }
+        Global::levelMutex.unlock();
 
         //std::fprintf(stdout, "dt: %f\n", dt);
 
@@ -793,7 +718,6 @@ int main(int argc, char** argv)
         delete t2; INCR_DEL("std::thread");
     }
 
-    Sleep(100000);
     return 0;
 }
 
@@ -1300,7 +1224,9 @@ void Global::readThreadBehavoir(TcpClient* client)
                     numRead = client->read(&levelNameLen,        4, 5); CHECK_CONNECTION_R(4,            "Could not read level name len");
                     numRead = client->read(levelName, levelNameLen, 5); CHECK_CONNECTION_R(levelNameLen, "Could not read level name");
 
-                    Global::levelToLoad = levelName; //TODO maybe put a mutex around this
+                    levelMutex.lock();
+                    Global::levelToLoad = levelName;
+                    levelMutex.unlock();
 
                     break;
                 }
@@ -1723,3 +1649,109 @@ GUIText* Global::timeUntilRoundEndText = nullptr;
 Vector3f Global::safeZoneStart;
 Vector3f Global::safeZoneEnd;
 
+void Global::updateMusic()
+{
+    // Update the music when time gets low
+    Source* bgmSource = AudioPlayer::getSource(14);
+
+    if (Global::levelId == LVL_MAP2) //No BGM until last 15 seconds
+    {
+        if (Global::timeUntilRoundEnds > 30.0f)
+        {
+            if (bgmSource->isPlaying())
+            {
+                AudioPlayer::stopBGM();
+                bgmSource->setPitch(1.0f);
+            }
+        }
+        else if (Global::timeUntilRoundEnds > 15.0f)
+        {
+            if (!bgmSource->isPlaying())
+            {
+                AudioPlayer::playBGM(0);
+                bgmSource->setPitch(1.0f);
+            }
+        }
+        else if (Global::timeUntilRoundEnds > 0.0f)
+        {
+            if (!bgmSource->isPlaying())
+            {
+                AudioPlayer::playBGM(0);
+            }
+            bgmSource->setPitch(1.0f + (15.0f - Global::timeUntilRoundEnds)/15.0f);
+        }
+        else
+        {
+            if (bgmSource->isPlaying())
+            {
+                AudioPlayer::stopBGM();
+                bgmSource->setPitch(1.0f);
+                AudioPlayer::play(67, nullptr);
+            }
+        }
+    }
+    else if (Global::levelId == LVL_MAP4)
+    {
+        if (Global::timeUntilRoundStarts > 0.0f)
+        {
+            if (bgmSource->isPlaying())
+            {
+                AudioPlayer::stopBGM();
+                bgmSource->setPitch(1.0f);
+            }
+        }
+        else if (Global::timeUntilRoundEnds > 15.0f)
+        {
+            if (!bgmSource->isPlaying())
+            {
+                AudioPlayer::playBGM(1);
+                bgmSource->setPitch(1.0f);
+            }
+        }
+        else if (Global::timeUntilRoundEnds > 0.0f)
+        {
+            if (!bgmSource->isPlaying())
+            {
+                AudioPlayer::playBGM(1);
+            }
+            bgmSource->setPitch(1.0f + (15.0f - Global::timeUntilRoundEnds)/15.0f);
+        }
+        else
+        {
+            if (bgmSource->isPlaying())
+            {
+                AudioPlayer::stopBGM();
+                bgmSource->setPitch(1.0f);
+                AudioPlayer::play(67, nullptr);
+            }
+        }
+    }
+    else if (Global::levelId == LVL_MAP5)
+    {
+        if (Global::timeUntilRoundStarts > 0.0f)
+        {
+            if (bgmSource->isPlaying())
+            {
+                AudioPlayer::stopBGM();
+                bgmSource->setPitch(1.0f);
+            }
+        }
+        else if (Global::timeUntilRoundEnds > 0.0f)
+        {
+            if (!bgmSource->isPlaying())
+            {
+                AudioPlayer::playBGM(2);
+                bgmSource->setPitch(1.0f);
+            }
+        }
+        else
+        {
+            if (bgmSource->isPlaying())
+            {
+                AudioPlayer::stopBGM();
+                bgmSource->setPitch(1.0f);
+                AudioPlayer::play(67, nullptr);
+            }
+        }
+    }
+}

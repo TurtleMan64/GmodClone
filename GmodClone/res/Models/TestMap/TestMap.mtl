@@ -62,9 +62,9 @@ map_Kd TerrSS13.png
 
 newmtl material_0
 Ns 20.000000
-Ni 0.000000
+Ni 0.4
 d 1.000000
-map_Kd water_material_0.png
+map_Kd Tile.png Tile_N.png
 
 newmtl m3
 Ns 94.000000

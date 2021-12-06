@@ -82,19 +82,21 @@ void AudioPlayer::loadSoundEffects()
     AudioPlayer::buffersSFX.push_back(AudioMaster::loadWAV("res/Audio/SFX/SplatFruit/boing1.wav"));                   //57
     AudioPlayer::buffersSFX.push_back(AudioMaster::loadWAV("res/Audio/SFX/SplatFruit/boing2.wav"));                   //58
     AudioPlayer::buffersSFX.push_back(AudioMaster::loadWAV("res/Audio/SFX/SplatFruit/splat.wav"));                    //59
-    AudioPlayer::buffersSFX.push_back(AudioMaster::loadWAV("res/Audio/SFX/kenney_rpgaudio/footstep05_edit.wav"));     //60
+    AudioPlayer::buffersSFX.push_back(AudioMaster::loadOGG("res/Audio/SFX/kenney_rpgaudio/footstep05_edit.ogg"));     //60
     AudioPlayer::buffersSFX.push_back(AudioMaster::loadWAV("res/Audio/SFX/HL2/misc/smallmedkit1.wav"));               //61
     AudioPlayer::buffersSFX.push_back(AudioMaster::loadOGG("res/Audio/SFX/HL2/physics/glass_largesheet_break1.ogg")); //62
     AudioPlayer::buffersSFX.push_back(AudioMaster::loadOGG("res/Audio/SFX/mixkit/Countdown.ogg"));                    //63
-    AudioPlayer::buffersSFX.push_back(AudioMaster::loadOGG("res/Audio/BGM/musicbox_mono.ogg"));                       //64
-    AudioPlayer::buffersSFX.push_back(AudioMaster::loadOGG("res/Audio/BGM/sheeshflp_mono.ogg"));                      //65
+    AudioPlayer::buffersSFX.push_back(AudioMaster::loadOGG("res/Audio/BGM/musicbox_loop.ogg"));                       //64
+    AudioPlayer::buffersSFX.push_back(AudioMaster::loadOGG("res/Audio/BGM/sheeshflp.ogg"));                           //65
     AudioPlayer::buffersSFX.push_back(AudioMaster::loadOGG("res/Audio/SFX/freesound/splat.ogg"));                     //66
     AudioPlayer::buffersSFX.push_back(AudioMaster::loadOGG("res/Audio/SFX/youtube/buzzer.ogg"));                      //67
 }
 
 void AudioPlayer::loadBGM()
 {
-    AudioPlayer::buffersBGM.push_back(AudioMaster::loadOGG("res/Audio/BGM/mixkit_happytimer.ogg"));
+    AudioPlayer::buffersBGM.push_back(AudioMaster::loadOGG("res/Audio/BGM/mixkit_happytimer.ogg")); //0
+    AudioPlayer::buffersBGM.push_back(AudioMaster::loadOGG("res/Audio/BGM/asian_string.ogg"));      //1
+    AudioPlayer::buffersBGM.push_back(AudioMaster::loadOGG("res/Audio/BGM/sunth.ogg"));             //2
 }
 
 void AudioPlayer::deleteSources()

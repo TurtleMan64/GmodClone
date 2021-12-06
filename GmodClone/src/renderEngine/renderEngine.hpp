@@ -9,15 +9,14 @@ class Camera;
 class ShadowMapMasterRenderer;
 class ShadowMapMasterRenderer2;
 
-#include <unordered_map>
-
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <list>
 #include <vector>
 #include <unordered_map>
-#include "../models/models.hpp"
+#include <string>
 
+#include "../models/models.hpp"
 
 //DisplayManager
 int createDisplay();

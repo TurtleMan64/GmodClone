@@ -456,7 +456,7 @@ GLuint Loader::loadShader(const char* file, int shaderType)
     {
         int length;
         glGetShaderiv(id, GL_INFO_LOG_LENGTH, &length);
-        char* message = (char*)alloca(length * sizeof(char));
+        char message[1000] = {0};
         glGetShaderInfoLog(id, length, &length, message);
         std::cout << "Failed to compile shader!" << std::endl;
         std::cout << message << std::endl;

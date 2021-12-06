@@ -6,7 +6,7 @@
 #include "../main/main.hpp"
 
 float TextMeshCreator::LINE_HEIGHT = 1.0f;
-#define FONT_SIZE text->getFontSize()
+#define FONT_SIZE 1.0f
 
 TextMeshCreator::TextMeshCreator(std::string metaFilename)
 {
@@ -84,7 +84,7 @@ void TextMeshCreator::completeStructure(std::vector<Line> lines, Line currentLin
 }
 */
 
-TextMeshData* TextMeshCreator::createQuadVertices(GUIText* text, std::vector<Line>* lines)
+TextMeshData* TextMeshCreator::createQuadVertices(GUIText* /*text*/, std::vector<Line>* lines)
 {
     float curserX = 0.0f;
     float curserY = 0.0f;

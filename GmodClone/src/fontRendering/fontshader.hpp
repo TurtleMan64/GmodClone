@@ -18,7 +18,8 @@ private:
 
     int location_color;
     int location_translation;
-    int location_scale;
+    int location_fontHeight;
+    int location_ratio;
     int location_alpha;
 
 public:
@@ -36,7 +37,9 @@ public:
 
     void loadTranslation(Vector2f* translation);
 
-    void loadScale(float scale);
+    void loadFontHeight(float fontHeight);
+
+    void loadRatio(float ratio);
 
 protected:
     void bindAttributes();

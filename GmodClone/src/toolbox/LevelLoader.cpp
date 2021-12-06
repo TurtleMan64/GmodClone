@@ -70,9 +70,22 @@ void LevelLoader::loadLevel(std::string mapName)
         return;
     }
 
+    if      (fname == "hub.map")  Global::levelId = LVL_HUB;
+    else if (fname == "map1.map") Global::levelId = LVL_MAP1;
+    else if (fname == "map2.map") Global::levelId = LVL_MAP2;
+    else if (fname == "map3.map") Global::levelId = LVL_MAP3;
+    else if (fname == "eq.map")   Global::levelId = LVL_EQ;
+    else if (fname == "map4.map") Global::levelId = LVL_MAP4;
+    else if (fname == "test.map") Global::levelId = LVL_TEST;
+    else if (fname == "map5.map") Global::levelId = LVL_MAP5;
+
     Global::deleteAllEntites();
 
     if (Global::player->health > 0)
+    {
+        Global::player->health = 100;
+    }
+    else if (Global::levelId == LVL_TEST)
     {
         Global::player->health = 100;
     }
@@ -82,15 +95,6 @@ void LevelLoader::loadLevel(std::string mapName)
 
     std::chrono::high_resolution_clock::time_point timeStart = std::chrono::high_resolution_clock::now();
     bool waitForSomeTime = true;
-
-    if      (fname == "hub.map")  Global::levelId = LVL_HUB;
-    else if (fname == "map1.map") Global::levelId = LVL_MAP1;
-    else if (fname == "map2.map") Global::levelId = LVL_MAP2;
-    else if (fname == "map3.map") Global::levelId = LVL_MAP3;
-    else if (fname == "eq.map")   Global::levelId = LVL_EQ;
-    else if (fname == "map4.map") Global::levelId = LVL_MAP4;
-    else if (fname == "test.map") Global::levelId = LVL_TEST;
-    else if (fname == "map5.map") Global::levelId = LVL_MAP5;
 
     //Reset all lights except sun
     Global::lights[1]->attenuation.set(10000000, 1, 1);

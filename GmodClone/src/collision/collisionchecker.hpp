@@ -38,10 +38,8 @@ public:
 
     static CollisionResult checkCollision(float x, float y, float z, float sphereRadius);
 
-    // Only use for short rays
     static CollisionResult checkCollision(Vector3f* p1, Vector3f* p2);
 
-    // Only use for short rays
     static CollisionResult checkCollision(float x1, float y1, float z1, float x2, float y2, float z2);
 
     static void deleteAllTriangles();

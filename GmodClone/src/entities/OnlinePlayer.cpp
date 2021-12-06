@@ -1,4 +1,5 @@
 #include <list>
+#include <cstring>
 
 #include "onlineplayer.hpp"
 #include "../main/main.hpp"
@@ -14,6 +15,8 @@
 #include "camera.hpp"
 #include "ball.hpp"
 #include "ladder.hpp"
+#include "dummy.hpp"
+#include "../fontMeshCreator/guitext.hpp"
 
 std::list<TexturedModel*> OnlinePlayer::modelsHead;
 std::list<TexturedModel*> OnlinePlayer::modelsFall;
@@ -48,6 +51,15 @@ OnlinePlayer::~OnlinePlayer()
     {
         delete head; INCR_DEL("Dummy");
         head = nullptr;
+    }
+
+    if (nametag != nullptr)
+    {
+        Global::gameOnlinePlayersSharedMutex.lock();
+        Global::gameOnlinePlayerNametagsToDelete.push_back(nametag);
+        Global::gameOnlinePlayersSharedMutex.unlock();
+
+        nametag = nullptr;
     }
 }
 
@@ -517,6 +529,31 @@ void OnlinePlayer::step()
         visible = false;
         head->visible = false;
     }
+
+    Vector3f nametagPos = position;
+    nametagPos.y += eyeHeightSmooth + 0.25f;
+
+    Vector3f diff = Global::gameCamera->eye - nametagPos;
+
+    Vector2f screenPos = Maths::calcScreenCoordsOfWorldPoint(&nametagPos);
+
+    if (nametag == nullptr)
+    {
+        nametag = new GUIText(name, 0.1f, Global::fontConsolas, -0.5f, -0.5f, 4, true); INCR_NEW("GUIText");
+    }
+
+    if (health <= 0)
+    {
+        nametag->visible = false;
+    }
+    else
+    {
+        //todo: collision check
+        nametag->visible = true;
+    }
+
+    nametag->fontSize = 0.15f / diff.length();
+    nametag->position = screenPos;
 }
 
 std::vector<Entity*>* OnlinePlayer::getEntitiesToRender()

@@ -108,10 +108,18 @@ CollisionResult CollisionChecker::checkCollision(float x1, float y1, float z1, f
 
     std::vector<std::vector<Triangle3D*>*> chunks;
 
-    addChunkToDataStruct(getTriangleChunk(x1, z1), &chunks);
-    addChunkToDataStruct(getTriangleChunk(x1, z2), &chunks);
-    addChunkToDataStruct(getTriangleChunk(x2, z1), &chunks);
-    addChunkToDataStruct(getTriangleChunk(x2, z2), &chunks);
+    float xMin = fminf(x1, x2);
+    float xMax = fmaxf(x1, x2);
+    float zMin = fminf(z1, z2);
+    float zMax = fmaxf(z1, z2);
+
+    for (float x = xMin; x <= xMax; x += chunkedTrianglesChunkSize)
+    {
+        for (float z = zMin; z <= zMax; z += chunkedTrianglesChunkSize)
+        {
+            addChunkToDataStruct(getTriangleChunk(x, z), &chunks);
+        }
+    }
 
     Vector3f rayOrigin(x1, y1, z1);
     Vector3f rayDir(x2 - x1, y2 - y1, z2 - z1);

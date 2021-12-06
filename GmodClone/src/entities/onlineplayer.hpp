@@ -2,11 +2,12 @@
 #define ONLINEPLAYER_H
 
 class TexturedModel;
+class GUIText;
+class Dummy;
 
 #include <list>
 #include "entity.hpp"
 #include "../toolbox/vector.hpp"
-#include "dummy.hpp"
 
 class OnlinePlayer : public Entity
 {
@@ -19,6 +20,7 @@ private:
     static std::list<TexturedModel*> modelsStand;
 
     Dummy* head = nullptr;
+    GUIText* nametag = nullptr;
 
 public:
     bool inputAction3 = false;

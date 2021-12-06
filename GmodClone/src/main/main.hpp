@@ -87,6 +87,7 @@ public:
     static int gameState;
 
     static int levelId;
+    static std::shared_mutex levelMutex;
     static std::string levelToLoad;
 
     static Camera* gameCamera;
@@ -134,6 +135,7 @@ public:
     static std::string nickname;
     static std::shared_mutex gameOnlinePlayersSharedMutex;
     static std::unordered_map<std::string, OnlinePlayer*> gameOnlinePlayers;
+    static std::vector<GUIText*> gameOnlinePlayerNametagsToDelete;
     static std::vector<GUIText*> gameOnlinePlayerPingTexts;
     static std::vector<std::string> serverSettings;
     static TcpClient* serverClient;
@@ -165,5 +167,7 @@ public:
 
     static Vector3f safeZoneStart;
     static Vector3f safeZoneEnd;
+
+    static void updateMusic();
 };
 #endif

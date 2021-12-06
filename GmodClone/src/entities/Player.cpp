@@ -58,6 +58,19 @@ void Player::step()
 {
     Vector3f yAxis(0, -1, 0);
 
+    if (Global::levelId == LVL_MAP5 || Global::levelId == LVL_MAP4)
+    {
+        if (Global::timeUntilRoundEnds > 0.0f)
+        {
+            if (position.y < Global::safeZoneStart.y - 2.0f && health > 0)
+            {
+                health = 0;
+                AudioPlayer::play(66, nullptr);
+                Global::sendAudioMessageToServer(66, &position);
+            }
+        }
+    }
+
     //If we are dead, fly around as a ghost
     if (health <= 0)
     {
@@ -85,6 +98,8 @@ void Player::step()
 
         GuiManager::addGuiToRender(GuiTextureResources::textureHealthbarBG);
         weaponModel->visible = false;
+
+        vel.set(0, 0, 0);
 
         return;
     }

@@ -4,7 +4,7 @@
 #include <GLFW/glfw3.h>
 #include <Windows.h>
 #else
-#include "/usr/include/GLFW/glfw3.h"
+//#include "/usr/include/GLFW/glfw3.h"
 #endif
 
 #include <iostream>
@@ -31,6 +31,8 @@
 #include <iostream>
 #include <fstream>
 #endif
+
+#ifdef _WIN32
 
 InputStruct Input::inputs{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
 
@@ -541,7 +543,9 @@ void Input::keyboardCallback(GLFWwindow* /**/, int key, int /**/, int action, in
                                 std::vector<std::string> tokens = split(Input::chatInput, ' ');
                                 if (tokens.size() > 1)
                                 {
+                                    Global::levelMutex.lock();
                                     Global::levelToLoad = tokens[1];
+                                    Global::levelMutex.unlock();
                                 }
                             }
                         }
@@ -642,3 +646,5 @@ void Input::keyboardCallback(GLFWwindow* /**/, int key, int /**/, int action, in
         }
     }
 }
+
+#endif

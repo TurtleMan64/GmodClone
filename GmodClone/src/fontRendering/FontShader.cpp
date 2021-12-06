@@ -61,7 +61,8 @@ void FontShader::getAllUniformLocations()
 {
     location_color = getUniformLocation("color");
     location_translation = getUniformLocation("translation");
-    location_scale = getUniformLocation("scale");
+    location_fontHeight = getUniformLocation("fontHeight");
+    location_ratio = getUniformLocation("ratio");
     location_alpha = getUniformLocation("alpha");
 }
 
@@ -80,9 +81,14 @@ void FontShader::loadTranslation(Vector2f* translation)
     load2DVector(location_translation, translation);
 }
 
-void FontShader::loadScale(float scale)
+void FontShader::loadFontHeight(float fontHeight)
 {
-    loadFloat(location_scale, scale);
+    loadFloat(location_fontHeight, fontHeight);
+}
+
+void FontShader::loadRatio(float ratio)
+{
+    loadFloat(location_ratio, ratio);
 }
 
 int FontShader::getUniformLocation(const char* uniformName)
@@ -153,7 +159,7 @@ GLuint FontShader::loadShader(const char* fileName, int type)
     {
         int length;
         glGetShaderiv(id, GL_INFO_LOG_LENGTH, &length);
-        char* message = (char*)alloca(length * sizeof(char));
+        char message[1000] = {0};
         glGetShaderInfoLog(id, length, &length, message);
         std::cout << "Failed to compile shader!" << std::endl;
         std::cout << message << std::endl;

@@ -4,6 +4,8 @@
 
 #include "tcpclient.hpp"
 
+#ifdef _WIN32
+
 // Link with ws2_32.lib
 #pragma comment(lib, "Ws2_32.lib")
 
@@ -168,8 +170,8 @@ int TcpClient::write(void* bytes, int numBytesToSend, int timeoutSec)
     {
         if (timeoutSec > 0)
         {
-            fd_set setWrite = {0};
-            struct timeval timeout = {0};
+            fd_set setWrite;
+            struct timeval timeout;
             FD_ZERO(&setWrite);
             FD_SET(sd, &setWrite);
 
@@ -229,8 +231,8 @@ int TcpClient::read(void* buffer, int numBytesToRead, int timeoutSec)
     {
         if (timeoutSec > 0)
         {
-            fd_set setRead = {0};
-            struct timeval timeout = {0};
+            fd_set setRead;
+            struct timeval timeout;
             FD_ZERO(&setRead);
             FD_SET(sd, &setRead);
             timeout.tv_sec = timeoutSec;
@@ -280,3 +282,5 @@ void TcpClient::close()
         sd = INVALID_SOCKET;
     }
 }
+
+#endif

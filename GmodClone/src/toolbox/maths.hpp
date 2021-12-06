@@ -170,7 +170,7 @@ public:
     //tests if a point is inside a cylinder
     static bool pointIsInCylinder(Vector3f* point, Vector3f* cylinderEnd1, Vector3f* cylinderEnd2, float cylinderRadius);
 
-    //coordinates are 0,0 for middle of screen, -1, -1 for top left, 1,1 for bot right
+    //coordinates are (0, 0) for top left, (0.5, 0.5) for middle, (1, 1) for bot right
     static Vector2f calcScreenCoordsOfWorldPoint(Vector3f* worldPoint);
 
     static Vector3f closestPointFromPointToLine(Vector3f* point, Vector3f* p1, Vector3f* p2);
