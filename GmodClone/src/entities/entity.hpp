@@ -58,77 +58,17 @@ public:
 
     virtual void step();
 
-    virtual const bool isVehicle();
-
-    virtual const bool isEmeraldPiece();
-
-    virtual const bool isGoalTrigger();
-
-    virtual const bool isEnemy();
-
-    virtual const bool isPoint();
-
-    void increasePosition(float dx, float dy, float dz);
-
-    void increaseRotation(float dx, float dy, float dz);
-
     virtual std::vector<Entity*>* getEntitiesToRender();
 
     virtual std::list<TexturedModel*>* getModels();
 
-    Vector3f* getPosition();
-    void setPosition(Vector3f* newPosition);
-    void setPosition(float newX, float newY, float newZ);
-
-    Vector3f* getBaseColor();
-    void setBaseColor(float red, float green, float blue);
-
-    const float getRotX();
-    void setRotX(float newRotX);
-
-    const float getRotY();
-    void setRotY(float newRotY);
-
-    const float getRotZ();
-    void setRotZ(float newRotZ);
-
-    const float getRotSpin();
-    void setRotSpin(float newRotSpin);
-
-    const float getScale();
-    void setScale(float newScale);
-
-    const bool getVisible();
-    void setVisible(bool newVisible);
-
-    const float getX();
-
-    const float getY();
-
-    const float getZ();
-
-    void setX(float newX);
-
-    void setY(float newY);
-
-    void setZ(float newZ);
-
-    Matrix4f* getTransformationMatrix();
-
     void updateTransformationMatrix();
 
-    //for kart stages
     void updateTransformationMatrixYXZY();
 
     void updateTransformationMatrix(float scaleX, float scaleY, float scaleZ);
 
     void updateTransformationMatrixYXZ();
-
-    virtual const bool canLightdashOn();
-
-    virtual const bool canHomingAttackOn();
-
-    virtual const Vector3f getHomingCenter();
 
     virtual void die();
 

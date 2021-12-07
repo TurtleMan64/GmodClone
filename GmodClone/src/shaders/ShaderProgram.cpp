@@ -72,7 +72,7 @@ void ShaderProgram::loadLights()
 
     // The sun is extremely far away
     Vector3f position = Global::lights[0]->direction.scaleCopy(-1000000000.0f);
-	Vector4f eyeSpacePos1(position.x,position.y, position.z, 1.0f);
+    Vector4f eyeSpacePos1(position.x,position.y, position.z, 1.0f);
     Vector4f eyeSpacePos2 = viewMatrix.transform(&eyeSpacePos1);
     Vector3f eyeSpacePos3(eyeSpacePos2.x, eyeSpacePos2.y, eyeSpacePos2.z);
 
@@ -84,7 +84,7 @@ void ShaderProgram::loadLights()
     for (int i = 1; i < 4; i++)
     {
         position = Global::lights[i]->position;
-	    eyeSpacePos1.set(position.x,position.y, position.z, 1.0f);
+        eyeSpacePos1.set(position.x,position.y, position.z, 1.0f);
         eyeSpacePos2 = viewMatrix.transform(&eyeSpacePos1);
         eyeSpacePos3.set(eyeSpacePos2.x, eyeSpacePos2.y, eyeSpacePos2.z);
 

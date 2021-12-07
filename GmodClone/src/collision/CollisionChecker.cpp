@@ -178,7 +178,7 @@ CollisionResult CollisionChecker::checkCollision(float x1, float y1, float z1, f
 
 void CollisionChecker::deleteAllTriangles()
 {
-    for (int i = 0; i < CollisionChecker::triangles.size(); i++)
+    for (int i = 0; i < (int)CollisionChecker::triangles.size(); i++)
     {
         delete CollisionChecker::triangles[i]; INCR_DEL("Triangle3D");
         CollisionChecker::triangles[i] = nullptr;
@@ -186,7 +186,7 @@ void CollisionChecker::deleteAllTriangles()
 
     CollisionChecker::triangles.clear();
 
-    for (int i = 0; i < mapOfTriangles.size(); i++)
+    for (int i = 0; i < (int)mapOfTriangles.size(); i++)
     {
         delete mapOfTriangles[i]; INCR_DEL("std::vector<Triangle3D*>");
     }
@@ -200,7 +200,7 @@ void CollisionChecker::addTriangle(Triangle3D* tri)
 
 void CollisionChecker::constructChunkDatastructure()
 {
-    for (int i = 0; i < mapOfTriangles.size(); i++)
+    for (int i = 0; i < (int)mapOfTriangles.size(); i++)
     {
         delete mapOfTriangles[i]; INCR_DEL("std::vector<Triangle3D*>");
     }
@@ -212,7 +212,7 @@ void CollisionChecker::constructChunkDatastructure()
     float maxX = triangles[0]->maxX;
     float maxZ = triangles[0]->maxZ;
 
-    for (int i = 1; i < triangles.size(); i++)
+    for (int i = 1; i < (int)triangles.size(); i++)
     {
         Triangle3D* tri = triangles[i];
 
@@ -261,7 +261,7 @@ void CollisionChecker::constructChunkDatastructure()
 
     //printf("Created %d clumps\n", (int)mapOfTriangles.size());
 
-    for (int i = 0; i < triangles.size(); i++)
+    for (int i = 0; i < (int)triangles.size(); i++)
     {
         Triangle3D* tri = triangles[i];
         int xIdxStart = (int)((tri->minX - chunkedTrianglesMinX)/chunkedTrianglesChunkSize);

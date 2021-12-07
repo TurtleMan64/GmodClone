@@ -272,9 +272,15 @@ int Maths::clamp(int lower, int value, int higher)
 
 unsigned int Maths::getSignBit(float value)
 {
-    unsigned int v = *(unsigned int*)&value; //get bits of value casted as an int
+    //unsigned int v = *(unsigned int*)&value; //get bits of value casted as an int
 
-    return v & 0b10000000000000000000000000000000;
+    //return v & 0b10000000000000000000000000000000;
+    if (value >= 0.0f)
+    {
+        return 0;
+    }
+
+    return 1;
 }
 
 int Maths::numDigits(int number)

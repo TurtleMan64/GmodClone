@@ -109,7 +109,7 @@ void TcpClient::attemptConnection(char* ip, int port, int timeoutSec)
     unsigned long iMode = 1;
     int iResult = ioctlsocket(sd, FIONBIO, &iMode);
     if (iResult != NO_ERROR)
-    {	
+    {    
         closesocket(sd);
         sd = INVALID_SOCKET;
         return;
@@ -121,7 +121,7 @@ void TcpClient::attemptConnection(char* ip, int port, int timeoutSec)
     iMode = 0;
     iResult = ioctlsocket(sd, FIONBIO, &iMode);
     if (iResult != NO_ERROR)
-    {	
+    {    
 
     }
 

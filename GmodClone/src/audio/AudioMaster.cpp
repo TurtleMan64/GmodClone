@@ -205,142 +205,149 @@ ALuint AudioMaster::loadOGG(const char* fileName)
 
 ALuint AudioMaster::loadWAV(const char* fileName)
 {
+    FILE* fp = nullptr;
+
     #ifdef _WIN32
-	FILE* fp = nullptr;
-	errno_t e = fopen_s(&fp, fileName, "rb");
+    errno_t e = fopen_s(&fp, (Global::pathToEXE+fileName).c_str(), "rb");
 
-	if (fp == nullptr || e != 0)
-	{
-		fprintf(stdout, "Error when trying to open '%s'\n", fileName);
-		return AL_NONE;
-	}
-
-	char type[4];
-	int size, chunkSize;
-	short formatType, channels;
-	int sampleRate, avgBytesPerSec;
-	short bytesPerSample, bitsPerSample;
-	int dataSize;
-
-	fread(type, sizeof(char), 4, fp);
-	if (type[0] != 'R' ||
-		type[1] != 'I' ||
-		type[2] != 'F' ||
-		type[3] != 'F')
-	{
-		fprintf(stderr, "No RIFF\n");
-		fclose(fp);
-		return 0;
-	}
-
-	fread(&size, sizeof(int), 1, fp);
-	fread(type, sizeof(char), 4, fp);
-	if (type[0] != 'W' ||
-		type[1] != 'A' ||
-		type[2] != 'V' ||
-		type[3] != 'E')
-	{
-		fprintf(stderr, "not WAVE\n");
-		fclose(fp);
-		return 0;
-	}
-
-	fread(type, sizeof(char), 4, fp);
-	if (type[0] != 'f' ||
-		type[1] != 'm' ||
-		type[2] != 't' ||
-		type[3] != ' ')
-	{
-		fprintf(stderr, "not fmt\n");
-		fclose(fp);
-		return 0;
-	}
-
-	fread(&chunkSize,      sizeof(int  ), 1, fp);
-	fread(&formatType,     sizeof(short), 1, fp);
-	fread(&channels,       sizeof(short), 1, fp);
-	fread(&sampleRate,     sizeof(int  ), 1, fp);
-	fread(&avgBytesPerSec, sizeof(int  ), 1, fp);
-	fread(&bytesPerSample, sizeof(short), 1, fp);
-	fread(&bitsPerSample,  sizeof(short), 1, fp);
-
-	fread(type, sizeof(char), 4, fp);
-	if (type[0] != 'd' ||
-		type[1] != 'a' ||
-		type[2] != 't' ||
-		type[3] != 'a')
-	{
-		fprintf(stderr, "Missing DATA\n");
-		fclose(fp);
-		return 0;
-	}
-
-	fread(&dataSize, sizeof(int), 1, fp);
-
-	unsigned char* buf = new unsigned char[dataSize]; INCR_NEW("UNSIGNED_CHAR_ARRARY");
-	fread(buf, sizeof(char), dataSize, fp);
-
-
-
-	ALuint buffer;
-	ALuint frequency = sampleRate;
-	ALenum format = 0;
-
-	alGenBuffers(1, &buffer);
-
-	switch (bitsPerSample)
-	{
-	case 8:
-		switch (channels)
-		{
-		case 1:
-			format = AL_FORMAT_MONO8;
-            //printf("MONO 8\n");
-			break;
-
-		case 2:
-			format = AL_FORMAT_STEREO8;
-            //printf("STER 8\n");
-			break;
-
-		default:
-			fprintf(stderr, "unknown sound format\n");
-		}
-		break;
-
-	case 16:
-		switch (channels)
-		{
-		case 1:
-			format = AL_FORMAT_MONO16;
-            //printf("MONO 16\n");
-			break;
-
-		case 2:
-			format = AL_FORMAT_STEREO16;
-            //printf("STER 16\n");
-			break;
-
-		default:
-			fprintf(stderr, "unknown sound format\n");
-		}
-		break;
-
-	default:
-		fprintf(stderr, "unknown sound format\n");
-		break;
-	}
-
-	alBufferData(buffer, format, buf, dataSize, frequency);
-
-	delete[] buf; INCR_DEL("UNSIGNED_CHAR_ARRARY");
-
-	fclose(fp);
-
-	return buffer;
+    if (fp == nullptr || e != 0)
+    {
+        fprintf(stdout, "Error when trying to open '%s'\n", (Global::pathToEXE+fileName).c_str());
+        return AL_NONE;
+    }
     #else
-    return AL_NONE;
+    fp = fopen((Global::pathToEXE+fileName).c_str(), "rb");
+    if (fp == nullptr)
+    {
+        fprintf(stderr, "Error when trying to open '%s'\n", (Global::pathToEXE+fileName).c_str());
+        perror("error");
+        return AL_NONE;
+    }
     #endif
+
+    char type[4];
+    int size, chunkSize;
+    short formatType, channels;
+    int sampleRate, avgBytesPerSec;
+    short bytesPerSample, bitsPerSample;
+    int dataSize;
+
+    fread(type, sizeof(char), 4, fp);
+    if (type[0] != 'R' ||
+        type[1] != 'I' ||
+        type[2] != 'F' ||
+        type[3] != 'F')
+    {
+        fprintf(stderr, "No RIFF\n");
+        fclose(fp);
+        return 0;
+    }
+
+    fread(&size, sizeof(int), 1, fp);
+    fread(type, sizeof(char), 4, fp);
+    if (type[0] != 'W' ||
+        type[1] != 'A' ||
+        type[2] != 'V' ||
+        type[3] != 'E')
+    {
+        fprintf(stderr, "not WAVE\n");
+        fclose(fp);
+        return 0;
+    }
+
+    fread(type, sizeof(char), 4, fp);
+    if (type[0] != 'f' ||
+        type[1] != 'm' ||
+        type[2] != 't' ||
+        type[3] != ' ')
+    {
+        fprintf(stderr, "not fmt\n");
+        fclose(fp);
+        return 0;
+    }
+
+    fread(&chunkSize,      sizeof(int  ), 1, fp);
+    fread(&formatType,     sizeof(short), 1, fp);
+    fread(&channels,       sizeof(short), 1, fp);
+    fread(&sampleRate,     sizeof(int  ), 1, fp);
+    fread(&avgBytesPerSec, sizeof(int  ), 1, fp);
+    fread(&bytesPerSample, sizeof(short), 1, fp);
+    fread(&bitsPerSample,  sizeof(short), 1, fp);
+
+    fread(type, sizeof(char), 4, fp);
+    if (type[0] != 'd' ||
+        type[1] != 'a' ||
+        type[2] != 't' ||
+        type[3] != 'a')
+    {
+        fprintf(stderr, "Missing DATA\n");
+        fclose(fp);
+        return 0;
+    }
+
+    fread(&dataSize, sizeof(int), 1, fp);
+
+    unsigned char* buf = new unsigned char[dataSize]; INCR_NEW("UNSIGNED_CHAR_ARRARY");
+    fread(buf, sizeof(char), dataSize, fp);
+
+
+
+    ALuint buffer;
+    ALuint frequency = sampleRate;
+    ALenum format = 0;
+
+    alGenBuffers(1, &buffer);
+
+    switch (bitsPerSample)
+    {
+    case 8:
+        switch (channels)
+        {
+        case 1:
+            format = AL_FORMAT_MONO8;
+            //printf("MONO 8\n");
+            break;
+
+        case 2:
+            format = AL_FORMAT_STEREO8;
+            //printf("STER 8\n");
+            break;
+
+        default:
+            fprintf(stderr, "unknown sound format\n");
+        }
+        break;
+
+    case 16:
+        switch (channels)
+        {
+        case 1:
+            format = AL_FORMAT_MONO16;
+            //printf("MONO 16\n");
+            break;
+
+        case 2:
+            format = AL_FORMAT_STEREO16;
+            //printf("STER 16\n");
+            break;
+
+        default:
+            fprintf(stderr, "unknown sound format\n");
+        }
+        break;
+
+    default:
+        fprintf(stderr, "unknown sound format\n");
+        break;
+    }
+
+    alBufferData(buffer, format, buf, dataSize, frequency);
+
+    delete[] buf; INCR_DEL("UNSIGNED_CHAR_ARRARY");
+
+    fclose(fp);
+
+    return buffer;
 }
 
 void AudioMaster::cleanUp()

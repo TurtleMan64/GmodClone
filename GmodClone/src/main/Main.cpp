@@ -1514,7 +1514,7 @@ void Global::updateChatMessages()
         GUIText* tex = new GUIText(msg, 0.02f, Global::fontConsolas, 0.01f, 0.99f-0.025f, 6, true); INCR_NEW("GUIText");
         tex->color = chatColorsToAdd[i];
 
-        for (int c = 0; c < chatTexts.size(); c++)
+        for (int c = 0; c < (int)chatTexts.size(); c++)
         {
             GUIText* t = chatTexts[c];
             t->position.y -= 0.025f;
@@ -1557,7 +1557,7 @@ void Global::updateChatMessages()
 
     float highestAlpha = 0.0f;
 
-    for (int i = 0; i < chatTexts.size(); i++)
+    for (int i = 0; i < (int)chatTexts.size(); i++)
     {
         GUIText* t = chatTexts[i];
         t->alpha = 0.85f;

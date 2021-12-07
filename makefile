@@ -13,7 +13,6 @@ INC_FLAGS := $(addprefix -I,$(INC_DIRS)) `pkg-config --cflags glfw3 ogg vorbis v
 CPPFLAGS ?= -O2 -Wall -Wextra $(INC_FLAGS) -MMD -MP # -D_GLIBCXX_USE_CXX11_ABI=0
 LDFLAGS := -lSOIL -lSDL2 -lm -lpthread -ldl `pkg-config --static --libs glfw3 ogg vorbis vorbisfile openal gl`
 CPPFLAGS += -D'fopen_s(pFile,filename,mode)=((*(pFile))=fopen((filename),(mode)))==NULL'
-CPPFLAGS += -std=c++17
 
 $(BUILD_DIR)/$(TARGET_EXEC): $(OBJS)
 	$(CXX) $(OBJS) -o $@ $(LDFLAGS)
@@ -26,7 +25,7 @@ $(BUILD_DIR)/%.c.o: %.c
 # c++ source
 $(BUILD_DIR)/%.cpp.o: %.cpp
 	$(MKDIR_P) $(dir $@)
-	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $< -o $@
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -std=c++17 -c $< -o $@
 
 
 .PHONY: clean

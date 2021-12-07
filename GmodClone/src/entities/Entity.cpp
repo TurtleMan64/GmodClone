@@ -50,31 +50,6 @@ void Entity::step()
 
 }
 
-const bool Entity::isVehicle()
-{
-    return false;
-}
-
-const bool Entity::isEmeraldPiece()
-{
-    return false;
-}
-
-const bool Entity::isGoalTrigger()
-{
-    return false;
-}
-
-const bool Entity::isEnemy()
-{
-    return false;
-}
-
-const bool Entity::isPoint()
-{
-    return false;
-}
-
 void Entity::die()
 {
     
@@ -95,20 +70,6 @@ void Entity::getHit(Vector3f* /*hitPos*/, Vector3f* /*hitDir*/, int /*weapon*/)
 
 }
 
-void Entity::increasePosition(float dx, float dy, float dz)
-{
-    position.x += dx;
-    position.y += dy;
-    position.z += dz;
-}
-
-void Entity::increaseRotation(float dx, float dy, float dz)
-{
-    rotX += dx;
-    rotY += dy;
-    rotZ += dz;
-}
-
 std::vector<Entity*>* Entity::getEntitiesToRender()
 {
     return nullptr;
@@ -119,123 +80,12 @@ std::list<TexturedModel*>* Entity::getModels()
     return nullptr;
 }
 
-Vector3f* Entity::getPosition()
-{
-    return &position;
-}
-void Entity::setPosition(Vector3f* newPos)
-{
-    this->position.x = newPos->x;
-    this->position.y = newPos->y;
-    this->position.z = newPos->z;
-}
-void Entity::setPosition(float newX, float newY, float newZ)
-{
-    this->position.x = newX;
-    this->position.y = newY;
-    this->position.z = newZ;
-}
-
-Vector3f* Entity::getBaseColor()
-{
-    return &baseColor;
-}
-
-void Entity::setBaseColor(float red, float green, float blue)
-{
-    baseColor.set(red, green, blue);
-}
-
 void Entity::setModelsRenderOrder(std::list<TexturedModel*>* models, char newOrder)
 {
     for (TexturedModel* model : (*models))
     {
         model->renderOrder = newOrder;
     }
-}
-
-const float Entity::getRotX()
-{
-    return rotX;
-}
-void Entity::setRotX(float newRotX)
-{
-    rotX = newRotX;
-}
-
-const float Entity::getRotY()
-{
-    return rotY;
-}
-void Entity::setRotY(float newRotY)
-{
-    rotY = newRotY;
-}
-
-const float Entity::getRotZ()
-{
-    return rotZ;
-}
-void Entity::setRotZ(float newRotZ)
-{
-    rotZ = newRotZ;
-}
-
-const float Entity::getRotSpin()
-{
-    return rotRoll;
-}
-void Entity::setRotSpin(float newRotSpin)
-{
-    rotRoll = newRotSpin;
-}
-
-const float Entity::getScale()
-{
-    return scale;
-}
-void Entity::setScale(float newScale)
-{
-    scale = newScale;
-}
-
-const bool Entity::getVisible()
-{
-    return visible;
-}
-void Entity::setVisible(bool newVisible)
-{
-    visible = newVisible;
-}
-
-const float Entity::getX()
-{
-    return position.x;
-}
-
-const float Entity::getY()
-{
-    return position.y;
-}
-
-const float Entity::getZ()
-{
-    return position.z;
-}
-
-void Entity::setX(float newX)
-{
-    position.x = newX;
-}
-
-void Entity::setY(float newY)
-{
-    position.y = newY;
-}
-
-void Entity::setZ(float newZ)
-{
-    position.z = newZ;
 }
 
 void Entity::updateTransformationMatrix()
@@ -256,26 +106,6 @@ void Entity::updateTransformationMatrix(float scaleX, float scaleY, float scaleZ
 void Entity::updateTransformationMatrixYXZ()
 {
     Maths::createTransformationMatrixYXZ(&transformationMatrix, &position, rotX, rotY, rotZ, scale);
-}
-
-Matrix4f* Entity::getTransformationMatrix()
-{
-    return &transformationMatrix;
-}
-
-const bool Entity::canLightdashOn()
-{
-    return false;
-}
-
-const bool Entity::canHomingAttackOn()
-{
-    return false;
-}
-
-const Vector3f Entity::getHomingCenter()
-{
-    return Vector3f(0,0,0);
 }
 
 void Entity::deleteModels(std::list<TexturedModel*>* modelsToDelete)

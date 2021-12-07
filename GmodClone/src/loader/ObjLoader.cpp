@@ -1225,21 +1225,21 @@ Vertex* ObjLoader::dealWithAlreadyProcessedVertex(
 void ObjLoader::calculateTangents(Vertex* v0, Vertex* v1, Vertex* v2, std::vector<Vector2f>* textures)
 {
     Vector3f delatPos1 = v1->position - v0->position;
-	Vector3f delatPos2 = v2->position - v0->position;
-	Vector2f uv0 = (*textures)[v0->getTextureIndex()];
-	Vector2f uv1 = (*textures)[v1->getTextureIndex()];
-	Vector2f uv2 = (*textures)[v2->getTextureIndex()];
-	Vector2f deltaUv1 = uv1 - uv0;
-	Vector2f deltaUv2 = uv2 - uv0;
+    Vector3f delatPos2 = v2->position - v0->position;
+    Vector2f uv0 = (*textures)[v0->getTextureIndex()];
+    Vector2f uv1 = (*textures)[v1->getTextureIndex()];
+    Vector2f uv2 = (*textures)[v2->getTextureIndex()];
+    Vector2f deltaUv1 = uv1 - uv0;
+    Vector2f deltaUv2 = uv2 - uv0;
 
-	float r = 1.0f / (deltaUv1.x * deltaUv2.y - deltaUv1.y * deltaUv2.x);
-	delatPos1.scale(deltaUv2.y);
-	delatPos2.scale(deltaUv1.y);
-	Vector3f tangent = delatPos1 - delatPos2;
-	tangent.scale(r);
-	v0->addTangent(tangent);
-	v1->addTangent(tangent);
-	v2->addTangent(tangent);
+    float r = 1.0f / (deltaUv1.x * deltaUv2.y - deltaUv1.y * deltaUv2.x);
+    delatPos1.scale(deltaUv2.y);
+    delatPos2.scale(deltaUv1.y);
+    Vector3f tangent = delatPos1 - delatPos2;
+    tangent.scale(r);
+    v0->addTangent(tangent);
+    v1->addTangent(tangent);
+    v2->addTangent(tangent);
 }
 
 void ObjLoader::convertDataToArrays(

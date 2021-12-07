@@ -118,7 +118,7 @@ void LevelLoader::loadLevel(std::string mapName)
     std::vector<std::string> collisionModel = split(modelCollisionLine, ' ');
     CollisionChecker::deleteAllTriangles();
     CollisionModel* cm = ObjLoader::loadCollisionModel(collisionModel[0], collisionModel[1]);
-    for (int i = 0; i < cm->triangles.size(); i++)
+    for (int i = 0; i < (int)cm->triangles.size(); i++)
     {
         CollisionChecker::addTriangle(cm->triangles[i]);
     }
