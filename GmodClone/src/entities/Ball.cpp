@@ -94,13 +94,12 @@ void Ball::getHit(Vector3f* /*hitPos*/, Vector3f* hitDir, int weapon)
 {
     vel = *hitDir;
 
-    if (weapon == 0)
+    switch (weapon)
     {
-        vel.setLength(10.0f);
-    }
-    else
-    {
-        vel.setLength(30.0f);
+        case WEAPON_FIST: vel.setLength(10.0f); break;
+        case WEAPON_BAT:  vel.setLength(30.0f); break;
+        case WEAPON_GUN:  vel.setLength(50.0f); break;
+        default: break;
     }
 }
 

@@ -25,6 +25,12 @@ class Triangle3D;
 #define ENTITY_CHANDELIER 11
 #define ENTITY_FENCE_PLATFORM 12
 #define ENTITY_STEP_FALL_PLATFORM 13
+#define ENTITY_BAT 14
+
+#define WEAPON_FIST 0
+#define WEAPON_BAT 1
+#define WEAPON_GUN 2
+
 
 class Entity
 {

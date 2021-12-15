@@ -20,8 +20,11 @@ private:
 
     float flickerTimer = 0.0f;
 
+    float attenuation2;
+    float attenuation3;
+
 public:
-    Chandelier(std::string name, Vector3f pos, int type, float rotY, int lightIdx);
+    Chandelier(std::string name, Vector3f pos, int type, float rotY, float attenuation2, float attenuation3, int lightIdx);
     ~Chandelier();
 
     void step();

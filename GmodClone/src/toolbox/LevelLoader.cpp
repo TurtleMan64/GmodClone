@@ -37,6 +37,7 @@
 #include "../entities/chandelier.hpp"
 #include "../entities/fenceplatform.hpp"
 #include "../entities/stepfallplatform.hpp"
+#include "../entities/bat.hpp"
 
 void LevelLoader::loadLevel(std::string mapName)
 {
@@ -85,13 +86,22 @@ void LevelLoader::loadLevel(std::string mapName)
     {
         Global::player->health = 100;
     }
-    else if (Global::levelId == LVL_TEST)
+    else if (Global::levelId == LVL_HUB)
     {
         Global::player->health = 100;
     }
     Global::player->reset();
 
-    Global::timeUntilRoundStarts = 7.0f;
+    if (Global::levelId == LVL_HUB)
+    {
+        Global::timeUntilRoundStarts = -1.0f;
+    }
+    else
+    {
+        Global::timeUntilRoundStarts = 7.0f;
+    }
+
+    AudioPlayer::stopBGM();
 
     std::chrono::high_resolution_clock::time_point timeStart = std::chrono::high_resolution_clock::now();
     bool waitForSomeTime = true;
@@ -230,9 +240,9 @@ void LevelLoader::loadLevel(std::string mapName)
         int c = 0;
         for (int y = 15; y < 34; y+=8)
         {
-            for (int x = -3; x <= 3; x++)
+            for (int x = -2; x <= 2; x++)
             {
-                for (int z = -3; z <= 3; z++)
+                for (int z = -2; z <= 2; z++)
                 {
                     std::string id = "SFP" + std::to_string(c);
 
@@ -372,7 +382,8 @@ void LevelLoader::processLine(std::vector<std::string>& dat)
                 Vector3f(toF(dat[2]), toF(dat[3]), toF(dat[4])), //position
                 toI(dat[5]), //type
                 toF(dat[6]), //rotY
-                toI(dat[7])); //lightIdx
+                toF(dat[7]), toF(dat[8]), //light attenuation
+                toI(dat[9])); //lightIdx
             INCR_NEW("Entity");
             Global::addEntity(chandelier);
             break;
@@ -389,6 +400,13 @@ void LevelLoader::processLine(std::vector<std::string>& dat)
         {
             StepFallPlatform* plat = new StepFallPlatform(dat[1], Vector3f(toF(dat[2]), toF(dat[3]), toF(dat[4]))); INCR_NEW("Entity");
             Global::addEntity(plat);
+            break;
+        }
+
+        case ENTITY_BAT:
+        {
+            Bat* bat = new Bat(dat[1], Vector3f(toF(dat[2]), toF(dat[3]), toF(dat[4]))); INCR_NEW("Entity");
+            Global::addEntity(bat);
             break;
         }
 

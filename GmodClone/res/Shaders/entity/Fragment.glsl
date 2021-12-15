@@ -54,14 +54,14 @@ void main(void)
     
     vec4 normalMapValue = 2.0 * texture(normalMap, pass_textureCoords, -1.0) - 1.0;
     
-    vec3 unitNormal = normalize(vec3(normalMapValue.r, normalMapValue.g, normalMapValue.b + 0.5)); //bias it a little towards flat
+    vec3 unitNormal = normalize(vec3(normalMapValue.r, normalMapValue.g, normalMapValue.b + 1.0)); //bias it a little towards flat
     
     vec3 totalDiffuse = vec3(0);
     vec3 totalSpecular = vec3(0);
     
     for (int i = 0; i < 4; i++)
     {
-        float dist = length(toLightVector[i]);
+        float dist = length(toLightVector[i]); //toLightVector is making things dark in eq. if the cam direction has 0 for y, it happens
         float attFactor = attenuation[i].x + (attenuation[i].y * dist) + (attenuation[i].z * dist * dist);
         
         vec3 unitLightVector = normalize(toLightVector[i]);

@@ -25,6 +25,7 @@
 extern float dt;
 
 std::list<TexturedModel*> modelsGun;
+std::list<TexturedModel*> modelsBat;
 
 Player::Player()
 {
@@ -38,6 +39,7 @@ Player::Player()
     visible = false;
 
     ObjLoader::loadModel(&modelsGun , "res/Models/Gun/", "GunInHand");
+    ObjLoader::loadModel(&modelsBat , "res/Models/Bat/", "Bat");
 
     weaponModel = new Dummy(&modelsGun); INCR_NEW("Dummy");
     weaponModel->visible = false;
@@ -69,6 +71,11 @@ void Player::step()
                 Global::sendAudioMessageToServer(66, &position);
             }
         }
+    }
+
+    if (health <= 0 && Global::levelId == LVL_HUB)
+    {
+        health = 100;
     }
 
     //If we are dead, fly around as a ghost
@@ -106,21 +113,23 @@ void Player::step()
 
     if (Input::inputs.INPUT_SCROLL != 0)
     {
-        AudioPlayer::play(56, nullptr);
-
-        weapon += (char)Input::inputs.INPUT_SCROLL;
-        weapon = weapon % 2;
-        if (weapon < 0)
+        if (Global::levelId == LVL_HUB)
         {
-            weapon = 1;
+            AudioPlayer::play(56, nullptr);
+
+            weapon += (char)Input::inputs.INPUT_SCROLL;
+            weapon = weapon % 3;
+            if (weapon < 0)
+            {
+                weapon = 2;
+            }
         }
     }
 
-    swingArmTimer-=dt;
-    if (Input::inputs.INPUT_LEFT_CLICK && !Input::inputs.INPUT_PREVIOUS_LEFT_CLICK && swingArmTimer < 0.0f)
+    useWeaponTimer = fmaxf(0.0f, useWeaponTimer - dt);
+    if (Input::inputs.INPUT_LEFT_CLICK && !Input::inputs.INPUT_PREVIOUS_LEFT_CLICK && useWeaponTimer <= 0.0f)
     {
-        swingYourArm();
-        swingArmTimer = SWING_ARM_COOLDOWN;
+        useWeapon();
     }
 
     // Sliding
@@ -477,7 +486,7 @@ void Player::step()
 
             case ENTITY_HEALTH_CUBE:
             {
-                if (e->visible && health < 100 && !Global::serverClient->isOpen()) //if we are in a server, the server decides if we pick up the item
+                if (e->visible && health < 100 && health > 0 && !Global::serverClient->isOpen()) //if we are in a server, the server decides if we pick up the item
                 {
                     Vector3f mySpot = position;
                     mySpot.y += COLLISION_RADIUS;
@@ -491,6 +500,26 @@ void Player::step()
                         AudioPlayer::play(61, nullptr);
                     }
                 }
+                break;
+            }
+
+            case ENTITY_BAT:
+            {
+                if (e->visible && health > 0 && weapon == WEAPON_FIST && !Global::serverClient->isOpen()) //if we are in a server, the server decides if we pick up the item
+                {
+                    Vector3f mySpot = position;
+                    mySpot.y += COLLISION_RADIUS;
+
+                    Vector3f diff = mySpot - e->position;
+
+                    if (diff.lengthSquared() < (COLLISION_RADIUS + 0.3f)*(COLLISION_RADIUS + 0.3f))
+                    {
+                        weapon = WEAPON_BAT;
+                        e->visible = false;
+                        //TODO audio for picking up item
+                    }
+                }
+                break;
             }
 
             default:
@@ -831,7 +860,7 @@ void Player::step()
 
     extern float VFOV_ADDITION;
     extern float VFOV_BASE;
-    if (Input::inputs.INPUT_RIGHT_CLICK && weapon == 1)
+    if (Input::inputs.INPUT_RIGHT_CLICK && weapon == WEAPON_GUN)
     {
         VFOV_ADDITION = -VFOV_BASE/2;
     }
@@ -842,32 +871,82 @@ void Player::step()
 
     updateCamera();
 
-    if (weapon == 1)
+    Vector3f xAx(1, 0, 0);
+    Vector3f yAx(0, 1, 0);
+    Vector3f zAx(0, 0, 1);
+
+    switch (weapon)
     {
-        weaponModel->visible = true;
-        weaponModel->position = Global::gameCamera->eye;
+        case WEAPON_FIST:
+        {
+            weaponModel->visible = false;
+            break;
+        }
 
-        Maths::sphereAnglesFromPosition(&lookDir, &weaponModel->rotY, &weaponModel->rotZ);
+        case WEAPON_BAT:
+        {
+            weaponModel->visible = true;
+            weaponModel->setModels(&modelsBat);
+            weaponModel->position = Global::gameCamera->eye;
 
-        Matrix4f* mat = &weaponModel->transformationMatrix;
+            Maths::sphereAnglesFromPosition(&lookDir, &weaponModel->rotY, &weaponModel->rotZ);
 
-        mat->setIdentity();
-        mat->translate(&weaponModel->position);
-        Vector3f vec;
+            Matrix4f* mat = &weaponModel->transformationMatrix;
 
-        vec.set(0, 1, 0);
-        mat->rotate(Maths::toRadians(weaponModel->rotY), &vec);
+            mat->setIdentity();
+            mat->translate(&weaponModel->position);
 
-        vec.set(0, 0, 1);
-        mat->rotate(Maths::toRadians(weaponModel->rotZ), &vec);
+            mat->rotate(Maths::toRadians(weaponModel->rotY), &yAx);
+            mat->rotate(Maths::toRadians(weaponModel->rotZ), &zAx);
 
-        Vector3f armOffset(-0.103481f, -0.158837f, 0.132962f);
+            Vector3f armOffset(0.25f, -0.4f, 0.2f);
+            mat->translate(&armOffset);
 
-        mat->translate(&armOffset);
-    }
-    else
-    {
-        weaponModel->visible = false;
+            float batRot = 0.0f;
+            if (useWeaponTimer > WEAPON_COOLDOWN_BAT - 0.07f)
+            {
+                float prog = -((useWeaponTimer - WEAPON_COOLDOWN_BAT)/0.07f);
+                batRot = -prog*80;
+            }
+            else
+            {
+                float prog = useWeaponTimer/0.33f;
+                batRot = -prog*80;
+            }
+
+            mat->rotate(Maths::toRadians(28), &xAx);
+            mat->rotate(Maths::toRadians(70 + batRot), &zAx);
+
+            break;
+        }
+
+        case WEAPON_GUN:
+        {
+            weaponModel->visible = true;
+            weaponModel->setModels(&modelsGun);
+            weaponModel->position = Global::gameCamera->eye;
+
+            Maths::sphereAnglesFromPosition(&lookDir, &weaponModel->rotY, &weaponModel->rotZ);
+
+            Matrix4f* mat = &weaponModel->transformationMatrix;
+
+            mat->setIdentity();
+            mat->translate(&weaponModel->position);
+
+            mat->rotate(Maths::toRadians(weaponModel->rotY), &yAx);
+            mat->rotate(Maths::toRadians(weaponModel->rotZ), &zAx);
+
+            Vector3f armOffset(-0.103481f, -0.158837f, 0.132962f);
+            if (useWeaponTimer > WEAPON_COOLDOWN_GUN - 0.06f)
+            {
+                armOffset.x += (useWeaponTimer - WEAPON_COOLDOWN_GUN)*0.3f;
+            }
+            mat->translate(&armOffset);
+
+            break;
+        }
+
+        default: break;
     }
 
     if (health < 100)
@@ -923,7 +1002,7 @@ void Player::updateCamera()
     float inputX2 = Input::inputs.INPUT_X2;
     float inputY2 = Input::inputs.INPUT_Y2;
 
-    if (Input::inputs.INPUT_RIGHT_CLICK)
+    if (Input::inputs.INPUT_RIGHT_CLICK && weapon == WEAPON_GUN)
     {
         inputX2*=0.5f;
         inputY2*=0.5f;
@@ -988,10 +1067,17 @@ void Player::updateCamera()
     Global::gameCamera->setViewMatrixValues(&eye, &target, &up);
 }
 
-void Player::swingYourArm()
+void Player::useWeapon()
 {
     Vector3f camDir = Global::gameCamera->target - Global::gameCamera->eye;
-    camDir.setLength(ARM_REACH);
+
+    switch (weapon)
+    {
+        case WEAPON_FIST: useWeaponTimer = WEAPON_COOLDOWN_FIST; camDir.setLength(WEAPON_REACH_FIST); break;
+        case WEAPON_BAT : useWeaponTimer = WEAPON_COOLDOWN_BAT ; camDir.setLength(WEAPON_REACH_BAT ); break;
+        case WEAPON_GUN : useWeaponTimer = WEAPON_COOLDOWN_GUN ; camDir.setLength(WEAPON_REACH_GUN ); break;
+        default: break;
+    }
 
     Vector3f target = Global::gameCamera->eye + camDir;
     CollisionResult result = CollisionChecker::checkCollision(&Global::gameCamera->eye, &target);
@@ -1063,6 +1149,8 @@ void Player::swingYourArm()
     }
     Global::gameOnlinePlayersSharedMutex.unlock_shared();
 
+    //printf("distToCollision = %f\n", sqrtf(distToCollisionSquared));
+
     if (hitEntity != nullptr)
     {
         camDir.normalize();
@@ -1120,7 +1208,7 @@ void Player::reset()
     timeSinceOnGround = 0.0f;
     lastGroundNormal.set(0, 1, 0);
 
-    swingArmTimer = 0.0f;
+    useWeaponTimer = 0.0f;
 
     ladderTimer = 0.0f;
     isOnLadder = false;
@@ -1129,7 +1217,7 @@ void Player::reset()
 
     isCrouching = false;
 
-    weapon = 0;
+    weapon = WEAPON_FIST;
 
     vel.set(0, 0, 0);
     groundNormal.set(0, 1, 0);  

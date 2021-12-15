@@ -25,8 +25,6 @@ RockPlatform::RockPlatform(std::string name, Vector3f pos)
 {
     this->name = name;
 
-    //timeUntilBreaks = 10.0f + 30*Maths::random();
-
     cm = RockPlatform::baseCM->duplicateMe();
 
     position = pos;

@@ -85,7 +85,7 @@ public:
     Vector3f lookDir;
     bool isCrouching = false;
 
-    char weapon = 0;
+    char weapon = WEAPON_FIST;
 
     char health = 100;
 

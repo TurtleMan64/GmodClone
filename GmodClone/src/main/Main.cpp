@@ -77,6 +77,7 @@
 #include "../entities/chandelier.hpp"
 #include "../entities/fenceplatform.hpp"
 #include "../entities/stepfallplatform.hpp"
+#include "../entities/bat.hpp"
 
 Message::Message(const Message &other)
 {
@@ -141,7 +142,7 @@ int Global::gameState = 0;
 
 int Global::gameTotalPlaytime = 0;
 
-int Global::levelId = LVL_TEST;
+int Global::levelId = LVL_HUB;
 std::shared_mutex Global::levelMutex;
 std::string Global::levelToLoad = "";
 
@@ -175,11 +176,14 @@ int main(int argc, char** argv)
 
     srand((unsigned long)time(nullptr));
 
+    Maths::random();
+
     Global::nickname = readFileLines("Nickname.ini")[0];
     if (Global::nickname == "nickname")
     {
         Global::nickname = "user_";
-        for (int i = 0; i < 8; i++)
+        int n = (int)(8*Maths::random()) + 4;
+        for (int i = 0; i < n; i++)
         {
             Global::nickname = Global::nickname + std::to_string((int)(Maths::random()*10));
         }
@@ -236,6 +240,7 @@ int main(int argc, char** argv)
     Chandelier::loadModels();
     FencePlatform::loadModels();
     StepFallPlatform::loadModels();
+    Bat::loadModels();
 
     Global::serverSettings = readFileLines("ServerSettings.ini");
     Global::serverClient = new TcpClient(Global::serverSettings[0].c_str(), std::stoi(Global::serverSettings[1]), 1); INCR_NEW("TcpClient");
@@ -281,7 +286,7 @@ int main(int argc, char** argv)
 
     Global::player = new Player; INCR_NEW("Entity");
 
-    LevelLoader::loadLevel("Test");
+    LevelLoader::loadLevel("hub");
     Global::timeUntilRoundStarts = -1.0f;
     Global::timeUntilRoundEnds = 10000000.0f;
 
@@ -556,7 +561,7 @@ int main(int argc, char** argv)
 
         Global::updateChatMessages();
 
-        if (Global::player->weapon == 1)
+        if (Global::player->weapon == WEAPON_GUN)
         {
             GuiManager::addGuiToRender(GuiTextureResources::textureCrosshair);
         }
@@ -1097,16 +1102,29 @@ void Global::readThreadBehavoir(TcpClient* client)
                         velToAdd.y =  0.2f;
                     }
 
-                    if (weapon == 0) //unarmed punch
+                    switch (weapon)
                     {
-                        velToAdd.setLength(3.0f);
-                        Global::player->vel = Global::player->vel + velToAdd;
-                    }
-                    else
-                    {
-                        velToAdd.setLength(18.0f);
-                        Global::player->vel = Global::player->vel + velToAdd;
-                        Global::player->health -= 10;
+                        case WEAPON_FIST:
+                        {
+                            velToAdd.setLength(3.0f);
+                            Global::player->vel = Global::player->vel + velToAdd;
+                            break;
+                        }
+
+                        case WEAPON_BAT:
+                        {
+                            velToAdd.setLength(18.0f);
+                            Global::player->vel = Global::player->vel + velToAdd;
+                            break;
+                        }
+
+                        case WEAPON_GUN:
+                        {
+                            Global::player->health -= 10;
+                            break;
+                        }
+
+                        default: break;
                     }
 
                     break;
@@ -1321,6 +1339,47 @@ void Global::readThreadBehavoir(TcpClient* client)
                                     {
                                         sf->timeUntilBreaks = 2.0f;
                                     }
+                                }
+                                break;
+                            }
+
+                            default:
+                                break;
+                        }
+                    }
+                    Global::gameEntitiesSharedMutex.unlock_shared();
+
+                    break;
+                }
+
+                case 15: //we have picked up a bat
+                {
+                    int batNameLen;
+                    char batName[33] = {0};
+                    char batIsOurs;
+
+                    numRead = client->read(&batNameLen,      4, 5); CHECK_CONNECTION_R(4,          "Could not heal name len");
+                    numRead = client->read(batName, batNameLen, 5); CHECK_CONNECTION_R(batNameLen, "Could not heal name");
+                    numRead = client->read(&batIsOurs,       1, 5); CHECK_CONNECTION_R(1,          "Could not heal amount");
+
+                    if (batIsOurs > 0)
+                    {
+                        Global::player->weapon = WEAPON_BAT;
+                        AudioPlayer::play(61, nullptr);
+                    }
+
+                    std::string batNameToDelete = batName;
+
+                    Global::gameEntitiesSharedMutex.lock_shared();
+                    for (Entity* e : Global::gameEntities)
+                    {
+                        switch (e->getEntityType())
+                        {
+                            case ENTITY_BAT:
+                            {
+                                if (e->name == batNameToDelete)
+                                {
+                                    e->visible = false;
                                 }
                                 break;
                             }

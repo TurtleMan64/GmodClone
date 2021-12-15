@@ -106,18 +106,19 @@ CollisionResult CollisionChecker::checkCollision(float x1, float y1, float z1, f
 
     float distanceToCollisionPositionSquared = Vector3f(x2-x1, y2-y1, z2-z1).lengthSquared();
 
-    std::vector<std::vector<Triangle3D*>*> chunks;
+    //std::vector<std::vector<Triangle3D*>*> chunks;
 
-    float xMin = fminf(x1, x2);
-    float xMax = fmaxf(x1, x2);
-    float zMin = fminf(z1, z2);
-    float zMax = fmaxf(z1, z2);
+    //float xMin = fminf(x1, x2);
+    //float xMax = fmaxf(x1, x2);
+    //float zMin = fminf(z1, z2);
+    //float zMax = fmaxf(z1, z2);
 
-    for (float x = xMin; x <= xMax; x += chunkedTrianglesChunkSize)
+    //for (float x = xMin; x <= xMax; x += chunkedTrianglesChunkSize)
     {
-        for (float z = zMin; z <= zMax; z += chunkedTrianglesChunkSize)
+        //for (float z = zMin; z <= zMax; z += chunkedTrianglesChunkSize)
         {
-            addChunkToDataStruct(getTriangleChunk(x, z), &chunks);
+            //addChunkToDataStruct(getTriangleChunk(x, z), &chunks);
+            //printf("%f %f\n", x, z);
         }
     }
 
@@ -125,9 +126,10 @@ CollisionResult CollisionChecker::checkCollision(float x1, float y1, float z1, f
     Vector3f rayDir(x2 - x1, y2 - y1, z2 - z1);
     Vector3f collidePosition;
 
-    for (std::vector<Triangle3D*>* chunk : chunks)
+    //for (std::vector<Triangle3D*>* chunk : chunks) //TODO something is wrong with the chunk system... not all triangles seem to be get added or something
     {
-        for (Triangle3D* tri : *chunk)
+        //for (Triangle3D* tri : *chunk)
+        for (Triangle3D* tri : CollisionChecker::triangles)
         {
             if (Maths::raycastIntersectsTriangle(&rayOrigin, &rayDir, tri, &collidePosition))
             {

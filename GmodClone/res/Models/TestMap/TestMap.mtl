@@ -36,6 +36,12 @@ Ni 0.000000
 map_d TerrSS20.png
 map_Kd TerrSS20.png
 
+newmtl material_0
+Ns 20.000000
+Ni 0.4
+d 1.000000
+map_Kd Tile.png Tile_N.png
+
 newmtl OP_mo_base_01wall
 Ns 20.000000
 Ni 0.000000
@@ -60,12 +66,6 @@ Ni 0.000000
 map_d TerrSS13.png
 map_Kd TerrSS13.png
 
-newmtl material_0
-Ns 20.000000
-Ni 0.4
-d 1.000000
-map_Kd Tile.png Tile_N.png
-
 newmtl m3
 Ns 94.000000
 Ni 0.000000
@@ -75,8 +75,8 @@ map_Kd TerrSS16.png
 newmtl m7
 Ns 94.000000
 Ni 0.000000
-type bounce
 map_d TerrSS08.png
+type bounce
 map_Kd TerrSS08.png
 
 newmtl material_4
@@ -148,8 +148,8 @@ map_Kd TerrSS18.png
 newmtl m8
 Ns 94.000000
 Ni 0.000000
-type bounce
 map_d TerrSS05.png
+type bounce
 map_Kd TerrSS05.png
 
 newmtl m0

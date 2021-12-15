@@ -4,10 +4,16 @@ newmtl CA_PillarWater02_01_CA_Wall02_02.png_CA_Wall02_02.png
 Ns 20.000000
 Ni 0.000000
 Tr 0
-renderOrder 1
-scrollY -0.2
 d 1.000000
+scrollY -0.2
+renderOrder 1
 map_Kd CA_Wall02_02.png
+
+newmtl CA_PillarWater02_01
+Ns 20.000000
+Ni 0.1
+d 1.000000
+map_Kd Rock_A.png Rock_N.png
 
 newmtl CA_PillarWater02_01_CA_Wall02_02.png
 Ns 20.000000
@@ -19,23 +25,16 @@ newmtl CA_PillarWater02_01_CA_Wall02_03.png
 Ns 20.000000
 Ni 0.000000
 Tr 0
-renderOrder 2
+d 1.000000
 scrollY 0.2
-d 1.000000
+renderOrder 2
 map_Kd CA_Wall02_03.png
-
-newmtl CA_PillarWater02_01
-Ns 20.000000
-Ni 0.1
-d 1.000000
-map_Kd Rock_A.png Rock_N.png
 
 newmtl CA_PillarWater02_01_CA_Wall02_01.png
 Ns 20.000000
 Ni 0.000000
 Tr 0
-renderOrder 0
-scrollY 0.2
 d 1.000000
+scrollY 0.2
 map_Kd CA_Wall02_01.png
 

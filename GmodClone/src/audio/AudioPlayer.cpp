@@ -136,13 +136,13 @@ void AudioPlayer::deleteBuffersBGM()
 void AudioPlayer::createSources()
 {
     //First 7 sources are for sound effects with relative effects (usually for sounds coming from the environment, other players)
-    sources.push_back(new Source(1, 0.0f, 33.0f)); INCR_NEW("Source");
-    sources.push_back(new Source(1, 0.0f, 33.0f)); INCR_NEW("Source");
-    sources.push_back(new Source(1, 0.0f, 33.0f)); INCR_NEW("Source");
-    sources.push_back(new Source(1, 0.0f, 33.0f)); INCR_NEW("Source");
-    sources.push_back(new Source(1, 0.0f, 33.0f)); INCR_NEW("Source");
-    sources.push_back(new Source(1, 0.0f, 33.0f)); INCR_NEW("Source");
-    sources.push_back(new Source(1, 0.0f, 33.0f)); INCR_NEW("Source");
+    sources.push_back(new Source(1, 0.0f, 24.0f)); INCR_NEW("Source");
+    sources.push_back(new Source(1, 0.0f, 24.0f)); INCR_NEW("Source");
+    sources.push_back(new Source(1, 0.0f, 24.0f)); INCR_NEW("Source");
+    sources.push_back(new Source(1, 0.0f, 24.0f)); INCR_NEW("Source");
+    sources.push_back(new Source(1, 0.0f, 24.0f)); INCR_NEW("Source");
+    sources.push_back(new Source(1, 0.0f, 24.0f)); INCR_NEW("Source");
+    sources.push_back(new Source(1, 0.0f, 24.0f)); INCR_NEW("Source");
 
     //Next 7 sources are for sound effects without any relative effects (usually for noises made by the player)
     sources.push_back(new Source(0, 0, 0)); INCR_NEW("Source");

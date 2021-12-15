@@ -155,6 +155,7 @@
     <ClCompile Include="src\collision\CollisionModel.cpp" />
     <ClCompile Include="src\collision\Triangle3D.cpp" />
     <ClCompile Include="src\entities\Ball.cpp" />
+    <ClCompile Include="src\entities\Bat.cpp" />
     <ClCompile Include="src\entities\BoomBox.cpp" />
     <ClCompile Include="src\entities\Chandelier.cpp" />
     <ClCompile Include="src\entities\CollisionBlock.cpp" />
@@ -218,6 +219,7 @@
     <ClInclude Include="src\collision\collisionmodel.hpp" />
     <ClInclude Include="src\collision\triangle3d.hpp" />
     <ClInclude Include="src\entities\ball.hpp" />
+    <ClInclude Include="src\entities\bat.hpp" />
     <ClInclude Include="src\entities\boombox.hpp" />
     <ClInclude Include="src\entities\chandelier.hpp" />
     <ClInclude Include="src\entities\collisionblock.hpp" />

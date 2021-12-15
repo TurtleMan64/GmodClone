@@ -13,12 +13,14 @@ std::list<TexturedModel*> Chandelier::modelsWallLamp;
 
 extern float dt;
 
-Chandelier::Chandelier(std::string name, Vector3f pos, int type, float rotY, int lightIdx)
+Chandelier::Chandelier(std::string name, Vector3f pos, int type, float rotY, float attenuation2, float attenuation3, int lightIdx)
 {
     this->name = name;
     this->type = type;
     this->lightIdx = lightIdx;
     this->rotY = rotY;
+    this->attenuation2 = attenuation2;
+    this->attenuation3 = attenuation3;
 
     scale = 1.5f;
 
@@ -31,7 +33,7 @@ Chandelier::Chandelier(std::string name, Vector3f pos, int type, float rotY, int
     {
         Global::lights[lightIdx]->position = position;
         Global::lights[lightIdx]->position.y -= 0.691178f*scale;
-        Global::lights[lightIdx]->attenuation.set(1, 0.1f, 0.01f);
+        Global::lights[lightIdx]->attenuation.set(1, attenuation2, attenuation3);
         Global::lights[lightIdx]->color.set(1, 1, 1);
     }
     else
@@ -40,7 +42,7 @@ Chandelier::Chandelier(std::string name, Vector3f pos, int type, float rotY, int
         Vector3f yAxis(0, 1, 0);
         off = Maths::rotatePoint(&off, &yAxis, Maths::toRadians(rotY));
         Global::lights[lightIdx]->position = position + off;
-        Global::lights[lightIdx]->attenuation.set(1, 0.1f, 0.01f);
+        Global::lights[lightIdx]->attenuation.set(1, attenuation2, attenuation3);
         Global::lights[lightIdx]->color.set(0.5f, 0.5f, 0.5f);
     }
 
@@ -63,7 +65,7 @@ void Chandelier::step()
         {
             ran = 0.0f;
         }
-        Global::lights[lightIdx]->attenuation.y = 0.1f + ran*0.01f;
+        Global::lights[lightIdx]->attenuation.y = attenuation2 + ran*0.01f;
 
         flickerTimer -= 0.02f;
     }

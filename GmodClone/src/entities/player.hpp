@@ -68,9 +68,14 @@ public:
     const float WALL_JUMP_SPEED_HORIZONTAL = 5.0f;
 
     // How far you can hit things from
-    const float ARM_REACH = 1.9f;
-    float swingArmTimer = 0.0f;
-    const float SWING_ARM_COOLDOWN  = 0.4f;
+    const float WEAPON_REACH_FIST = 1.9f;
+    const float WEAPON_REACH_BAT  = 2.7f;
+    const float WEAPON_REACH_GUN  = 100.0f;
+
+    float useWeaponTimer = 0.0f;
+    const float WEAPON_COOLDOWN_FIST = 0.2f;
+    const float WEAPON_COOLDOWN_BAT  = 0.4f;
+    const float WEAPON_COOLDOWN_GUN  = 0.1f;
 
     // > 0 means you cant use a ladder (colldown after jumping)
     float ladderTimer = 0.0f;
@@ -79,7 +84,7 @@ public:
 
     void updateCamera();
 
-    void swingYourArm();
+    void useWeapon();
 
     float getPushValueGround(float deltaTime);
 

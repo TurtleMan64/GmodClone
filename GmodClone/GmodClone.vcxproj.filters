@@ -240,6 +240,9 @@
     <ClCompile Include="src\entities\StepFallPlatform.cpp">
       <Filter>Source Files\entities</Filter>
     </ClCompile>
+    <ClCompile Include="src\entities\Bat.cpp">
+      <Filter>Source Files\entities</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\toolbox\getline.hpp">
@@ -408,6 +411,9 @@
       <Filter>Source Files\entities</Filter>
     </ClInclude>
     <ClInclude Include="src\entities\stepfallplatform.hpp">
+      <Filter>Source Files\entities</Filter>
+    </ClInclude>
+    <ClInclude Include="src\entities\bat.hpp">
       <Filter>Source Files\entities</Filter>
     </ClInclude>
   </ItemGroup>

@@ -71,13 +71,12 @@ std::vector<Triangle3D*>* RedBarrel::getCollisionTriangles()
 
 void RedBarrel::getHit(Vector3f* /*hitPos*/, Vector3f* /*hitDir*/, int weapon)
 {
-    if (weapon == 0)
+    switch (weapon)
     {
-        health -= 0.1f;
-    }
-    else
-    {
-        health -= 0.6f;
+        case WEAPON_FIST: health -= 0.01f; break;
+        case WEAPON_BAT:  health -= 0.2f;  break;
+        case WEAPON_GUN:  health -= 0.5f;  break;
+        default: break;
     }
 
     int sound = (int)(Maths::random()*2) + 54;

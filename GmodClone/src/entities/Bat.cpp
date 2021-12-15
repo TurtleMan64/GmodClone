@@ -1,17 +1,18 @@
 #include <list>
+#include <vector>
 
 #include "../toolbox/vector.hpp"
-#include "healthcube.hpp"
+#include "bat.hpp"
 #include "../main/main.hpp"
 #include "../toolbox/maths.hpp"
 #include "../loader/objloader.hpp"
 #include "../entities/entity.hpp"
 
-std::list<TexturedModel*> HealthCube::models;
+std::list<TexturedModel*> Bat::models;
 
 extern float dt;
 
-HealthCube::HealthCube(std::string name, Vector3f pos)
+Bat::Bat(std::string name, Vector3f pos)
 {
     this->name = name;
 
@@ -23,7 +24,7 @@ HealthCube::HealthCube(std::string name, Vector3f pos)
     updateTransformationMatrix();
 }
 
-void HealthCube::step()
+void Bat::step()
 {
     rotY += 240*dt;
 
@@ -35,25 +36,25 @@ void HealthCube::step()
     position.y = ogY;
 }
 
-std::vector<Entity*>* HealthCube::getEntitiesToRender()
+std::vector<Entity*>* Bat::getEntitiesToRender()
 {
     return &entitiesToRender;
 }
 
-std::list<TexturedModel*>* HealthCube::getModels()
+std::list<TexturedModel*>* Bat::getModels()
 {
-    return &HealthCube::models;
+    return &Bat::models;
 }
 
-int HealthCube::getEntityType()
+int Bat::getEntityType()
 {
-    return ENTITY_HEALTH_CUBE;
+    return ENTITY_BAT;
 }
 
-void HealthCube::loadModels()
+void Bat::loadModels()
 {
-    if (HealthCube::models.size() == 0)
+    if (Bat::models.size() == 0)
     {
-        ObjLoader::loadModel(&HealthCube::models, "res/Models/HealthCube/", "HealthCube");
+        ObjLoader::loadModel(&Bat::models, "res/Models/Bat/", "Display");
     }
 }
