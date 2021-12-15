@@ -26,7 +26,7 @@ public:
     FontRenderer();
 
     void render(
-        std::unordered_map<FontType*, std::list<GUIText*>>* texts, 
+        std::unordered_map<FontType*, std::list<GUIText*>>* texts,
         std::unordered_map<FontType*, std::list<GUINumber*>>* numbers);
 
     void cleanUp();

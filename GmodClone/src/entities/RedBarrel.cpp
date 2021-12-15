@@ -65,7 +65,7 @@ std::vector<Triangle3D*>* RedBarrel::getCollisionTriangles()
     {
         return &cm->triangles;
     }
-    
+
     return nullptr;
 }
 

@@ -29,19 +29,19 @@ private:
         std::vector<Vertex*>* vertices,
         std::vector<int>* indices);
 
-    static Vertex* dealWithAlreadyProcessedVertex(Vertex*, 
-        int, 
-        int, 
-        std::vector<int>*, 
+    static Vertex* dealWithAlreadyProcessedVertex(Vertex*,
+        int,
+        int,
+        std::vector<int>*,
         std::vector<Vertex*>*);
 
     static void removeUnusedVertices(std::vector<Vertex*>* vertices);
 
     static void convertDataToArrays(
-        std::vector<Vertex*>* vertices, 
+        std::vector<Vertex*>* vertices,
         std::vector<Vector2f>* textures,
-        std::vector<Vector3f>* normals, 
-        std::vector<float>* verticesArray, 
+        std::vector<Vector3f>* normals,
+        std::vector<float>* verticesArray,
         std::vector<float>* texturesArray,
         std::vector<float>* normalsArray,
         std::vector<float>* colorsArray,

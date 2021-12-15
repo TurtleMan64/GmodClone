@@ -40,7 +40,7 @@ OnlinePlayer::OnlinePlayer(std::string name, float x, float y, float z)
     updateTransformationMatrix();
 
     head = new Dummy(&OnlinePlayer::modelsHead); INCR_NEW("Dummy");
-    
+
     entitiesToRender.push_back(this);
     entitiesToRender.push_back(head);
 }
@@ -170,7 +170,7 @@ void OnlinePlayer::step()
     //    {
     //        vel = vel + velToAdd.scaleCopy(getPushValueGround(dt)*dt);
     //    }
-    //    else 
+    //    else
     //    {
     //        vel = vel + velToAdd.scaleCopy(getPushValueAir(dt)*dt);
     //    }
@@ -237,7 +237,7 @@ void OnlinePlayer::step()
     //                        }
     //                    }
     //                }
-    //                
+    //
     //                if (collided)
     //                {
     //                    float stickAngle = atan2f(inputY, inputX) - Maths::PI/2; //angle you are holding on the stick, with 0 being up

@@ -83,10 +83,10 @@ void Glass::step()
                     if (Global::serverClient->isOpen())
                     {
                         int nameLen = (int)name.size();
-            
+
                         Message msg;
                         msg.length = 5 + nameLen + 2;
-            
+
                         msg.buf[0] = 8;
                         memcpy(&msg.buf[1], &nameLen, 4);
                         memcpy(&msg.buf[5], name.c_str(), nameLen);
@@ -122,7 +122,7 @@ std::vector<Triangle3D*>* Glass::getCollisionTriangles()
     {
         return &cm->triangles;
     }
-    
+
     return nullptr;
 }
 

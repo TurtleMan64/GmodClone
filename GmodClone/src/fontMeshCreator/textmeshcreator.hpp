@@ -37,7 +37,7 @@ public:
     TextMeshCreator(std::string filename);
 
     TextMeshData* createTextMesh(GUIText* text);
-    
+
 };
 
 #endif

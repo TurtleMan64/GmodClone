@@ -11,7 +11,7 @@ class ModelTexture
 private:
     std::vector<GLuint> texIds;
 
-    //animation 
+    //animation
     bool isAnimated; //has more than 1 image
     char currentImageIndex; //current index of the animation
     float animatedProgress; //progress to the next image in the animation

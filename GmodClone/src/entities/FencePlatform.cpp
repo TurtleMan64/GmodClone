@@ -79,7 +79,7 @@ std::vector<Triangle3D*>* FencePlatform::getCollisionTriangles()
     {
         return &cm->triangles;
     }
-    
+
     return nullptr;
 }
 

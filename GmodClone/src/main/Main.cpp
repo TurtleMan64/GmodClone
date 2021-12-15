@@ -90,7 +90,7 @@ Message::Message(const Message &other)
 
 Message::Message()
 {
-    
+
 }
 
 std::string Global::pathToEXE;
@@ -293,7 +293,7 @@ int main(int argc, char** argv)
     GUIText* fpsText = new GUIText("0", 0.02f, Global::fontConsolas, 1.0f, 0.0f, 2, true); INCR_NEW("GUIText");
 
     while (displayWantsToClose() == 0 &&
-           Global::gameState != GAME_STATE_EXITING && 
+           Global::gameState != GAME_STATE_EXITING &&
            Global::gameState != GAME_STATE_WINDOWCLOSE)
     {
         ANALYSIS_START("Frame Time");
@@ -370,7 +370,7 @@ int main(int argc, char** argv)
                 float pz = Global::player->position.z;
 
                 if (px > Global::safeZoneStart.x &&
-                    py > Global::safeZoneStart.y && 
+                    py > Global::safeZoneStart.y &&
                     pz > Global::safeZoneStart.z &&
                     px < Global::safeZoneEnd.x   &&
                     py < Global::safeZoneEnd.y   &&
@@ -406,7 +406,7 @@ int main(int argc, char** argv)
             std::fprintf(stderr, "########  GL ERROR  ########\n");
             std::fprintf(stderr, "%d\n", err);
         }
-        
+
         ALenum err2 = alGetError();
         if (err2 != AL_NO_ERROR)
         {
@@ -777,7 +777,7 @@ void increaseProcessPriority()
     #ifdef _WIN32
     DWORD dwError;
 
-    
+
     if (!SetPriorityClass(GetCurrentProcess(), ABOVE_NORMAL_PRIORITY_CLASS))
     {
         dwError = GetLastError();
@@ -789,9 +789,9 @@ void increaseProcessPriority()
         dwError = GetLastError();
         std::fprintf(stdout, "Failed to enter above normal mode (%d)\n", (int)dwError);
     }
-    
 
-    
+
+
     //if (!SetPriorityClass(GetCurrentProcess(), IdLE_PRIORITY_CLASS))
     //{
     //    dwError = GetLastError();
@@ -803,7 +803,7 @@ void increaseProcessPriority()
     //    dwError = GetLastError();
     //    _tprintf(TEXT("Failed to enter below normal mode (%d)\n"), (int)dwError);
     //}
-    
+
 
     #endif
 }
@@ -926,7 +926,7 @@ bool checkConnection(int numBytesExpected, int numBytesActual, std::string messa
 
         return false;
     }
-    
+
     return true;
 }
 
@@ -938,7 +938,7 @@ void Global::readThreadBehavoir(TcpClient* client)
     {
         char cmd;
         int numRead = client->read(&cmd, 1, 5);
-        
+
         if (numRead == 1)
         {
             switch (cmd)
@@ -1324,7 +1324,7 @@ void Global::readThreadBehavoir(TcpClient* client)
                     numRead = client->read(platName, platNameLen, 5); CHECK_CONNECTION_R(platNameLen, "Could not step fall platform name");
 
                     std::string platNameToUpdate = platName;
-                    
+
                     Global::gameEntitiesSharedMutex.lock_shared();
                     for (Entity* e : Global::gameEntities)
                     {
@@ -1460,7 +1460,7 @@ void Global::writeThreadBehavior(TcpClient* client)
             // Send time message
             char cmd = 1;
             numWritten = client->write(&cmd, 1, 5); CHECK_CONNECTION_W(1, "Could not write time command to server");
-            
+
             numWritten = client->write(&currTime, 8, 5); CHECK_CONNECTION_W(8, "Could not write time to server");
 
             lastSentTimeMsg = glfwGetTime();

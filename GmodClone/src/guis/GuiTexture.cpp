@@ -5,7 +5,7 @@
 
 GuiTexture::GuiTexture()
 {
-    
+
 }
 
 GuiTexture::GuiTexture(GLuint textureId, Vector2f* position, Vector2f* size, int alignment)

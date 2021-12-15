@@ -15,9 +15,9 @@ private:
 
 public:
     static void init();
-    
+
     static void render(std::list<GuiTexture*>* guis);
-    
+
     static void cleanUp();
 };
 

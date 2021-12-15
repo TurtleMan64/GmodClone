@@ -32,7 +32,7 @@ Player::Player()
     scale = 0.5f;
     position.set(-4.85623f, 1.5322f, -12.5412f);
     vel.set(0.000001f, 0, 0);
-    groundNormal.set(0, 1, 0);  
+    groundNormal.set(0, 1, 0);
     lastGroundNormal.set(0, 1, 0);
     wallNormal.set(1, 0, 0);
     lookDir.set(0, 0, -1);
@@ -244,7 +244,7 @@ void Player::step()
         {
             vel = vel + velToAdd.scaleCopy(getPushValueGround(dt)*dt);
         }
-        else 
+        else
         {
             vel = vel + velToAdd.scaleCopy(getPushValueAir(dt)*dt);
         }
@@ -458,7 +458,7 @@ void Player::step()
                             }
                         }
                     }
-                    
+
                     if (collided)
                     {
                         float stickAngle = atan2f(Input::inputs.INPUT_Y, Input::inputs.INPUT_X) - Maths::PI/2; //angle you are holding on the stick, with 0 being up
@@ -956,7 +956,7 @@ void Player::step()
         GuiManager::addGuiToRender(GuiTextureResources::textureHealthbarBG);
         GuiManager::addGuiToRender(GuiTextureResources::textureHealthbar);
     }
-    
+
     updateTransformationMatrix();
 }
 
@@ -1220,7 +1220,7 @@ void Player::reset()
     weapon = WEAPON_FIST;
 
     vel.set(0, 0, 0);
-    groundNormal.set(0, 1, 0);  
+    groundNormal.set(0, 1, 0);
     lastGroundNormal.set(0, 1, 0);
     wallNormal.set(1, 0, 0);
     lookDir.set(0, 0, -1);

@@ -100,7 +100,7 @@ void GuiRenderer::render(std::list<GuiTexture*>* guis)
     glBindVertexArray(0);
     GuiRenderer::shader->stop();
 }
-    
+
 void GuiRenderer::cleanUp()
 {
     GuiRenderer::shader->cleanUp();

@@ -397,7 +397,7 @@ void CollisionModel::transformModel(CollisionModel* targetModel, Vector3f* trans
 
 void CollisionModel::deleteMe()
 {
-    //Delete triangles 
+    //Delete triangles
     for (Triangle3D* tri : triangles)
     {
         delete tri; INCR_DEL("Triangle3D");

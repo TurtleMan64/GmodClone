@@ -104,7 +104,7 @@ std::vector<Triangle3D*>* StepFallPlatform::getCollisionTriangles()
     {
         return &cm->triangles;
     }
-    
+
     return nullptr;
 }
 

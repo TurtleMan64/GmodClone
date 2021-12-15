@@ -304,9 +304,9 @@ void LevelLoader::processLine(std::vector<std::string>& dat)
         case ENTITY_COLLISION_BLOCK:
         {
             CollisionBlock* block = new CollisionBlock(dat[1],
-                Vector3f(toF(dat[2]), toF(dat[3]), toF(dat[4])), 
-                toI(dat[5]), toF(dat[6]), toF(dat[7]), toF(dat[8]), 
-                (bool)toI(dat[9]), 
+                Vector3f(toF(dat[2]), toF(dat[3]), toF(dat[4])),
+                toI(dat[5]), toF(dat[6]), toF(dat[7]), toF(dat[8]),
+                (bool)toI(dat[9]),
                 toF(dat[10]));
             INCR_NEW("Entity");
             Global::addEntity(block);

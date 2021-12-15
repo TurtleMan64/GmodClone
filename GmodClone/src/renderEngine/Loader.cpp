@@ -27,10 +27,10 @@ int Loader::vaoNumber = 0;
 int Loader::vboNumber = 0;
 //int Loader::texNumber = 0;
 
-RawModel Loader::loadToVAO(std::vector<float>* positions, 
-                           std::vector<float>* textureCoords, 
-                           std::vector<float>* normals, 
-                           std::vector<float>* vertexColors, 
+RawModel Loader::loadToVAO(std::vector<float>* positions,
+                           std::vector<float>* textureCoords,
+                           std::vector<float>* normals,
+                           std::vector<float>* vertexColors,
                            std::vector<int>* indicies)
 {
     GLuint vaoId = createVAO();
@@ -48,11 +48,11 @@ RawModel Loader::loadToVAO(std::vector<float>* positions,
 }
 
 //for 3d models with normal maps //NORMAL_
-RawModel Loader::loadToVAO(std::vector<float>* positions, 
-                           std::vector<float>* textureCoords, 
-                           std::vector<float>* normals, 
+RawModel Loader::loadToVAO(std::vector<float>* positions,
+                           std::vector<float>* textureCoords,
+                           std::vector<float>* normals,
                            std::vector<float>* vertexColors,
-                           std::vector<float>* tangents, 
+                           std::vector<float>* tangents,
                            std::vector<int>* indicies)
 {
     GLuint vaoId = createVAO();
@@ -182,7 +182,7 @@ GLuint Loader::loadTexture(const char* fileName)
         //Not sure why these aren't defined... but I've spent too much time trying to fix it.
         const GLuint GL_TEXTURE_MAX_ANISOTROPY_EXT  = 0x84FE;
         const GLuint GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT = 0x84FF;
-    
+
         float maxAnisotropyLevel;
         glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &maxAnisotropyLevel);
 
@@ -199,7 +199,7 @@ GLuint Loader::loadTexture(const char* fileName)
     SOIL_free_image_data(image);
 
     glBindTexture(GL_TEXTURE_2D, 0);
-    
+
 
     return textureId;
 }
@@ -249,7 +249,7 @@ GLuint Loader::loadTextureNoInterpolation(const char* fileName)
     SOIL_free_image_data(image);
 
     glBindTexture(GL_TEXTURE_2D, 0);
-    
+
 
     return textureId;
 }
@@ -272,8 +272,8 @@ GLuint Loader::storeDataInAttributeList(int attributeNumber, int coordinateSize,
     vbos.push_back(vboId);
     glBindBuffer(GL_ARRAY_BUFFER, vboId);
 
-    glBufferData(GL_ARRAY_BUFFER, data->size()*sizeof(float), (GLvoid*)(&((*data)[0])), GL_STATIC_DRAW); 
-    glVertexAttribPointer(attributeNumber, coordinateSize, GL_FLOAT, GL_FALSE, 0, 0); 
+    glBufferData(GL_ARRAY_BUFFER, data->size()*sizeof(float), (GLvoid*)(&((*data)[0])), GL_STATIC_DRAW);
+    glVertexAttribPointer(attributeNumber, coordinateSize, GL_FLOAT, GL_FALSE, 0, 0);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 
     return vboId;

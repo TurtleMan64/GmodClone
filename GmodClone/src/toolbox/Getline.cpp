@@ -45,7 +45,7 @@ std::istream& getlineSafe(std::istream& is, std::string& t)
     for (;;)
     {
         int c = sb->sbumpc();
-        
+
         switch (c)
         {
             case '\n':
@@ -56,7 +56,7 @@ std::istream& getlineSafe(std::istream& is, std::string& t)
                     std::fprintf(stdout, "End of File1\n");
                 }
                 return is;
-                
+
             case '\r':
                 std::fprintf(stdout, "line2 = '%s'\n", t.c_str());
                 if (sb->sgetc() == '\n')
@@ -69,7 +69,7 @@ std::istream& getlineSafe(std::istream& is, std::string& t)
                     std::fprintf(stdout, "End of File2\n");
                 }
                 return is;
-                
+
             case std::streambuf::traits_type::eof():
                 std::fprintf(stdout, "line3 = '%s'\n", t.c_str());
                 // Also handle the case when the last line has no line ending
@@ -83,12 +83,12 @@ std::istream& getlineSafe(std::istream& is, std::string& t)
                     std::fprintf(stdout, "End of File3\n");
                 }
                 return is;
-                
+
             default:
                 t += (char)c;
         }
     }
-    
+
     return is;
     */
 }
@@ -104,7 +104,7 @@ std::vector<std::string> readFileLines(const char* filename)
         file.close();
         return lines;
     }
-    
+
     while (!file.eof())
     {
         std::string s;

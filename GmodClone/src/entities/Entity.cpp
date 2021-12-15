@@ -19,7 +19,7 @@ Entity::Entity()
     this->position.z = 0;
     this->rotX = 0;
     this->rotY = 0;
-    this->rotZ = 0; 
+    this->rotZ = 0;
     this->rotRoll = 0;
     this->scale = 1;
     this->visible = true;
@@ -52,7 +52,7 @@ void Entity::step()
 
 void Entity::die()
 {
-    
+
 }
 
 int Entity::getEntityType()

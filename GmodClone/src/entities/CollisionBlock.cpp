@@ -123,7 +123,7 @@ void CollisionBlock::step()
         }
         else if (direction == 1)
         {
-            if (onlinePlayer->collideEntityImTouching == this && 
+            if (onlinePlayer->collideEntityImTouching == this &&
                 onlinePlayer->position.y >= (position.y + scale) - scale)
             {
                 onlinePlayer->externalVel.set(0, spd, 0);
@@ -178,7 +178,7 @@ void CollisionBlock::step()
     }
     else if (direction == 1)
     {
-        if (Global::player->collideEntityImTouching == this && 
+        if (Global::player->collideEntityImTouching == this &&
             Global::player->position.y >= (position.y + scale) - scale)
         {
             Global::player->externalVel.set(0, spd, 0);

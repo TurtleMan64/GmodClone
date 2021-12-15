@@ -19,11 +19,11 @@ public:
     TcpClient(const char* ip, int port, int timeoutSec = -1);
     ~TcpClient();
 
-    // Returns number of bytes written. If this is not equal to numBytesToSend, 
+    // Returns number of bytes written. If this is not equal to numBytesToSend,
     // this means some error has happened and the connection has been closed.
     int write(void* bytes, int numBytesToSend, int timeoutSec = -1);
 
-    // Returns number of bytes written. If this is not equal to numBytesToSend, 
+    // Returns number of bytes written. If this is not equal to numBytesToSend,
     // this means some error has happened and the connection has been closed.
     int write(const void* bytes, int numBytesToSend, int timeoutSec = -1);
 

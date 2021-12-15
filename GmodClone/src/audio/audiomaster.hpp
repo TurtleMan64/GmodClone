@@ -25,7 +25,7 @@ public:
     static ALuint loadOGG(const char* fileName);
 
     static ALuint loadWAV(const char* fileName);
-    
+
     static void cleanUp();
 };
 #endif

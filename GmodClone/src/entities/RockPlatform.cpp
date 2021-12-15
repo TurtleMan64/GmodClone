@@ -94,7 +94,7 @@ std::vector<Triangle3D*>* RockPlatform::getCollisionTriangles()
     {
         return &cm->triangles;
     }
-    
+
     return nullptr;
 }
 

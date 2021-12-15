@@ -23,7 +23,7 @@
 int ObjLoader::ObjLoader::loadModel(std::list<TexturedModel*>* models, std::string filePath, std::string fileName)
 {
     int attemptBinaryOBJ = loadBinaryModel(models, filePath, fileName+".binobj");
-    
+
     if (attemptBinaryOBJ == -1)
     {
         int attemptVCL = loadVclModel(models, filePath, fileName+".binvcl");
@@ -34,8 +34,8 @@ int ObjLoader::ObjLoader::loadModel(std::list<TexturedModel*>* models, std::stri
 
             if (attemptOBJ == -1)
             {
-                std::fprintf(stderr, "Error: Cannot load file '%s' or '%s'\n", 
-                    ((filePath + fileName) + ".bin").c_str(), 
+                std::fprintf(stderr, "Error: Cannot load file '%s' or '%s'\n",
+                    ((filePath + fileName) + ".bin").c_str(),
                     ((filePath + fileName) + ".obj").c_str());
             }
 
@@ -69,7 +69,7 @@ int ObjLoader::loadBinaryModel(std::list<TexturedModel*>* models, std::string fi
 
     char fileType[4];
     fread(fileType, sizeof(char), 4, file);
-    if (fileType[0] != 'o' || 
+    if (fileType[0] != 'o' ||
         fileType[1] != 'b' ||
         fileType[2] != 'j' ||
         fileType[3] != 0)
@@ -242,7 +242,7 @@ int ObjLoader::loadVclModel(std::list<TexturedModel*>* models, std::string fileP
 
     char fileType[4];
     fread(fileType, sizeof(char), 4, file);
-    if (fileType[0] != 'v' || 
+    if (fileType[0] != 'v' ||
         fileType[1] != 'c' ||
         fileType[2] != 'l' ||
         fileType[3] != 0)
@@ -544,7 +544,7 @@ int ObjLoader::loadObjModel(std::list<TexturedModel*>* models, std::string fileP
                     std::vector<float> colorsArray;
                     std::vector<float> tangentsArray;
 
-                    //NORMAL_  
+                    //NORMAL_
                     convertDataToArrays(&vertices, &textures, &normals, &verticesArray, &texturesArray, &normalsArray, &colorsArray, &tangentsArray);
                     rawModelsList.push_back(Loader::loadToVAO(&verticesArray, &texturesArray, &normalsArray, &colorsArray, &tangentsArray, &indices));
 
@@ -848,7 +848,7 @@ int ObjLoader::loadObjModelWithMTL(std::list<TexturedModel*>* models, std::strin
                         std::string c2(lineSplit[5]);
                         std::string c3(lineSplit[6]);
                         Vector3f vertex(std::stof(p1, nullptr), std::stof(p2, nullptr), std::stof(p3, nullptr));
-                        
+
                         float r = std::stof(c1, nullptr);
                         float g = std::stof(c2, nullptr);
                         float b;
@@ -989,7 +989,7 @@ int ObjLoader::loadBinaryModelWithMTL(std::list<TexturedModel*>* models, std::st
 
     char fileType[4];
     fread(fileType, sizeof(char), 4, file);
-    if (fileType[0] != 'o' || 
+    if (fileType[0] != 'o' ||
         fileType[1] != 'b' ||
         fileType[2] != 'j' ||
         fileType[3] != 0)
@@ -1243,10 +1243,10 @@ void ObjLoader::calculateTangents(Vertex* v0, Vertex* v1, Vertex* v2, std::vecto
 }
 
 void ObjLoader::convertDataToArrays(
-    std::vector<Vertex*>* vertices, 
+    std::vector<Vertex*>* vertices,
     std::vector<Vector2f>* textures,
-    std::vector<Vector3f>* normals, 
-    std::vector<float>* verticesArray, 
+    std::vector<Vector3f>* normals,
+    std::vector<float>* verticesArray,
     std::vector<float>* texturesArray,
     std::vector<float>* normalsArray,
     std::vector<float>* colorsArray,
@@ -1485,7 +1485,7 @@ CollisionModel* ObjLoader::loadBinaryCollisionModel(std::string filePath, std::s
 
     char fileType[4];
     fread(fileType, sizeof(char), 4, file);
-    if (fileType[0] != 'c' || 
+    if (fileType[0] != 'c' ||
         fileType[1] != 'o' ||
         fileType[2] != 'l' ||
         fileType[3] != 0)

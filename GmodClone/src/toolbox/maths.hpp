@@ -58,7 +58,7 @@ public:
 
     static unsigned int getSignBit(float value);
 
-    //calculates the number of base 10 decimal digits in the number. 
+    //calculates the number of base 10 decimal digits in the number.
     // examples: numDigits(38)    = 2
     //           numDigits(68932) = 5
     static int numDigits(int number);
@@ -78,7 +78,7 @@ public:
 
     //Point that axis goes through,
     //direction of axis,
-    //point to rotate, 
+    //point to rotate,
     //angle of rotation, in radians
     static Vector3f rotatePoint(
         Vector3f* pointToRotate,
@@ -97,11 +97,11 @@ public:
     //given two points A and B, returns which one is closer to a point Test
     static Vector3f getCloserPoint(Vector3f* A, Vector3f* B, Vector3f* testPoint);
 
-    //returns a new velocity vector that has undergone continous drag over a period of time. 
+    //returns a new velocity vector that has undergone continous drag over a period of time.
     //drag should be a negative number to actually drag the velocity vector
     static Vector3f applyDrag(Vector3f* velocity, float drag, float deltaTime);
 
-    //returns a new velocity that has undergone continous drag over a period of time. 
+    //returns a new velocity that has undergone continous drag over a period of time.
     //drag should be a negative number to actually drag the velocity
     static float applyDrag(float velocity, float drag, float deltaTime);
 

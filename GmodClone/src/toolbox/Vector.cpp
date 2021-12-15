@@ -41,7 +41,7 @@ void Vector3f::setLength(float newLength)
         y *= ratio;
         z *= ratio;
     }
-    else 
+    else
     {
         //std::fprintf(stdout, "Warning: Trying to set length of a very small vector [%f %f %f]\n", x, y, z);
         float xa = fabsf(x);

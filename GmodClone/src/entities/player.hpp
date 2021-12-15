@@ -39,7 +39,7 @@ public:
 
     float eyeHeightSmooth = HUMAN_HEIGHT;
 
-    const float COLLISION_RADIUS = HUMAN_HEIGHT/4; //collision is 2 spheres 
+    const float COLLISION_RADIUS = HUMAN_HEIGHT/4; //collision is 2 spheres
 
     //float currentCollisionRadius = COLLISION_RADIUS;
 

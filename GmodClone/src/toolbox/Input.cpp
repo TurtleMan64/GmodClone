@@ -242,9 +242,9 @@ void Input::pollInputs()
             std::fprintf(stdout, "cam dir = [%f, %f, %f]\n", Global::gameMainPlayer->camDir.x, Global::gameMainPlayer->camDir.y, Global::gameMainPlayer->camDir.z);
             std::fprintf(stdout, "\n");
 
-            //std::fprintf(stdout, "106 1  %f %f %f  %f %f %f   %f %f %f\n", 
+            //std::fprintf(stdout, "106 1  %f %f %f  %f %f %f   %f %f %f\n",
             //    Global::gameKart->position.x, Global::gameKart->position.y, Global::gameKart->position.z,
-            //    Global::gameKart->vel.x, Global::gameKart->vel.y, Global::gameKart->vel.z, 
+            //    Global::gameKart->vel.x, Global::gameKart->vel.y, Global::gameKart->vel.z,
             //    Global::gameKart->currNorm.x, Global::gameKart->currNorm.y, Global::gameKart->currNorm.z);
         }
         */
@@ -563,7 +563,7 @@ void Input::keyboardCallback(GLFWwindow* /**/, int key, int /**/, int action, in
                     }
                     catch (std::exception e)
                     {
-                        
+
                     }
 
                     Global::addChatMessage(Input::chatInput, Vector3f(1, 1, 1));
@@ -641,7 +641,7 @@ void Input::keyboardCallback(GLFWwindow* /**/, int key, int /**/, int action, in
                         Input::localChatHasBeenUpdated = true;
                     }
                 }
-                break;   
+                break;
             }
         }
     }

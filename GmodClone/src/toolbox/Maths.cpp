@@ -131,7 +131,7 @@ void Maths::createTransformationMatrixYXZ(Matrix4f* matrix, Vector3f* translatio
 void Maths::createViewMatrix(Matrix4f* matrix, Camera* cam)
 {
     Matrix4f viewMatrix = Maths::lookAt(&cam->eye, &cam->target, &cam->up);
-    
+
     matrix->set(&viewMatrix);
 }
 
@@ -188,7 +188,7 @@ Vector3f Maths::coordinatesRelativeToBasis(Vector3f* v1, Vector3f* v2, Vector3f*
     const int nrows = 3; // number of rows
     const int ncols = 4; // number of columns
 
-    int lead = 0; 
+    int lead = 0;
 
     // Row reduce
     while (lead < nrows)
@@ -389,7 +389,7 @@ Vector3f Maths::calculatePlaneSpeed(float xspd, float yspd, float zspd, Vector3f
 //Equation from https://sites.google.com/site/glennmurray/Home/rotation-matrices-and-formulas
 //Point that axis goes through,
 //direction of axis,
-//point to rotate, 
+//point to rotate,
 //angle of rotation
 void Maths::rotatePoint(float result[],
     float a, float b, float c,
@@ -438,13 +438,13 @@ Vector3f Maths::rotatePoint(
     float theta)
 {
     float result[3];
-    Maths::rotatePoint(result, 0, 0, 0, 
-        axisOfRotation->x, 
-        axisOfRotation->y, 
-        axisOfRotation->z, 
-        pointToRotate->x, 
-        pointToRotate->y, 
-        pointToRotate->z, 
+    Maths::rotatePoint(result, 0, 0, 0,
+        axisOfRotation->x,
+        axisOfRotation->y,
+        axisOfRotation->z,
+        pointToRotate->x,
+        pointToRotate->y,
+        pointToRotate->z,
         theta);
 
     return Vector3f(result[0], result[1], result[2]);
@@ -808,7 +808,7 @@ bool Maths::sphereIntersectsTriangle(Vector3f* sphereCenter, float sphereRadius,
         dir.normalize();
         outDirectionToTriangle->set(&dir);
     }
-    
+
     distToCenterSquared = (closestPoint2 - sphereCenter).lengthSquared();
     if (distToCenterSquared <= sphereRadiusSquared)
     {

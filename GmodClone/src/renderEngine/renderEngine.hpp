@@ -56,16 +56,16 @@ private:
 
 public:
     //For 3D Models
-    static RawModel loadToVAO(std::vector<float>* positions, 
-                              std::vector<float>* textureCoords, 
-                              std::vector<float>* normals, 
-                              std::vector<float>* vertexColors, 
+    static RawModel loadToVAO(std::vector<float>* positions,
+                              std::vector<float>* textureCoords,
+                              std::vector<float>* normals,
+                              std::vector<float>* vertexColors,
                               std::vector<int>* indices);
 
     //For 3D models with normal maps
-    static RawModel loadToVAO(std::vector<float>* positions, 
-                              std::vector<float>* textureCoords, 
-                              std::vector<float>* normals, 
+    static RawModel loadToVAO(std::vector<float>* positions,
+                              std::vector<float>* textureCoords,
+                              std::vector<float>* normals,
                               std::vector<float>* vertexColors,
                               std::vector<float>* tangents,
                               std::vector<int>* indices);

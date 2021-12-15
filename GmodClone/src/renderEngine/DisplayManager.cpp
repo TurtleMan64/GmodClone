@@ -145,7 +145,7 @@ int createDisplay()
         int monitorWidth = mode->width;
         int monitorHeight = mode->height;
 
-        if ((int)SCR_WIDTH  <= monitorWidth && 
+        if ((int)SCR_WIDTH  <= monitorWidth &&
             (int)SCR_HEIGHT <= monitorHeight)
         {
             int xpos = monitorWidth/2  - ((int)SCR_WIDTH)/2;
@@ -162,7 +162,7 @@ int createDisplay()
     //glGetFloatv(GL_MAX_TEXTURE_LOD_BIAS, &aniso);
     //std::fprintf(stdout, "max lod bias:   %f\n", aniso);
 
-    //To check what extensions are avalible 
+    //To check what extensions are avalible
     //int ext_cnt;
     //glGetIntegerv(GL_NUM_EXTENSIONS, &ext_cnt);
     //for (int i = 0; i < ext_cnt; i++)
@@ -204,7 +204,7 @@ GLFWwindow* getWindow()
 // ---------------------------------------------------------------------------------------------
 void framebuffer_size_callback(GLFWwindow* /*windowHandle*/, int width, int height)
 {
-    // make sure the viewport matches the new window dimensions; note that width and 
+    // make sure the viewport matches the new window dimensions; note that width and
     // height will be significantly larger than specified on retina displays.
     glViewport(0, 0, width, height);
     SCR_WIDTH = width;
