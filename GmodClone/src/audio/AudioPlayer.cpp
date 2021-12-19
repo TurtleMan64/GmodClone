@@ -90,6 +90,12 @@ void AudioPlayer::loadSoundEffects()
     AudioPlayer::buffersSFX.push_back(AudioMaster::loadOGG("res/Audio/BGM/sheeshflp.ogg"));                           //65
     AudioPlayer::buffersSFX.push_back(AudioMaster::loadOGG("res/Audio/SFX/freesound/splat.ogg"));                     //66
     AudioPlayer::buffersSFX.push_back(AudioMaster::loadOGG("res/Audio/SFX/youtube/buzzer.ogg"));                      //67
+    AudioPlayer::buffersSFX.push_back(AudioMaster::loadOGG("res/Audio/SFX/youtube/footstep-mud1.ogg"));               //68
+    AudioPlayer::buffersSFX.push_back(AudioMaster::loadOGG("res/Audio/SFX/youtube/footstep-mud2.ogg"));               //69
+    AudioPlayer::buffersSFX.push_back(AudioMaster::loadOGG("res/Audio/SFX/youtube/footstep-mud3.ogg"));               //70
+    AudioPlayer::buffersSFX.push_back(AudioMaster::loadOGG("res/Audio/SFX/youtube/footstep-mud4.ogg"));               //71
+    AudioPlayer::buffersSFX.push_back(AudioMaster::loadOGG("res/Audio/SFX/youtube/footstep-mud5.ogg"));               //72
+    AudioPlayer::buffersSFX.push_back(AudioMaster::loadOGG("res/Audio/SFX/youtube/footstep-mud6.ogg"));               //73
 }
 
 void AudioPlayer::loadBGM()

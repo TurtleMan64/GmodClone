@@ -82,6 +82,9 @@ public:
     const float LADDER_JUMP_COOLDOWN = 1.0f;
     bool isOnLadder = false;
 
+    // How much time you have been in king of the hill for.
+    float inZoneTime = 0.0f;
+
     void updateCamera();
 
     void useWeapon();
@@ -91,6 +94,10 @@ public:
     float getPushValueAir(float deltaTime);
 
     float getJumpValue(float deltaTime);
+
+    int getSoundEffectFootstep(int soundType);
+
+    int getSoundEffectImpact(int soundType);
 
     Entity* collideEntityImTouching = nullptr;
     Vector3f externalVel;

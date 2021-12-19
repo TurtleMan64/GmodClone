@@ -89,6 +89,8 @@ public:
 
     char health = 100;
 
+    float inZoneTime = 0.0f;
+
     OnlinePlayer(std::string name, float x, float y, float z);
     ~OnlinePlayer();
 

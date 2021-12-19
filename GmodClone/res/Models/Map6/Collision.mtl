@@ -1,0 +1,44 @@
+# Blender MTL File: 'None'
+# Material Count: 4
+
+newmtl None
+Ns 20.000000
+Ka 0.000000 0.000000 0.000000
+Kd 0.640000 0.640000 0.640000
+Ks 0.300000 0.300000 0.300000
+Ni 0.000000
+d 1.000000
+illum 2
+sound water
+map_Kd Pebbles_N.png
+
+newmtl None_Moss.png
+Ns 20.000000
+Ka 0.000000 0.000000 0.000000
+Kd 0.640000 0.640000 0.640000
+Ks 0.300000 0.300000 0.300000
+Ni 0.000000
+d 1.000000
+sound mud
+illum 2
+map_Kd Moss_N.png
+
+newmtl None_Rock_A.png
+Ns 20.000000
+Ka 0.000000 0.000000 0.000000
+Kd 0.640000 0.640000 0.640000
+Ks 0.300000 0.300000 0.300000
+Ni 0.000000
+d 1.000000
+illum 2
+map_Kd Rock_N.png
+
+newmtl None_Wall.png
+Ns 20.000000
+Ka 0.000000 0.000000 0.000000
+Kd 0.640000 0.640000 0.640000
+Ks 0.300000 0.300000 0.300000
+Ni 0.000000
+d 1.000000
+illum 2
+map_Kd Wall_N.png

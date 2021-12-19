@@ -351,17 +351,7 @@ void Player::step()
             int sfxId = 43;
             if (latestWallTriangle != nullptr)
             {
-                switch (latestWallTriangle->sound)
-                {
-                    case 0: sfxId = 43; break;
-                    case 1: sfxId = 44; break;
-                    case 2: sfxId = 45; break;
-                    case 3: sfxId = 46; break;
-                    case 4: sfxId = 47; break;
-                    case 5: sfxId = 48; break;
-                    case 6: sfxId = 49; break;
-                    default: break;
-                }
+                sfxId = getSoundEffectImpact(latestWallTriangle->sound);
             }
             AudioPlayer::play(sfxId, nullptr);
             Global::sendAudioMessageToServer(sfxId, &position);
@@ -758,17 +748,7 @@ void Player::step()
                 int sfxId = 43;
                 if (latestGroundTriangle != nullptr)
                 {
-                    switch (latestGroundTriangle->sound)
-                    {
-                        case 0: sfxId = 43; break;
-                        case 1: sfxId = 44; break;
-                        case 2: sfxId = 45; break;
-                        case 3: sfxId = 46; break;
-                        case 4: sfxId = 47; break;
-                        case 5: sfxId = 48; break;
-                        case 6: sfxId = 49; break;
-                        default: break;
-                    }
+                    sfxId = getSoundEffectImpact(latestGroundTriangle->sound);
                 }
                 AudioPlayer::play(sfxId, nullptr);
                 Global::sendAudioMessageToServer(sfxId, &position);
@@ -797,20 +777,10 @@ void Player::step()
         if (stepTimerBefore < 2.0f && stepTimer >= 2.0f)
         {
             stepTimer-=2.0f;
-            int sfxId = 8 + (int)(Maths::random()*5);
+            int sfxId = 8;
             if (latestGroundTriangle != nullptr)
             {
-                switch (latestGroundTriangle->sound)
-                {
-                    case 0: sfxId =  8 + (int)(Maths::random()*5); break;
-                    case 1: sfxId = 13 + (int)(Maths::random()*4); break;
-                    case 2: sfxId = 17 + (int)(Maths::random()*4); break;
-                    case 3: sfxId = 21 + (int)(Maths::random()*5); break;
-                    case 4: sfxId = 26 + (int)(Maths::random()*5); break;
-                    case 5: sfxId = 31 + (int)(Maths::random()*5); break;
-                    case 6: sfxId = 36 + (int)(Maths::random()*4); break;
-                    default: break;
-                }
+                sfxId = getSoundEffectFootstep(latestGroundTriangle->sound);
             }
             AudioPlayer::play(sfxId, nullptr);
             Global::sendAudioMessageToServer(sfxId, &position);
@@ -1159,14 +1129,51 @@ void Player::useWeapon()
     }
     else if (result.hit)
     {
-        AudioPlayer::play(50, nullptr);
-        Global::sendAudioMessageToServer(50, &position);
+        int sfxId = getSoundEffectImpact(result.tri->sound);
+        AudioPlayer::play(sfxId, nullptr);
+        Global::sendAudioMessageToServer(sfxId, &position);
     }
     else //miss
     {
         AudioPlayer::play(52, nullptr);
         Global::sendAudioMessageToServer(52, &position);
     }
+}
+
+int Player::getSoundEffectFootstep(int soundType)
+{
+    switch (soundType)
+    {
+        case 0: return  8 + (int)(Maths::random()*5);
+        case 1: return 13 + (int)(Maths::random()*4);
+        case 2: return 17 + (int)(Maths::random()*4);
+        case 3: return 21 + (int)(Maths::random()*5);
+        case 4: return 26 + (int)(Maths::random()*5);
+        case 5: return 31 + (int)(Maths::random()*5);
+        case 6: return 36 + (int)(Maths::random()*4);
+        case 7: return 68 + (int)(Maths::random()*6);
+        default: break;
+    }
+
+    return 8;
+}
+
+int Player::getSoundEffectImpact(int soundType)
+{
+    switch (soundType)
+    {
+        case 0: return 43;
+        case 1: return 44;
+        case 2: return 45;
+        case 3: return 46;
+        case 4: return 47;
+        case 5: return 48;
+        case 6: return 49;
+        case 7: return 68;
+        default: break;
+    }
+
+    return 43;
 }
 
 std::vector<Entity*>* Player::getEntitiesToRender()
@@ -1218,6 +1225,8 @@ void Player::reset()
     isCrouching = false;
 
     weapon = WEAPON_FIST;
+
+    inZoneTime = 0.0f;
 
     vel.set(0, 0, 0);
     groundNormal.set(0, 1, 0);

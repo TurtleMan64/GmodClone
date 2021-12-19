@@ -158,7 +158,7 @@ private:
 
     void unbindTexturedModel();
 
-    void prepareInstance(Entity* entity);
+    void prepareInstance(Entity* entity, int entityId);
 
 public:
     EntityRenderer(ShaderProgram* shader, Matrix4f* projectionMatrix);

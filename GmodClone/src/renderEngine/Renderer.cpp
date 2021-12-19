@@ -43,6 +43,8 @@ void EntityRenderer::renderNEW(std::unordered_map<TexturedModel*, std::list<Enti
 
     clockTime = (float)glfwGetTime();
 
+    int entityId = 0;
+
     for (auto entry : (*entitiesMap))
     {
         prepareTexturedModel(entry.first);
@@ -50,7 +52,8 @@ void EntityRenderer::renderNEW(std::unordered_map<TexturedModel*, std::list<Enti
 
         for (Entity* entity : (*entityList))
         {
-            prepareInstance(entity);
+            prepareInstance(entity, entityId);
+            entityId++;
             glDrawElements(GL_TRIANGLES, (entry.first)->getRawModel()->getVertexCount(), GL_UNSIGNED_INT, 0);
         }
         unbindTexturedModel();
@@ -76,6 +79,7 @@ void EntityRenderer::prepareTexturedModel(TexturedModel* model)
     shader->loadTextureOffsets(clockTime * (texture->scrollX), clockTime * (texture->scrollY));
     shader->loadMixFactor(texture->mixFactor());
     shader->loadFogScale(texture->fogScale);
+    shader->loadNoise(texture->noise);
 
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, texture->getId());
@@ -102,11 +106,12 @@ void EntityRenderer::unbindTexturedModel()
     glBindVertexArray(0);
 }
 
-void EntityRenderer::prepareInstance(Entity* entity)
+void EntityRenderer::prepareInstance(Entity* entity, int entityId)
 {
     shader->loadTransformationMatrix(&entity->transformationMatrix);
     shader->loadBaseColor(&entity->baseColor);
     shader->loadBaseAlpha(entity->baseAlpha);
+    shader->loadEntityId(entityId);
 }
 
 void EntityRenderer::render(Entity* entity)
@@ -116,7 +121,7 @@ void EntityRenderer::render(Entity* entity)
         return;
     }
 
-    prepareInstance(entity);
+    prepareInstance(entity, 0);
 
     std::list<TexturedModel*>* models = entity->getModels();
 

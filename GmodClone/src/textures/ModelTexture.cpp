@@ -17,6 +17,7 @@ ModelTexture::ModelTexture()
     hasTransparency = false;
     useFakeLighting = false;
     glowAmount = 0;
+    noise = 1.0f;
     isAnimated = false;
     animatedProgress = 0.0f;
     animationSpeed = 0.0f;
@@ -38,6 +39,7 @@ ModelTexture::ModelTexture(std::vector<GLuint>* texIds)
     hasTransparency = false;
     useFakeLighting = false;
     glowAmount = 0;
+    noise = 1.0f;
     isAnimated = false;
     animatedProgress = 0.0f;
     animationSpeed = 0.0f;
@@ -67,6 +69,7 @@ ModelTexture::ModelTexture(ModelTexture* other)
     hasTransparency     = other->hasTransparency;
     useFakeLighting     = other->useFakeLighting;
     glowAmount          = other->glowAmount;
+    noise               = other->noise;
     isAnimated          = other->isAnimated;
     animatedProgress    = other->animatedProgress;
     animationSpeed      = other->animationSpeed;
@@ -166,11 +169,12 @@ bool ModelTexture::equalTo(ModelTexture* other)
         scrollX         == other->scrollX         &&
         scrollY         == other->scrollY         &&
         glowAmount      == other->glowAmount      &&
+        noise           == other->noise           &&
         hasTransparency == other->hasTransparency &&
         useFakeLighting == other->useFakeLighting &&
         fogScale        == other->fogScale        &&
         mixingType      == other->mixingType      &&
         animationSpeed  == other->animationSpeed  &&
         renderOrder     == other->renderOrder     &&
-        normalMapId     == other->normalMapId); //NORMAL_
+        normalMapId     == other->normalMapId);
 }

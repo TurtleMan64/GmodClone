@@ -38,6 +38,7 @@
 #include "../entities/fenceplatform.hpp"
 #include "../entities/stepfallplatform.hpp"
 #include "../entities/bat.hpp"
+#include "../entities/winzone.hpp"
 
 void LevelLoader::loadLevel(std::string mapName)
 {
@@ -79,6 +80,7 @@ void LevelLoader::loadLevel(std::string mapName)
     else if (fname == "map4.map") Global::levelId = LVL_MAP4;
     else if (fname == "test.map") Global::levelId = LVL_TEST;
     else if (fname == "map5.map") Global::levelId = LVL_MAP5;
+    else if (fname == "map6.map") Global::levelId = LVL_MAP6;
 
     Global::deleteAllEntites();
 
@@ -98,7 +100,12 @@ void LevelLoader::loadLevel(std::string mapName)
     }
     else
     {
-        Global::timeUntilRoundStarts = 7.0f;
+        Global::timeUntilRoundStarts = 12.0f;
+    }
+
+    if (Global::levelId == LVL_MAP6)
+    {
+        Global::player->weapon = WEAPON_BAT;
     }
 
     AudioPlayer::stopBGM();
@@ -407,6 +414,16 @@ void LevelLoader::processLine(std::vector<std::string>& dat)
         {
             Bat* bat = new Bat(dat[1], Vector3f(toF(dat[2]), toF(dat[3]), toF(dat[4]))); INCR_NEW("Entity");
             Global::addEntity(bat);
+            break;
+        }
+
+        case ENTITY_WIN_ZONE:
+        {
+            WinZone* win = new WinZone(dat[1], // Name
+                Vector3f(toF(dat[2]), toF(dat[3]), toF(dat[4])), //Postion
+                Vector3f(toF(dat[5]), toF(dat[6]), toF(dat[7]))); //Size
+            INCR_NEW("Entity");
+            Global::addEntity(win);
             break;
         }
 

@@ -1,0 +1,9 @@
+# Material Count: 1
+
+newmtl Tile
+Ns 20.000000
+Ni 0.000000
+glow 0.8
+noise 0.02
+d 1.000000
+map_Kd bright.png

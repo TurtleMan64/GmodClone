@@ -9,13 +9,14 @@ out vec4 out_Color;
 
 uniform sampler2D textureSampler;
 uniform sampler2D textureSampler2;
-uniform sampler2D depthBufferTransparent;
+//uniform sampler2D depthBufferTransparent;
 uniform sampler2D normalMap;
-uniform int   isRenderingTransparent;
-uniform int   isRenderingDepth;
+uniform sampler2D randomMap;
+//uniform int   isRenderingTransparent;
+//uniform int   isRenderingDepth;
 uniform vec3  lightColor[4];
 uniform vec3  attenuation[4];
-uniform float shineDamper;
+//uniform float shineDamper;
 uniform float reflectivity;
 uniform float useFakeLighting;
 uniform vec3  skyColor;
@@ -24,8 +25,8 @@ uniform float glowAmount;
 uniform vec3  baseColor;
 uniform float baseAlpha;
 uniform float mixFactor;
-uniform vec3  waterColor;
-uniform float waterBlendAmount;
+//uniform vec3  waterColor;
+//uniform float waterBlendAmount;
 
 uniform float fogDensity;
 uniform float fogGradient;
@@ -33,8 +34,40 @@ uniform float fogScale; //per material
 uniform float fogBottomPosition;
 uniform float fogBottomThickness;
 
+uniform int clock;
+uniform float noise;
+uniform int entityId;
+
 void main(void)
 {
+    if (noise < 1.0)
+    {
+        vec2 fragCoordNormalized = gl_FragCoord.xy / 1024.0; //1024 is size of the randomMap.png
+        
+        vec4 randomSample = texture(randomMap, fragCoordNormalized + vec2(clock + 3.333*entityId, clock - 3.333*entityId));
+        float rn;
+        switch (clock % 12)
+        {
+            case  0: rn =       randomSample.r;    break;
+            case  1: rn =       randomSample.g;    break;
+            case  2: rn =       randomSample.b;    break;
+            case  3: rn =       randomSample.a;    break;
+            case  4: rn = fract(randomSample.r*2); break;
+            case  5: rn = fract(randomSample.g*2); break;
+            case  6: rn = fract(randomSample.b*2); break;
+            case  7: rn = fract(randomSample.a*2); break;
+            case  8: rn = fract(randomSample.r*4); break;
+            case  9: rn = fract(randomSample.g*4); break;
+            case 10: rn = fract(randomSample.b*4); break;
+            case 11: rn = fract(randomSample.a*4); break;
+        }
+        
+        if (rn > noise)
+        {
+            discard;
+        }
+    }
+    
     vec4 rawTextureColor = mix(texture(textureSampler, pass_textureCoords), texture(textureSampler2, pass_textureCoords), mixFactor);
     rawTextureColor.rgb *= baseColor*pass_vertexColor.rgb;
     rawTextureColor.a   *= baseAlpha*pass_vertexColor.a*0.5; //for some bizarre reason, 0.5 alpha is seen as full opaque...
@@ -88,7 +121,7 @@ void main(void)
     
     if (glowAmount > 0.0)
     {
-        totalDiffuse = vec3(totalDiffuse);
+        totalDiffuse = vec3(glowAmount);
     }
     
     totalDiffuse = max(totalDiffuse, 0.32); //ambient light

@@ -10,14 +10,23 @@
 #include "maths.hpp"
 #include "../main/main.hpp"
 
-std::mt19937* Maths::generatorUniform = new std::mt19937(0);
-std::uniform_real_distribution<float>* Maths::distributionUniform = new std::uniform_real_distribution<float>(0.0f, 1.0f);
+std::mt19937* Maths::generatorUniform = nullptr;
+std::uniform_real_distribution<float>* Maths::distributionUniform = nullptr;
 
-std::default_random_engine* Maths::generatorNormal = new std::default_random_engine(0);
-std::normal_distribution<float>* Maths::distributionNormal = new std::normal_distribution<float>(0.0f, 1.0f);
+std::default_random_engine* Maths::generatorNormal = nullptr;
+std::normal_distribution<float>* Maths::distributionNormal = nullptr;
 
-const float Maths::PI = 3.14159265358979323846f;
-const float Maths::E  = 2.71828182845904523536f;
+constexpr float Maths::PI = 3.14159265358979323846f;
+constexpr float Maths::E  = 2.71828182845904523536f;
+
+void Maths::initRandom(unsigned int seed)
+{
+    Maths::generatorUniform = new std::mt19937(seed); INCR_NEW("std::mt19937");
+    Maths::distributionUniform = new std::uniform_real_distribution<float>(0.0f, 1.0f); INCR_NEW("std::uniform_real_distribution");
+
+    Maths::generatorNormal = new std::default_random_engine(seed); INCR_NEW("std::default_random_engine");
+    Maths::distributionNormal = new std::normal_distribution<float>(0.0f, 1.0f); INCR_NEW("std::normal_distribution");
+}
 
 float Maths::toRadians(float degrees)
 {
@@ -126,7 +135,6 @@ void Maths::createTransformationMatrixYXZ(Matrix4f* matrix, Vector3f* translatio
     vec.set(scale, scale, scale);
     matrix->scale(&vec);
 }
-
 
 void Maths::createViewMatrix(Matrix4f* matrix, Camera* cam)
 {
@@ -652,7 +660,7 @@ Vector3f Maths::randomPointOnSphere()
 
 float Maths::random()
 {
-    return (rand() % RAND_MAX) / ((float)(RAND_MAX));
+    return (*Maths::distributionUniform)(*Maths::generatorUniform);
 }
 
 float Maths::nextGaussian()

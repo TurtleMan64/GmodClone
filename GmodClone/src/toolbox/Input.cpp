@@ -14,8 +14,8 @@
 #include <cstring>
 #include <algorithm>
 
-#include "input.hpp"
 #include "../main/main.hpp"
+#include "input.hpp"
 #include "../entities/camera.hpp"
 #include "maths.hpp"
 #include "../toolbox/split.hpp"

@@ -20,6 +20,8 @@ private:
     static std::normal_distribution<float>* distributionNormal;
 
 public:
+    static void initRandom(unsigned int seed);
+
     static const float PI;
     static const float E;
 

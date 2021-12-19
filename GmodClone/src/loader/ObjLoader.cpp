@@ -618,6 +618,7 @@ void ObjLoader::parseMtl(std::string filePath, std::string fileName, std::unorde
     float currentTransparencyValue = 1.0f;
     float currentFakeLightingValue = 1.0f;
     float currentGlowAmountValue = 0.0f;
+    float currentNoiseValue = 1.0f;
     float currentScrollXValue = 0.0f;
     float currentScrollYValue = 0.0f;
     int   currentNumImages = 1;
@@ -646,6 +647,7 @@ void ObjLoader::parseMtl(std::string filePath, std::string fileName, std::unorde
                 currentTransparencyValue = 1.0f;
                 currentFakeLightingValue = 1.0f;
                 currentGlowAmountValue = 0.0f;
+                currentNoiseValue = 1.0f;
                 currentScrollXValue = 0.0f;
                 currentScrollYValue = 0.0f;
                 currentNumImages = 1;
@@ -711,6 +713,7 @@ void ObjLoader::parseMtl(std::string filePath, std::string fileName, std::unorde
                     newTexture.useFakeLighting = true;
                 }
                 newTexture.glowAmount = currentGlowAmountValue;
+                newTexture.noise = currentNoiseValue;
                 newTexture.scrollX = currentScrollXValue;
                 newTexture.scrollY = currentScrollYValue;
                 newTexture.animationSpeed = currentAnimSpeed;
@@ -739,6 +742,10 @@ void ObjLoader::parseMtl(std::string filePath, std::string fileName, std::unorde
             else if (strcmp(lineSplit[0], "\tglow") == 0 || strcmp(lineSplit[0], "glow") == 0)
             {
                 currentGlowAmountValue = std::stof(lineSplit[1]);
+            }
+            else if (strcmp(lineSplit[0], "\tnoise") == 0 || strcmp(lineSplit[0], "noise") == 0)
+            {
+                currentNoiseValue = std::stof(lineSplit[1]);
             }
             else if (strcmp(lineSplit[0], "\tscrollX") == 0 || strcmp(lineSplit[0], "scrollX") == 0)
             {
@@ -1442,6 +1449,10 @@ CollisionModel* ObjLoader::loadCollisionModel(std::string filePath, std::string 
                             else if (strcmp(lineSplitMTL[1], "wood") == 0)
                             {
                                 fakeTextures.back().sound = 6;
+                            }
+                            else if (strcmp(lineSplitMTL[1], "mud") == 0)
+                            {
+                                fakeTextures.back().sound = 7;
                             }
                         }
                         else if (strcmp(lineSplitMTL[0], "particle") == 0 ||

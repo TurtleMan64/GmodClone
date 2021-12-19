@@ -78,6 +78,7 @@
 #include "../entities/fenceplatform.hpp"
 #include "../entities/stepfallplatform.hpp"
 #include "../entities/bat.hpp"
+#include "../entities/winzone.hpp"
 
 Message::Message(const Message &other)
 {
@@ -174,7 +175,7 @@ int main(int argc, char** argv)
 
     increaseProcessPriority();
 
-    srand((unsigned long)time(nullptr));
+    Maths::initRandom((unsigned long)time(nullptr));
 
     Maths::random();
 
@@ -241,6 +242,7 @@ int main(int argc, char** argv)
     FencePlatform::loadModels();
     StepFallPlatform::loadModels();
     Bat::loadModels();
+    WinZone::loadModels();
 
     Global::serverSettings = readFileLines("ServerSettings.ini");
     Global::serverClient = new TcpClient(Global::serverSettings[0].c_str(), std::stoi(Global::serverSettings[1]), 1); INCR_NEW("TcpClient");
@@ -552,10 +554,7 @@ int main(int argc, char** argv)
         Master_processEntity(Global::player);
         Master_processEntity(Global::stageEntity);
 
-        //glEnable(GL_CLIP_DISTANCE1);
         Master_render(&cam, 0, 0, 0, 0, 0.0f);
-        //glDisable(GL_CLIP_DISTANCE1);
-
 
         Master_clearAllEntities();
 
@@ -625,6 +624,21 @@ int main(int argc, char** argv)
             }
             Global::gameOnlinePlayerNametagsToDelete.clear();
             Global::gameOnlinePlayersSharedMutex.unlock();
+        }
+
+        if (Global::timeUntilRoundStarts > 5.0f)
+        {
+            GuiManager::addGuiToRender(GuiTextureResources::textureMapBG);
+
+            switch (Global::levelId)
+            {
+                case LVL_MAP1: GuiManager::addGuiToRender(GuiTextureResources::textureMap1); break;
+                case LVL_MAP2: GuiManager::addGuiToRender(GuiTextureResources::textureMap2); break;
+                case LVL_MAP4: GuiManager::addGuiToRender(GuiTextureResources::textureMap4); break;
+                case LVL_MAP5: GuiManager::addGuiToRender(GuiTextureResources::textureMap5); break;
+                case LVL_MAP6: GuiManager::addGuiToRender(GuiTextureResources::textureMap5); break;  //todo
+                default: break;
+            }
         }
 
         GuiManager::render();
@@ -996,8 +1010,8 @@ void Global::readThreadBehavoir(TcpClient* client)
                                 Global::addChatMessage(name + " joined", Vector3f(0.5f, 1, 0.5f));
                             }
 
-                            char buf[148];
-                            numRead = client->read(buf, 148, 5); CHECK_CONNECTION_R(148, "Could not read player update");
+                            char buf[152];
+                            numRead = client->read(buf, 152, 5); CHECK_CONNECTION_R(152, "Could not read player update");
 
                             int idx = 0;
 
@@ -1043,6 +1057,7 @@ void Global::readThreadBehavoir(TcpClient* client)
                             memcpy(&onlinePlayer->isCrouching,        &buf[idx], 1); idx+=1;
                             memcpy(&onlinePlayer->weapon,             &buf[idx], 1); idx+=1;
                             memcpy(&onlinePlayer->health,             &buf[idx], 1); idx+=1;
+                            memcpy(&onlinePlayer->inZoneTime,         &buf[idx], 4); idx+=4;
                             memcpy(&onlinePlayer->pingMs,             &buf[idx], 4);
 
                             break;
@@ -1517,9 +1532,10 @@ void Global::writeThreadBehavior(TcpClient* client)
                 memcpy(&buf[idx], (char*)&Global::player->lookDir.z,          4); idx += 4;
                 memcpy(&buf[idx], (char*)&Global::player->isCrouching,        1); idx += 1;
                 memcpy(&buf[idx], (char*)&Global::player->weapon,             1); idx += 1;
-                memcpy(&buf[idx], (char*)&Global::player->health,             1);
+                memcpy(&buf[idx], (char*)&Global::player->health,             1); idx += 1;
+                memcpy(&buf[idx], (char*)&Global::player->inZoneTime,         4);
 
-                numWritten = client->write(buf, 145, 5); CHECK_CONNECTION_W(145, "Could not write player update");
+                numWritten = client->write(buf, 149, 5); CHECK_CONNECTION_W(149, "Could not write player update");
             }
 
             lastSentPlayerMsg = glfwGetTime();

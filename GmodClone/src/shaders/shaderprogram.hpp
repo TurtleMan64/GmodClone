@@ -53,6 +53,9 @@ private:
     int location_lightPositionEyeSpace[4];
     int location_attenuation[4];
     int location_lightColor[4];
+    int location_clock;
+    int location_noise;
+    int location_entityId;
 
 public:
     ShaderProgram(const char*, const char*);
@@ -114,6 +117,12 @@ public:
     void loadWaterBlendAmount(float);
 
     void loadIsRenderingDepth(bool value);
+
+    void loadClock(int value);
+
+    void loadEntityId(int value);
+
+    void loadNoise(float value);
 
     void connectTextureUnits();
 

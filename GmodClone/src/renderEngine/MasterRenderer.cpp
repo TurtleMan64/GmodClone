@@ -93,6 +93,8 @@ void Master_init()
     Master_disableCulling();
 }
 
+int masterRendererClock = 0;
+
 void Master_render(Camera* camera, float clipX, float clipY, float clipZ, float clipW, float waterBlendAmount)
 {
     ANALYSIS_START("Master Render");
@@ -114,6 +116,9 @@ void Master_render(Camera* camera, float clipX, float clipY, float clipZ, float 
     Vector4f plane = Maths::calcPlaneValues(&startPos, &lookDir);
     shader->loadClipPlaneBehind(plane.x, plane.y, plane.z, plane.w);
 
+    shader->loadClock(masterRendererClock);
+    masterRendererClock = (masterRendererClock + 1) % 60;
+
     shader->loadSkyColor(Global::skyColor.x, Global::skyColor.y, Global::skyColor.z);
     shader->loadLights();
     shader->loadFogGradient(0.0000000000000005f);
@@ -129,11 +134,13 @@ void Master_render(Camera* camera, float clipX, float clipY, float clipZ, float 
     shader->connectTextureUnits();
 
     glDepthMask(true);
+    glEnable(GL_CLIP_DISTANCE0);
     renderer->renderNEW(&entitiesMap,      nullptr, nullptr);
     renderer->renderNEW(&entitiesMapPass2, nullptr, nullptr);
     renderer->renderNEW(&entitiesMapPass3, nullptr, nullptr);
     glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
     glBindTexture(GL_TEXTURE_2D, 0);
+    glDisable(GL_CLIP_DISTANCE0);
     shader->stop();
 
     ANALYSIS_DONE("Master Render");
@@ -230,8 +237,8 @@ void prepare()
     //glActiveTexture(GL_TEXTURE6);
     //glBindTexture(GL_TEXTURE_2D, Master_getShadowMapTexture2());
 
-    //glActiveTexture(GL_TEXTURE7);
-    //glBindTexture(GL_TEXTURE_2D, randomMap);
+    glActiveTexture(GL_TEXTURE3);
+    glBindTexture(GL_TEXTURE_2D, randomMap);
 
     if (Global::renderWithCulling)
     {

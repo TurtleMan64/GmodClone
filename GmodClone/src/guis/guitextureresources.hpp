@@ -12,6 +12,11 @@ public:
     static GuiTexture* textureHealthbar;
     static GuiTexture* textureHealthbarBG;
     static GuiTexture* texturePlayersBG;
+    static GuiTexture* textureMap1;
+    static GuiTexture* textureMap2;
+    static GuiTexture* textureMap4;
+    static GuiTexture* textureMap5;
+    static GuiTexture* textureMapBG;
 
     static void loadGuiTextures();
 };

@@ -172,6 +172,7 @@
     <ClCompile Include="src\entities\RedBarrel.cpp" />
     <ClCompile Include="src\entities\RockPlatform.cpp" />
     <ClCompile Include="src\entities\StepFallPlatform.cpp" />
+    <ClCompile Include="src\entities\WinZone.cpp" />
     <ClCompile Include="src\fontMeshCreator\Character.cpp" />
     <ClCompile Include="src\fontMeshCreator\FontType.cpp" />
     <ClCompile Include="src\fontMeshCreator\GUINumber.cpp" />
@@ -236,6 +237,7 @@
     <ClInclude Include="src\entities\redbarrel.hpp" />
     <ClInclude Include="src\entities\rockplatform.hpp" />
     <ClInclude Include="src\entities\stepfallplatform.hpp" />
+    <ClInclude Include="src\entities\winzone.hpp" />
     <ClInclude Include="src\fontMeshCreator\character.hpp" />
     <ClInclude Include="src\fontMeshCreator\fonttype.hpp" />
     <ClInclude Include="src\fontMeshCreator\guinumber.hpp" />

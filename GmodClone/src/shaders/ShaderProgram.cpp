@@ -169,7 +169,7 @@ void ShaderProgram::bindAttributes()
     bindAttribute(1, "textureCoords");
     bindAttribute(2, "normal");
     bindAttribute(3, "vertexColor");
-    bindAttribute(4, "tangent"); //NORMAL_
+    bindAttribute(4, "tangent");
 }
 
 void ShaderProgram::bindAttribute(int attribute, const char* variableName)
@@ -230,6 +230,9 @@ void ShaderProgram::getAllUniformLocations()
     location_lightColor[1]            = getUniformLocation("lightColor[1]");
     location_lightColor[2]            = getUniformLocation("lightColor[2]");
     location_lightColor[3]            = getUniformLocation("lightColor[3]");
+    location_clock                    = getUniformLocation("clock");
+    location_noise                    = getUniformLocation("noise");
+    location_entityId                 = getUniformLocation("entityId");
 }
 
 int ShaderProgram::getUniformLocation(const char* uniformName)
@@ -292,6 +295,7 @@ void ShaderProgram::connectTextureUnits()
 
     loadInt(location_textureSampler2, 1);
     loadInt(location_normalMap, 2);
+    loadInt(location_randomMap, 3);
     loadInt(location_depthBufferTransparent, 8);
 }
 
@@ -323,6 +327,21 @@ void ShaderProgram::loadIsRenderingTransparent(bool value)
 void ShaderProgram::loadIsRenderingDepth(bool value)
 {
     loadInt(location_isRenderingDepth, (int)value);
+}
+
+void ShaderProgram::loadClock(int value)
+{
+    loadInt(location_clock, value);
+}
+
+void ShaderProgram::loadEntityId(int value)
+{
+    loadInt(location_entityId, value);
+}
+
+void ShaderProgram::loadNoise(float value)
+{
+    loadFloat(location_noise, value);
 }
 
 void ShaderProgram::loadWaterColor(Vector3f* color)
