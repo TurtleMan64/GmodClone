@@ -150,15 +150,15 @@ void Master_renderShadowMaps(Light* sun);
 class EntityRenderer
 {
 private:
-    float clockTime;
+    float clockTime = 0.0f;
 
-    ShaderProgram* shader;
+    ShaderProgram* shader = nullptr;
 
     void prepareTexturedModel(TexturedModel* model);
 
     void unbindTexturedModel();
 
-    void prepareInstance(Entity* entity, int entityId);
+    void prepareInstance(Entity* entity, unsigned int entityId);
 
 public:
     EntityRenderer(ShaderProgram* shader, Matrix4f* projectionMatrix);

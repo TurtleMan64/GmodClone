@@ -101,10 +101,12 @@ CollisionResult CollisionChecker::checkCollision(float x1, float y1, float z1, f
 {
     CollisionResult result;
 
-    Triangle3D* closestCollisionTriangle = nullptr;
-    Entity* closestEntity = nullptr;
-
     float distanceToCollisionPositionSquared = Vector3f(x2-x1, y2-y1, z2-z1).lengthSquared();
+
+    Vector3f dir(x2 - x1, y2 - y1, z2 - z1);
+    distanceToCollisionPositionSquared = dir.lengthSquared();
+    result.directionToPosition = dir;
+    result.directionToPosition.normalize();
 
     //std::vector<std::vector<Triangle3D*>*> chunks;
 
@@ -137,8 +139,10 @@ CollisionResult CollisionChecker::checkCollision(float x1, float y1, float z1, f
 
                 if (thisDistSquared < distanceToCollisionPositionSquared)
                 {
-                    closestCollisionTriangle = tri;
                     distanceToCollisionPositionSquared = thisDistSquared;
+
+                    result.tri = tri;
+                    result.collidePosition = collidePosition;
                 }
             }
         }
@@ -157,22 +161,21 @@ CollisionResult CollisionChecker::checkCollision(float x1, float y1, float z1, f
 
                     if (thisDistSquared < distanceToCollisionPositionSquared)
                     {
-                        closestCollisionTriangle = tri;
                         distanceToCollisionPositionSquared = thisDistSquared;
-                        closestEntity = e;
+
+                        result.tri = tri;
+                        result.entity = e;
+                        result.collidePosition = collidePosition;
                     }
                 }
             }
         }
     }
 
-    if (closestCollisionTriangle != nullptr)
+    if (result.tri != nullptr)
     {
         result.hit = true;
         result.distanceToPosition = sqrtf(distanceToCollisionPositionSquared);
-        result.tri = closestCollisionTriangle;
-        result.entity = closestEntity;
-        return result;
     }
 
     return result;

@@ -11,7 +11,9 @@
 #include <iostream>
 
 #ifdef _WIN32
-#include <windows.h>
+#include <winsock2.h>
+#include <Windows.h>
+#include <ws2tcpip.h>
 #else
 #include <stdio.h>
 #include <errno.h>

@@ -17,6 +17,7 @@
 #include "ladder.hpp"
 #include "dummy.hpp"
 #include "../fontMeshCreator/guitext.hpp"
+#include "../audio/audioplayer.hpp"
 
 std::list<TexturedModel*> OnlinePlayer::modelsHead;
 std::list<TexturedModel*> OnlinePlayer::modelsFall;
@@ -542,14 +543,18 @@ void OnlinePlayer::step()
         nametag = new GUIText(name, 0.1f, Global::fontConsolas, -0.5f, -0.5f, 4, true); INCR_NEW("GUIText");
     }
 
-    if (health <= 0)
+    if (health <= 0 || diff.lengthSquared() > 20*20)
     {
         nametag->visible = false;
     }
     else
     {
-        //todo: collision check
-        nametag->visible = true;
+        //todo: enable this once checkCollision has been optimized for line segments
+
+        CollisionResult result = CollisionChecker::checkCollision(&Global::gameCamera->eye, &nametagPos);
+        nametag->visible = !result.hit;
+
+        //nametag->visible = true;
     }
 
     nametag->fontSize = 0.15f / diff.length();
@@ -610,6 +615,14 @@ void OnlinePlayer::getHit(Vector3f* hitPos, Vector3f* hitDir, int wpn)
     msg.length = 1 + 4 + nameLen + 24 + 1;
 
     Global::sendMessageToServer(msg);
+
+    switch (wpn)
+    {
+        case WEAPON_FIST: AudioPlayer::play(75, nullptr); break;
+        case WEAPON_BAT:  AudioPlayer::play(74, nullptr); break;
+        case WEAPON_GUN:  AudioPlayer::play(74, nullptr); break;
+        default: break;
+    }
 }
 
 float OnlinePlayer::getPushValueGround(float deltaTime)

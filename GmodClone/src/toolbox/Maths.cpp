@@ -16,9 +16,6 @@ std::uniform_real_distribution<float>* Maths::distributionUniform = nullptr;
 std::default_random_engine* Maths::generatorNormal = nullptr;
 std::normal_distribution<float>* Maths::distributionNormal = nullptr;
 
-constexpr float Maths::PI = 3.14159265358979323846f;
-constexpr float Maths::E  = 2.71828182845904523536f;
-
 void Maths::initRandom(unsigned int seed)
 {
     Maths::generatorUniform = new std::mt19937(seed); INCR_NEW("std::mt19937");

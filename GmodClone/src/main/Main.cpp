@@ -4,7 +4,9 @@
 #endif
 
 #ifdef _WIN32
-#include <windows.h>
+#include <winsock2.h>
+#include <Windows.h>
+#include <ws2tcpip.h>
 #include <tchar.h>
 #endif
 
@@ -23,6 +25,7 @@
 #include <thread>
 #include <shared_mutex>
 #include <condition_variable>
+#include <algorithm>
 
 #include <chrono>
 #include <ctime>
@@ -79,6 +82,8 @@
 #include "../entities/stepfallplatform.hpp"
 #include "../entities/bat.hpp"
 #include "../entities/winzone.hpp"
+#include "../entities/onlineplayer.hpp"
+#include "../entities/fallblock.hpp"
 
 Message::Message(const Message &other)
 {
@@ -243,6 +248,7 @@ int main(int argc, char** argv)
     StepFallPlatform::loadModels();
     Bat::loadModels();
     WinZone::loadModels();
+    FallBlock::loadModels();
 
     Global::serverSettings = readFileLines("ServerSettings.ini");
     Global::serverClient = new TcpClient(Global::serverSettings[0].c_str(), std::stoi(Global::serverSettings[1]), 1); INCR_NEW("TcpClient");
@@ -268,10 +274,6 @@ int main(int argc, char** argv)
     Global::lights[0]->direction.set(-0.2f, -1, -0.4f);
     Global::lights[0]->direction.normalize();
     Global::lights[0]->attenuation.set(1, 0, 0);
-
-    Global::lights[1]->position.set(46.8f, 6.0f, 0);
-    Global::lights[2]->position.set(78.381195f, -0.000010f, -61.671387f);
-    Global::lights[3]->position.set(0, 100000003.0f, 0);
 
     long long secSinceEpoch = std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now().time_since_epoch()).count();
 
@@ -387,6 +389,32 @@ int main(int argc, char** argv)
                     {
                         AudioPlayer::play(66, nullptr);
                         Global::player->health = 0;
+                    }
+                }
+
+                if (Global::levelId == LVL_MAP6)
+                {
+                    std::vector<float> playerZoneTimes;
+                    playerZoneTimes.push_back(Global::player->inZoneTime);
+
+                    Global::gameOnlinePlayersSharedMutex.lock_shared();
+                    for (auto const& entry : Global::gameOnlinePlayers)
+                    {
+                        playerZoneTimes.push_back(entry.second->inZoneTime);
+                    }
+                    Global::gameOnlinePlayersSharedMutex.unlock_shared();
+
+                    if (playerZoneTimes.size() > 1)
+                    {
+                        std::sort(playerZoneTimes.begin(), playerZoneTimes.end());
+
+                        float middleTime = playerZoneTimes[playerZoneTimes.size()/2];
+
+                        if (Global::player->inZoneTime < middleTime)
+                        {
+                            AudioPlayer::play(66, nullptr);
+                            Global::player->health = 0;
+                        }
                     }
                 }
             }
@@ -576,7 +604,9 @@ int main(int argc, char** argv)
                     std::string t = Global::nickname;
                     int p = Global::pingToServer;
 
-                    for (int i = (int)Global::nickname.size() - Maths::numDigits(p); i < 20; i++)
+                    int spacesToDraw = 22 - ((int)t.size() + Maths::numDigits(p));
+
+                    for (int i = 0; i < spacesToDraw; i++)
                     {
                         t = t + " ";
                     }
@@ -596,7 +626,9 @@ int main(int argc, char** argv)
                     std::string t = entry.first;
                     int p = entry.second->pingMs;
 
-                    for (int i = (int)entry.first.size() - Maths::numDigits(p); i < 20; i++)
+                    int spacesToDraw = 22 - ((int)t.size() + Maths::numDigits(p));
+
+                    for (int i = 0; i < spacesToDraw; i++)
                     {
                         t = t + " ";
                     }
@@ -630,13 +662,16 @@ int main(int argc, char** argv)
         {
             GuiManager::addGuiToRender(GuiTextureResources::textureMapBG);
 
+            float a = Maths::clamp(0.0f, (11.75f - Global::timeUntilRoundStarts)/2.0f, 1.0f);
+
             switch (Global::levelId)
             {
-                case LVL_MAP1: GuiManager::addGuiToRender(GuiTextureResources::textureMap1); break;
-                case LVL_MAP2: GuiManager::addGuiToRender(GuiTextureResources::textureMap2); break;
-                case LVL_MAP4: GuiManager::addGuiToRender(GuiTextureResources::textureMap4); break;
-                case LVL_MAP5: GuiManager::addGuiToRender(GuiTextureResources::textureMap5); break;
-                case LVL_MAP6: GuiManager::addGuiToRender(GuiTextureResources::textureMap5); break;  //todo
+                case LVL_MAP1: GuiManager::addGuiToRender(GuiTextureResources::textureMap1); GuiTextureResources::textureMap1->alpha = a; break;
+                case LVL_MAP2: GuiManager::addGuiToRender(GuiTextureResources::textureMap2); GuiTextureResources::textureMap2->alpha = a; break;
+                case LVL_MAP4: GuiManager::addGuiToRender(GuiTextureResources::textureMap4); GuiTextureResources::textureMap4->alpha = a; break;
+                case LVL_MAP5: GuiManager::addGuiToRender(GuiTextureResources::textureMap5); GuiTextureResources::textureMap5->alpha = a; break;
+                case LVL_MAP6: GuiManager::addGuiToRender(GuiTextureResources::textureMap6); GuiTextureResources::textureMap6->alpha = a; break;
+                case LVL_MAP7: GuiManager::addGuiToRender(GuiTextureResources::textureMap7); GuiTextureResources::textureMap7->alpha = a; break;
                 default: break;
             }
         }
@@ -644,7 +679,10 @@ int main(int argc, char** argv)
         GuiManager::render();
         GuiManager::clearGuisToRender();
 
-        TextMaster::render();
+        if (Global::timeUntilRoundStarts < 5.0f)
+        {
+            TextMaster::render();
+        }
 
         updateDisplay();
 
@@ -653,7 +691,7 @@ int main(int argc, char** argv)
             previousTime = timeNew;
         }
 
-        if (glfwGetKey(window, GLFW_KEY_TAB) != GLFW_PRESS)
+        //if (glfwGetKey(window, GLFW_KEY_TAB) != GLFW_PRESS)
         {
             if (Global::gameOnlinePlayerPingTexts.size() > 0)
             {
@@ -961,9 +999,11 @@ void Global::readThreadBehavoir(TcpClient* client)
                     printf("Warning: Read a No Op messsage from the server.\n");
                     break;
 
-                case 1: //initial server time msg
+                case 1: //sync server time msg
                 {
-                    numRead = client->read(&Global::serverTimeOffset, 8, 5); CHECK_CONNECTION_R(8, "Could not read initial server time message");
+                    double serverTime;
+                    numRead = client->read(&serverTime, 8, 5); CHECK_CONNECTION_R(8, "Could not read initial server time message");
+                    Global::serverTimeOffset = serverTime - glfwGetTime();
                     break;
                 }
 
@@ -1010,10 +1050,12 @@ void Global::readThreadBehavoir(TcpClient* client)
                                 Global::addChatMessage(name + " joined", Vector3f(0.5f, 1, 0.5f));
                             }
 
-                            char buf[152];
-                            numRead = client->read(buf, 152, 5); CHECK_CONNECTION_R(152, "Could not read player update");
+                            char buf[160];
+                            numRead = client->read(buf, 160, 5); CHECK_CONNECTION_R(160, "Could not read player update");
 
                             int idx = 0;
+
+                            double otherServerSyncedTime;
 
                             memcpy(&onlinePlayer->inputAction3,       &buf[idx], 1); idx+=1;
                             memcpy(&onlinePlayer->inputAction4,       &buf[idx], 1); idx+=1;
@@ -1058,7 +1100,17 @@ void Global::readThreadBehavoir(TcpClient* client)
                             memcpy(&onlinePlayer->weapon,             &buf[idx], 1); idx+=1;
                             memcpy(&onlinePlayer->health,             &buf[idx], 1); idx+=1;
                             memcpy(&onlinePlayer->inZoneTime,         &buf[idx], 4); idx+=4;
+                            memcpy(&otherServerSyncedTime,            &buf[idx], 8); idx+=8;
                             memcpy(&onlinePlayer->pingMs,             &buf[idx], 4);
+
+                            double myServerSyncedTime = glfwGetTime() + Global::serverTimeOffset;
+
+                            double diff = myServerSyncedTime - otherServerSyncedTime;
+
+                            // If diff is > 0, the other players position is old and we should interpolate it to a newer value.
+                            // If diff is < 0, the other players position is "in the future" relative to us and so we should interpolate it backwards.
+                            Vector3f distToMove = onlinePlayer->vel + onlinePlayer->externalVel;
+                            onlinePlayer->position = onlinePlayer->position + distToMove.scaleCopy((float)diff);
 
                             break;
                         }
@@ -1123,6 +1175,7 @@ void Global::readThreadBehavoir(TcpClient* client)
                         {
                             velToAdd.setLength(3.0f);
                             Global::player->vel = Global::player->vel + velToAdd;
+                            AudioPlayer::play(75, nullptr);
                             break;
                         }
 
@@ -1130,6 +1183,7 @@ void Global::readThreadBehavoir(TcpClient* client)
                         {
                             velToAdd.setLength(18.0f);
                             Global::player->vel = Global::player->vel + velToAdd;
+                            AudioPlayer::play(74, nullptr);
                             break;
                         }
 
@@ -1408,6 +1462,49 @@ void Global::readThreadBehavoir(TcpClient* client)
                     break;
                 }
 
+                case 16: //set the status of a fall block
+                {
+                    int fblockNameLen;
+                    char fblockName[33] = {0};
+                    float fblockX;
+                    float fblockZ;
+                    float fblockPhaseTimer;
+
+                    numRead = client->read(&fblockNameLen,         4, 5); CHECK_CONNECTION_R(4,             "Could not read fblock name len");
+                    numRead = client->read(fblockName, fblockNameLen, 5); CHECK_CONNECTION_R(fblockNameLen, "Could not read fblock name");
+                    numRead = client->read(&fblockX,               4, 5); CHECK_CONNECTION_R(4,             "Could not read fblock x");
+                    numRead = client->read(&fblockZ,               4, 5); CHECK_CONNECTION_R(4,             "Could not read fblock z");
+                    numRead = client->read(&fblockPhaseTimer,      4, 5); CHECK_CONNECTION_R(4,             "Could not read fblock phase timer");
+
+                    std::string fblockNameToUpdate = fblockName;
+
+                    Global::gameEntitiesSharedMutex.lock_shared();
+                    for (Entity* e : Global::gameEntities)
+                    {
+                        switch (e->getEntityType())
+                        {
+                            case ENTITY_FALL_BLOCK:
+                            {
+                                if (e->name == fblockNameToUpdate)
+                                {
+                                    FallBlock* fblock = (FallBlock*)e;
+                                    fblock->position.x = fblockX;
+                                    fblock->position.z = fblockZ;
+                                    fblock->phaseTimer = fblockPhaseTimer;
+                                    fblock->phaseTimerOffset = fblockPhaseTimer;
+                                }
+                                break;
+                            }
+
+                            default:
+                                break;
+                        }
+                    }
+                    Global::gameEntitiesSharedMutex.unlock_shared();
+
+                    break;
+                }
+
                 default:
                 {
                     printf("Error: Received unknown command %d from server\n", cmd);
@@ -1448,7 +1545,7 @@ void Global::writeThreadBehavior(TcpClient* client)
     while (Global::gameState != GAME_STATE_EXITING && client->isOpen())
     {
         std::unique_lock<std::mutex> lock{Global::msgOutMutex};
-        Global::msgCondVar.wait_for(lock, std::chrono::milliseconds(1), [&]()
+        Global::msgCondVar.wait_for(lock, std::chrono::milliseconds(1), [&]() // This does lead to strange delays in multiples of 16 ms. But getting rid of it isnt much better.
         {
             // If any of these conditions are true, aquire the lock
             return (Global::messagesToSend.size() > 0                          ||
@@ -1470,12 +1567,11 @@ void Global::writeThreadBehavior(TcpClient* client)
 
         if (glfwGetTime() - lastSentTimeMsg > 1.0)
         {
-            double currTime = glfwGetTime() + Global::serverTimeOffset;
-            currTime = currTime - 0.005f;
             // Send time message
             char cmd = 1;
             numWritten = client->write(&cmd, 1, 5); CHECK_CONNECTION_W(1, "Could not write time command to server");
 
+            double currTime = glfwGetTime() + Global::serverTimeOffset;
             numWritten = client->write(&currTime, 8, 5); CHECK_CONNECTION_W(8, "Could not write time to server");
 
             lastSentTimeMsg = glfwGetTime();
@@ -1486,10 +1582,12 @@ void Global::writeThreadBehavior(TcpClient* client)
             //Send main player message
             if (Global::player != nullptr)
             {
-                char buf[145];
+                char buf[153];
                 buf[0] = 2;
 
                 int idx = 1;
+
+                double currServerSyncedTime = glfwGetTime() + Global::serverTimeOffset;
 
                 memcpy(&buf[idx], (char*)&Input::inputs.INPUT_ACTION3,        1); idx += 1;
                 memcpy(&buf[idx], (char*)&Input::inputs.INPUT_ACTION4,        1); idx += 1;
@@ -1533,9 +1631,10 @@ void Global::writeThreadBehavior(TcpClient* client)
                 memcpy(&buf[idx], (char*)&Global::player->isCrouching,        1); idx += 1;
                 memcpy(&buf[idx], (char*)&Global::player->weapon,             1); idx += 1;
                 memcpy(&buf[idx], (char*)&Global::player->health,             1); idx += 1;
-                memcpy(&buf[idx], (char*)&Global::player->inZoneTime,         4);
+                memcpy(&buf[idx], (char*)&Global::player->inZoneTime,         4); idx += 4;
+                memcpy(&buf[idx], (char*)&currServerSyncedTime,               8); idx += 8;
 
-                numWritten = client->write(buf, 149, 5); CHECK_CONNECTION_W(149, "Could not write player update");
+                numWritten = client->write(buf, 157, 5); CHECK_CONNECTION_W(157, "Could not write player update");
             }
 
             lastSentPlayerMsg = glfwGetTime();
@@ -1765,7 +1864,7 @@ void Global::updateMusic()
             }
         }
     }
-    else if (Global::levelId == LVL_MAP4)
+    else if (Global::levelId == LVL_MAP4 || Global::levelId == LVL_MAP6)
     {
         if (Global::timeUntilRoundStarts > 0.0f)
         {
@@ -1801,7 +1900,7 @@ void Global::updateMusic()
             }
         }
     }
-    else if (Global::levelId == LVL_MAP5)
+    else if (Global::levelId == LVL_MAP5 || Global::levelId == LVL_MAP7)
     {
         if (Global::timeUntilRoundStarts > 0.0f)
         {

@@ -118,9 +118,9 @@ public:
 
     void loadIsRenderingDepth(bool value);
 
-    void loadClock(int value);
+    void loadClock(unsigned int value);
 
-    void loadEntityId(int value);
+    void loadEntityId(unsigned int value);
 
     void loadNoise(float value);
 
@@ -140,6 +140,8 @@ protected:
     void loadFloat(int, float);
 
     void loadInt(int, int);
+
+    void loadUnsignedInt(int, unsigned int);
 
     void loadVector(int, Vector3f*);
 

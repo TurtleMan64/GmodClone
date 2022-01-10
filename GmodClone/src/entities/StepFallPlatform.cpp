@@ -56,30 +56,33 @@ void StepFallPlatform::step()
         visible = true;
     }
 
-    timeUntilBreaks -= dt;
-
-    if (timeUntilBreaks > 100.0f)
+    if (Global::timeUntilRoundEnds > 0.0f)
     {
-        if (Global::player->health > 0 && Global::player->collideEntityImTouching == this)
+        timeUntilBreaks -= dt;
+
+        if (timeUntilBreaks > 100.0f)
         {
-            timeUntilBreaks = 2.0f;
+            if (Global::player->health > 0 && Global::player->collideEntityImTouching == this)
+            {
+                timeUntilBreaks = 2.0f;
 
-            Message msg;
-            msg.buf[0] = 14;
+                Message msg;
+                msg.buf[0] = 14;
 
-            int nameLen = (int)name.size();
-            memcpy(&msg.buf[1], &nameLen, 4);
-            memcpy(&msg.buf[5], name.c_str(), nameLen);
+                int nameLen = (int)name.size();
+                memcpy(&msg.buf[1], &nameLen, 4);
+                memcpy(&msg.buf[5], name.c_str(), nameLen);
 
-            msg.length = 1 + 4 + nameLen;
+                msg.length = 1 + 4 + nameLen;
 
-            Global::sendMessageToServer(msg);
+                Global::sendMessageToServer(msg);
+            }
         }
-    }
 
-    if (timeUntilBreaks < 2.0f && timeUntilBreaks > 0.0f)
-    {
-        baseColor.set(timeUntilBreaks/2.0f, timeUntilBreaks/2.0f, timeUntilBreaks/2.0f);
+        if (timeUntilBreaks < 2.0f && timeUntilBreaks > 0.0f)
+        {
+            baseColor.set(timeUntilBreaks/2.0f, timeUntilBreaks/2.0f, timeUntilBreaks/2.0f);
+        }
     }
 }
 

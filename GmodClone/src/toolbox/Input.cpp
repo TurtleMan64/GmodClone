@@ -553,12 +553,19 @@ void Input::keyboardCallback(GLFWwindow* /**/, int key, int /**/, int action, in
                                  Input::chatLength >= 6 && strncmp("HEAL ", Input::chatInput, 5) == 0)
                         {
                             std::vector<std::string> tokens = split(Input::chatInput, ' ');
-                            if (tokens.size() > 1)
+                            if (tokens.size() > 1 && !Global::serverClient->isOpen())
                             {
-                                #ifdef DEV_MODE
                                 Global::player->health = (char)Maths::clamp(0, (int)Global::player->health + stoi(tokens[1]), 100);
-                                #endif
                             }
+                        }
+                        else if (Input::chatLength == 4 && strncmp("quit",  Input::chatInput, 4) == 0 ||
+                                 Input::chatLength == 4 && strncmp("QUIT",  Input::chatInput, 4) == 0 ||
+                                 Input::chatLength == 4 && strncmp("exit",  Input::chatInput, 4) == 0 ||
+                                 Input::chatLength == 4 && strncmp("EXIT",  Input::chatInput, 4) == 0 ||
+                                 Input::chatLength == 5 && strncmp("close", Input::chatInput, 5) == 0 ||
+                                 Input::chatLength == 5 && strncmp("CLOSE", Input::chatInput, 5) == 0)
+                        {
+                            //TODO
                         }
                     }
                     catch (std::exception e)

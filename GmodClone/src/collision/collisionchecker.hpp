@@ -11,6 +11,7 @@ class CollisionResult
 {
 public:
     bool hit = false;
+    Vector3f collidePosition;
     Vector3f directionToPosition;
     float distanceToPosition = 0.0f;
     Triangle3D* tri = nullptr;

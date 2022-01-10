@@ -39,6 +39,7 @@
 #include "../entities/stepfallplatform.hpp"
 #include "../entities/bat.hpp"
 #include "../entities/winzone.hpp"
+#include "../entities/fallblock.hpp"
 
 void LevelLoader::loadLevel(std::string mapName)
 {
@@ -81,6 +82,7 @@ void LevelLoader::loadLevel(std::string mapName)
     else if (fname == "test.map") Global::levelId = LVL_TEST;
     else if (fname == "map5.map") Global::levelId = LVL_MAP5;
     else if (fname == "map6.map") Global::levelId = LVL_MAP6;
+    else if (fname == "map7.map") Global::levelId = LVL_MAP7;
 
     Global::deleteAllEntites();
 
@@ -259,6 +261,25 @@ void LevelLoader::loadLevel(std::string mapName)
                     c++;
                 }
             }
+        }
+    }
+
+    // Spawn fall platforms
+    if (Global::levelId == LVL_MAP7)
+    {
+        int i = 0;
+        for (int c = 0; c < 160; c++)
+        {
+            int x = (int)(5*Maths::random()) - 2;
+            int z = (int)(5*Maths::random()) - 2;
+
+            i++;
+        
+            std::string id = std::to_string(i);
+            id = "FB" + id;
+        
+            FallBlock* fblock = new FallBlock(id, Vector3f(x*8.0f, 0, z*8.0f), 8.0f + i); INCR_NEW("Entity");
+            Global::addEntity(fblock);
         }
     }
 

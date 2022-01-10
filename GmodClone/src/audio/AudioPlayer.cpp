@@ -96,6 +96,9 @@ void AudioPlayer::loadSoundEffects()
     AudioPlayer::buffersSFX.push_back(AudioMaster::loadOGG("res/Audio/SFX/youtube/footstep-mud4.ogg"));               //71
     AudioPlayer::buffersSFX.push_back(AudioMaster::loadOGG("res/Audio/SFX/youtube/footstep-mud5.ogg"));               //72
     AudioPlayer::buffersSFX.push_back(AudioMaster::loadOGG("res/Audio/SFX/youtube/footstep-mud6.ogg"));               //73
+    AudioPlayer::buffersSFX.push_back(AudioMaster::loadWAV("res/Audio/SFX/melee/smack.wav"));                         //74
+    AudioPlayer::buffersSFX.push_back(AudioMaster::loadWAV("res/Audio/SFX/melee/punch.wav"));                         //75
+    AudioPlayer::buffersSFX.push_back(AudioMaster::loadOGG("res/Audio/SFX/youtube/vine-boom.ogg"));                   //76
 }
 
 void AudioPlayer::loadBGM()

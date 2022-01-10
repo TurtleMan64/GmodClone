@@ -1,5 +1,6 @@
+#include <winsock2.h>
 #include <Windows.h>
-#include <winsock.h>
+#include <ws2tcpip.h>
 #include <string>
 
 #include "tcpclient.hpp"
@@ -63,12 +64,40 @@ void TcpClient::attemptConnection(char* ip, int port, int timeoutSec)
         return;
     }
 
+    // Convert the server name to ip address
+    struct addrinfo* result = nullptr;
+    struct addrinfo  hints;
+
+    ZeroMemory(&hints, sizeof(hints));
+    hints.ai_family   = AF_UNSPEC;
+    hints.ai_socktype = SOCK_STREAM;
+    hints.ai_protocol = IPPROTO_TCP;
+
+    char dnsIp[32] = {0};
+
+    int dwRetval = getaddrinfo(ip, std::to_string(port).c_str(), &hints, &result);
+    if (dwRetval != 0)
+    {
+        printf("error when get addr info\n");
+    }
+    else
+    {
+        struct addrinfo* ptr = nullptr;
+        for (ptr=result; ptr != nullptr; ptr=ptr->ai_next)
+        {
+            struct sockaddr_in* addr = (struct sockaddr_in *)ptr->ai_addr; 
+
+            inet_ntop(AF_INET, &(addr->sin_addr), dnsIp, 32);
+        }
+    }
+
+    // Construct server address struct.
     struct sockaddr_in sad; // structure to hold server's address
 
     memset((char*)&sad, 0, sizeof(sad)); // clear sockaddr structure
     sad.sin_family = AF_INET; // set family to Internet
 
-    sad.sin_addr.s_addr = inet_addr(ip);
+    InetPton(AF_INET, (PCSTR)(dnsIp), &sad.sin_addr.s_addr);
     sad.sin_port = htons((u_short)port);
 
     // Map TCP transport protocol name to protocol number
@@ -115,7 +144,7 @@ void TcpClient::attemptConnection(char* ip, int port, int timeoutSec)
         return;
     }
 
-    connect(sd, (struct sockaddr *)&sad, sizeof(sad));
+    connect(sd, (struct sockaddr*)&sad, sizeof(sad));
 
     // Put socket back into blocking mode
     iMode = 0;

@@ -43,7 +43,7 @@ void EntityRenderer::renderNEW(std::unordered_map<TexturedModel*, std::list<Enti
 
     clockTime = (float)glfwGetTime();
 
-    int entityId = 0;
+    unsigned int entityId = 0;
 
     for (auto entry : (*entitiesMap))
     {
@@ -106,7 +106,7 @@ void EntityRenderer::unbindTexturedModel()
     glBindVertexArray(0);
 }
 
-void EntityRenderer::prepareInstance(Entity* entity, int entityId)
+void EntityRenderer::prepareInstance(Entity* entity, unsigned int entityId)
 {
     shader->loadTransformationMatrix(&entity->transformationMatrix);
     shader->loadBaseColor(&entity->baseColor);

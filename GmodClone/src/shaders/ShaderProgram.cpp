@@ -250,6 +250,11 @@ void ShaderProgram::loadInt(int location, int value)
     glUniform1i(location, value);
 }
 
+void ShaderProgram::loadUnsignedInt(int location, unsigned int value)
+{
+    glUniform1ui(location, value);
+}
+
 void ShaderProgram::loadVector(int location, Vector3f* vect)
 {
     glUniform3f(location, vect->x, vect->y, vect->z);
@@ -329,14 +334,14 @@ void ShaderProgram::loadIsRenderingDepth(bool value)
     loadInt(location_isRenderingDepth, (int)value);
 }
 
-void ShaderProgram::loadClock(int value)
+void ShaderProgram::loadClock(unsigned int value)
 {
-    loadInt(location_clock, value);
+    loadUnsignedInt(location_clock, value);
 }
 
-void ShaderProgram::loadEntityId(int value)
+void ShaderProgram::loadEntityId(unsigned int value)
 {
-    loadInt(location_entityId, value);
+    loadUnsignedInt(location_entityId, value);
 }
 
 void ShaderProgram::loadNoise(float value)

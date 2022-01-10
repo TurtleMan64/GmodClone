@@ -1,0 +1,13 @@
+# Blender MTL File: 'None'
+# Material Count: 3
+
+newmtl None
+Ns 20.000000
+Ka 0.000000 0.000000 0.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.000000 0.000000 0.000000
+Ni 0.000000
+d 1.000000
+sound dirt
+illum 1
+map_Kd Sand.jpg

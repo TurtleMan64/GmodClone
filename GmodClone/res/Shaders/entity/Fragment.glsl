@@ -9,14 +9,9 @@ out vec4 out_Color;
 
 uniform sampler2D textureSampler;
 uniform sampler2D textureSampler2;
-//uniform sampler2D depthBufferTransparent;
 uniform sampler2D normalMap;
-uniform sampler2D randomMap;
-//uniform int   isRenderingTransparent;
-//uniform int   isRenderingDepth;
 uniform vec3  lightColor[4];
 uniform vec3  attenuation[4];
-//uniform float shineDamper;
 uniform float reflectivity;
 uniform float useFakeLighting;
 uniform vec3  skyColor;
@@ -25,8 +20,6 @@ uniform float glowAmount;
 uniform vec3  baseColor;
 uniform float baseAlpha;
 uniform float mixFactor;
-//uniform vec3  waterColor;
-//uniform float waterBlendAmount;
 
 uniform float fogDensity;
 uniform float fogGradient;
@@ -34,35 +27,57 @@ uniform float fogScale; //per material
 uniform float fogBottomPosition;
 uniform float fogBottomThickness;
 
-uniform int clock;
+// Stuff for random noise
+uniform uint clock;
 uniform float noise;
-uniform int entityId;
+uniform uint entityId;
+
+
+// Random function found here
+// https://stackoverflow.com/questions/4200224/random-noise-functions-for-glsl
+// https://stackoverflow.com/a/17479300/17304333
+
+// A single iteration of Bob Jenkins' One-At-A-Time hashing algorithm.
+uint hash( uint x ) {
+    x += ( x << 10u );
+    x ^= ( x >>  6u );
+    x += ( x <<  3u );
+    x ^= ( x >> 11u );
+    x += ( x << 15u );
+    return x;
+}
+
+// Construct a float with half-open range [0:1] using low 23 bits.
+// All zeroes yields 0.0, all ones yields the next smallest representable value below 1.0.
+float floatConstruct( uint m ) {
+    const uint ieeeMantissa = 0x007FFFFFu; // binary32 mantissa bitmask
+    const uint ieeeOne      = 0x3F800000u; // 1.0 in IEEE binary32
+
+    m &= ieeeMantissa;                     // Keep only mantissa bits (fractional part)
+    m |= ieeeOne;                          // Add fractional part to 1.0
+
+    float  f = uintBitsToFloat( m );       // Range [1:2]
+    return f - 1.0;                        // Range [0:1]
+}
+
+// Pseudo-random value in half-open range [0:1].
+float random(uint x)
+{
+    return floatConstruct(hash(x));
+}
 
 void main(void)
 {
     if (noise < 1.0)
     {
-        vec2 fragCoordNormalized = gl_FragCoord.xy / 1024.0; //1024 is size of the randomMap.png
+        uint fragX = uint(gl_FragCoord.x);
+        uint fragY = uint(gl_FragCoord.y);
         
-        vec4 randomSample = texture(randomMap, fragCoordNormalized + vec2(clock + 3.333*entityId, clock - 3.333*entityId));
-        float rn;
-        switch (clock % 12)
-        {
-            case  0: rn =       randomSample.r;    break;
-            case  1: rn =       randomSample.g;    break;
-            case  2: rn =       randomSample.b;    break;
-            case  3: rn =       randomSample.a;    break;
-            case  4: rn = fract(randomSample.r*2); break;
-            case  5: rn = fract(randomSample.g*2); break;
-            case  6: rn = fract(randomSample.b*2); break;
-            case  7: rn = fract(randomSample.a*2); break;
-            case  8: rn = fract(randomSample.r*4); break;
-            case  9: rn = fract(randomSample.g*4); break;
-            case 10: rn = fract(randomSample.b*4); break;
-            case 11: rn = fract(randomSample.a*4); break;
-        }
+        uint idx = fragX + fragY*2000 + (clock + entityId)*2073600;
         
-        if (rn > noise)
+        float ran = random(idx);
+        
+        if (ran > noise)
         {
             discard;
         }

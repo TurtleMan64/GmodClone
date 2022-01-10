@@ -24,22 +24,22 @@ public:
     float stepTimer = 0.0f;
     float landSoundTimer = 0.0f;
 
-    const float SLIDE_SPEED_REQUIRED = 4.0f;
-    const float SLIDE_TIMER_DURATION = 0.666f;
-    const float SLIDE_TIMER_COOLDOWN = 0.3f;
-    const float SLIDE_SPEED_ADDITION = 4.0f;
+    static constexpr float SLIDE_SPEED_REQUIRED = 4.0f;
+    static constexpr float SLIDE_TIMER_DURATION = 0.666f;
+    static constexpr float SLIDE_TIMER_COOLDOWN = 0.3f;
+    static constexpr float SLIDE_SPEED_ADDITION = 4.0f;
     float slideTimer = 0.0f;
     float storedSlideSpeed = 0.0f;
 
-    const float WALL_JUMP_TIMER_MAX = 0.1f;
+    static constexpr float WALL_JUMP_TIMER_MAX = 0.1f;
     float wallJumpTimer = 0.0f;
     Vector3f storedWallNormal;
 
-    const float HUMAN_HEIGHT = 1.74f; //1.74 meters
+    static constexpr float HUMAN_HEIGHT = 1.74f; //1.74 meters
 
     float eyeHeightSmooth = HUMAN_HEIGHT;
 
-    const float COLLISION_RADIUS = HUMAN_HEIGHT/4; //collision is 2 spheres
+    static constexpr float COLLISION_RADIUS = HUMAN_HEIGHT/4; //collision is 2 spheres
 
     //float currentCollisionRadius = COLLISION_RADIUS;
 
@@ -49,11 +49,11 @@ public:
     //replaced with a function that calculates this, since its slightly different based on fps
     //const float FORCE_PUSH_AIR = 9.924f;
 
-    const float FORCE_GRAVITY = 540.0f/36.7816091954f;
+    static constexpr float FORCE_GRAVITY = 540.0f/36.7816091954f;
 
-    const float DRAG_GROUND = 8.15f;
+    static constexpr float DRAG_GROUND = 8.15f;
 
-    const float DRAG_AIR = 1.0;
+    static constexpr float DRAG_AIR = 1.0;
 
     //replaced with a function that calculates this, since its slightly different based on fps
     //const float JUMP_SPEED = 5.33f;
@@ -61,25 +61,25 @@ public:
     //for stored jumps
     float timeSinceOnGround = 0.0f;
     Vector3f lastGroundNormal;
-    const float AIR_JUMP_TOLERANCE = 0.02f;
+    static constexpr float AIR_JUMP_TOLERANCE = 0.02f;
 
     //const float WALL_JUMP_SPEED_VERTICAL = 4.0f;
 
-    const float WALL_JUMP_SPEED_HORIZONTAL = 5.0f;
+    static constexpr float WALL_JUMP_SPEED_HORIZONTAL = 5.0f;
 
     // How far you can hit things from
-    const float WEAPON_REACH_FIST = 1.9f;
-    const float WEAPON_REACH_BAT  = 2.7f;
-    const float WEAPON_REACH_GUN  = 100.0f;
+    static constexpr float WEAPON_REACH_FIST = 1.9f;
+    static constexpr float WEAPON_REACH_BAT  = 2.7f;
+    static constexpr float WEAPON_REACH_GUN  = 100.0f;
 
     float useWeaponTimer = 0.0f;
-    const float WEAPON_COOLDOWN_FIST = 0.2f;
-    const float WEAPON_COOLDOWN_BAT  = 0.4f;
-    const float WEAPON_COOLDOWN_GUN  = 0.1f;
+    static constexpr float WEAPON_COOLDOWN_FIST = 0.2f;
+    static constexpr float WEAPON_COOLDOWN_BAT  = 0.4f;
+    static constexpr float WEAPON_COOLDOWN_GUN  = 0.1f;
 
     // > 0 means you cant use a ladder (colldown after jumping)
     float ladderTimer = 0.0f;
-    const float LADDER_JUMP_COOLDOWN = 1.0f;
+    static constexpr float LADDER_JUMP_COOLDOWN = 1.0f;
     bool isOnLadder = false;
 
     // How much time you have been in king of the hill for.
@@ -107,8 +107,8 @@ public:
 
     char weapon = 0;
 
-    const float FALL_DAMAGE_SPEED_START = 16.0f;
-    const float FALL_DAMAGE_SPEED_FATAL = 36.0f;
+    static constexpr float FALL_DAMAGE_SPEED_START = 16.0f;
+    static constexpr float FALL_DAMAGE_SPEED_FATAL = 36.0f;
 
     char health = 100;
 

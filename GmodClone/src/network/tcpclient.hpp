@@ -1,7 +1,9 @@
 #ifndef TCPCLIENT_H
 #define TCPCLIENT_H
 
-#include <winsock.h>
+#include <winsock2.h>
+#include <Windows.h>
+#include <ws2tcpip.h>
 #include <string>
 
 class TcpClient

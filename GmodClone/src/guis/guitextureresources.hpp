@@ -16,6 +16,8 @@ public:
     static GuiTexture* textureMap2;
     static GuiTexture* textureMap4;
     static GuiTexture* textureMap5;
+    static GuiTexture* textureMap6;
+    static GuiTexture* textureMap7;
     static GuiTexture* textureMapBG;
 
     static void loadGuiTextures();

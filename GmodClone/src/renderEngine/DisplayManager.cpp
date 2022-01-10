@@ -91,7 +91,7 @@ int createDisplay()
 
     // glfw window creation
     // --------------------
-    window = glfwCreateWindow(screenWidth, screenHeight, "Garys Mod Clone", monitor, nullptr);
+    window = glfwCreateWindow(screenWidth, screenHeight, "Turtle Game", monitor, nullptr);
     if (window == nullptr)
     {
         std::cout << "Failed to create GLFW window" << std::endl;
@@ -103,13 +103,14 @@ int createDisplay()
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
     glfwSetWindowCloseCallback(window, window_close_callback);
 
-    GLFWimage icons[5];
-    icons[0].pixels = SOIL_load_image((Global::pathToEXE+"res/Images/Icon16.png").c_str(), &icons[0].width, &icons[0].height, 0, SOIL_LOAD_RGBA);
-    icons[1].pixels = SOIL_load_image((Global::pathToEXE+"res/Images/Icon24.png").c_str(), &icons[1].width, &icons[1].height, 0, SOIL_LOAD_RGBA);
-    icons[2].pixels = SOIL_load_image((Global::pathToEXE+"res/Images/Icon32.png").c_str(), &icons[2].width, &icons[2].height, 0, SOIL_LOAD_RGBA);
-    icons[3].pixels = SOIL_load_image((Global::pathToEXE+"res/Images/Icon48.png").c_str(), &icons[3].width, &icons[3].height, 0, SOIL_LOAD_RGBA);
-    icons[4].pixels = SOIL_load_image((Global::pathToEXE+"res/Images/Icon64.png").c_str(), &icons[4].width, &icons[4].height, 0, SOIL_LOAD_RGBA);
-    glfwSetWindowIcon(window, 5, icons);
+    GLFWimage icons[6];
+    icons[0].pixels = SOIL_load_image((Global::pathToEXE+"res/Images/Icon16.png" ).c_str(), &icons[0].width, &icons[0].height, 0, SOIL_LOAD_RGBA);
+    icons[1].pixels = SOIL_load_image((Global::pathToEXE+"res/Images/Icon24.png" ).c_str(), &icons[1].width, &icons[1].height, 0, SOIL_LOAD_RGBA);
+    icons[2].pixels = SOIL_load_image((Global::pathToEXE+"res/Images/Icon32.png" ).c_str(), &icons[2].width, &icons[2].height, 0, SOIL_LOAD_RGBA);
+    icons[3].pixels = SOIL_load_image((Global::pathToEXE+"res/Images/Icon48.png" ).c_str(), &icons[3].width, &icons[3].height, 0, SOIL_LOAD_RGBA);
+    icons[4].pixels = SOIL_load_image((Global::pathToEXE+"res/Images/Icon64.png" ).c_str(), &icons[4].width, &icons[4].height, 0, SOIL_LOAD_RGBA);
+    icons[5].pixels = SOIL_load_image((Global::pathToEXE+"res/Images/Icon128.png").c_str(), &icons[4].width, &icons[4].height, 0, SOIL_LOAD_RGBA);
+    glfwSetWindowIcon(window, 6, icons);
     SOIL_free_image_data(icons[0].pixels);
     SOIL_free_image_data(icons[1].pixels);
     SOIL_free_image_data(icons[2].pixels);

@@ -74,6 +74,7 @@ public:
 #define LVL_TEST 6
 #define LVL_MAP5 7
 #define LVL_MAP6 8
+#define LVL_MAP7 9
 
 class Global
 {

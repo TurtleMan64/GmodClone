@@ -39,7 +39,7 @@ void prepare();
 void prepareTransparentRender();
 void prepareRenderDepthOnly();
 
-GLuint randomMap = GL_NONE;
+//GLuint randomMap = GL_NONE;
 
 
 GLuint transparentFrameBuffer  = GL_NONE;
@@ -62,7 +62,7 @@ void Master_init()
     //shadowMapRenderer = new ShadowMapMasterRenderer; INCR_NEW("ShadowMapMasterRenderer");
     //shadowMapRenderer2 = new ShadowMapMasterRenderer2; INCR_NEW("ShadowMapMasterRenderer2");
 
-    randomMap = Loader::loadTextureNoInterpolation("res/Images/randomMap.png");
+    //randomMap = Loader::loadTextureNoInterpolation("res/Images/randomMap.png");
 
 
     //create frame buffer
@@ -93,7 +93,7 @@ void Master_init()
     Master_disableCulling();
 }
 
-int masterRendererClock = 0;
+unsigned int masterRendererClock = 0;
 
 void Master_render(Camera* camera, float clipX, float clipY, float clipZ, float clipW, float waterBlendAmount)
 {
@@ -117,7 +117,7 @@ void Master_render(Camera* camera, float clipX, float clipY, float clipZ, float 
     shader->loadClipPlaneBehind(plane.x, plane.y, plane.z, plane.w);
 
     shader->loadClock(masterRendererClock);
-    masterRendererClock = (masterRendererClock + 1) % 60;
+    masterRendererClock = (masterRendererClock + 1);
 
     shader->loadSkyColor(Global::skyColor.x, Global::skyColor.y, Global::skyColor.z);
     shader->loadLights();
@@ -237,8 +237,8 @@ void prepare()
     //glActiveTexture(GL_TEXTURE6);
     //glBindTexture(GL_TEXTURE_2D, Master_getShadowMapTexture2());
 
-    glActiveTexture(GL_TEXTURE3);
-    glBindTexture(GL_TEXTURE_2D, randomMap);
+    //glActiveTexture(GL_TEXTURE3);
+    //glBindTexture(GL_TEXTURE_2D, randomMap);
 
     if (Global::renderWithCulling)
     {

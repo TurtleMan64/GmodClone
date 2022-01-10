@@ -60,7 +60,7 @@ void Player::step()
 {
     Vector3f yAxis(0, -1, 0);
 
-    if (Global::levelId == LVL_MAP5 || Global::levelId == LVL_MAP4)
+    if (Global::levelId == LVL_MAP5 || Global::levelId == LVL_MAP4 || Global::levelId == LVL_MAP7)
     {
         if (Global::timeUntilRoundEnds > 0.0f)
         {
@@ -839,6 +839,22 @@ void Player::step()
         VFOV_ADDITION = 0;
     }
 
+    if (Global::timeUntilRoundStarts > 5.0f)
+    {
+        if (Global::levelId == LVL_MAP4 ||
+            Global::levelId == LVL_MAP5 ||
+            Global::levelId == LVL_MAP6 ||
+            Global::levelId == LVL_MAP7)
+        {
+            lookDir = position.scaleCopy(-1);
+            lookDir.y = 0;
+            lookDir.normalize();
+        }
+
+        Input::inputs.INPUT_X2 = 0;
+        Input::inputs.INPUT_Y2 = 0;
+    }
+
     updateCamera();
 
     Vector3f xAx(1, 0, 0);
@@ -1188,8 +1204,12 @@ std::list<TexturedModel*>* Player::getModels()
 
 void Player::die()
 {
-    health = 0;
-    AudioPlayer::play(59, nullptr);
+    if (health > 0)
+    {
+        health = 0;
+        AudioPlayer::play(66, nullptr);
+        Global::sendAudioMessageToServer(66, &position);
+    }
 }
 
 void Player::reset()
