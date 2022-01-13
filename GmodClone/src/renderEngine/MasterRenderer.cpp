@@ -11,6 +11,9 @@
 #include "../toolbox/matrix.hpp"
 #include "../main/main.hpp"
 #include "../toolbox/input.hpp"
+#include "../animation/animatedmodelrenderer.hpp"
+#include "../animation/animatedmodel.hpp"
+#include "../animation/animatedmodelloader.hpp"
 
 #include <iostream>
 #include <list>
@@ -19,6 +22,7 @@
 
 ShaderProgram* shader = nullptr;
 EntityRenderer* renderer = nullptr;
+AnimatedModelRenderer* animatedModelRenderer = nullptr;
 ShadowMapMasterRenderer* shadowMapRenderer = nullptr;
 ShadowMapMasterRenderer2* shadowMapRenderer2 = nullptr;
 
@@ -49,6 +53,8 @@ GLuint transparentDepthTexture = GL_NONE;
 extern unsigned int SCR_WIDTH;
 extern unsigned int SCR_HEIGHT;
 
+AnimatedModel animatedModel;
+
 void Master_init()
 {
     shader = new ShaderProgram("res/Shaders/entity/Vertex.glsl", "res/Shaders/entity/Fragment.glsl"); INCR_NEW("ShaderProgram");
@@ -57,6 +63,12 @@ void Master_init()
 
     renderer = new EntityRenderer(shader, projectionMatrix); INCR_NEW("EntityRenderer");
     Master_makeProjectionMatrix();
+
+    animatedModelRenderer = new AnimatedModelRenderer;
+
+
+
+    animatedModel = AnimatedModelLoader::loadEntity((char*)"res/Models/Human/model.mesh");
 
 
     //shadowMapRenderer = new ShadowMapMasterRenderer; INCR_NEW("ShadowMapMasterRenderer");
@@ -142,6 +154,8 @@ void Master_render(Camera* camera, float clipX, float clipY, float clipZ, float 
     glBindTexture(GL_TEXTURE_2D, 0);
     glDisable(GL_CLIP_DISTANCE0);
     shader->stop();
+
+    animatedModelRenderer->render(&animatedModel);
 
     ANALYSIS_DONE("Master Render");
 }

@@ -2,6 +2,7 @@
 #define CAMERA_H
 
 #include "../toolbox/vector.hpp"
+#include "../toolbox/matrix.hpp"
 
 class Camera
 {
@@ -33,5 +34,7 @@ public:
     Vector3f* getFadePosition2();
 
     void setViewMatrixValues(Vector3f* newEye, Vector3f* newTarget, Vector3f* newUp);
+
+    Matrix4f calculateProjectionViewMatrix();
 };
 #endif

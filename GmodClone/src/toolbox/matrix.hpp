@@ -6,7 +6,6 @@ class Vector3f;
 #include <math.h>
 #include "vector.hpp"
 
-
 class Matrix4f
 {
 public:
@@ -31,6 +30,8 @@ public:
 
     Matrix4f(Matrix4f*);
 
+    Matrix4f(const Matrix4f &other);
+
     void setZero();
 
     void setIdentity();
@@ -40,6 +41,20 @@ public:
     * @param buf The buffered matrix data
     */
     void load(float[]);
+
+    // loads the data sorted by column first.
+    // example:
+    // data = 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16
+    //
+    // mat4 = 1 5  9 13
+    //        2 6 10 14
+    //        3 7 11 15
+    //        4 8 12 16
+    void loadColumnFirst(float* data);
+
+    //loads from a string of 16 floats
+    // example: 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0 1
+    void load(char* line);
 
     /**
     *
@@ -77,5 +92,7 @@ public:
         float t00, float t01, float t02,
         float t10, float t11, float t12,
         float t20, float t21, float t22);
+
+    //bool operator <(const Matrix4f& rhs) const;
 };
 #endif

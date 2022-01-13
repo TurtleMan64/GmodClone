@@ -2,6 +2,7 @@
 
 #include "matrix.hpp"
 #include "vector.hpp"
+#include "split.hpp"
 
 Matrix4f::Matrix4f()
 {
@@ -26,6 +27,26 @@ Matrix4f::Matrix4f(Matrix4f* base)
     this->m31 = base->m31;
     this->m32 = base->m32;
     this->m33 = base->m33;
+}
+
+Matrix4f::Matrix4f(const Matrix4f &other)
+{
+    this->m00 = other.m00;
+    this->m01 = other.m01;
+    this->m02 = other.m02;
+    this->m03 = other.m03;
+    this->m10 = other.m10;
+    this->m11 = other.m11;
+    this->m12 = other.m12;
+    this->m13 = other.m13;
+    this->m20 = other.m20;
+    this->m21 = other.m21;
+    this->m22 = other.m22;
+    this->m23 = other.m23;
+    this->m30 = other.m30;
+    this->m31 = other.m31;
+    this->m32 = other.m32;
+    this->m33 = other.m33;
 }
 
 void Matrix4f::setZero()
@@ -90,6 +111,50 @@ void Matrix4f::load(float buf[])
     m31 = buf[13];
     m32 = buf[14];
     m33 = buf[15];
+}
+
+void Matrix4f::loadColumnFirst(float* data)
+{
+    m00 = data[ 0];
+    m10 = data[ 1];
+    m20 = data[ 2];
+    m30 = data[ 3];
+    m01 = data[ 4];
+    m11 = data[ 5];
+    m21 = data[ 6];
+    m31 = data[ 7];
+    m02 = data[ 8];
+    m12 = data[ 9];
+    m22 = data[10];
+    m32 = data[11];
+    m03 = data[12];
+    m13 = data[13];
+    m23 = data[14];
+    m33 = data[15];
+}
+
+void Matrix4f::load(char* line)
+{
+    std::vector<std::string> tokens = split(line, ' ');
+    if (tokens.size() >= 16)
+    {
+        m00 = std::stof(tokens[ 0]);
+        m01 = std::stof(tokens[ 1]);
+        m02 = std::stof(tokens[ 2]);
+        m03 = std::stof(tokens[ 3]);
+        m10 = std::stof(tokens[ 4]);
+        m11 = std::stof(tokens[ 5]);
+        m12 = std::stof(tokens[ 6]);
+        m13 = std::stof(tokens[ 7]);
+        m20 = std::stof(tokens[ 8]);
+        m21 = std::stof(tokens[ 9]);
+        m22 = std::stof(tokens[10]);
+        m23 = std::stof(tokens[11]);
+        m30 = std::stof(tokens[12]);
+        m31 = std::stof(tokens[13]);
+        m32 = std::stof(tokens[14]);
+        m33 = std::stof(tokens[15]);
+    }
 }
 
 /**
@@ -368,3 +433,8 @@ float Matrix4f::determinant3x3(
          + t01 * (t12 * t20 - t10 * t22)
          + t02 * (t10 * t21 - t11 * t20);
 }
+
+//bool Matrix4f::operator <(const Matrix4f& rhs) const
+//{
+//    return m00 < rhs.m00;
+//}

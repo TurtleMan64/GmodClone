@@ -85,7 +85,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>$(SolutionDir)GmodClone\</OutDir>
-    <TargetName>GmodClone</TargetName>
+    <TargetName>Turtle Game</TargetName>
     <IncludePath>../Libraries/Include;$(IncludePath)</IncludePath>
     <LibraryPath>../Libraries/StaticCode;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
@@ -148,6 +148,25 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\animation\AnimatedModel.cpp" />
+    <ClCompile Include="src\animation\AnimatedModelData.cpp" />
+    <ClCompile Include="src\animation\AnimatedModelLoader.cpp" />
+    <ClCompile Include="src\animation\AnimatedModelRenderer.cpp" />
+    <ClCompile Include="src\animation\AnimatedModelShader.cpp" />
+    <ClCompile Include="src\animation\Animation.cpp" />
+    <ClCompile Include="src\animation\Animator.cpp" />
+    <ClCompile Include="src\animation\GeometryLoader.cpp" />
+    <ClCompile Include="src\animation\Joint.cpp" />
+    <ClCompile Include="src\animation\JointData.cpp" />
+    <ClCompile Include="src\animation\JointTransform.cpp" />
+    <ClCompile Include="src\animation\Keyframe.cpp" />
+    <ClCompile Include="src\animation\MeshData.cpp" />
+    <ClCompile Include="src\animation\SkeletonData.cpp" />
+    <ClCompile Include="src\animation\SkinLoader.cpp" />
+    <ClCompile Include="src\animation\SkinningData.cpp" />
+    <ClCompile Include="src\animation\Texture.cpp" />
+    <ClCompile Include="src\animation\Vertex2.cpp" />
+    <ClCompile Include="src\animation\VertexSkinData.cpp" />
     <ClCompile Include="src\audio\AudioMaster.cpp" />
     <ClCompile Include="src\audio\AudioPlayer.cpp" />
     <ClCompile Include="src\audio\Source.cpp" />
@@ -159,6 +178,7 @@
     <ClCompile Include="src\entities\BoomBox.cpp" />
     <ClCompile Include="src\entities\Chandelier.cpp" />
     <ClCompile Include="src\entities\CollisionBlock.cpp" />
+    <ClCompile Include="src\entities\FallBlock.cpp" />
     <ClCompile Include="src\entities\FencePlatform.cpp" />
     <ClCompile Include="src\entities\Glass.cpp" />
     <ClCompile Include="src\entities\HealthCube.cpp" />
@@ -198,6 +218,8 @@
     <ClCompile Include="src\models\RawModel.cpp" />
     <ClCompile Include="src\models\TexturedModel.cpp" />
     <ClCompile Include="src\network\TcpClient.cpp" />
+    <ClCompile Include="src\openglObjects\Vao.cpp" />
+    <ClCompile Include="src\openglObjects\Vbo.cpp" />
     <ClCompile Include="src\renderEngine\DisplayManager.cpp" />
     <ClCompile Include="src\renderEngine\Loader.cpp" />
     <ClCompile Include="src\renderEngine\MasterRenderer.cpp" />
@@ -209,10 +231,31 @@
     <ClCompile Include="src\toolbox\LevelLoader.cpp" />
     <ClCompile Include="src\toolbox\Maths.cpp" />
     <ClCompile Include="src\toolbox\Matrix.cpp" />
+    <ClCompile Include="src\toolbox\Quaternion.cpp" />
     <ClCompile Include="src\toolbox\Split.cpp" />
     <ClCompile Include="src\toolbox\Vector.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="resource.h" />
+    <ClInclude Include="src\animation\animatedmodel.hpp" />
+    <ClInclude Include="src\animation\animatedmodeldata.hpp" />
+    <ClInclude Include="src\animation\animatedmodelloader.hpp" />
+    <ClInclude Include="src\animation\animatedmodelrenderer.hpp" />
+    <ClInclude Include="src\animation\animatedmodelshader.hpp" />
+    <ClInclude Include="src\animation\animation.hpp" />
+    <ClInclude Include="src\animation\animator.hpp" />
+    <ClInclude Include="src\animation\geometryloader.hpp" />
+    <ClInclude Include="src\animation\joint.hpp" />
+    <ClInclude Include="src\animation\jointdata.hpp" />
+    <ClInclude Include="src\animation\jointtransform.hpp" />
+    <ClInclude Include="src\animation\keyframe.hpp" />
+    <ClInclude Include="src\animation\meshdata.hpp" />
+    <ClInclude Include="src\animation\skeletondata.hpp" />
+    <ClInclude Include="src\animation\skinloader.hpp" />
+    <ClInclude Include="src\animation\skinningdata.hpp" />
+    <ClInclude Include="src\animation\texture.hpp" />
+    <ClInclude Include="src\animation\vertex2.hpp" />
+    <ClInclude Include="src\animation\vertexskindata.hpp" />
     <ClInclude Include="src\audio\audiomaster.hpp" />
     <ClInclude Include="src\audio\audioplayer.hpp" />
     <ClInclude Include="src\audio\source.hpp" />
@@ -224,6 +267,7 @@
     <ClInclude Include="src\entities\boombox.hpp" />
     <ClInclude Include="src\entities\chandelier.hpp" />
     <ClInclude Include="src\entities\collisionblock.hpp" />
+    <ClInclude Include="src\entities\fallblock.hpp" />
     <ClInclude Include="src\entities\fenceplatform.hpp" />
     <ClInclude Include="src\entities\glass.hpp" />
     <ClInclude Include="src\entities\healthcube.hpp" />
@@ -261,6 +305,8 @@
     <ClInclude Include="src\main\main.hpp" />
     <ClInclude Include="src\models\models.hpp" />
     <ClInclude Include="src\network\tcpclient.hpp" />
+    <ClInclude Include="src\openglObjects\vao.hpp" />
+    <ClInclude Include="src\openglObjects\vbo.hpp" />
     <ClInclude Include="src\renderEngine\renderEngine.hpp" />
     <ClInclude Include="src\shaders\shaderprogram.hpp" />
     <ClInclude Include="src\textures\modeltexture.hpp" />
@@ -269,8 +315,15 @@
     <ClInclude Include="src\toolbox\levelloader.hpp" />
     <ClInclude Include="src\toolbox\maths.hpp" />
     <ClInclude Include="src\toolbox\matrix.hpp" />
+    <ClInclude Include="src\toolbox\quaternion.hpp" />
     <ClInclude Include="src\toolbox\split.hpp" />
     <ClInclude Include="src\toolbox\vector.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="GmodClone.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="turtle.ico" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

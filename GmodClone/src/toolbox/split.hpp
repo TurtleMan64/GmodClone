@@ -19,8 +19,8 @@ char** split(char* line, char delim, int* length);
 void split(char* line, char delim, int* numFound, char** tokenPointers, int maxNumTokensToFind);
 
 //given a string, split the string into a vector of strings
-// based on some delimiter character. the string canont be more
-// than 1023 characters long.
+// based on some delimiter character. 
+// the original line is modified
 std::vector<std::string> split(std::string line, char delim);
 
 #endif

@@ -55,6 +55,12 @@
     <Filter Include="Source Files\guis">
       <UniqueIdentifier>{ffa239c9-586e-4cd5-8650-73aa846a9c75}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\animation">
+      <UniqueIdentifier>{3687d5d9-9c7a-42b7-b0c0-14f7d3461b68}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\openglObjects">
+      <UniqueIdentifier>{4ce17a14-28aa-421a-a892-d609305c272a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\glad.c">
@@ -246,6 +252,75 @@
     <ClCompile Include="src\entities\WinZone.cpp">
       <Filter>Source Files\entities</Filter>
     </ClCompile>
+    <ClCompile Include="src\entities\FallBlock.cpp">
+      <Filter>Source Files\entities</Filter>
+    </ClCompile>
+    <ClCompile Include="src\animation\Joint.cpp">
+      <Filter>Source Files\animation</Filter>
+    </ClCompile>
+    <ClCompile Include="src\animation\AnimatedModel.cpp">
+      <Filter>Source Files\animation</Filter>
+    </ClCompile>
+    <ClCompile Include="src\openglObjects\Vao.cpp">
+      <Filter>Source Files\openglObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="src\openglObjects\Vbo.cpp">
+      <Filter>Source Files\openglObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="src\animation\Animation.cpp">
+      <Filter>Source Files\animation</Filter>
+    </ClCompile>
+    <ClCompile Include="src\animation\Keyframe.cpp">
+      <Filter>Source Files\animation</Filter>
+    </ClCompile>
+    <ClCompile Include="src\animation\JointTransform.cpp">
+      <Filter>Source Files\animation</Filter>
+    </ClCompile>
+    <ClCompile Include="src\toolbox\Quaternion.cpp">
+      <Filter>Source Files\toolbox</Filter>
+    </ClCompile>
+    <ClCompile Include="src\animation\Texture.cpp">
+      <Filter>Source Files\animation</Filter>
+    </ClCompile>
+    <ClCompile Include="src\animation\Animator.cpp">
+      <Filter>Source Files\animation</Filter>
+    </ClCompile>
+    <ClCompile Include="src\animation\AnimatedModelRenderer.cpp">
+      <Filter>Source Files\animation</Filter>
+    </ClCompile>
+    <ClCompile Include="src\animation\AnimatedModelShader.cpp">
+      <Filter>Source Files\animation</Filter>
+    </ClCompile>
+    <ClCompile Include="src\animation\SkinLoader.cpp">
+      <Filter>Source Files\animation</Filter>
+    </ClCompile>
+    <ClCompile Include="src\animation\SkinningData.cpp">
+      <Filter>Source Files\animation</Filter>
+    </ClCompile>
+    <ClCompile Include="src\animation\VertexSkinData.cpp">
+      <Filter>Source Files\animation</Filter>
+    </ClCompile>
+    <ClCompile Include="src\animation\AnimatedModelData.cpp">
+      <Filter>Source Files\animation</Filter>
+    </ClCompile>
+    <ClCompile Include="src\animation\MeshData.cpp">
+      <Filter>Source Files\animation</Filter>
+    </ClCompile>
+    <ClCompile Include="src\animation\SkeletonData.cpp">
+      <Filter>Source Files\animation</Filter>
+    </ClCompile>
+    <ClCompile Include="src\animation\JointData.cpp">
+      <Filter>Source Files\animation</Filter>
+    </ClCompile>
+    <ClCompile Include="src\animation\AnimatedModelLoader.cpp">
+      <Filter>Source Files\animation</Filter>
+    </ClCompile>
+    <ClCompile Include="src\animation\GeometryLoader.cpp">
+      <Filter>Source Files\animation</Filter>
+    </ClCompile>
+    <ClCompile Include="src\animation\Vertex2.cpp">
+      <Filter>Source Files\animation</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\toolbox\getline.hpp">
@@ -422,5 +497,87 @@
     <ClInclude Include="src\entities\winzone.hpp">
       <Filter>Source Files\entities</Filter>
     </ClInclude>
+    <ClInclude Include="src\entities\fallblock.hpp">
+      <Filter>Source Files\entities</Filter>
+    </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\animation\joint.hpp">
+      <Filter>Source Files\animation</Filter>
+    </ClInclude>
+    <ClInclude Include="src\animation\animatedmodel.hpp">
+      <Filter>Source Files\animation</Filter>
+    </ClInclude>
+    <ClInclude Include="src\openglObjects\vao.hpp">
+      <Filter>Source Files\openglObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="src\openglObjects\vbo.hpp">
+      <Filter>Source Files\openglObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="src\animation\animation.hpp">
+      <Filter>Source Files\animation</Filter>
+    </ClInclude>
+    <ClInclude Include="src\animation\keyframe.hpp">
+      <Filter>Source Files\animation</Filter>
+    </ClInclude>
+    <ClInclude Include="src\animation\jointtransform.hpp">
+      <Filter>Source Files\animation</Filter>
+    </ClInclude>
+    <ClInclude Include="src\toolbox\quaternion.hpp">
+      <Filter>Source Files\toolbox</Filter>
+    </ClInclude>
+    <ClInclude Include="src\animation\texture.hpp">
+      <Filter>Source Files\animation</Filter>
+    </ClInclude>
+    <ClInclude Include="src\animation\animator.hpp">
+      <Filter>Source Files\animation</Filter>
+    </ClInclude>
+    <ClInclude Include="src\animation\animatedmodelrenderer.hpp">
+      <Filter>Source Files\animation</Filter>
+    </ClInclude>
+    <ClInclude Include="src\animation\animatedmodelshader.hpp">
+      <Filter>Source Files\animation</Filter>
+    </ClInclude>
+    <ClInclude Include="src\animation\skinloader.hpp">
+      <Filter>Source Files\animation</Filter>
+    </ClInclude>
+    <ClInclude Include="src\animation\skinningdata.hpp">
+      <Filter>Source Files\animation</Filter>
+    </ClInclude>
+    <ClInclude Include="src\animation\vertexskindata.hpp">
+      <Filter>Source Files\animation</Filter>
+    </ClInclude>
+    <ClInclude Include="src\animation\animatedmodeldata.hpp">
+      <Filter>Source Files\animation</Filter>
+    </ClInclude>
+    <ClInclude Include="src\animation\meshdata.hpp">
+      <Filter>Source Files\animation</Filter>
+    </ClInclude>
+    <ClInclude Include="src\animation\skeletondata.hpp">
+      <Filter>Source Files\animation</Filter>
+    </ClInclude>
+    <ClInclude Include="src\animation\jointdata.hpp">
+      <Filter>Source Files\animation</Filter>
+    </ClInclude>
+    <ClInclude Include="src\animation\animatedmodelloader.hpp">
+      <Filter>Source Files\animation</Filter>
+    </ClInclude>
+    <ClInclude Include="src\animation\geometryloader.hpp">
+      <Filter>Source Files\animation</Filter>
+    </ClInclude>
+    <ClInclude Include="src\animation\vertex2.hpp">
+      <Filter>Source Files\animation</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="GmodClone.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="turtle.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
 </Project>

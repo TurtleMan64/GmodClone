@@ -14,7 +14,6 @@
 #include <cstring>
 #include <algorithm>
 
-#include "../main/main.hpp"
 #include "input.hpp"
 #include "../entities/camera.hpp"
 #include "maths.hpp"
@@ -26,6 +25,7 @@
 #include "../entities/player.hpp"
 #include "split.hpp"
 #include "../network/tcpclient.hpp"
+#include "../main/main.hpp"
 
 #ifdef DEV_MODE
 #include <iostream>
@@ -565,7 +565,7 @@ void Input::keyboardCallback(GLFWwindow* /**/, int key, int /**/, int action, in
                                  Input::chatLength == 5 && strncmp("close", Input::chatInput, 5) == 0 ||
                                  Input::chatLength == 5 && strncmp("CLOSE", Input::chatInput, 5) == 0)
                         {
-                            //TODO
+                            Global::gameState = GAME_STATE_EXITING;
                         }
                     }
                     catch (std::exception e)

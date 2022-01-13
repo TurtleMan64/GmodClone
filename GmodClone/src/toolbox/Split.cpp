@@ -86,9 +86,6 @@ void split(char* line, char delim, int* numFound, char** tokenPointers, int maxN
     *numFound = numTokensFound;
 }
 
-//given a string, split the string into a vector of strings
-// based on some delimiter character. the string canont be more
-// than 1023 characters long.
 std::vector<std::string> split(std::string line, char delim)
 {
     if (delim == 0)
@@ -98,16 +95,16 @@ std::vector<std::string> split(std::string line, char delim)
         return list;
     }
 
-    if (line.size() >= 1023)
-    {
-        std::vector<std::string> list;
-        std::fprintf(stderr, "string sent to split() is too long.\n");
-        return list;
-    }
+    //if (line.size() >= 1023)
+    //{
+        //std::vector<std::string> list;
+        //std::fprintf(stderr, "string sent to split() is too long.\n");
+        //return list;
+    //}
 
-    char lineBuf[1024];
-    memset(lineBuf, 0, 1024);
-    memcpy(lineBuf, line.c_str(), line.size());
+    //char* lineBuf = (char*)malloc((int)line.size() + 1);
+    //memset(lineBuf, 0, (int)line.size() + 1);
+    //memcpy(lineBuf, line.c_str(), line.size());
 
     // Scan through line to find the number of tokens
     int numTokens = 0;
