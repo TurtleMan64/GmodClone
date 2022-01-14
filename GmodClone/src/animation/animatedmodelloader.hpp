@@ -11,7 +11,7 @@
 class AnimatedModelLoader
 {
 public:
-    static AnimatedModel loadEntity(char* filename);
+    static AnimatedModel* loadEntity(char* filename);
 
     static Vao* createVao(MeshData* data);
 };

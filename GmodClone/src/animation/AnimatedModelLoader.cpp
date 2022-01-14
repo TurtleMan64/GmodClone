@@ -20,7 +20,7 @@
 #include "meshdata.hpp"
 #include "geometryloader.hpp"
 
-AnimatedModel AnimatedModelLoader::loadEntity(char* filename)
+AnimatedModel* AnimatedModelLoader::loadEntity(char* filename)
 {
     std::string line;
     std::ifstream myfile(filename);
@@ -132,13 +132,13 @@ AnimatedModel AnimatedModelLoader::loadEntity(char* filename)
 
         Vao* model = createVao(&meshData);
 
-
-        return AnimatedModel(model, textureId, rootJoint, jointCount);
+        INCR_NEW("AnimatedModel");
+        return new AnimatedModel(model, textureId, rootJoint, jointCount);
     }
     else
     {
         printf("Couldn't load the file\n");
-        return AnimatedModel();
+        return nullptr;
     }
 }
 

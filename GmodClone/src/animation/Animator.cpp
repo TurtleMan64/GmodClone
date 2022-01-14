@@ -24,7 +24,11 @@ void Animator::update()
         return;
     }
 
-    increaseAnimationTime();
+    //increaseAnimationTime();
+    if (animationTime > currentAnimation->length)
+    {
+        animationTime = fmodf(animationTime, currentAnimation->length);
+    }
 
     std::unordered_map<std::string, Matrix4f> currentPose = calculateCurrentAnimationPose();
     Matrix4f identity;

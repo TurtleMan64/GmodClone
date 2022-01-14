@@ -15,6 +15,8 @@ public:
     float timeStamp;
     std::unordered_map<std::string, JointTransform> pose;
 
+    Keyframe();
+
     Keyframe(float timeStamp, std::unordered_map<std::string, JointTransform> jointKeyframes);
 };
 #endif

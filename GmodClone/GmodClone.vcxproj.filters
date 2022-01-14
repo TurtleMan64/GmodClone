@@ -321,6 +321,21 @@
     <ClCompile Include="src\animation\Vertex2.cpp">
       <Filter>Source Files\animation</Filter>
     </ClCompile>
+    <ClCompile Include="src\animation\AnimationLoader.cpp">
+      <Filter>Source Files\animation</Filter>
+    </ClCompile>
+    <ClCompile Include="src\animation\AnimationData.cpp">
+      <Filter>Source Files\animation</Filter>
+    </ClCompile>
+    <ClCompile Include="src\animation\AnimationLoader2.cpp">
+      <Filter>Source Files\animation</Filter>
+    </ClCompile>
+    <ClCompile Include="src\animation\JointTransformData.cpp">
+      <Filter>Source Files\animation</Filter>
+    </ClCompile>
+    <ClCompile Include="src\animation\KeyframeData.cpp">
+      <Filter>Source Files\animation</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\toolbox\getline.hpp">
@@ -567,6 +582,21 @@
       <Filter>Source Files\animation</Filter>
     </ClInclude>
     <ClInclude Include="src\animation\vertex2.hpp">
+      <Filter>Source Files\animation</Filter>
+    </ClInclude>
+    <ClInclude Include="src\animation\animationloader.hpp">
+      <Filter>Source Files\animation</Filter>
+    </ClInclude>
+    <ClInclude Include="src\animation\animationdata.hpp">
+      <Filter>Source Files\animation</Filter>
+    </ClInclude>
+    <ClInclude Include="src\animation\animationloader2.hpp">
+      <Filter>Source Files\animation</Filter>
+    </ClInclude>
+    <ClInclude Include="src\animation\jointtransformdata.hpp">
+      <Filter>Source Files\animation</Filter>
+    </ClInclude>
+    <ClInclude Include="src\animation\keyframedata.hpp">
       <Filter>Source Files\animation</Filter>
     </ClInclude>
   </ItemGroup>

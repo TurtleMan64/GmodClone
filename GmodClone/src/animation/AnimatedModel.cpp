@@ -45,13 +45,17 @@ void AnimatedModel::deleteMe()
     Loader::deleteTexture(texture);
 }
 
-void AnimatedModel::doAnimation(Animation* animation)
+//void AnimatedModel::doAnimation(Animation* animation, float time)
+//{
+//    animator->animationTime = time;
+//    animator->currentAnimation = animation;
+//    animator->update();
+//}
+
+void AnimatedModel::update(Animation* animation, float time)
 {
     animator->doAnimation(animation);
-}
-
-void AnimatedModel::update()
-{
+    animator->animationTime = time;
     animator->update();
 }
 

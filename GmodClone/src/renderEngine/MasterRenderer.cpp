@@ -14,6 +14,8 @@
 #include "../animation/animatedmodelrenderer.hpp"
 #include "../animation/animatedmodel.hpp"
 #include "../animation/animatedmodelloader.hpp"
+#include "../animation/animation.hpp"
+#include "../animation/animationloader.hpp"
 
 #include <iostream>
 #include <list>
@@ -53,7 +55,9 @@ GLuint transparentDepthTexture = GL_NONE;
 extern unsigned int SCR_WIDTH;
 extern unsigned int SCR_HEIGHT;
 
-AnimatedModel animatedModel;
+AnimatedModel* animatedModel = nullptr;
+
+Animation* animation = nullptr;
 
 void Master_init()
 {
@@ -69,7 +73,9 @@ void Master_init()
 
 
     animatedModel = AnimatedModelLoader::loadEntity((char*)"res/Models/Human/model.mesh");
+    animation = AnimationLoader::loadAnimation((char*)"res/Models/Human/model.anim");
 
+    //animatedModel.doAnimation(&animation, 0.0f);
 
     //shadowMapRenderer = new ShadowMapMasterRenderer; INCR_NEW("ShadowMapMasterRenderer");
     //shadowMapRenderer2 = new ShadowMapMasterRenderer2; INCR_NEW("ShadowMapMasterRenderer2");
@@ -155,7 +161,9 @@ void Master_render(Camera* camera, float clipX, float clipY, float clipZ, float 
     glDisable(GL_CLIP_DISTANCE0);
     shader->stop();
 
-    animatedModelRenderer->render(&animatedModel);
+    animatedModel->update(animation, (float)glfwGetTime());
+    //animatedModel.doAnimation(&animation, (float)glfwGetTime());
+    animatedModelRenderer->render(animatedModel);
 
     ANALYSIS_DONE("Master Render");
 }

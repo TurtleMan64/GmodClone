@@ -11,6 +11,8 @@ public:
     float length;
     std::vector<Keyframe> keyframes;
 
+    Animation();
+
     Animation(float lengthInSeconds, std::vector<Keyframe> keyframes);
 
 };

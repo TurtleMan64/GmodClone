@@ -34,9 +34,9 @@ public:
 
     void deleteMe();
 
-    void doAnimation(Animation* animation);
+    //void doAnimation(Animation* animation, float time);
 
-    void update();
+    void update(Animation* animation, float time);
 
     std::vector<Matrix4f> calculateJointTransforms();
 
