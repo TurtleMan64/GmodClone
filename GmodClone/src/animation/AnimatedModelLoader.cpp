@@ -20,15 +20,25 @@
 #include "meshdata.hpp"
 #include "geometryloader.hpp"
 
-AnimatedModel* AnimatedModelLoader::loadEntity(char* filename)
+AnimatedModel* AnimatedModelLoader::loadAnimatedModel(const char* folder, const char* filename)
 {
+    return AnimatedModelLoader::loadAnimatedModel((char*)folder, (char*)filename);
+}
+
+AnimatedModel* AnimatedModelLoader::loadAnimatedModel(char* folder, char* filename)
+{
+    std::string fullFile = "";
+    fullFile = fullFile + folder + filename;
+
     std::string line;
-    std::ifstream myfile(filename);
+    std::ifstream myfile(fullFile.c_str());
     if (myfile.is_open())
     {
         getline(myfile, line);
         std::vector<std::string> textureTokens = split(line, ' ');
-        GLuint textureId = Loader::loadTexture(textureTokens[1].c_str());
+        std::string textureFilename = "";
+        textureFilename = textureFilename + folder + textureTokens[1];
+        GLuint textureId = Loader::loadTexture(textureFilename.c_str());
 
         getline(myfile, line);
         std::vector<std::string> vertexPositions = split(line, ' ');
@@ -84,6 +94,15 @@ AnimatedModel* AnimatedModelLoader::loadEntity(char* filename)
 
             Matrix4f ma;
             ma.loadColumnFirst(mat4);
+
+            if (i == 1)
+            {
+                Matrix4f CORRECTION;
+                Vector3f xAxis(1, 0, 0);
+                CORRECTION.rotate(Maths::toRadians(-90), &xAxis);
+
+                CORRECTION.multiply(&ma, &ma);
+            }
 
             Joint* newJoint = new Joint(i - 1, boneTokens[0], &ma); INCR_NEW("Joint");
 

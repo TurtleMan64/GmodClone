@@ -12,12 +12,9 @@
 
 class AnimationLoader
 {
-private:
-    //static Keyframe createKeyframe(KeyframeData data);
-
-    //static JointTransform createTransform(JointTransformData);
-
 public:
+    static Animation* loadAnimation(const char* filename);
+
     static Animation* loadAnimation(char* filename);
 };
 #endif

@@ -4,6 +4,8 @@
 class TexturedModel;
 class GUIText;
 class Dummy;
+class AnimatedModel;
+class Animation;
 
 #include <list>
 #include "entity.hpp"
@@ -18,6 +20,15 @@ private:
     static std::list<TexturedModel*> modelsSlide;
     static std::list<TexturedModel*> modelsSquat;
     static std::list<TexturedModel*> modelsStand;
+
+    static AnimatedModel* modelShrek;
+
+    static Animation* animationFall;
+    static Animation* animationJump;
+    static Animation* animationSlide;
+    static Animation* animationSquat;
+    static Animation* animationStand;
+    static Animation* animationRun;
 
     Dummy* head = nullptr;
     GUIText* nametag = nullptr;
@@ -99,6 +110,8 @@ public:
     std::vector<Entity*>* getEntitiesToRender();
 
     std::list<TexturedModel*>* getModels();
+
+    AnimatedModel* getAnimatedModel();
 
     static void loadModels();
 

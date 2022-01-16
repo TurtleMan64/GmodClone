@@ -165,7 +165,7 @@ public:
 
     void render(Entity*);
 
-    void renderNEW(std::unordered_map<TexturedModel*, std::list<Entity*>>* entities, Matrix4f* toShadowSpaceFar, Matrix4f* toShadowSpaceClose);
+    void render(std::unordered_map<TexturedModel*, std::list<Entity*>>* entities, Matrix4f* toShadowSpaceFar, Matrix4f* toShadowSpaceClose);
 
     void updateProjectionMatrix(Matrix4f* projectionMatrix);
 

@@ -13,6 +13,11 @@
 #include "../toolbox/quaternion.hpp"
 #include "../toolbox/split.hpp"
 
+Animation* AnimationLoader::loadAnimation(const char* filename)
+{
+    return AnimationLoader::loadAnimation((char*)filename);
+}
+
 Animation* AnimationLoader::loadAnimation(char* filename)
 {
     std::string line;
@@ -58,7 +63,16 @@ Animation* AnimationLoader::loadAnimation(char* filename)
                 }
 
                 Matrix4f localTransform;
-                localTransform.loadColumnFirst(localTransMat); //TODO might need to do load columns first or not
+                localTransform.loadColumnFirst(localTransMat);
+
+                if (rootBoneName == tokens[0])
+                {
+                    Matrix4f CORRECTION;
+                    Vector3f xAxis(1, 0, 0);
+                    CORRECTION.rotate(Maths::toRadians(-90), &xAxis);
+
+                    CORRECTION.multiply(&localTransform, &localTransform);
+                }
 
                 Vector3f translation(localTransform.m30, localTransform.m31, localTransform.m32);
                 Quaternion rotation = Quaternion::fromMatrix(&localTransform);

@@ -7,6 +7,7 @@
 #include "../main/main.hpp"
 #include "../collision/collisionmodel.hpp"
 #include "../models/models.hpp"
+#include "../animation/animatedmodel.hpp"
 
 #include <list>
 #include <iostream>
@@ -76,6 +77,11 @@ std::vector<Entity*>* Entity::getEntitiesToRender()
 }
 
 std::list<TexturedModel*>* Entity::getModels()
+{
+    return nullptr;
+}
+
+AnimatedModel* Entity::getAnimatedModel()
 {
     return nullptr;
 }

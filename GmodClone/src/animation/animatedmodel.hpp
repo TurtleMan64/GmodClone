@@ -3,43 +3,56 @@
 
 class Vao;
 class Joint;
+class Animation;
 
 #include <glad/glad.h>
-#include <GLFW/glfw3.h>
 
-#include <string>
 #include <vector>
+#include <string>
+#include <unordered_map>
 
-#include "../toolbox/maths.hpp"
 #include "../toolbox/matrix.hpp"
-#include "animator.hpp"
-#include "animation.hpp"
+#include "keyframe.hpp"
 
 class AnimatedModel
 {
 public:
-    //skin
+    // All of the position, texture, normal, skin weights, etc. that the model uses in the shader.
     Vao* model = nullptr;
     GLuint texture = GL_NONE;
-
-    //skeelton
-    Joint* rootJoint = nullptr;
     int jointCount = 0;
 
-    Animator* animator = nullptr;
+private:
+    // The root joint of the model.
+    Joint* rootJoint = nullptr;
 
+public:
     AnimatedModel();
 
     AnimatedModel(Vao* model, GLuint texture, Joint* rootJoint, int jointCount);
 
     void deleteMe();
 
-    //void doAnimation(Animation* animation, float time);
+    // Calculates the poses of each bone for an animation at a given time.
+    std::unordered_map<std::string, Matrix4f> calculateAnimationPose(Animation* animation, float time);
 
-    void update(Animation* animation, float time);
+    // Calculates the poses of each bone by blending together two animations.
+    std::unordered_map<std::string, Matrix4f> calculateAnimationPose(Animation* animation1, float time1, Animation* animation2, float time2, float blend);
 
-    std::vector<Matrix4f> calculateJointTransforms();
+    // Given a pose, applies the joint transforms and stores them in the given joint transforms vector.
+    void calculateJointTransformsFromPose(std::vector<Matrix4f>* outJointTransforms, std::unordered_map<std::string, Matrix4f>* pose);
 
+private:
     void addJointsToArray(Joint* headJoint, std::vector<Matrix4f>* jointMatrices);
+
+    void calculateJointTransforms(std::vector<Matrix4f>* outJointTransforms);
+
+    void applyPoseToJoints(std::unordered_map<std::string, Matrix4f>* currentPose, Joint* joint, Matrix4f* parentTransform);
+
+    std::vector<Keyframe> getPreviousAndNextFrames(Animation* animation, float time);
+
+    float calculateProgression(Keyframe* previousFrame, Keyframe* nextFrame, float time);
+
+    std::unordered_map<std::string, Matrix4f> interpolatePoses(Keyframe* previousFrame, Keyframe* nextFrame, float progression);
 };
 #endif

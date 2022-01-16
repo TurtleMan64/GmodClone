@@ -60,8 +60,14 @@ void GeometryLoader::readPositions()
         float y = std::stof(vertexPositionsRaw[i*3 + 1]);
         float z = std::stof(vertexPositionsRaw[i*3 + 2]);
         Vector4f pos(x, y, z, 1);
-        //TODO CORRECTOIPN
-        Vector3f pos2(pos.x, pos.y, pos.z);
+
+        Matrix4f CORRECTION;
+        Vector3f xAxis(1, 0, 0);
+        CORRECTION.rotate(Maths::toRadians(-90), &xAxis);
+
+        Vector4f posCorrected = CORRECTION.transform(&pos);
+
+        Vector3f pos2(posCorrected.x, posCorrected.y, posCorrected.z);
         Vertex2* newV = new Vertex2((int)vertices.size(), &pos2, vertexWeights[(int)vertices.size()]); INCR_NEW("Vertex2");
         vertices.push_back(newV);
     }
@@ -75,9 +81,15 @@ void GeometryLoader::readNormals()
         float x = std::stof(normalsRaw[i*3 + 0]);
         float y = std::stof(normalsRaw[i*3 + 1]);
         float z = std::stof(normalsRaw[i*3 + 2]);
-        Vector4f norm(x, y, z, 0);
-        //TODO CORRECTOIPN
-        normals.push_back(Vector3f(norm.x, norm.y, norm.z));
+        Vector4f norm(x, y, z, 0.0f);
+        
+        Matrix4f CORRECTION;
+        Vector3f xAxis(1, 0, 0);
+        CORRECTION.rotate(Maths::toRadians(-90), &xAxis);
+
+        Vector4f normCorrect = CORRECTION.transform(&norm);
+
+        normals.push_back(Vector3f(normCorrect.x, normCorrect.y, normCorrect.z));
     }
 }
 

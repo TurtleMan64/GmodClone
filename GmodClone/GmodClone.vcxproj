@@ -156,7 +156,6 @@
     <ClCompile Include="src\animation\Animation.cpp" />
     <ClCompile Include="src\animation\AnimationData.cpp" />
     <ClCompile Include="src\animation\AnimationLoader.cpp" />
-    <ClCompile Include="src\animation\AnimationLoader2.cpp" />
     <ClCompile Include="src\animation\Animator.cpp" />
     <ClCompile Include="src\animation\GeometryLoader.cpp" />
     <ClCompile Include="src\animation\Joint.cpp" />
@@ -250,7 +249,6 @@
     <ClInclude Include="src\animation\animation.hpp" />
     <ClInclude Include="src\animation\animationdata.hpp" />
     <ClInclude Include="src\animation\animationloader.hpp" />
-    <ClInclude Include="src\animation\animationloader2.hpp" />
     <ClInclude Include="src\animation\animator.hpp" />
     <ClInclude Include="src\animation\geometryloader.hpp" />
     <ClInclude Include="src\animation\joint.hpp" />

@@ -4,6 +4,7 @@
 class TexturedModel;
 class CollisionModel;
 class Triangle3D;
+class AnimatedModel;
 
 #include <list>
 #include <vector>
@@ -53,6 +54,9 @@ public:
 
     std::vector<Entity*> entitiesToRender;
 
+    //The pose of each bone in the animated model
+    std::vector<Matrix4f> jointTransforms;
+
     static void deleteModels(std::list<TexturedModel*>* modelsToDelete);
     static void deleteCollisionModel(CollisionModel** colModelToDelete);
     //0 = rendered first (default), 1 = second, 2 = third, 3 = fourth + transparent (no depth testing)
@@ -68,6 +72,8 @@ public:
     virtual std::vector<Entity*>* getEntitiesToRender();
 
     virtual std::list<TexturedModel*>* getModels();
+
+    virtual AnimatedModel* getAnimatedModel();
 
     void updateTransformationMatrix();
 

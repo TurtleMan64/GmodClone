@@ -18,6 +18,10 @@
 #include "dummy.hpp"
 #include "../fontMeshCreator/guitext.hpp"
 #include "../audio/audioplayer.hpp"
+#include "../animation/animation.hpp"
+#include "../animation/animatedmodel.hpp"
+#include "../animation/animatedmodelloader.hpp"
+#include "../animation/animationloader.hpp"
 
 std::list<TexturedModel*> OnlinePlayer::modelsHead;
 std::list<TexturedModel*> OnlinePlayer::modelsFall;
@@ -25,6 +29,15 @@ std::list<TexturedModel*> OnlinePlayer::modelsJump;
 std::list<TexturedModel*> OnlinePlayer::modelsSlide;
 std::list<TexturedModel*> OnlinePlayer::modelsSquat;
 std::list<TexturedModel*> OnlinePlayer::modelsStand;
+
+AnimatedModel* OnlinePlayer::modelShrek = nullptr;
+
+Animation* OnlinePlayer::animationFall  = nullptr;
+Animation* OnlinePlayer::animationJump  = nullptr;
+Animation* OnlinePlayer::animationSlide = nullptr;
+Animation* OnlinePlayer::animationSquat = nullptr;
+Animation* OnlinePlayer::animationStand = nullptr;
+Animation* OnlinePlayer::animationRun   = nullptr;
 
 extern float dt;
 
@@ -44,6 +57,12 @@ OnlinePlayer::OnlinePlayer(std::string name, float x, float y, float z)
 
     entitiesToRender.push_back(this);
     entitiesToRender.push_back(head);
+
+    for (int i = 0; i < OnlinePlayer::modelShrek->jointCount; i++)
+    {
+        Matrix4f mat;
+        jointTransforms.push_back(mat);
+    }
 }
 
 OnlinePlayer::~OnlinePlayer()
@@ -559,6 +578,33 @@ void OnlinePlayer::step()
 
     nametag->fontSize = 0.15f / diff.length();
     nametag->position = screenPos;
+
+    if (isCrouching)
+    {
+        std::unordered_map<std::string, Matrix4f> pose = modelShrek->calculateAnimationPose(animationSquat, (float)glfwGetTime());
+        modelShrek->calculateJointTransformsFromPose(&jointTransforms, &pose);
+    }
+    else if (slideTimer > 0.0f)
+    {
+        std::unordered_map<std::string, Matrix4f> pose = modelShrek->calculateAnimationPose(animationSlide, (float)glfwGetTime());
+        modelShrek->calculateJointTransformsFromPose(&jointTransforms, &pose);
+    }
+    else if (vel.y > 1.0f)
+    {
+        std::unordered_map<std::string, Matrix4f> pose = modelShrek->calculateAnimationPose(animationJump, (float)glfwGetTime());
+        modelShrek->calculateJointTransformsFromPose(&jointTransforms, &pose);
+    }
+    else if (vel.y < -1.0f)
+    {
+        std::unordered_map<std::string, Matrix4f> pose = modelShrek->calculateAnimationPose(animationFall, (float)glfwGetTime());
+        modelShrek->calculateJointTransformsFromPose(&jointTransforms, &pose);
+    }
+    else
+    {
+        std::unordered_map<std::string, Matrix4f> pose = modelShrek->calculateAnimationPose(animationStand, (float)glfwGetTime());
+        pose["sadf"]
+        modelShrek->calculateJointTransformsFromPose(&jointTransforms, &pose);
+    }
 }
 
 std::vector<Entity*>* OnlinePlayer::getEntitiesToRender()
@@ -586,6 +632,11 @@ std::list<TexturedModel*>* OnlinePlayer::getModels()
     }
 
     return &OnlinePlayer::modelsStand;
+}
+
+AnimatedModel* OnlinePlayer::getAnimatedModel()
+{
+    return OnlinePlayer::modelShrek;
 }
 
 int OnlinePlayer::getEntityType()
@@ -719,5 +770,14 @@ void OnlinePlayer::loadModels()
         ObjLoader::loadModel(&OnlinePlayer::modelsSlide, "res/Models/Human/", "ShrekSlide");
         ObjLoader::loadModel(&OnlinePlayer::modelsSquat, "res/Models/Human/", "ShrekSquat");
         ObjLoader::loadModel(&OnlinePlayer::modelsStand, "res/Models/Human/", "ShrekStand");
+
+        OnlinePlayer::modelShrek = AnimatedModelLoader::loadAnimatedModel("res/Models/Human/", "shrek5.mesh");
+
+        OnlinePlayer::animationFall  = AnimationLoader::loadAnimation("res/Models/Human/shrek5-fall.anim");
+        OnlinePlayer::animationJump  = AnimationLoader::loadAnimation("res/Models/Human/shrek5-jump.anim");
+        OnlinePlayer::animationSlide = AnimationLoader::loadAnimation("res/Models/Human/shrek5-slide.anim");
+        OnlinePlayer::animationSquat = AnimationLoader::loadAnimation("res/Models/Human/shrek5-squat.anim");
+        OnlinePlayer::animationStand = AnimationLoader::loadAnimation("res/Models/Human/shrek5-run.anim");
+        OnlinePlayer::animationRun   = AnimationLoader::loadAnimation("res/Models/Human/shrek5-run.anim");
     }
 }

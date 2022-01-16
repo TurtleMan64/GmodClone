@@ -327,9 +327,6 @@
     <ClCompile Include="src\animation\AnimationData.cpp">
       <Filter>Source Files\animation</Filter>
     </ClCompile>
-    <ClCompile Include="src\animation\AnimationLoader2.cpp">
-      <Filter>Source Files\animation</Filter>
-    </ClCompile>
     <ClCompile Include="src\animation\JointTransformData.cpp">
       <Filter>Source Files\animation</Filter>
     </ClCompile>
@@ -588,9 +585,6 @@
       <Filter>Source Files\animation</Filter>
     </ClInclude>
     <ClInclude Include="src\animation\animationdata.hpp">
-      <Filter>Source Files\animation</Filter>
-    </ClInclude>
-    <ClInclude Include="src\animation\animationloader2.hpp">
       <Filter>Source Files\animation</Filter>
     </ClInclude>
     <ClInclude Include="src\animation\jointtransformdata.hpp">

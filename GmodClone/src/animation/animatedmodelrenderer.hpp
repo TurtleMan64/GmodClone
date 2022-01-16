@@ -6,12 +6,14 @@
 
 #include <string>
 #include <vector>
+#include <unordered_map>
 
 #include "../toolbox/maths.hpp"
 #include "../toolbox/matrix.hpp"
 
 class AnimatedModelShader;
 class AnimatedModel;
+class Entity;
 
 class AnimatedModelRenderer
 {
@@ -20,7 +22,7 @@ public:
 
     AnimatedModelRenderer();
 
-    void render(AnimatedModel* entity);
+    void render(std::unordered_map<AnimatedModel*, std::vector<Entity*>>* animatedEntitiesMap);
 
     void cleanUp();
 

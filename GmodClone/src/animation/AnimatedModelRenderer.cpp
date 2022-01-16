@@ -1,4 +1,5 @@
 #include <string>
+#include <vector>
 
 #include "texture.hpp"
 #include "../toolbox/vector.hpp"
@@ -13,35 +14,59 @@
 #include "../main/main.hpp"
 #include "../openglObjects/vao.hpp"
 #include "../entities/light.hpp"
+#include "../entities/entity.hpp"
 
 AnimatedModelRenderer::AnimatedModelRenderer()
 {
     shader = new AnimatedModelShader(); INCR_NEW("AnimatedModelShader");
 }
 
-void AnimatedModelRenderer::render(AnimatedModel* entity)
+void AnimatedModelRenderer::render(std::unordered_map<AnimatedModel*, std::vector<Entity*>>* animatedEntitiesMap)
 {
-    prepare();
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, entity->texture);
-
-    std::vector<GLuint> bindNums;
-    bindNums.push_back(0);
-    bindNums.push_back(1);
-    bindNums.push_back(2);
-    bindNums.push_back(3);
-    bindNums.push_back(4);
-    entity->model->bind(&bindNums);
-
-    std::vector<Matrix4f> jointTransforms = entity->calculateJointTransforms();
-    for (int i = 0; i < jointTransforms.size(); i++)
+    if (animatedEntitiesMap->size() == 0)
     {
-        shader->loadMatrix(shader->location_jointTransforms[i], &jointTransforms[i]);
+        return;
     }
 
-    glDrawElements(GL_TRIANGLES, entity->model->indexCount, GL_UNSIGNED_INT, nullptr);
+    prepare();
 
-    entity->model->unbind(&bindNums);
+    for (auto entry : (*animatedEntitiesMap))
+    {
+        AnimatedModel* animatedModel = entry.first;
+        std::vector<Entity*>* entityList = &entry.second;
+
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, animatedModel->texture);
+
+        std::vector<GLuint> bindNums;
+        bindNums.push_back(0);
+        bindNums.push_back(1);
+        bindNums.push_back(2);
+        bindNums.push_back(3);
+        bindNums.push_back(4);
+        animatedModel->model->bind(&bindNums);
+
+        for (Entity* entity : (*entityList))
+        {
+            if (!entity->visible)
+            {
+                continue;
+            }
+
+            std::vector<Matrix4f>* jointTransforms = &entity->jointTransforms;
+            for (int i = 0; i < jointTransforms->size(); i++)
+            {
+                shader->loadMatrix(shader->location_jointTransforms[i], &jointTransforms->at(i));
+            }
+
+            glDrawElements(GL_TRIANGLES, animatedModel->model->indexCount, GL_UNSIGNED_INT, nullptr);
+        }
+
+        animatedModel->model->unbind(&bindNums);
+    }
+
+    glBindTexture(GL_TEXTURE_2D, 0);
+
     finish();
 }
 

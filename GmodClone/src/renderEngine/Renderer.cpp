@@ -29,8 +29,13 @@ EntityRenderer::EntityRenderer(ShaderProgram* shader, Matrix4f* projectionMatrix
     }
 }
 
-void EntityRenderer::renderNEW(std::unordered_map<TexturedModel*, std::list<Entity*>>* entitiesMap, Matrix4f* /*toShadowSpaceFar*/, Matrix4f* /*toShadowSpaceClose*/)
+void EntityRenderer::render(std::unordered_map<TexturedModel*, std::list<Entity*>>* entitiesMap, Matrix4f* /*toShadowSpaceFar*/, Matrix4f* /*toShadowSpaceClose*/)
 {
+    if (entitiesMap->size() == 0)
+    {
+        return;
+    }
+
     //if (Global::renderShadowsFar)
     {
         //shader->loadToShadowSpaceMatrixFar(toShadowSpaceFar);
@@ -112,29 +117,6 @@ void EntityRenderer::prepareInstance(Entity* entity, unsigned int entityId)
     shader->loadBaseColor(&entity->baseColor);
     shader->loadBaseAlpha(entity->baseAlpha);
     shader->loadEntityId(entityId);
-}
-
-void EntityRenderer::render(Entity* entity)
-{
-    if (!entity->visible)
-    {
-        return;
-    }
-
-    prepareInstance(entity, 0);
-
-    std::list<TexturedModel*>* models = entity->getModels();
-
-    for (auto texturedModel : (*models))
-    {
-        RawModel* model = texturedModel->getRawModel();
-
-        prepareTexturedModel(texturedModel);
-
-        glDrawElements(GL_TRIANGLES, model->getVertexCount(), GL_UNSIGNED_INT, 0);
-
-        unbindTexturedModel();
-    }
 }
 
 void EntityRenderer::updateProjectionMatrix(Matrix4f* projectionMatrix)

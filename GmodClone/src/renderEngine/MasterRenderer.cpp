@@ -33,6 +33,7 @@ std::unordered_map<TexturedModel*, std::list<Entity*>> entitiesMapPass2;
 std::unordered_map<TexturedModel*, std::list<Entity*>> entitiesMapPass3;
 std::unordered_map<TexturedModel*, std::list<Entity*>> entitiesMapNoDepth;
 std::unordered_map<TexturedModel*, std::list<Entity*>> entitiesMapTransparent;
+std::unordered_map<AnimatedModel*, std::vector<Entity*>> animatedEntitiesMap;
 
 Matrix4f* projectionMatrix = nullptr;
 
@@ -55,9 +56,9 @@ GLuint transparentDepthTexture = GL_NONE;
 extern unsigned int SCR_WIDTH;
 extern unsigned int SCR_HEIGHT;
 
-AnimatedModel* animatedModel = nullptr;
+//AnimatedModel* animatedModel = nullptr;
 
-Animation* animation = nullptr;
+//Animation* animation = nullptr;
 
 void Master_init()
 {
@@ -72,8 +73,8 @@ void Master_init()
 
 
 
-    animatedModel = AnimatedModelLoader::loadEntity((char*)"res/Models/Human/model.mesh");
-    animation = AnimationLoader::loadAnimation((char*)"res/Models/Human/model.anim");
+    //animatedModel = AnimatedModelLoader::loadAnimatedModel("res/Models/Human", "shrek5.mesh");
+    //animation = AnimationLoader::loadAnimation("res/Models/Human/shrek5.anim");
 
     //animatedModel.doAnimation(&animation, 0.0f);
 
@@ -116,8 +117,8 @@ unsigned int masterRendererClock = 0;
 void Master_render(Camera* camera, float clipX, float clipY, float clipZ, float clipW, float waterBlendAmount)
 {
     ANALYSIS_START("Master Render");
-    GLint currFB;
-    glGetIntegerv(GL_FRAMEBUFFER_BINDING, &currFB);
+    //GLint currFB;
+    //glGetIntegerv(GL_FRAMEBUFFER_BINDING, &currFB);
 
     Master_makeProjectionMatrix();
 
@@ -153,17 +154,17 @@ void Master_render(Camera* camera, float clipX, float clipY, float clipZ, float 
 
     glDepthMask(true);
     glEnable(GL_CLIP_DISTANCE0);
-    renderer->renderNEW(&entitiesMap,      nullptr, nullptr);
-    renderer->renderNEW(&entitiesMapPass2, nullptr, nullptr);
-    renderer->renderNEW(&entitiesMapPass3, nullptr, nullptr);
+    renderer->render(&entitiesMap,      nullptr, nullptr);
+    renderer->render(&entitiesMapPass2, nullptr, nullptr);
+    renderer->render(&entitiesMapPass3, nullptr, nullptr);
     glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
     glBindTexture(GL_TEXTURE_2D, 0);
     glDisable(GL_CLIP_DISTANCE0);
     shader->stop();
 
-    animatedModel->update(animation, (float)glfwGetTime());
+    //animatedModel->animate(animation, (float)glfwGetTime());
     //animatedModel.doAnimation(&animation, (float)glfwGetTime());
-    animatedModelRenderer->render(animatedModel);
+    animatedModelRenderer->render(&animatedEntitiesMap);
 
     ANALYSIS_DONE("Master Render");
 }
@@ -172,49 +173,20 @@ void Master_processEntity(Entity* e)
 {
     std::vector<Entity*>* entitiesToRender = e->getEntitiesToRender();
 
-    if (entitiesToRender == nullptr)
+    if (entitiesToRender != nullptr)
     {
-        return;
-    }
-
-    for (Entity* entity : *entitiesToRender)
-    {
-        if (!entity->visible)
+        for (Entity* entity : *entitiesToRender)
         {
-            continue;
-        }
-
-        if (entity->renderOrderOverride <= 4)
-        {
-            std::unordered_map<TexturedModel*, std::list<Entity*>>* mapToUse = nullptr;
-
-            switch (entity->renderOrderOverride)
+            if (!entity->visible)
             {
-                case 0: mapToUse = &entitiesMap;            break;
-                case 1: mapToUse = &entitiesMapPass2;       break;
-                case 2: mapToUse = &entitiesMapPass3;       break;
-                case 3: mapToUse = &entitiesMapTransparent; break;
-                case 4: mapToUse = &entitiesMapNoDepth;     break;
-                default: break;
+                continue;
             }
 
-            std::list<TexturedModel*>* modellist = entity->getModels();
-
-            for (TexturedModel* entityModel : (*modellist))
-            {
-                std::list<Entity*>* list = &(*mapToUse)[entityModel];
-                list->push_back(entity);
-            }
-        }
-        else
-        {
-            std::list<TexturedModel*>* modellist = entity->getModels();
-
-            for (TexturedModel* entityModel : (*modellist))
+            if (entity->renderOrderOverride <= 4)
             {
                 std::unordered_map<TexturedModel*, std::list<Entity*>>* mapToUse = nullptr;
 
-                switch (entityModel->renderOrder)
+                switch (entity->renderOrderOverride)
                 {
                     case 0: mapToUse = &entitiesMap;            break;
                     case 1: mapToUse = &entitiesMapPass2;       break;
@@ -224,10 +196,42 @@ void Master_processEntity(Entity* e)
                     default: break;
                 }
 
-                std::list<Entity*>* list = &(*mapToUse)[entityModel];
-                list->push_back(entity);
+                std::list<TexturedModel*>* modellist = entity->getModels();
+
+                for (TexturedModel* entityModel : (*modellist))
+                {
+                    std::list<Entity*>* list = &(*mapToUse)[entityModel];
+                    list->push_back(entity);
+                }
+            }
+            else
+            {
+                std::list<TexturedModel*>* modellist = entity->getModels();
+
+                for (TexturedModel* entityModel : (*modellist))
+                {
+                    std::unordered_map<TexturedModel*, std::list<Entity*>>* mapToUse = nullptr;
+
+                    switch (entityModel->renderOrder)
+                    {
+                        case 0: mapToUse = &entitiesMap;            break;
+                        case 1: mapToUse = &entitiesMapPass2;       break;
+                        case 2: mapToUse = &entitiesMapPass3;       break;
+                        case 3: mapToUse = &entitiesMapTransparent; break;
+                        case 4: mapToUse = &entitiesMapNoDepth;     break;
+                        default: break;
+                    }
+
+                    std::list<Entity*>* list = &(*mapToUse)[entityModel];
+                    list->push_back(entity);
+                }
             }
         }
+    }
+    
+    if (e->getAnimatedModel() != nullptr)
+    {
+        animatedEntitiesMap[e->getAnimatedModel()].push_back(e);
     }
 }
 
@@ -238,6 +242,7 @@ void Master_clearAllEntities()
     entitiesMapPass3.clear();
     entitiesMapTransparent.clear();
     entitiesMapNoDepth.clear();
+    animatedEntitiesMap.clear();
 }
 
 void prepare()
