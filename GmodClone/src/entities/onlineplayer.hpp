@@ -23,15 +23,21 @@ private:
 
     static AnimatedModel* modelShrek;
 
-    static Animation* animationFall;
-    static Animation* animationJump;
-    static Animation* animationSlide;
-    static Animation* animationSquat;
     static Animation* animationStand;
+    static Animation* animationWalk;
     static Animation* animationRun;
+    static Animation* animationCrouch;
+    static Animation* animationSlide;
+    static Animation* animationJump;
+    static Animation* animationFall;
+    static Animation* animationClimb;
+    static Animation* animationSwing;
 
     Dummy* head = nullptr;
     GUIText* nametag = nullptr;
+
+    Animation* getAnimation(char index);
+    float getAnimationTimer(char index);
 
 public:
     bool inputAction3 = false;
@@ -101,6 +107,19 @@ public:
     char health = 100;
 
     float inZoneTime = 0.0f;
+
+    float animTimerStand   = 0.0f;
+    float animTimerWalk    = 0.0f;
+    float animTimerRun     = 0.0f;
+    float animTimerCrouch  = 0.0f;
+    float animTimerSlide   = 0.0f;
+    float animTimerJump    = 0.0f;
+    float animTimerFall    = 0.0f;
+    float animTimerClimb   = 0.0f;
+    float animTimerSwing   = 0.0f;
+    char  animType         = 0;
+    char  animTypePrevious = 0;
+    float animBlend        = 0.0f;
 
     OnlinePlayer(std::string name, float x, float y, float z);
     ~OnlinePlayer();

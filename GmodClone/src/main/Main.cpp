@@ -88,7 +88,7 @@
 Message::Message(const Message &other)
 {
     length = other.length;
-    for (int i = 0; i < 200; i++)
+    for (int i = 0; i < 250; i++)
     {
         buf[i] = other.buf[i];
     }
@@ -1050,8 +1050,8 @@ void Global::readThreadBehavoir(TcpClient* client)
                                 Global::addChatMessage(name + " joined", Vector3f(0.5f, 1, 0.5f));
                             }
 
-                            char buf[160];
-                            numRead = client->read(buf, 160, 5); CHECK_CONNECTION_R(160, "Could not read player update");
+                            char buf[202];
+                            numRead = client->read(buf, 202, 5); CHECK_CONNECTION_R(202, "Could not read player update");
 
                             int idx = 0;
 
@@ -1100,6 +1100,18 @@ void Global::readThreadBehavoir(TcpClient* client)
                             memcpy(&onlinePlayer->weapon,             &buf[idx], 1); idx+=1;
                             memcpy(&onlinePlayer->health,             &buf[idx], 1); idx+=1;
                             memcpy(&onlinePlayer->inZoneTime,         &buf[idx], 4); idx+=4;
+                            memcpy(&onlinePlayer->animTimerStand,     &buf[idx], 4); idx+=4;
+                            memcpy(&onlinePlayer->animTimerWalk,      &buf[idx], 4); idx+=4;
+                            memcpy(&onlinePlayer->animTimerRun,       &buf[idx], 4); idx+=4;
+                            memcpy(&onlinePlayer->animTimerCrouch,    &buf[idx], 4); idx+=4;
+                            memcpy(&onlinePlayer->animTimerSlide,     &buf[idx], 4); idx+=4;
+                            memcpy(&onlinePlayer->animTimerJump,      &buf[idx], 4); idx+=4;
+                            memcpy(&onlinePlayer->animTimerFall,      &buf[idx], 4); idx+=4;
+                            memcpy(&onlinePlayer->animTimerClimb,     &buf[idx], 4); idx+=4;
+                            memcpy(&onlinePlayer->animTimerSwing,     &buf[idx], 4); idx+=4;
+                            memcpy(&onlinePlayer->animType,           &buf[idx], 1); idx+=1;
+                            memcpy(&onlinePlayer->animTypePrevious,   &buf[idx], 1); idx+=1;
+                            memcpy(&onlinePlayer->animBlend,          &buf[idx], 4); idx+=4;
                             memcpy(&otherServerSyncedTime,            &buf[idx], 8); idx+=8;
                             memcpy(&onlinePlayer->pingMs,             &buf[idx], 4);
 
@@ -1582,7 +1594,7 @@ void Global::writeThreadBehavior(TcpClient* client)
             //Send main player message
             if (Global::player != nullptr)
             {
-                char buf[153];
+                char buf[199];
                 buf[0] = 2;
 
                 int idx = 1;
@@ -1632,9 +1644,21 @@ void Global::writeThreadBehavior(TcpClient* client)
                 memcpy(&buf[idx], (char*)&Global::player->weapon,             1); idx += 1;
                 memcpy(&buf[idx], (char*)&Global::player->health,             1); idx += 1;
                 memcpy(&buf[idx], (char*)&Global::player->inZoneTime,         4); idx += 4;
+                memcpy(&buf[idx], (char*)&Global::player->animTimerStand,     4); idx += 4;
+                memcpy(&buf[idx], (char*)&Global::player->animTimerWalk,      4); idx += 4;
+                memcpy(&buf[idx], (char*)&Global::player->animTimerRun,       4); idx += 4;
+                memcpy(&buf[idx], (char*)&Global::player->animTimerCrouch,    4); idx += 4;
+                memcpy(&buf[idx], (char*)&Global::player->animTimerSlide,     4); idx += 4;
+                memcpy(&buf[idx], (char*)&Global::player->animTimerJump,      4); idx += 4;
+                memcpy(&buf[idx], (char*)&Global::player->animTimerFall,      4); idx += 4;
+                memcpy(&buf[idx], (char*)&Global::player->animTimerClimb,     4); idx += 4;
+                memcpy(&buf[idx], (char*)&Global::player->animTimerSwing,     4); idx += 4;
+                memcpy(&buf[idx], (char*)&Global::player->animType,           1); idx += 1;
+                memcpy(&buf[idx], (char*)&Global::player->animTypePrevious,   1); idx += 1;
+                memcpy(&buf[idx], (char*)&Global::player->animBlend,          4); idx += 4;
                 memcpy(&buf[idx], (char*)&currServerSyncedTime,               8); idx += 8;
 
-                numWritten = client->write(buf, 157, 5); CHECK_CONNECTION_W(157, "Could not write player update");
+                numWritten = client->write(buf, 199, 5); CHECK_CONNECTION_W(199, "Could not write player update");
             }
 
             lastSentPlayerMsg = glfwGetTime();

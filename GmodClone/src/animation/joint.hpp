@@ -23,5 +23,7 @@ public:
     Joint(int index, std::string name, Matrix4f* bindLocalTransform);
 
     void calcInverseBindTransform(Matrix4f* parentBindTransform);
+
+    void deleteChildren();
 };
 #endif

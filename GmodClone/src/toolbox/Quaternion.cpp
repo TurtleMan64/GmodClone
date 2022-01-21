@@ -2,6 +2,7 @@
 
 #include "quaternion.hpp"
 #include "matrix.hpp"
+#include <stdio.h>
 
 Quaternion::Quaternion()
 {
@@ -100,6 +101,26 @@ Quaternion Quaternion::fromMatrix(Matrix4f* matrix)
 	return Quaternion(x, y, z, w);
 }
 
+//https://en.wikipedia.org/wiki/Conversion_between_quaternions_and_Euler_angles
+Quaternion Quaternion::fromEulerAngles(float yaw, float pitch, float roll)
+{
+    // Abbreviations for the various angular functions
+    double cy = cos(yaw   * 0.5);
+    double sy = sin(yaw   * 0.5);
+    double cp = cos(pitch * 0.5);
+    double sp = sin(pitch * 0.5);
+    double cr = cos(roll  * 0.5);
+    double sr = sin(roll  * 0.5);
+
+    Quaternion q;
+    q.w = (float)(cr * cp * cy + sr * sp * sy);
+    q.x = (float)(sr * cp * cy - cr * sp * sy);
+    q.y = (float)(cr * sp * cy + sr * cp * sy);
+    q.z = (float)(cr * cp * sy - sr * sp * cy);
+
+    return q;
+}
+
 Quaternion Quaternion::interpolate(Quaternion* a, Quaternion* b, float blend)
 {
     Quaternion result(0, 0, 0, 1);
@@ -124,4 +145,14 @@ Quaternion Quaternion::interpolate(Quaternion* a, Quaternion* b, float blend)
 
 	result.normalize();
 	return result;
+}
+
+Quaternion Quaternion::multiply(const Quaternion& qLeft, const Quaternion& qRight)
+{
+    float x =  qLeft.x * qRight.w + qLeft.y * qRight.z - qLeft.z * qRight.y + qLeft.w * qRight.x;
+    float y = -qLeft.x * qRight.z + qLeft.y * qRight.w + qLeft.z * qRight.x + qLeft.w * qRight.y;
+    float z =  qLeft.x * qRight.y - qLeft.y * qRight.x + qLeft.z * qRight.w + qLeft.w * qRight.z;
+    float w = -qLeft.x * qRight.x - qLeft.y * qRight.y - qLeft.z * qRight.z + qLeft.w * qRight.w;
+
+    return Quaternion(x, y, z, w);
 }

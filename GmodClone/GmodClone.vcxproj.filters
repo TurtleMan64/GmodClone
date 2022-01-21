@@ -279,12 +279,6 @@
     <ClCompile Include="src\toolbox\Quaternion.cpp">
       <Filter>Source Files\toolbox</Filter>
     </ClCompile>
-    <ClCompile Include="src\animation\Texture.cpp">
-      <Filter>Source Files\animation</Filter>
-    </ClCompile>
-    <ClCompile Include="src\animation\Animator.cpp">
-      <Filter>Source Files\animation</Filter>
-    </ClCompile>
     <ClCompile Include="src\animation\AnimatedModelRenderer.cpp">
       <Filter>Source Files\animation</Filter>
     </ClCompile>
@@ -538,12 +532,6 @@
     </ClInclude>
     <ClInclude Include="src\toolbox\quaternion.hpp">
       <Filter>Source Files\toolbox</Filter>
-    </ClInclude>
-    <ClInclude Include="src\animation\texture.hpp">
-      <Filter>Source Files\animation</Filter>
-    </ClInclude>
-    <ClInclude Include="src\animation\animator.hpp">
-      <Filter>Source Files\animation</Filter>
     </ClInclude>
     <ClInclude Include="src\animation\animatedmodelrenderer.hpp">
       <Filter>Source Files\animation</Filter>

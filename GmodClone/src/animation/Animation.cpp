@@ -8,8 +8,9 @@ Animation::Animation()
 
 }
 
-Animation::Animation(float lengthInSeconds, std::vector<Keyframe> keyframes)
+Animation::Animation(float lengthInSeconds, std::vector<Keyframe> keyframes, int timeWrappingType)
 {
     this->length = lengthInSeconds;
     this->keyframes = keyframes;
+    this->timeWrappingType = timeWrappingType;
 }

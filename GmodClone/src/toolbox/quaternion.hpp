@@ -21,6 +21,10 @@ public:
 
     static Quaternion fromMatrix(Matrix4f* matrix);
 
+    static Quaternion fromEulerAngles(float yaw, float pitch, float roll);
+
+    static Quaternion multiply(const Quaternion& qLeft, const Quaternion& qRight);
+
     static Quaternion interpolate(Quaternion* a, Quaternion* b, float blend);
 };
 #endif

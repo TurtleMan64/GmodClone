@@ -60,7 +60,7 @@ class Message
 {
 public:
     int length = 0;
-    char buf[200] = {0};
+    char buf[250] = {0};
     Message(const Message &other);
     Message();
 };

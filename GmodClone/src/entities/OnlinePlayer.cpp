@@ -22,6 +22,8 @@
 #include "../animation/animatedmodel.hpp"
 #include "../animation/animatedmodelloader.hpp"
 #include "../animation/animationloader.hpp"
+#include "../animation/jointtransform.hpp"
+#include "../toolbox/quaternion.hpp"
 
 std::list<TexturedModel*> OnlinePlayer::modelsHead;
 std::list<TexturedModel*> OnlinePlayer::modelsFall;
@@ -32,12 +34,15 @@ std::list<TexturedModel*> OnlinePlayer::modelsStand;
 
 AnimatedModel* OnlinePlayer::modelShrek = nullptr;
 
-Animation* OnlinePlayer::animationFall  = nullptr;
-Animation* OnlinePlayer::animationJump  = nullptr;
-Animation* OnlinePlayer::animationSlide = nullptr;
-Animation* OnlinePlayer::animationSquat = nullptr;
-Animation* OnlinePlayer::animationStand = nullptr;
-Animation* OnlinePlayer::animationRun   = nullptr;
+Animation* OnlinePlayer::animationStand  = nullptr;
+Animation* OnlinePlayer::animationWalk   = nullptr;
+Animation* OnlinePlayer::animationRun    = nullptr;
+Animation* OnlinePlayer::animationCrouch = nullptr;
+Animation* OnlinePlayer::animationSlide  = nullptr;
+Animation* OnlinePlayer::animationJump   = nullptr;
+Animation* OnlinePlayer::animationFall   = nullptr;
+Animation* OnlinePlayer::animationClimb  = nullptr;
+Animation* OnlinePlayer::animationSwing  = nullptr;
 
 extern float dt;
 
@@ -88,410 +93,6 @@ void OnlinePlayer::step()
     Vector3f yAxis(0, -1, 0);
 
     updateCamera();
-
-    // Sliding
-    //float slideTimerBefore = slideTimer;
-    //slideTimer-=dt;
-    //
-    //// If holding crouch after slide is done, start crouching
-    //if (slideTimer <= 0.0f && slideTimerBefore > 0.0f)
-    //{
-    //    if (inputAction4)
-    //    {
-    //        isCrouching = true;
-    //    }
-    //    else
-    //    {
-    //        CollisionResult result = CollisionChecker::checkCollision(position.x, position.y + COLLISION_RADIUS*3, position.z, COLLISION_RADIUS - 0.01f);
-    //        if (result.hit)
-    //        {
-    //            isCrouching = true;
-    //        }
-    //    }
-    //}
-    //
-    //// If you are in the air, cancel slide
-    //if (timeSinceOnGround > AIR_JUMP_TOLERANCE)
-    //{
-    //    slideTimer = -SLIDE_TIMER_COOLDOWN;
-    //}
-    //
-    //// When sliding, maintain speed
-    //if (slideTimer > 0.0f)
-    //{
-    //    vel.setLength(storedSlideSpeed);
-    //}
-    //
-    //// Crouching
-    //if (inputAction4)
-    //{
-    //    if ((slideTimer < 0.0f && vel.lengthSquared() < SLIDE_SPEED_REQUIRED*SLIDE_SPEED_REQUIRED) || (!onGround && slideTimer < 0.0f))
-    //    {
-    //        if (!isCrouching)
-    //        {
-    //            isCrouching = true;
-    //            position.y += COLLISION_RADIUS*2;
-    //            eyeHeightSmooth -= COLLISION_RADIUS*2;
-    //        }
-    //    }
-    //}
-    //else
-    //{
-    //    if (isCrouching)
-    //    {
-    //        CollisionResult result = CollisionChecker::checkCollision(position.x, position.y + COLLISION_RADIUS*3, position.z, COLLISION_RADIUS - 0.01f);
-    //        if (!result.hit)
-    //        {
-    //            isCrouching = false;
-    //
-    //            if (!onGround)
-    //            {
-    //                //determine if we move the player back down ( so they cant get infinite height by spamming crouch
-    //                float distanceToFloor = -1.0f;
-    //                const int NUM_ITERATIONS = 200; //can probably reduce this, but makes things possibly choppier
-    //                for (int i = 0; i < NUM_ITERATIONS; i++)
-    //                {
-    //                    float yOff = i*COLLISION_RADIUS*(2.0f/NUM_ITERATIONS);
-    //                    result = CollisionChecker::checkCollision(position.x, (position.y + COLLISION_RADIUS) - yOff, position.z, COLLISION_RADIUS - 0.01f);
-    //                    if (result.hit)
-    //                    {
-    //                        distanceToFloor = yOff;
-    //                        break;
-    //                    }
-    //                }
-    //
-    //                if (distanceToFloor < 0.0f)
-    //                {
-    //                    position.y -= COLLISION_RADIUS*2;
-    //                    eyeHeightSmooth += COLLISION_RADIUS*2;
-    //                }
-    //                else
-    //                {
-    //                    position.y -= distanceToFloor;
-    //                    eyeHeightSmooth += distanceToFloor;
-    //                }
-    //            }
-    //        }
-    //    }
-    //}
-    //
-    //// Player direction input
-    //if (slideTimer < 0.0f)
-    //{
-    //    float stickAngle = atan2f(inputY, inputX) - Maths::PI/2; //angle you are holding on the stick, with 0 being up
-    //    float stickRadius = sqrtf(inputX*inputX + inputY*inputY);
-    //
-    //    Vector3f dirForward = Maths::projectOntoPlane(&lookDir, &yAxis);
-    //    dirForward.setLength(stickRadius);
-    //
-    //    Vector3f velToAdd = Maths::rotatePoint(&dirForward, &yAxis, stickAngle + Maths::PI);
-    //
-    //    if (onGround)
-    //    {
-    //        vel = vel + velToAdd.scaleCopy(getPushValueGround(dt)*dt);
-    //    }
-    //    else
-    //    {
-    //        vel = vel + velToAdd.scaleCopy(getPushValueAir(dt)*dt);
-    //    }
-    //}
-    //
-    //// Gravity
-    //vel = vel + yAxis.scaleCopy(FORCE_GRAVITY*dt);
-    //
-    //ladderTimer -= dt;
-    //
-    //// Wall Jumping
-    //wallJumpTimer-=dt;
-    //if (!onGround && isTouchingWall)
-    //{
-    //    wallJumpTimer = WALL_JUMP_TIMER_MAX;
-    //    storedWallNormal = wallNormal;
-    //}
-    //
-    //isOnLadder = false;
-    //
-    //// Go through entities and move / get moved by entities
-    //for (Entity* e : Global::gameEntities)
-    //{
-    //    switch (e->getEntityType())
-    //    {
-    //        case ENTITY_LADDER:
-    //        {
-    //            if (ladderTimer >= 0.0f)
-    //            {
-    //                break;
-    //            }
-    //
-    //            Ladder* ladder = (Ladder*)e;
-    //            Vector3f diff = e->position - position;
-    //            if (fabsf(diff.x) < ladder->size.x + COLLISION_RADIUS &&
-    //                fabsf(diff.z) < ladder->size.z + COLLISION_RADIUS &&
-    //                position.y + HUMAN_HEIGHT > e->position.y &&
-    //                position.y < e->position.y + ladder->size.y)
-    //            {
-    //                bool collided = false;
-    //
-    //                Vector3f center = position;
-    //                center.y += COLLISION_RADIUS;
-    //                float out1;
-    //                Vector3f out2;
-    //                for (Triangle3D* tri : ladder->cm->triangles)
-    //                {
-    //                    if (Maths::sphereIntersectsTriangle(&center, COLLISION_RADIUS, tri, &out1, &out2))
-    //                    {
-    //                        collided = true;
-    //                        break;
-    //                    }
-    //                }
-    //
-    //                if (!collided && !isCrouching && slideTimer < 0.0f)
-    //                {
-    //                    center.y += COLLISION_RADIUS*2;
-    //                    for (Triangle3D* tri : ladder->cm->triangles)
-    //                    {
-    //                        if (Maths::sphereIntersectsTriangle(&center, COLLISION_RADIUS, tri, &out1, &out2))
-    //                        {
-    //                            collided = true;
-    //                            break;
-    //                        }
-    //                    }
-    //                }
-    //
-    //                if (collided)
-    //                {
-    //                    float stickAngle = atan2f(inputY, inputX) - Maths::PI/2; //angle you are holding on the stick, with 0 being up
-    //                    float stickRadius = sqrtf(inputX*inputX + inputY*inputY);
-    //
-    //                    Vector3f dirForward = lookDir;
-    //                    dirForward.setLength(stickRadius);
-    //
-    //                    if (inputAction3)
-    //                    {
-    //                        dirForward.scale(5);
-    //                    }
-    //                    else
-    //                    {
-    //                        dirForward.scale(3);
-    //                    }
-    //
-    //                    vel = Maths::rotatePoint(&dirForward, &Global::gameCamera->up, -stickAngle + Maths::PI);
-    //
-    //                    isOnLadder = true;
-    //                }
-    //            }
-    //            break;
-    //        }
-    //
-    //        default:
-    //            break;
-    //    }
-    //}
-    //
-    //position = position + vel.scaleCopy(dt) + externalVel.scaleCopy(dt);
-    //
-    //bool hitAny = false;
-    //std::vector<Triangle3D*> collisionResults;
-    //
-    //Vector3f velBefore = vel;
-    //
-    //Entity* previousCollideEntity = collideEntityImTouching;
-    //collideEntityImTouching = nullptr;
-    //
-    //const float MIN_BOUNCE_SPD = 6.0f;
-    //
-    ////bottom sphere collision
-    //for (int c = 0; c < 20; c++)
-    //{
-    //    Vector3f spotToTest = position;
-    //    spotToTest.y += COLLISION_RADIUS;
-    //    CollisionResult result = CollisionChecker::checkCollision(&spotToTest, COLLISION_RADIUS);
-    //    if (result.hit)
-    //    {
-    //        //resolve this collision
-    //        float distanceToMoveAway = COLLISION_RADIUS - result.distanceToPosition;
-    //        Vector3f directionToMove = result.directionToPosition.scaleCopy(-1);
-    //        spotToTest = spotToTest + directionToMove.scaleCopy(distanceToMoveAway);
-    //        position = spotToTest;
-    //        position.y -= COLLISION_RADIUS;
-    //
-    //        if (result.tri->type == 1)
-    //        {
-    //            vel = Maths::bounceVector(&vel, &result.tri->normal, 1.0f);
-    //
-    //            Vector3f velAlongLine = Maths::projectAlongLine(&vel, &result.tri->normal);
-    //            if (velAlongLine.lengthSquared() < MIN_BOUNCE_SPD*MIN_BOUNCE_SPD)
-    //            {
-    //                vel = Maths::projectOntoPlane(&vel, &result.tri->normal);
-    //                vel = vel + result.tri->normal.scaleCopy(MIN_BOUNCE_SPD);
-    //            }
-    //
-    //            break;
-    //        }
-    //        else if (result.tri->type == 2)
-    //        {
-    //            die();
-    //            break;
-    //        }
-    //
-    //        //move along the new plane
-    //        vel = Maths::projectOntoPlane(&vel, &directionToMove);
-    //        hitAny = true;
-    //        collisionResults.push_back(result.tri);
-    //
-    //        if (result.entity != nullptr)
-    //        {
-    //            collideEntityImTouching = result.entity;
-    //        }
-    //    }
-    //    else
-    //    {
-    //        break;
-    //    }
-    //}
-    //
-    ////top sphere collision
-    //if (!isCrouching && slideTimer <= 0.0f)
-    //{
-    //    for (int c = 0; c < 20; c++)
-    //    {
-    //        Vector3f spotToTest = position;
-    //        spotToTest.y += COLLISION_RADIUS*3;
-    //        CollisionResult result = CollisionChecker::checkCollision(&spotToTest, COLLISION_RADIUS);
-    //        if (result.hit)
-    //        {
-    //            //resolve this collision
-    //            float distanceToMoveAway = COLLISION_RADIUS - result.distanceToPosition;
-    //            Vector3f directionToMove = result.directionToPosition.scaleCopy(-1);
-    //            spotToTest = spotToTest + directionToMove.scaleCopy(distanceToMoveAway);
-    //            position = spotToTest;
-    //            position.y -= COLLISION_RADIUS*3;
-    //
-    //            if (result.tri->type == 1)
-    //            {
-    //                vel = Maths::bounceVector(&vel, &result.tri->normal, 1.0f);
-    //                if (vel.lengthSquared() < MIN_BOUNCE_SPD*MIN_BOUNCE_SPD)
-    //                {
-    //                    vel = result.tri->normal;
-    //                    vel.setLength(MIN_BOUNCE_SPD);
-    //                }
-    //
-    //                break;
-    //            }
-    //            else if (result.tri->type == 2)
-    //            {
-    //                die();
-    //                break;
-    //            }
-    //
-    //            //move along the new plane
-    //            vel = Maths::projectOntoPlane(&vel, &directionToMove);
-    //
-    //            if (result.entity != nullptr)
-    //            {
-    //                collideEntityImTouching = result.entity;
-    //            }
-    //        }
-    //        else
-    //        {
-    //            break;
-    //        }
-    //    }
-    //}
-    //
-    //if (collideEntityImTouching == nullptr && previousCollideEntity != nullptr)
-    //{
-    //    vel = vel + externalVel;
-    //}
-    //
-    //externalVel.set(0, 0, 0);
-    //
-    //onGround = false;
-    //isTouchingWall = false;
-    //
-    //bool touchedAWall = false;
-    //if (hitAny)
-    //{
-    //    isTouchingWall = true;
-    //
-    //    Vector3f normalGroundSum;
-    //    Vector3f normalWallSum;
-    //
-    //    for (Triangle3D* tri : collisionResults)
-    //    {
-    //        if (tri->normal.y > 0.5f) //dont add walls into this calculation, since we use it to determine jump direction.
-    //        {
-    //            normalGroundSum = normalGroundSum + tri->normal;
-    //            onGround = true;
-    //            isTouchingWall = false;
-    //        }
-    //        else
-    //        {
-    //            normalWallSum = normalWallSum + tri->normal;
-    //            touchedAWall = true;
-    //        }
-    //    }
-    //
-    //    normalGroundSum.normalize();
-    //    normalWallSum.normalize();
-    //
-    //    groundNormal = normalGroundSum;
-    //    wallNormal = normalWallSum;
-    //}
-    //
-    //// End the slide if contact with wall is too direct
-    //if (touchedAWall && slideTimer > 0.0f)
-    //{
-    //    Vector3f velNorm = velBefore;
-    //    velNorm.normalize();
-    //
-    //    if (velNorm.dot(&wallNormal) < -0.6f)
-    //    {
-    //        slideTimer = 0.0f;
-    //
-    //        if (inputAction4 || CollisionChecker::checkCollision(position.x, position.y + COLLISION_RADIUS*3, position.z, COLLISION_RADIUS - 0.01f).hit)
-    //        {
-    //            isCrouching = true;
-    //        }
-    //    }
-    //}
-    //
-    //if (onGround)
-    //{
-    //    timeSinceOnGround = 0.0f;
-    //    lastGroundNormal = groundNormal;
-    //}
-    //else
-    //{
-    //    timeSinceOnGround+=dt;
-    //}
-    //
-    //if (onGround)
-    //{
-    //    if (vel.length() > 10.0f/36.7816091954f) //If going fast, slow down from drag equation
-    //    {
-    //        vel = Maths::applyDrag(&vel, -DRAG_GROUND, dt); //Slow vel down due to friction on ground
-    //    }
-    //    else //If going slow, slow down from linear equation
-    //    {
-    //        float down = 60*dt*(10.0f/36.7816091954f);
-    //        if (vel.length() < down)
-    //        {
-    //            vel.scale(0.0000001f);
-    //        }
-    //        else
-    //        {
-    //            vel.setLength(vel.length() - down);
-    //        }
-    //    }
-    //}
-    //else
-    //{
-    //    float ySpd = vel.y;
-    //    vel.y = 0;
-    //    vel = Maths::applyDrag(&vel, -DRAG_AIR, dt); //Slow vel down due air drag, but just horizontally
-    //    vel.y = ySpd;
-    //}
 
     position = position + vel.scaleCopy(dt) + externalVel.scaleCopy(dt);
 
@@ -579,37 +180,118 @@ void OnlinePlayer::step()
     nametag->fontSize = 0.15f / diff.length();
     nametag->position = screenPos;
 
+
+
+    // Animate the player
+    float animSpd = vel.length();
+
+    char animTypeNew = 0;
+
     if (isCrouching)
     {
-        std::unordered_map<std::string, Matrix4f> pose = modelShrek->calculateAnimationPose(animationSquat, (float)glfwGetTime());
-        modelShrek->calculateJointTransformsFromPose(&jointTransforms, &pose);
+        animTypeNew = 3;
+        animTimerCrouch += animSpd*dt;
     }
     else if (slideTimer > 0.0f)
     {
-        std::unordered_map<std::string, Matrix4f> pose = modelShrek->calculateAnimationPose(animationSlide, (float)glfwGetTime());
-        modelShrek->calculateJointTransformsFromPose(&jointTransforms, &pose);
+        animTypeNew = 4;
+        animTimerSlide += dt;
     }
-    else if (vel.y > 1.0f)
+    else if (timeSinceOnGround <= 0.02f) //on ground
     {
-        std::unordered_map<std::string, Matrix4f> pose = modelShrek->calculateAnimationPose(animationJump, (float)glfwGetTime());
-        modelShrek->calculateJointTransformsFromPose(&jointTransforms, &pose);
+        if (animSpd < 0.2f) //stand
+        {
+            animTypeNew = 0;
+            animTimerStand += dt;
+        }
+        else if (animSpd < 6.0f) //walk
+        {
+            animTypeNew = 1;
+            //animTimerWalk += animSpd*dt;
+            animTimerRun += 2.25f*animSpd*dt;
+        }
+        else //run
+        {
+            animTypeNew = 2;
+            animTimerRun += 2.25f*animSpd*dt;
+        }
     }
-    else if (vel.y < -1.0f)
+    else //in air
     {
-        std::unordered_map<std::string, Matrix4f> pose = modelShrek->calculateAnimationPose(animationFall, (float)glfwGetTime());
-        modelShrek->calculateJointTransformsFromPose(&jointTransforms, &pose);
+        if (vel.y > 0.0f)
+        {
+            animTypeNew = 5;
+            animTimerJump += dt;
+        }
+        else
+        {
+            animTypeNew = 6;
+            animTimerFall += dt;
+        }
+    }
+
+    if (animTypeNew != 6)
+    {
+        animTimerFall = 0.0f;
+    }
+
+    if (animType != animTypeNew)
+    {
+        animTypePrevious = animType;
+        animType = animTypeNew;
+        animBlend = 0.0f;
     }
     else
     {
-        std::unordered_map<std::string, Matrix4f> pose = modelShrek->calculateAnimationPose(animationStand, (float)glfwGetTime());
-        pose["sadf"]
-        modelShrek->calculateJointTransformsFromPose(&jointTransforms, &pose);
+        animBlend += 10*dt;
     }
+
+    std::unordered_map<std::string, JointTransform> pose;
+
+    if (animBlend <= 1.0f)
+    {
+        pose = modelShrek->calculateAnimationPose(
+            getAnimation(animType),
+            getAnimationTimer(animType),
+            getAnimation(animTypePrevious),
+            getAnimationTimer(animTypePrevious),
+            animBlend);
+    }
+    else
+    {
+        pose = modelShrek->calculateAnimationPose(
+            getAnimation(animType),
+            getAnimationTimer(animType));
+    }
+
+    pose["Torso"].position = pose["Torso"].position + position;
+
+    Vector3f velFlat = vel;
+    velFlat.y = 0;
+    if (velFlat.lengthSquared() > 0.5f*0.5f)
+    {
+        float directionYaw = atan2f(vel.z, vel.x) - Maths::PI/2;
+        Quaternion myRotationYaw = Quaternion::fromEulerAngles(0, directionYaw, 0);
+        pose["Torso"].rotation = Quaternion::multiply(pose["Torso"].rotation, myRotationYaw);
+    }
+    else
+    {
+        float directionYaw = atan2f(lookDir.z, lookDir.x) - Maths::PI/2;
+        Quaternion myRotationYaw = Quaternion::fromEulerAngles(0, directionYaw, 0);
+        pose["Torso"].rotation = Quaternion::multiply(pose["Torso"].rotation, myRotationYaw);
+    }
+
+    float directionHead = atan2f(-lookDir.y, sqrtf(lookDir.x*lookDir.x + lookDir.z*lookDir.z));
+    Quaternion myRotationPitch = Quaternion::fromEulerAngles(directionHead, 0, 0);
+    pose["Head"].rotation = Quaternion::multiply(pose["Head"].rotation, myRotationPitch);
+
+    modelShrek->calculateJointTransformsFromPose(&jointTransforms, &pose);
 }
 
 std::vector<Entity*>* OnlinePlayer::getEntitiesToRender()
 {
-    return &entitiesToRender;
+    //return &entitiesToRender;
+    return nullptr;
 }
 
 std::list<TexturedModel*>* OnlinePlayer::getModels()
@@ -773,11 +455,45 @@ void OnlinePlayer::loadModels()
 
         OnlinePlayer::modelShrek = AnimatedModelLoader::loadAnimatedModel("res/Models/Human/", "shrek5.mesh");
 
-        OnlinePlayer::animationFall  = AnimationLoader::loadAnimation("res/Models/Human/shrek5-fall.anim");
-        OnlinePlayer::animationJump  = AnimationLoader::loadAnimation("res/Models/Human/shrek5-jump.anim");
-        OnlinePlayer::animationSlide = AnimationLoader::loadAnimation("res/Models/Human/shrek5-slide.anim");
-        OnlinePlayer::animationSquat = AnimationLoader::loadAnimation("res/Models/Human/shrek5-squat.anim");
-        OnlinePlayer::animationStand = AnimationLoader::loadAnimation("res/Models/Human/shrek5-run.anim");
-        OnlinePlayer::animationRun   = AnimationLoader::loadAnimation("res/Models/Human/shrek5-run.anim");
+        OnlinePlayer::animationStand  = AnimationLoader::loadAnimation("res/Models/Human/shrek5-stand.anim");
+        OnlinePlayer::animationWalk   = AnimationLoader::loadAnimation("res/Models/Human/shrek5-walk.anim");
+        OnlinePlayer::animationRun    = AnimationLoader::loadAnimation("res/Models/Human/shrek5-run.anim");
+        OnlinePlayer::animationCrouch = AnimationLoader::loadAnimation("res/Models/Human/shrek5-crouch.anim");
+        OnlinePlayer::animationSlide  = AnimationLoader::loadAnimation("res/Models/Human/shrek5-slide.anim");
+        OnlinePlayer::animationJump   = AnimationLoader::loadAnimation("res/Models/Human/shrek5-jump.anim");
+        OnlinePlayer::animationFall   = AnimationLoader::loadAnimation("res/Models/Human/shrek5-fall.anim");
+        OnlinePlayer::animationClimb  = AnimationLoader::loadAnimation("res/Models/Human/shrek5-fall.anim");
+    }
+}
+
+Animation* OnlinePlayer::getAnimation(char index)
+{
+    switch (index)
+    {
+        case 0: return OnlinePlayer::animationStand;
+        case 1: return OnlinePlayer::animationWalk;
+        case 2: return OnlinePlayer::animationRun;
+        case 3: return OnlinePlayer::animationCrouch;
+        case 4: return OnlinePlayer::animationSlide;
+        case 5: return OnlinePlayer::animationJump;
+        case 6: return OnlinePlayer::animationFall;
+        case 7: return OnlinePlayer::animationClimb;
+        default: return OnlinePlayer::animationStand;
+    }
+}
+
+float OnlinePlayer::getAnimationTimer(char index)
+{
+    switch (index)
+    {
+        case 0: return animTimerStand;
+        case 1: return animTimerRun; //use the same timer for walk and run
+        case 2: return animTimerRun;
+        case 3: return animTimerCrouch;
+        case 4: return animTimerSlide;
+        case 5: return animTimerJump;
+        case 6: return animTimerFall;
+        case 7: return animTimerClimb;
+        default: return animTimerStand;
     }
 }

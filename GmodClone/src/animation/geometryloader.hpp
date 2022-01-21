@@ -24,6 +24,7 @@ public:
     MeshData extractModelData();
 
 private:
+    std::vector<Vertex2*> verticesToDelete;
     std::vector<std::string> vertexPositionsRaw;
     std::vector<std::string> textureCoordsRaw;
     std::vector<std::string> normalsRaw;

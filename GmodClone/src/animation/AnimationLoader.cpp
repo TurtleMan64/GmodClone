@@ -12,6 +12,7 @@
 #include "../toolbox/vector.hpp"
 #include "../toolbox/quaternion.hpp"
 #include "../toolbox/split.hpp"
+#include "../main/main.hpp"
 
 Animation* AnimationLoader::loadAnimation(const char* filename)
 {
@@ -21,7 +22,7 @@ Animation* AnimationLoader::loadAnimation(const char* filename)
 Animation* AnimationLoader::loadAnimation(char* filename)
 {
     std::string line;
-    std::ifstream myfile(filename);
+    std::ifstream myfile((Global::pathToEXE + filename).c_str());
     if (myfile.is_open())
     {
         std::string rootBoneName;
@@ -40,7 +41,18 @@ Animation* AnimationLoader::loadAnimation(char* filename)
         tokens = split(line, ' ');
         numBones = std::stoi(tokens[1]);
 
-        Animation* animation = new Animation;
+        Animation* animation = new Animation; INCR_NEW("Animation");
+
+        getline(myfile, line);
+        tokens = split(line, ' ');
+        if (tokens[1] == "LOOP")
+        {
+            animation->timeWrappingType = 0;
+        }
+        else
+        {
+            animation->timeWrappingType = 1;
+        }
 
         for (int currKey = 0; currKey < numKeyframes; currKey++)
         {
@@ -77,6 +89,14 @@ Animation* AnimationLoader::loadAnimation(char* filename)
                 Vector3f translation(localTransform.m30, localTransform.m31, localTransform.m32);
                 Quaternion rotation = Quaternion::fromMatrix(&localTransform);
 
+                if (rootBoneName == tokens[0])
+                {
+                    //for some reason, translations dont seem to work correctly on the root bone during rotations.
+                    // setting these to 0 so that doesnt happen
+                    translation.x = 0;
+                    translation.z = 0;
+                }
+
                 JointTransform joint(translation, rotation);
 
                 keyframe.pose[tokens[0]] = joint;
@@ -89,7 +109,7 @@ Animation* AnimationLoader::loadAnimation(char* filename)
     }
     else
     {
-        printf("Error: could not load animation\n");
+        printf("Error: Could not load animation file '%s'\n", (Global::pathToEXE + filename).c_str());
         return nullptr;
     }
 }

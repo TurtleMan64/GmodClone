@@ -4,6 +4,7 @@
 #include "../toolbox/vector.hpp"
 #include "../toolbox/maths.hpp"
 #include "../toolbox/matrix.hpp"
+#include "../main/main.hpp"
 
 Joint::Joint(int index, std::string name, Matrix4f* bindLocalTransform)
 {
@@ -24,4 +25,14 @@ void Joint::calcInverseBindTransform(Matrix4f* parentBindTransform)
     {
         child->calcInverseBindTransform(&bindTransform);
 	}
+}
+
+void Joint::deleteChildren()
+{
+    for (Joint* child : children)
+    {
+        child->deleteChildren();
+        delete child; INCR_DEL("Joint");
+	}
+    children.clear();
 }

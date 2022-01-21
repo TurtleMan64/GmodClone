@@ -23,14 +23,26 @@ JointTransform::JointTransform(const JointTransform &other)
     this->rotation = other.rotation;
 }
 
-void JointTransform::calculateLocalTransform(Matrix4f* localTransform)
+void JointTransform::calculateLocalTransform(Matrix4f* localTransform, bool /*isRootJoint*/)
 {
-    Matrix4f positionMatrix;
-    positionMatrix.translate(&position);
-
-    Matrix4f rotationMatrix = rotation.toRotationMatrix();
-
-    positionMatrix.multiply(&rotationMatrix, localTransform);
+    //if (isRootJoint)
+    //{
+    //    Matrix4f positionMatrix;
+    //    positionMatrix.translate(&position);
+    //
+    //    Matrix4f rotationMatrix = rotation.toRotationMatrix();
+    //
+    //    rotationMatrix.multiply(&positionMatrix, localTransform);
+    //}
+    //else
+    {
+        Matrix4f positionMatrix;
+        positionMatrix.translate(&position);
+    
+        Matrix4f rotationMatrix = rotation.toRotationMatrix();
+    
+        positionMatrix.multiply(&rotationMatrix, localTransform);
+    }
 }
 
 JointTransform JointTransform::interpolate(JointTransform* frameA, JointTransform* frameB, float progression)

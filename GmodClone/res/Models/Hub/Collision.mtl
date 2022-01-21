@@ -1,103 +1,33 @@
-# Blender MTL File: 'Hub.blend'
+# Blender MTL File: 'None'
 # Material Count: 10
 
-newmtl None
-Ns 20
+newmtl Rubber
+Ns 20.000000
 Ka 0.000000 0.000000 0.000000
-Kd 0.8 0.8 0.8
-Ks 0.8 0.8 0.8
-Ni 0.02
-d 1
+Kd 0.800000 0.800000 0.800000
+Ks 0.240000 0.240000 0.240000
+Ni 0.000000
+d 1.000000
 type bounce
 illum 2
-map_Kd Rubber.png
+map_Kd Rubber_N.png
 
-newmtl None_BedDudleyTex0.png
+newmtl BedDudleyTex0
 Ns 50.000000
 Ka 0.000000 0.000000 0.000000
 Kd 0.800000 0.800000 0.800000
-Ks 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ni 0.000000
+d 1.000000
+illum 1
+map_Kd BedDudleyTex0.png
+
+newmtl Tile
+Ns 20.000000
+Ka 0.000000 0.000000 0.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.240000 0.240000 0.240000
 Ni 0.000000
 d 1.000000
 illum 2
-map_Kd BedDudleyTex0.png
-
-newmtl None_Tile.png
-Ns 20
-Ka 0.000000 0.000000 0.000000
-Kd 0.8 0.8 0.8
-Ks 0.8 0.8 0.8
-Ni 0.02
-d 1
-illum 2
 map_Kd Tile.png
-
-newmtl None_Tile_Aqua.png
-Ns 20
-Ka 0.000000 0.000000 0.000000
-Kd 0.8 0.8 0.8
-Ks 0.8 0.8 0.8
-Ni 0.02
-d 1
-illum 2
-map_Kd Tile_Aqua.png
-
-newmtl None_Tile_Black.png
-Ns 20
-Ka 0.000000 0.000000 0.000000
-Kd 0.8 0.8 0.8
-Ks 0.8 0.8 0.8
-Ni 0.02
-d 1
-illum 2
-map_Kd Tile_Black.png
-
-newmtl None_Tile_Blue.png
-Ns 20
-Ka 0.000000 0.000000 0.000000
-Kd 0.8 0.8 0.8
-Ks 0.8 0.8 0.8
-Ni 0.02
-d 1
-illum 2
-map_Kd Tile_Blue.png
-
-newmtl None_Tile_Green.png
-Ns 20
-Ka 0.000000 0.000000 0.000000
-Kd 0.8 0.8 0.8
-Ks 0.8 0.8 0.8
-Ni 0.02
-d 1
-illum 2
-map_Kd Tile_Green.png
-
-newmtl None_Tile_Orange.png
-Ns 20
-Ka 0.000000 0.000000 0.000000
-Kd 0.8 0.8 0.8
-Ks 0.8 0.8 0.8
-Ni 0.02
-d 1
-illum 2
-map_Kd Tile_Orange.png
-
-newmtl None_Tile_Red.png
-Ns 20
-Ka 0.000000 0.000000 0.000000
-Kd 0.8 0.8 0.8
-Ks 0.8 0.8 0.8
-Ni 0.02
-d 1
-illum 2
-map_Kd Tile_Red.png
-
-newmtl None_Tile_Yellow.png
-Ns 20
-Ka 0.000000 0.000000 0.000000
-Kd 0.8 0.8 0.8
-Ks 0.8 0.8 0.8
-Ni 0.02
-d 1
-illum 2
-map_Kd Tile_Yellow.png

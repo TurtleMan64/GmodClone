@@ -144,6 +144,7 @@ void Player::step()
             slideTimer = SLIDE_TIMER_DURATION;
             storedSlideSpeed = vel.length() + SLIDE_SPEED_ADDITION;
             vel = Maths::projectOntoPlane(&vel, &groundNormal);
+            animTimerSlide = 0.0f;
         }
     }
 
@@ -290,6 +291,7 @@ void Player::step()
             vel = vel + lastGroundNormal.scaleCopy(getJumpValue(dt));
             timeSinceOnGround = AIR_JUMP_TOLERANCE + 0.0001f;
             alreadyJumpedThisFrame = true;
+            animTimerJump = 0.0f;
             //Global::addChatMessage("Jump at " + std::to_string(position.x) + ", " + std::to_string(position.y) + ", " + std::to_string(position.z), Vector3f(1,1,1));
         }
     }
@@ -359,6 +361,8 @@ void Player::step()
             vel = vel + storedWallNormal.scaleCopy(WALL_JUMP_SPEED_HORIZONTAL);
             vel.y += getJumpValue(dt) - 1.0f;
             wallJumpTimer = -1.0f;
+
+            animTimerJump = 0.0f;
         }
     }
 
@@ -944,6 +948,69 @@ void Player::step()
     }
 
     updateTransformationMatrix();
+
+    float animSpd = vel.length();
+
+    char animTypeNew = 0;
+
+    if (isCrouching)
+    {
+        animTypeNew = 3;
+        animTimerCrouch += animSpd*dt;
+    }
+    else if (slideTimer > 0.0f)
+    {
+        animTypeNew = 4;
+        animTimerSlide += dt;
+    }
+    else if (timeSinceOnGround <= 0.02f) //on ground
+    {
+        if (animSpd < 0.2f) //stand
+        {
+            animTypeNew = 0;
+            animTimerStand += dt;
+        }
+        else if (animSpd < 6.0f) //walk
+        {
+            animTypeNew = 1;
+            //animTimerWalk += animSpd*dt;
+            animTimerRun += 2.25f*animSpd*dt; //use the same timer for both run and walk
+        }
+        else //run
+        {
+            animTypeNew = 2;
+            animTimerRun += 2.25f*animSpd*dt;
+        }
+    }
+    else //in air
+    {
+        if (vel.y > 0.0f)
+        {
+            animTypeNew = 5;
+            animTimerJump += dt;
+        }
+        else
+        {
+            animTypeNew = 6;
+            animTimerFall += dt;
+        }
+    }
+
+    if (animTypeNew != 6)
+    {
+        animTimerFall = 0.0f;
+    }
+
+    if (animType != animTypeNew)
+    {
+        animTypePrevious = animType;
+        animType = animTypeNew;
+        animBlend = 0.0f;
+    }
+    else
+    {
+        animBlend += 10*dt;
+    }
 }
 
 float Player::getPushValueGround(float deltaTime)

@@ -79,7 +79,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutDir>$(SolutionDir)GmodClone\</OutDir>
-    <TargetName>GmodClone</TargetName>
+    <TargetName>Turtle Game</TargetName>
     <IncludePath>../Libraries/Include;$(IncludePath)</IncludePath>
     <LibraryPath>../Libraries/StaticCode;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
@@ -156,7 +156,6 @@
     <ClCompile Include="src\animation\Animation.cpp" />
     <ClCompile Include="src\animation\AnimationData.cpp" />
     <ClCompile Include="src\animation\AnimationLoader.cpp" />
-    <ClCompile Include="src\animation\Animator.cpp" />
     <ClCompile Include="src\animation\GeometryLoader.cpp" />
     <ClCompile Include="src\animation\Joint.cpp" />
     <ClCompile Include="src\animation\JointData.cpp" />
@@ -168,7 +167,6 @@
     <ClCompile Include="src\animation\SkeletonData.cpp" />
     <ClCompile Include="src\animation\SkinLoader.cpp" />
     <ClCompile Include="src\animation\SkinningData.cpp" />
-    <ClCompile Include="src\animation\Texture.cpp" />
     <ClCompile Include="src\animation\Vertex2.cpp" />
     <ClCompile Include="src\animation\VertexSkinData.cpp" />
     <ClCompile Include="src\audio\AudioMaster.cpp" />
@@ -249,7 +247,6 @@
     <ClInclude Include="src\animation\animation.hpp" />
     <ClInclude Include="src\animation\animationdata.hpp" />
     <ClInclude Include="src\animation\animationloader.hpp" />
-    <ClInclude Include="src\animation\animator.hpp" />
     <ClInclude Include="src\animation\geometryloader.hpp" />
     <ClInclude Include="src\animation\joint.hpp" />
     <ClInclude Include="src\animation\jointdata.hpp" />
@@ -261,7 +258,6 @@
     <ClInclude Include="src\animation\skeletondata.hpp" />
     <ClInclude Include="src\animation\skinloader.hpp" />
     <ClInclude Include="src\animation\skinningdata.hpp" />
-    <ClInclude Include="src\animation\texture.hpp" />
     <ClInclude Include="src\animation\vertex2.hpp" />
     <ClInclude Include="src\animation\vertexskindata.hpp" />
     <ClInclude Include="src\audio\audiomaster.hpp" />

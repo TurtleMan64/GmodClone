@@ -25,6 +25,7 @@ GeometryLoader::GeometryLoader(
     this->boneWeightsRaw     = boneWeightsRaw;
     this->vertexWeights      = vertexWeights;
 
+    // delete the 1st token from each since they are the names, not the data
     this->vertexPositionsRaw.erase(this->vertexPositionsRaw.begin());
     this->textureCoordsRaw  .erase(this->textureCoordsRaw.begin());
     this->normalsRaw        .erase(this->normalsRaw.begin());
@@ -41,6 +42,11 @@ MeshData GeometryLoader::extractModelData()
     initArrays();
     convertDataToArrays();
     convertIndicesListToArray();
+    for (Vertex2* v : verticesToDelete)
+    {
+        delete v; INCR_DEL("Vertex2");
+    }
+    verticesToDelete.clear();
     return MeshData(verticesArray, texturesArray, normalsArray, vcolorsArray, indicesArray, jointIdsArray, weightsArray);
 }
 
@@ -69,6 +75,7 @@ void GeometryLoader::readPositions()
 
         Vector3f pos2(posCorrected.x, posCorrected.y, posCorrected.z);
         Vertex2* newV = new Vertex2((int)vertices.size(), &pos2, vertexWeights[(int)vertices.size()]); INCR_NEW("Vertex2");
+        verticesToDelete.push_back(newV);
         vertices.push_back(newV);
     }
 }
@@ -191,7 +198,8 @@ Vertex2* GeometryLoader::dealWithAlreadyProcessedVertex(Vertex2* previousVertex,
         else
         {
 			Vertex2* duplicateVertex = new Vertex2((int)vertices.size(), previousVertex->getPosition(), previousVertex->weightsData); INCR_NEW("Vertex2");
-			duplicateVertex->setTextureIndex(newTextureIndex);
+			verticesToDelete.push_back(duplicateVertex);
+            duplicateVertex->setTextureIndex(newTextureIndex);
 			duplicateVertex->setNormalIndex(newNormalIndex);
 			previousVertex->setDuplicateVertex(duplicateVertex);
 			vertices.push_back(duplicateVertex);

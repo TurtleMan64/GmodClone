@@ -21,7 +21,7 @@ public:
 
     JointTransform(const JointTransform &other);
 
-    void calculateLocalTransform(Matrix4f* mat);
+    void calculateLocalTransform(Matrix4f* mat, bool isRootJoint);
 
     static JointTransform interpolate(JointTransform* frameA, JointTransform* frameB, float progression);
 

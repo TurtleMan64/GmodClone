@@ -1,7 +1,6 @@
 #include <string>
 #include <vector>
 
-#include "texture.hpp"
 #include "../toolbox/vector.hpp"
 #include "../toolbox/maths.hpp"
 #include "../toolbox/matrix.hpp"
