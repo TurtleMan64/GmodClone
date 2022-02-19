@@ -25,12 +25,12 @@
 #include "../animation/jointtransform.hpp"
 #include "../toolbox/quaternion.hpp"
 
-std::list<TexturedModel*> OnlinePlayer::modelsHead;
-std::list<TexturedModel*> OnlinePlayer::modelsFall;
-std::list<TexturedModel*> OnlinePlayer::modelsJump;
-std::list<TexturedModel*> OnlinePlayer::modelsSlide;
-std::list<TexturedModel*> OnlinePlayer::modelsSquat;
-std::list<TexturedModel*> OnlinePlayer::modelsStand;
+//std::list<TexturedModel*> OnlinePlayer::modelsHead;
+//std::list<TexturedModel*> OnlinePlayer::modelsFall;
+//std::list<TexturedModel*> OnlinePlayer::modelsJump;
+//std::list<TexturedModel*> OnlinePlayer::modelsSlide;
+//std::list<TexturedModel*> OnlinePlayer::modelsSquat;
+//std::list<TexturedModel*> OnlinePlayer::modelsStand;
 
 AnimatedModel* OnlinePlayer::modelShrek = nullptr;
 
@@ -38,6 +38,7 @@ Animation* OnlinePlayer::animationStand  = nullptr;
 Animation* OnlinePlayer::animationWalk   = nullptr;
 Animation* OnlinePlayer::animationRun    = nullptr;
 Animation* OnlinePlayer::animationCrouch = nullptr;
+Animation* OnlinePlayer::animationCrawl  = nullptr;
 Animation* OnlinePlayer::animationSlide  = nullptr;
 Animation* OnlinePlayer::animationJump   = nullptr;
 Animation* OnlinePlayer::animationFall   = nullptr;
@@ -58,10 +59,10 @@ OnlinePlayer::OnlinePlayer(std::string name, float x, float y, float z)
     lastGroundNormal.set(0, 1, 0);
     updateTransformationMatrix();
 
-    head = new Dummy(&OnlinePlayer::modelsHead); INCR_NEW("Dummy");
+    //head = new Dummy(&OnlinePlayer::modelsHead); INCR_NEW("Dummy");
 
-    entitiesToRender.push_back(this);
-    entitiesToRender.push_back(head);
+    //entitiesToRender.push_back(this);
+    //entitiesToRender.push_back(head);
 
     for (int i = 0; i < OnlinePlayer::modelShrek->jointCount; i++)
     {
@@ -72,11 +73,11 @@ OnlinePlayer::OnlinePlayer(std::string name, float x, float y, float z)
 
 OnlinePlayer::~OnlinePlayer()
 {
-    if (head != nullptr)
-    {
-        delete head; INCR_DEL("Dummy");
-        head = nullptr;
-    }
+    //if (head != nullptr)
+    //{
+    //    delete head; INCR_DEL("Dummy");
+    //    head = nullptr;
+    //}
 
     if (nametag != nullptr)
     {
@@ -98,57 +99,57 @@ void OnlinePlayer::step()
 
     visible = true;
 
-    if (isCrouching)
-    {
-        Vector3f dir = lookDir;
-        dir.y = 0;
-        dir.setLength(0.081732f);
-
-        head->position = position + dir;
-        head->position.y += 0.839022f;
-
-        head->visible = true;
-    }
-    else if (slideTimer > 0.0f)
-    {
-        head->visible = false;
-    }
-    else if (vel.y > 1.0f)
-    {
-        head->visible = false;
-    }
-    else if (vel.y < -1.0f)
-    {
-        head->visible = false;
-    }
-    else
-    {
-        Vector3f dir = lookDir;
-        dir.y = 0;
-        dir.setLength(0.024672f);
-
-        head->position = position + dir;
-        head->position.y += 1.52786f;
-
-        head->visible = true;
-    }
-
-    Maths::sphereAnglesFromPosition(&lookDir, &rotY, &rotZ);
-    head->rotZ = rotZ;
-    head->rotY = rotY;
-
-    rotZ = 0;
+    //if (isCrouching)
+    //{
+    //    Vector3f dir = lookDir;
+    //    dir.y = 0;
+    //    dir.setLength(0.081732f);
+    //
+    //    head->position = position + dir;
+    //    head->position.y += 0.839022f;
+    //
+    //    head->visible = true;
+    //}
+    //else if (slideTimer > 0.0f)
+    //{
+    //    head->visible = false;
+    //}
+    //else if (vel.y > 1.0f)
+    //{
+    //    head->visible = false;
+    //}
+    //else if (vel.y < -1.0f)
+    //{
+    //    head->visible = false;
+    //}
+    //else
+    //{
+    //    Vector3f dir = lookDir;
+    //    dir.y = 0;
+    //    dir.setLength(0.024672f);
+    //
+    //    head->position = position + dir;
+    //    head->position.y += 1.52786f;
+    //
+    //    head->visible = true;
+    //}
+    //
+    //Maths::sphereAnglesFromPosition(&lookDir, &rotY, &rotZ);
+    //head->rotZ = rotZ;
+    //head->rotY = rotY;
+    //
+    //rotZ = 0;
 
     //printf("%f\t%f\n", glfwGetTime(), position.x);
     //printf("dt = %f vel = %f pos = %f\n", dt, vel.x, position.x);
 
-    updateTransformationMatrix();
-    head->updateTransformationMatrix();
+    //updateTransformationMatrix();
+    //head->updateTransformationMatrix();
 
     if (health <= 0)
     {
         visible = false;
-        head->visible = false;
+        //head->visible = false;
     }
 
     Vector3f nametagPos = position;
@@ -187,17 +188,30 @@ void OnlinePlayer::step()
 
     char animTypeNew = 0;
 
-    if (isCrouching)
+    if (isOnLadder)
     {
-        animTypeNew = 3;
-        animTimerCrouch += animSpd*dt;
+        animTypeNew = 7;
+        animTimerClimb += 3*animSpd*dt;
+    }
+    else if (isCrouching && timeSinceOnGround <= 0.04f)
+    {
+        if (animSpd > 4.0f)
+        {
+            animTypeNew = 8;
+            animTimerCrawl += 0.45f*animSpd*dt;
+        }
+        else
+        {
+            animTypeNew = 3;
+            animTimerCrouch += 0.45f*animSpd*dt;
+        }
     }
     else if (slideTimer > 0.0f)
     {
         animTypeNew = 4;
-        animTimerSlide += dt;
+        animTimerSlide += 1.5f*dt;
     }
-    else if (timeSinceOnGround <= 0.02f) //on ground
+    else if (timeSinceOnGround <= 0.04f) //on ground
     {
         if (animSpd < 0.2f) //stand
         {
@@ -207,27 +221,18 @@ void OnlinePlayer::step()
         else if (animSpd < 6.0f) //walk
         {
             animTypeNew = 1;
-            //animTimerWalk += animSpd*dt;
-            animTimerRun += 2.25f*animSpd*dt;
+            animTimerRun += 0.18f*animSpd*dt;
         }
         else //run
         {
             animTypeNew = 2;
-            animTimerRun += 2.25f*animSpd*dt;
+            animTimerRun += 0.18f*animSpd*dt;
         }
     }
     else //in air
     {
-        if (vel.y > 0.0f)
-        {
-            animTypeNew = 5;
-            animTimerJump += dt;
-        }
-        else
-        {
-            animTypeNew = 6;
-            animTimerFall += dt;
-        }
+        animTypeNew = 6;
+        animTimerFall += dt;
     }
 
     if (animTypeNew != 6)
@@ -246,6 +251,7 @@ void OnlinePlayer::step()
         animBlend += 10*dt;
     }
 
+
     std::unordered_map<std::string, JointTransform> pose;
 
     if (animBlend <= 1.0f)
@@ -263,28 +269,55 @@ void OnlinePlayer::step()
             getAnimation(animType),
             getAnimationTimer(animType));
     }
-
-    pose["Torso"].position = pose["Torso"].position + position;
-
-    Vector3f velFlat = vel;
-    velFlat.y = 0;
-    if (velFlat.lengthSquared() > 0.5f*0.5f)
+        
+    if (animType == 7)//ladder
     {
-        float directionYaw = atan2f(vel.z, vel.x) - Maths::PI/2;
-        Quaternion myRotationYaw = Quaternion::fromEulerAngles(0, directionYaw, 0);
-        pose["Torso"].rotation = Quaternion::multiply(pose["Torso"].rotation, myRotationYaw);
+        Vector3f velFlat = lookDir;
+        velFlat.y = 0;
+        if (fabsf(velFlat.x) > fabsf(velFlat.z))
+        {
+            velFlat.z = 0;
+        }
+        else
+        {
+            velFlat.x = 0;
+        }
+
+        velFlat.inv();
+
+        velFlat.normalize();
+
+        Vector3f newPos = position + velFlat.scaleCopy(-0.25f);
+
+        pose["Hips"].lookAtAndTranslate(velFlat, newPos);
     }
     else
     {
-        float directionYaw = atan2f(lookDir.z, lookDir.x) - Maths::PI/2;
-        Quaternion myRotationYaw = Quaternion::fromEulerAngles(0, directionYaw, 0);
-        pose["Torso"].rotation = Quaternion::multiply(pose["Torso"].rotation, myRotationYaw);
+        Vector3f velFlat = vel;
+        velFlat.y = 0;
+        if (velFlat.lengthSquared() > 0.5f*0.5f)
+        {
+            if (slideTimer > 0.0f || animType == 8)
+            {
+                pose["Hips"].lookAtAndTranslate(vel, position);
+            }
+            else
+            {
+                pose["Hips"].lookAtAndTranslate(velFlat, position);
+            }
+        }
+        else
+        {
+            Vector3f lookFlat = lookDir;
+            lookFlat.y = 0;
+            pose["Hips"].lookAtAndTranslate(lookFlat, position);
+        }
     }
-
-    float directionHead = atan2f(-lookDir.y, sqrtf(lookDir.x*lookDir.x + lookDir.z*lookDir.z));
-    Quaternion myRotationPitch = Quaternion::fromEulerAngles(directionHead, 0, 0);
+        
+    float directionHead = atan2f(lookDir.y, sqrtf(lookDir.x*lookDir.x + lookDir.z*lookDir.z));
+    Quaternion myRotationPitch = Quaternion::fromEulerAngles(0, 0, directionHead);
     pose["Head"].rotation = Quaternion::multiply(pose["Head"].rotation, myRotationPitch);
-
+        
     modelShrek->calculateJointTransformsFromPose(&jointTransforms, &pose);
 }
 
@@ -296,24 +329,25 @@ std::vector<Entity*>* OnlinePlayer::getEntitiesToRender()
 
 std::list<TexturedModel*>* OnlinePlayer::getModels()
 {
-    if (isCrouching)
-    {
-        return &OnlinePlayer::modelsSquat;
-    }
-    else if (slideTimer > 0.0f)
-    {
-        return &OnlinePlayer::modelsSlide;
-    }
-    else if (vel.y > 1.0f)
-    {
-        return &OnlinePlayer::modelsJump;
-    }
-    else if (vel.y < -1.0f)
-    {
-        return &OnlinePlayer::modelsFall;
-    }
-
-    return &OnlinePlayer::modelsStand;
+    //if (isCrouching)
+    //{
+    //    return &OnlinePlayer::modelsSquat;
+    //}
+    //else if (slideTimer > 0.0f)
+    //{
+    //    return &OnlinePlayer::modelsSlide;
+    //}
+    //else if (vel.y > 1.0f)
+    //{
+    //    return &OnlinePlayer::modelsJump;
+    //}
+    //else if (vel.y < -1.0f)
+    //{
+    //    return &OnlinePlayer::modelsFall;
+    //}
+    //
+    //return &OnlinePlayer::modelsStand;
+    return nullptr;
 }
 
 AnimatedModel* OnlinePlayer::getAnimatedModel()
@@ -444,25 +478,26 @@ void OnlinePlayer::updateCamera()
 
 void OnlinePlayer::loadModels()
 {
-    if (OnlinePlayer::modelsStand.size() == 0)
+    if (OnlinePlayer::modelShrek == nullptr)
     {
-        ObjLoader::loadModel(&OnlinePlayer::modelsHead , "res/Models/Human/", "ShrekHead");
-        ObjLoader::loadModel(&OnlinePlayer::modelsFall , "res/Models/Human/", "ShrekFall");
-        ObjLoader::loadModel(&OnlinePlayer::modelsJump , "res/Models/Human/", "ShrekJump");
-        ObjLoader::loadModel(&OnlinePlayer::modelsSlide, "res/Models/Human/", "ShrekSlide");
-        ObjLoader::loadModel(&OnlinePlayer::modelsSquat, "res/Models/Human/", "ShrekSquat");
-        ObjLoader::loadModel(&OnlinePlayer::modelsStand, "res/Models/Human/", "ShrekStand");
+        //ObjLoader::loadModel(&OnlinePlayer::modelsHead , "res/Models/Human/", "ShrekHead");
+        //ObjLoader::loadModel(&OnlinePlayer::modelsFall , "res/Models/Human/", "ShrekFall");
+        //ObjLoader::loadModel(&OnlinePlayer::modelsJump , "res/Models/Human/", "ShrekJump");
+        //ObjLoader::loadModel(&OnlinePlayer::modelsSlide, "res/Models/Human/", "ShrekSlide");
+        //ObjLoader::loadModel(&OnlinePlayer::modelsSquat, "res/Models/Human/", "ShrekSquat");
+        //ObjLoader::loadModel(&OnlinePlayer::modelsStand, "res/Models/Human/", "ShrekStand");
 
-        OnlinePlayer::modelShrek = AnimatedModelLoader::loadAnimatedModel("res/Models/Human/", "shrek5.mesh");
-
-        OnlinePlayer::animationStand  = AnimationLoader::loadAnimation("res/Models/Human/shrek5-stand.anim");
-        OnlinePlayer::animationWalk   = AnimationLoader::loadAnimation("res/Models/Human/shrek5-walk.anim");
-        OnlinePlayer::animationRun    = AnimationLoader::loadAnimation("res/Models/Human/shrek5-run.anim");
-        OnlinePlayer::animationCrouch = AnimationLoader::loadAnimation("res/Models/Human/shrek5-crouch.anim");
-        OnlinePlayer::animationSlide  = AnimationLoader::loadAnimation("res/Models/Human/shrek5-slide.anim");
-        OnlinePlayer::animationJump   = AnimationLoader::loadAnimation("res/Models/Human/shrek5-jump.anim");
-        OnlinePlayer::animationFall   = AnimationLoader::loadAnimation("res/Models/Human/shrek5-fall.anim");
-        OnlinePlayer::animationClimb  = AnimationLoader::loadAnimation("res/Models/Human/shrek5-fall.anim");
+        OnlinePlayer::modelShrek = AnimatedModelLoader::loadAnimatedModel("res/Models/Human/", "ShrekFinalMeshFrankenstein.mesh");
+    
+        OnlinePlayer::animationStand  = AnimationLoader::loadAnimation("res/Models/Human/Original Mixamo/Breathing Idle.anim");
+        OnlinePlayer::animationWalk   = AnimationLoader::loadAnimation("res/Models/Human/Original Mixamo/Slow Run.anim");
+        OnlinePlayer::animationRun    = AnimationLoader::loadAnimation("res/Models/Human/Original Mixamo/Fast Run.anim");
+        OnlinePlayer::animationCrouch = AnimationLoader::loadAnimation("res/Models/Human/Original Mixamo/Crouched Walking.anim");
+        OnlinePlayer::animationCrawl  = AnimationLoader::loadAnimation("res/Models/Human/Original Mixamo/Running Crawl.anim");
+        OnlinePlayer::animationSlide  = AnimationLoader::loadAnimation("res/Models/Human/Original Mixamo/Running Slide 2.anim");
+        OnlinePlayer::animationJump   = AnimationLoader::loadAnimation("res/Models/Human/Original Mixamo/Jumping Up.anim");
+        OnlinePlayer::animationFall   = AnimationLoader::loadAnimation("res/Models/Human/Original Mixamo/Falling Idle.anim");
+        OnlinePlayer::animationClimb  = AnimationLoader::loadAnimation("res/Models/Human/Original Mixamo/BlenderOutput/Climbing Ladder.anim");
     }
 }
 
@@ -470,14 +505,15 @@ Animation* OnlinePlayer::getAnimation(char index)
 {
     switch (index)
     {
-        case 0: return OnlinePlayer::animationStand;
-        case 1: return OnlinePlayer::animationWalk;
-        case 2: return OnlinePlayer::animationRun;
-        case 3: return OnlinePlayer::animationCrouch;
-        case 4: return OnlinePlayer::animationSlide;
-        case 5: return OnlinePlayer::animationJump;
-        case 6: return OnlinePlayer::animationFall;
-        case 7: return OnlinePlayer::animationClimb;
+        case 0:  return OnlinePlayer::animationStand;
+        case 1:  return OnlinePlayer::animationWalk;
+        case 2:  return OnlinePlayer::animationRun;
+        case 3:  return OnlinePlayer::animationCrouch;
+        case 4:  return OnlinePlayer::animationSlide;
+        case 5:  return OnlinePlayer::animationJump;
+        case 6:  return OnlinePlayer::animationFall;
+        case 7:  return OnlinePlayer::animationClimb;
+        case 8:  return OnlinePlayer::animationCrawl;
         default: return OnlinePlayer::animationStand;
     }
 }
@@ -486,14 +522,15 @@ float OnlinePlayer::getAnimationTimer(char index)
 {
     switch (index)
     {
-        case 0: return animTimerStand;
-        case 1: return animTimerRun; //use the same timer for walk and run
-        case 2: return animTimerRun;
-        case 3: return animTimerCrouch;
-        case 4: return animTimerSlide;
-        case 5: return animTimerJump;
-        case 6: return animTimerFall;
-        case 7: return animTimerClimb;
+        case 0:  return animTimerStand;
+        case 1:  return animTimerRun; //use the same timer for walk and run
+        case 2:  return animTimerRun;
+        case 3:  return animTimerCrouch;
+        case 4:  return animTimerSlide;
+        case 5:  return animTimerJump;
+        case 6:  return animTimerFall;
+        case 7:  return animTimerClimb;
+        case 8:  return animTimerCrawl;
         default: return animTimerStand;
     }
 }

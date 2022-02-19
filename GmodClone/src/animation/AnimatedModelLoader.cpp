@@ -68,9 +68,15 @@ AnimatedModel* AnimatedModelLoader::loadAnimatedModel(char* folder, char* filena
         std::vector<std::string> boneNames = split(line, ' ');
 
         std::unordered_map<std::string, Joint*> boneNameToJoint;
+        std::unordered_map<std::string, int> boneNameToIndex;
         std::unordered_map<std::string, std::string> boneNameToParent;
 
         int jointCount = (int)boneNames.size() - 1;
+
+        for (int i = 1; i < (int)boneNames.size(); i++)
+        {
+            boneNameToIndex[boneNames[i]] = i - 1;
+        }
 
         Joint* rootJoint = nullptr;
 
@@ -104,7 +110,7 @@ AnimatedModel* AnimatedModelLoader::loadAnimatedModel(char* folder, char* filena
                 CORRECTION.multiply(&ma, &ma);
             }
 
-            Joint* newJoint = new Joint(i - 1, boneTokens[0], &ma); INCR_NEW("Joint");
+            Joint* newJoint = new Joint(boneNameToIndex[boneTokens[0]], boneTokens[0], &ma); INCR_NEW("Joint");
 
             if (i == 1)
             {

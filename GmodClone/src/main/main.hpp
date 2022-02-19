@@ -65,16 +65,17 @@ public:
     Message();
 };
 
-#define LVL_HUB  0
-#define LVL_MAP1 1
-#define LVL_MAP2 2
-#define LVL_MAP3 3
-#define LVL_EQ   4
-#define LVL_MAP4 5
-#define LVL_TEST 6
-#define LVL_MAP5 7
-#define LVL_MAP6 8
-#define LVL_MAP7 9
+#define LVL_HUB   0
+#define LVL_MAP1  1
+#define LVL_MAP2  2
+#define LVL_MAP3  3
+#define LVL_EQ    4
+#define LVL_MAP4  5
+#define LVL_TEST  6
+#define LVL_MAP5  7
+#define LVL_MAP6  8
+#define LVL_MAP7  9
+#define LVL_MAP8 10
 
 class Global
 {
@@ -116,6 +117,8 @@ public:
     static bool renderParticles;
 
     static bool framerateUnlock;
+
+    static bool camThirdPerson;
 
     //Entities passed here should be made on the heap, as they will be explicitly deleted later
     static void addEntity(Entity* entityToAdd);

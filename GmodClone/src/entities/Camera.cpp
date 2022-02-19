@@ -23,7 +23,7 @@ void Camera::mirrorForWater()
     Vector3f view = target - eye;
     view = Maths::bounceVector(&view, &waterNormal, 1.0f);
     Vector3f newUp = Maths::bounceVector(&up, &waterNormal, 1.0f);
-    newUp.neg();
+    newUp.inv();
     up = newUp;
 
     float yDiff = eye.y - 0.0f;

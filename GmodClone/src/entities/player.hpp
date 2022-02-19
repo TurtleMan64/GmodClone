@@ -4,6 +4,8 @@
 class TexturedModel;
 class Triangle3D;
 class Dummy;
+class AnimatedModel;
+class Animation;
 
 #include <list>
 #include "entity.hpp"
@@ -11,6 +13,24 @@ class Dummy;
 
 class Player : public Entity
 {
+private:
+    static AnimatedModel* modelShrek;
+
+    static Animation* animationStand;
+    static Animation* animationWalk;
+    static Animation* animationRun;
+    static Animation* animationCrouch;
+    static Animation* animationCrawl;
+    static Animation* animationSlide;
+    static Animation* animationJump;
+    static Animation* animationFall;
+    static Animation* animationClimb;
+    static Animation* animationSwing;
+
+    void animateMe();
+    Animation* getAnimation(char index);
+    float getAnimationTimer(char index);
+
 public:
     Triangle3D* latestGroundTriangle = nullptr;
     Triangle3D* latestWallTriangle = nullptr;
@@ -123,6 +143,7 @@ public:
     float animTimerJump    = 0.0f;
     float animTimerFall    = 0.0f;
     float animTimerClimb   = 0.0f;
+    float animTimerCrawl   = 0.0f;
     float animTimerSwing   = 0.0f;
     char  animType         = 0;
     char  animTypePrevious = 0;
@@ -138,6 +159,8 @@ public:
     std::vector<Entity*>* getEntitiesToRender();
 
     std::list<TexturedModel*>* getModels();
+
+    AnimatedModel* getAnimatedModel();
 
     void die();
 };

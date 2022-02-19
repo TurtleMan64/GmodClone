@@ -147,7 +147,7 @@ void Vector3f::normalize()
     }
 }
 
-void Vector3f::neg()
+void Vector3f::inv()
 {
     x = -x;
     y = -y;
@@ -258,7 +258,7 @@ Vector2f Vector2f::normalized()
     return Vector2f(x / mag, y / mag);
 }
 
-void Vector2f::neg()
+void Vector2f::inv()
 {
     x = -x;
     y = -y;
@@ -367,7 +367,7 @@ void Vector4f::normalize()
     w = w / mag;
 }
 
-void Vector4f::neg()
+void Vector4f::inv()
 {
     x = -x;
     y = -y;

@@ -1,0 +1,14 @@
+things that are differenet:
+library_controllers/controller/skin/source id weights are different (there are less of them). probably blender optimizing them and should be fine.
+
+library_animations/ the animation for the last bone in the hand heirarchy (LeftHandIndex4 for the 3 bone hand, and LeftHand for the simple hand) does not exist. it exists in the heirarchy in library_visual_scenes, but has no animations. so animations would need to be added to it, probably just a default matrix.
+
+
+<node id="RightHandIndex4" name="RightHandIndex4" sid="RightHandIndex4" type="JOINT">
+<matrix sid="matrix">1.000000 -0.000000 0.000000 -0.004119 0.000000 1.000000 0.000000 0.014154 -0.000000 -0.000000 1.000000 0.002357 0.000000 0.000000 0.000000 1.000000</matrix>
+</node>
+                            
+<node id="RightHandIndex4" name="RightHandIndex4" sid="RightHandIndex4" type="JOINT">
+<matrix sid="transform">0.9999999 -2.48022e-14 -1.49012e-8 -0.004227176 0 1 0 -9.00984e-4 1.49012e-8 1.10948e-13 1 0.01428902 0 0 0 1</matrix>
+
+i dont think the problem is in library_visual_scenes at all. i made the two identical and the animations were still wrong. I think this means that the problem is in the library_animations part.

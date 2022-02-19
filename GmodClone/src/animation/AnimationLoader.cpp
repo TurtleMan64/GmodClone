@@ -79,11 +79,11 @@ Animation* AnimationLoader::loadAnimation(char* filename)
 
                 if (rootBoneName == tokens[0])
                 {
-                    Matrix4f CORRECTION;
-                    Vector3f xAxis(1, 0, 0);
-                    CORRECTION.rotate(Maths::toRadians(-90), &xAxis);
-
-                    CORRECTION.multiply(&localTransform, &localTransform);
+                    //Matrix4f CORRECTION;
+                    //Vector3f xAxis(1, 0, 0);
+                    //CORRECTION.rotate(Maths::toRadians(-90), &xAxis);
+                    //
+                    //CORRECTION.multiply(&localTransform, &localTransform);
                 }
 
                 Vector3f translation(localTransform.m30, localTransform.m31, localTransform.m32);
@@ -91,11 +91,21 @@ Animation* AnimationLoader::loadAnimation(char* filename)
 
                 if (rootBoneName == tokens[0])
                 {
-                    //for some reason, translations dont seem to work correctly on the root bone during rotations.
-                    // setting these to 0 so that doesnt happen
-                    translation.x = 0;
-                    translation.z = 0;
+                    //editing rotation around the y axis later on (to make the model look in the direction he is going)
+                    // seems to happen after the translation is applied or something. so the translation ends up being offset
+                    // by some amount. so if we set 
+                    //translation.x = 0;
+                    //translation.z = 0;
                 }
+
+                //just testing this
+                //translation.x = 0;
+                //translation.y = 0;
+                //translation.z = 0;
+                //rotation.x = 0;
+                //rotation.y = 0;
+                //rotation.z = 0;
+                //rotation.w = 1;
 
                 JointTransform joint(translation, rotation);
 

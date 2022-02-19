@@ -1,0 +1,58 @@
+# Material Count: 9
+
+newmtl None_Rubber.png
+Ns 20
+Ni 0.3
+type bounce
+d 1
+map_Kd Rubber.png Rubber_N.png
+
+newmtl None_Tile_Black.png
+Ns 20
+Ni 0.3
+d 1
+map_Kd Tile_Black.png Tile_N.png
+
+newmtl None_Tile_Blue.png
+Ns 20
+Ni 0.3
+d 1
+map_Kd Tile_Blue.png Tile_N.png
+
+newmtl None_Tile_Orange.png
+Ns 20
+Ni 0.3
+d 1
+map_Kd Tile_Orange.png Tile_N.png
+
+newmtl None_Tile_Yellow.png
+Ns 20
+Ni 0.3
+d 1
+map_Kd Tile_Yellow.png Tile_N.png
+
+newmtl None_Tile_Green.png
+Ns 20
+Ni 0.3
+d 1
+map_Kd Tile_Green.png Tile_N.png
+
+newmtl None
+Ns 20
+Ni 0.3
+d 1
+map_Kd Tile_Red.png Tile_N.png
+
+newmtl None_Grass.jpg
+Ns 20
+Ni 0.0
+sound grass
+d 1
+map_Kd Grass.jpg
+
+newmtl None_Tile_Aqua.png
+Ns 20
+Ni 0.3
+d 1
+map_Kd Tile_Aqua.png Tile_N.png
+

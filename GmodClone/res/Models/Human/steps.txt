@@ -1,0 +1,16 @@
+steps to use a model from mixamo:
+
+  - send the .dae through an online xml formatter.
+  
+  - remove the last bone on each finger and each foot from the library_visual_scenes node
+  
+  - in library_visual_scenes, surround the <node id="Hips" name="Hips" sid="Hips" type="JOINT"> node with an Armature node. so it should look like this:
+  
+        <node id="Armature" name="Armature" type="NODE">
+          <matrix sid="matrix">1 0 0 0 0 1 0 0 0 0 1 0 0 0 0 1</matrix>
+          <node id="Hips" name="Hips" sid="Hips" type="JOINT">
+              ...
+          </node>
+        </node>
+
+  - 

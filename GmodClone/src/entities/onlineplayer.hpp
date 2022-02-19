@@ -14,12 +14,12 @@ class Animation;
 class OnlinePlayer : public Entity
 {
 private:
-    static std::list<TexturedModel*> modelsHead;
-    static std::list<TexturedModel*> modelsFall;
-    static std::list<TexturedModel*> modelsJump;
-    static std::list<TexturedModel*> modelsSlide;
-    static std::list<TexturedModel*> modelsSquat;
-    static std::list<TexturedModel*> modelsStand;
+    //static std::list<TexturedModel*> modelsHead;
+    //static std::list<TexturedModel*> modelsFall;
+    //static std::list<TexturedModel*> modelsJump;
+    //static std::list<TexturedModel*> modelsSlide;
+    //static std::list<TexturedModel*> modelsSquat;
+    //static std::list<TexturedModel*> modelsStand;
 
     static AnimatedModel* modelShrek;
 
@@ -27,13 +27,14 @@ private:
     static Animation* animationWalk;
     static Animation* animationRun;
     static Animation* animationCrouch;
+    static Animation* animationCrawl;
     static Animation* animationSlide;
     static Animation* animationJump;
     static Animation* animationFall;
     static Animation* animationClimb;
     static Animation* animationSwing;
 
-    Dummy* head = nullptr;
+    //Dummy* head = nullptr;
     GUIText* nametag = nullptr;
 
     Animation* getAnimation(char index);
@@ -116,6 +117,7 @@ public:
     float animTimerJump    = 0.0f;
     float animTimerFall    = 0.0f;
     float animTimerClimb   = 0.0f;
+    float animTimerCrawl   = 0.0f;
     float animTimerSwing   = 0.0f;
     char  animType         = 0;
     char  animTypePrevious = 0;

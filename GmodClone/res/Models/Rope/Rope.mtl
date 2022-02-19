@@ -1,0 +1,8 @@
+# Material Count: 1
+
+newmtl rope01
+Ns 20.000000
+Ni 0.000000
+map_d rope01.png
+map_Kd rope01.png
+

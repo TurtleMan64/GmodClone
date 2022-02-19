@@ -21,11 +21,33 @@
 #include "../guis/guitextureresources.hpp"
 #include "../guis/guitexture.hpp"
 #include "../network/tcpclient.hpp"
+#include "../animation/animation.hpp"
+#include "../animation/animatedmodel.hpp"
+#include "../animation/animatedmodelloader.hpp"
+#include "../animation/animationloader.hpp"
+#include "../animation/jointtransform.hpp"
+#include "../toolbox/quaternion.hpp"
 
 extern float dt;
 
 std::list<TexturedModel*> modelsGun;
 std::list<TexturedModel*> modelsBat;
+
+AnimatedModel* Player::modelShrek  = nullptr;
+
+Animation* Player::animationStand  = nullptr;
+Animation* Player::animationWalk   = nullptr;
+Animation* Player::animationRun    = nullptr;
+Animation* Player::animationCrouch = nullptr;
+Animation* Player::animationCrawl  = nullptr;
+Animation* Player::animationSlide  = nullptr;
+Animation* Player::animationJump   = nullptr;
+Animation* Player::animationFall   = nullptr;
+Animation* Player::animationClimb  = nullptr;
+Animation* Player::animationSwing  = nullptr;
+
+//AnimatedModel* modelShrek2 = nullptr;
+//Animation* animationFlair = nullptr;
 
 Player::Player()
 {
@@ -36,10 +58,41 @@ Player::Player()
     lastGroundNormal.set(0, 1, 0);
     wallNormal.set(1, 0, 0);
     lookDir.set(0, 0, -1);
-    visible = false;
+    visible = true;
 
     ObjLoader::loadModel(&modelsGun , "res/Models/Gun/", "GunInHand");
     ObjLoader::loadModel(&modelsBat , "res/Models/Bat/", "Bat");
+
+    Player::modelShrek = AnimatedModelLoader::loadAnimatedModel("res/Models/Human/", "ShrekFinalMeshFrankenstein.mesh");
+    
+    Player::animationStand  = AnimationLoader::loadAnimation("res/Models/Human/Original Mixamo/Breathing Idle.anim");
+    Player::animationWalk   = AnimationLoader::loadAnimation("res/Models/Human/Original Mixamo/Slow Run.anim");
+    Player::animationRun    = AnimationLoader::loadAnimation("res/Models/Human/Original Mixamo/Fast Run.anim");
+    Player::animationCrouch = AnimationLoader::loadAnimation("res/Models/Human/Original Mixamo/Crouched Walking.anim");
+    Player::animationCrawl  = AnimationLoader::loadAnimation("res/Models/Human/Original Mixamo/Running Crawl.anim");
+    Player::animationSlide  = AnimationLoader::loadAnimation("res/Models/Human/Original Mixamo/Running Slide 2.anim");
+    Player::animationJump   = AnimationLoader::loadAnimation("res/Models/Human/Original Mixamo/Jumping Up.anim");
+    Player::animationFall   = AnimationLoader::loadAnimation("res/Models/Human/Original Mixamo/Falling Idle.anim");
+    Player::animationClimb  = AnimationLoader::loadAnimation("res/Models/Human/Original Mixamo/BlenderOutput/Climbing Ladder.anim");
+
+    //modelShrek2 = AnimatedModelLoader::loadAnimatedModel("res/Models/Human/", "ShrekFinalMesh.mesh");
+    //animationFlair = AnimationLoader::loadAnimation("res/Models/Human/Original Mixamo/Fast Run.anim");
+
+    //modelShrek2 = AnimatedModelLoader::loadAnimatedModel("res/Models/Grid/", "Box.mesh");
+    //animationFlair = AnimationLoader::loadAnimation("res/Models/Grid/Box.anim");
+
+    for (int i = 0; i < Player::modelShrek->jointCount; i++)
+    {
+        Matrix4f mat;
+        jointTransforms.push_back(mat);
+    }
+
+    //printf("modelShrek2->jointCount joint count = %d\n", modelShrek2->jointCount);
+    //for (int i = 0; i < modelShrek2->jointCount; i++)
+    //{
+    //    Matrix4f mat;
+    //    jointTransforms.push_back(mat);
+    //}
 
     weaponModel = new Dummy(&modelsGun); INCR_NEW("Dummy");
     weaponModel->visible = false;
@@ -843,12 +896,14 @@ void Player::step()
         VFOV_ADDITION = 0;
     }
 
+    // Make you look in towards the center of the map.
     if (Global::timeUntilRoundStarts > 5.0f)
     {
         if (Global::levelId == LVL_MAP4 ||
             Global::levelId == LVL_MAP5 ||
             Global::levelId == LVL_MAP6 ||
-            Global::levelId == LVL_MAP7)
+            Global::levelId == LVL_MAP7 ||
+            Global::levelId == LVL_MAP8)
         {
             lookDir = position.scaleCopy(-1);
             lookDir.y = 0;
@@ -949,68 +1004,7 @@ void Player::step()
 
     updateTransformationMatrix();
 
-    float animSpd = vel.length();
-
-    char animTypeNew = 0;
-
-    if (isCrouching)
-    {
-        animTypeNew = 3;
-        animTimerCrouch += animSpd*dt;
-    }
-    else if (slideTimer > 0.0f)
-    {
-        animTypeNew = 4;
-        animTimerSlide += dt;
-    }
-    else if (timeSinceOnGround <= 0.02f) //on ground
-    {
-        if (animSpd < 0.2f) //stand
-        {
-            animTypeNew = 0;
-            animTimerStand += dt;
-        }
-        else if (animSpd < 6.0f) //walk
-        {
-            animTypeNew = 1;
-            //animTimerWalk += animSpd*dt;
-            animTimerRun += 2.25f*animSpd*dt; //use the same timer for both run and walk
-        }
-        else //run
-        {
-            animTypeNew = 2;
-            animTimerRun += 2.25f*animSpd*dt;
-        }
-    }
-    else //in air
-    {
-        if (vel.y > 0.0f)
-        {
-            animTypeNew = 5;
-            animTimerJump += dt;
-        }
-        else
-        {
-            animTypeNew = 6;
-            animTimerFall += dt;
-        }
-    }
-
-    if (animTypeNew != 6)
-    {
-        animTimerFall = 0.0f;
-    }
-
-    if (animType != animTypeNew)
-    {
-        animTypePrevious = animType;
-        animType = animTypeNew;
-        animBlend = 0.0f;
-    }
-    else
-    {
-        animBlend += 10*dt;
-    }
+    animateMe();
 }
 
 float Player::getPushValueGround(float deltaTime)
@@ -1050,6 +1044,11 @@ float Player::getJumpValue(float deltaTime)
 
 void Player::updateCamera()
 {
+    if (Input::inputs.INPUT_F5 && !Input::inputs.INPUT_PREVIOUS_F5)
+    {
+        Global::camThirdPerson = !Global::camThirdPerson;    
+    }
+
     Vector3f yAxis(0, 1, 0);
 
     float inputX2 = Input::inputs.INPUT_X2;
@@ -1116,6 +1115,11 @@ void Player::updateCamera()
 
     Vector3f up = Maths::rotatePoint(&lookDir, &perpen, Maths::PI/2);
     up.normalize();
+
+    if (Global::camThirdPerson)
+    {
+        eye = eye + lookDir.scaleCopy(-2.2f);
+    }
 
     Global::gameCamera->setViewMatrixValues(&eye, &target, &up);
 }
@@ -1269,6 +1273,18 @@ std::list<TexturedModel*>* Player::getModels()
     return nullptr;
 }
 
+AnimatedModel* Player::getAnimatedModel()
+{
+    if (Global::camThirdPerson)
+    {
+        return Player::modelShrek;
+    }
+    else
+    {
+        return nullptr;
+    }
+}
+
 void Player::die()
 {
     if (health > 0)
@@ -1322,6 +1338,182 @@ void Player::reset()
     lookDir.set(0, 0, -1);
     externalVel.set(0, 0, 0);
     externalVelPrev.set(0, 0, 0);
-    visible = false;
+    visible = true;
     weaponModel->visible = false;
+}
+
+void Player::animateMe()
+{
+    // Animate the player
+    float animSpd = vel.length();
+
+    char animTypeNew = 0;
+
+    if (isOnLadder)
+    {
+        animTypeNew = 7;
+        animTimerClimb += 3*animSpd*dt;
+    }
+    else if (isCrouching && timeSinceOnGround <= 0.04f)
+    {
+        if (animSpd > 4.0f)
+        {
+            animTypeNew = 8;
+            animTimerCrawl += 0.45f*animSpd*dt;
+        }
+        else
+        {
+            animTypeNew = 3;
+            animTimerCrouch += 0.45f*animSpd*dt;
+        }
+    }
+    else if (slideTimer > 0.0f)
+    {
+        animTypeNew = 4;
+        animTimerSlide += 1.5f*dt;
+    }
+    else if (timeSinceOnGround <= 0.04f) //on ground
+    {
+        if (animSpd < 0.2f) //stand
+        {
+            animTypeNew = 0;
+            animTimerStand += dt;
+        }
+        else if (animSpd < 6.0f) //walk
+        {
+            animTypeNew = 1;
+            animTimerRun += 0.18f*animSpd*dt;
+        }
+        else //run
+        {
+            animTypeNew = 2;
+            animTimerRun += 0.18f*animSpd*dt;
+        }
+    }
+    else //in air
+    {
+        animTypeNew = 6;
+        animTimerFall += dt;
+    }
+
+    if (animTypeNew != 6)
+    {
+        animTimerFall = 0.0f;
+    }
+
+    if (animType != animTypeNew)
+    {
+        animTypePrevious = animType;
+        animType = animTypeNew;
+        animBlend = 0.0f;
+    }
+    else
+    {
+        animBlend += 10*dt;
+    }
+
+    if (Global::camThirdPerson)
+    {
+        std::unordered_map<std::string, JointTransform> pose;
+
+        if (animBlend <= 1.0f)
+        {
+            pose = modelShrek->calculateAnimationPose(
+                getAnimation(animType),
+                getAnimationTimer(animType),
+                getAnimation(animTypePrevious),
+                getAnimationTimer(animTypePrevious),
+                animBlend);
+        }
+        else
+        {
+            pose = modelShrek->calculateAnimationPose(
+                getAnimation(animType),
+                getAnimationTimer(animType));
+        }
+        
+        if (animType == 7)//ladder
+        {
+            Vector3f velFlat = lookDir;
+            velFlat.y = 0;
+            if (fabsf(velFlat.x) > fabsf(velFlat.z))
+            {
+                velFlat.z = 0;
+            }
+            else
+            {
+                velFlat.x = 0;
+            }
+
+            velFlat.inv();
+
+            velFlat.normalize();
+
+            Vector3f newPos = position + velFlat.scaleCopy(-0.25f);
+
+            pose["Hips"].lookAtAndTranslate(velFlat, newPos);
+        }
+        else
+        {
+            Vector3f velFlat = vel;
+            velFlat.y = 0;
+            if (velFlat.lengthSquared() > 0.5f*0.5f)
+            {
+                if (slideTimer > 0.0f || animType == 8)
+                {
+                    pose["Hips"].lookAtAndTranslate(vel, position);
+                }
+                else
+                {
+                    pose["Hips"].lookAtAndTranslate(velFlat, position);
+                }
+            }
+            else
+            {
+                Vector3f lookFlat = lookDir;
+                lookFlat.y = 0;
+                pose["Hips"].lookAtAndTranslate(lookFlat, position);
+            }
+        }
+        
+        float directionHead = atan2f(lookDir.y, sqrtf(lookDir.x*lookDir.x + lookDir.z*lookDir.z));
+        Quaternion myRotationPitch = Quaternion::fromEulerAngles(0, 0, directionHead);
+        pose["Head"].rotation = Quaternion::multiply(pose["Head"].rotation, myRotationPitch);
+        
+        modelShrek->calculateJointTransformsFromPose(&jointTransforms, &pose);
+    }
+}
+
+Animation* Player::getAnimation(char index)
+{
+    switch (index)
+    {
+        case 0:  return Player::animationStand;
+        case 1:  return Player::animationWalk;
+        case 2:  return Player::animationRun;
+        case 3:  return Player::animationCrouch;
+        case 4:  return Player::animationSlide;
+        case 5:  return Player::animationJump;
+        case 6:  return Player::animationFall;
+        case 7:  return Player::animationClimb;
+        case 8:  return Player::animationCrawl;
+        default: return Player::animationStand;
+    }
+}
+
+float Player::getAnimationTimer(char index)
+{
+    switch (index)
+    {
+        case 0:  return animTimerStand;
+        case 1:  return animTimerRun; //use the same timer for walk and run
+        case 2:  return animTimerRun;
+        case 3:  return animTimerCrouch;
+        case 4:  return animTimerSlide;
+        case 5:  return animTimerJump;
+        case 6:  return animTimerFall;
+        case 7:  return animTimerClimb;
+        case 8:  return animTimerCrawl;
+        default: return animTimerStand;
+    }
 }

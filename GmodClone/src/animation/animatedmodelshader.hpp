@@ -9,7 +9,7 @@ class Matrix4f;
 class AnimatedModelShader
 {
 public:
-    static constexpr int MAX_JOINTS = 20;
+    static constexpr int MAX_JOINTS = 34;
     static constexpr int DIFFUSE_TEX_UNIT = 0;
 
     GLuint programId;

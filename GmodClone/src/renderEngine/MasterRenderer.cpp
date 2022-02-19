@@ -129,7 +129,7 @@ void Master_render(Camera* camera, float clipX, float clipY, float clipZ, float 
     //calc behind clipm plane based on camera
     Vector3f lookDir = camera->target - camera->eye;
     lookDir.normalize();
-    lookDir.neg();
+    lookDir.inv();
     Vector3f startPos(&camera->eye);
     //startPos = startPos + camDir.scaleCopy(-100);
     Vector4f plane = Maths::calcPlaneValues(&startPos, &lookDir);
@@ -182,6 +182,13 @@ void Master_processEntity(Entity* e)
                 continue;
             }
 
+            std::list<TexturedModel*>* modellist = entity->getModels();
+
+            if (modellist == nullptr)
+            {
+                continue;
+            }
+
             if (entity->renderOrderOverride <= 4)
             {
                 std::unordered_map<TexturedModel*, std::list<Entity*>>* mapToUse = nullptr;
@@ -196,8 +203,6 @@ void Master_processEntity(Entity* e)
                     default: break;
                 }
 
-                std::list<TexturedModel*>* modellist = entity->getModels();
-
                 for (TexturedModel* entityModel : (*modellist))
                 {
                     std::list<Entity*>* list = &(*mapToUse)[entityModel];
@@ -206,8 +211,6 @@ void Master_processEntity(Entity* e)
             }
             else
             {
-                std::list<TexturedModel*>* modellist = entity->getModels();
-
                 for (TexturedModel* entityModel : (*modellist))
                 {
                     std::unordered_map<TexturedModel*, std::list<Entity*>>* mapToUse = nullptr;

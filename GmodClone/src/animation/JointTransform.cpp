@@ -45,6 +45,47 @@ void JointTransform::calculateLocalTransform(Matrix4f* localTransform, bool /*is
     }
 }
 
+void JointTransform::lookAtAndTranslate(Vector3f lookDir, Vector3f newOrigin)
+{
+    float rotY = atan2f(lookDir.z, lookDir.x) - Maths::PI/2;
+    float rotX = atan2f(lookDir.y, sqrtf(lookDir.x*lookDir.x + lookDir.z*lookDir.z));
+
+    //printf("rotY = %f, position = %f %f %f\n", rotY, position.x, position.y, position.z);
+
+
+    Vector3f yAxis(0, -1, 0);
+    Vector3f xAxis(-1,  0, 0);
+
+    //works
+    Vector3f toAdd = position;
+    toAdd = Maths::rotatePoint(&toAdd, &xAxis, rotX);
+    toAdd = Maths::rotatePoint(&toAdd, &yAxis, rotY);
+    position = toAdd;
+    rotation = Quaternion::multiply(rotation, Quaternion::fromEulerAngles(0, 0, rotX));
+    rotation = Quaternion::multiply(rotation, Quaternion::fromEulerAngles(0, rotY, 0));
+
+
+    //hard coded 180 angle, works
+    //rotate position by 180 degrees around y axis
+    //position.x = -position.x;
+    //position.z = -position.z;
+    // rotate rotation by 180 degrees around y axis
+    //rotation = Quaternion::multiply(rotation, Quaternion::fromEulerAngles(0, Maths::PI, 0));
+
+
+
+
+    //position = Maths::rotatePoint(&position, &zAxis, rotZ);
+    //position = Maths::rotatePoint(&position, &yAxis, rotY);
+    position = position + newOrigin;
+    //position.x += 10;
+
+    //position = position + toAdd;
+
+    //rotation = Quaternion::multiply(rotation, Quaternion::fromEulerAngles(0, 0, rotZ));
+    //rotation = Quaternion::multiply(rotation, Quaternion::fromEulerAngles(0, rotY - Maths::PI/2, 0));
+}
+
 JointTransform JointTransform::interpolate(JointTransform* frameA, JointTransform* frameB, float progression)
 {
     Vector3f pos = JointTransform::interpolate(&frameA->position, &frameB->position, progression);

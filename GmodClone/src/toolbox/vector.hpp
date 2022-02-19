@@ -31,7 +31,7 @@ public:
 
     void normalize();
 
-    void neg();
+    void inv();
 
     float dot(Vector3f* other);
 
@@ -73,7 +73,7 @@ public:
 
     Vector2f normalized();
 
-    void neg();
+    void inv();
 
     float dot(Vector2f* other);
 
@@ -115,7 +115,7 @@ public:
 
     void normalize();
 
-    void neg();
+    void inv();
 
     float dot(Vector4f* other);
 

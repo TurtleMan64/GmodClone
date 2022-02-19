@@ -14,6 +14,7 @@
 #include <cstring>
 #include <algorithm>
 
+#include "../main/main.hpp"
 #include "input.hpp"
 #include "../entities/camera.hpp"
 #include "maths.hpp"
@@ -25,7 +26,6 @@
 #include "../entities/player.hpp"
 #include "split.hpp"
 #include "../network/tcpclient.hpp"
-#include "../main/main.hpp"
 
 #ifdef DEV_MODE
 #include <iostream>
@@ -68,6 +68,7 @@ void Input::pollInputs()
     Input::inputs.INPUT_PREVIOUS_RB          = Input::inputs.INPUT_RB;
     Input::inputs.INPUT_PREVIOUS_START       = Input::inputs.INPUT_START;
     Input::inputs.INPUT_PREVIOUS_ESC         = Input::inputs.INPUT_ESC;
+    Input::inputs.INPUT_PREVIOUS_F5          = Input::inputs.INPUT_F5;
 
     Input::inputs.INPUT_PREVIOUS_X  = Input::inputs.INPUT_X;
     Input::inputs.INPUT_PREVIOUS_Y  = Input::inputs.INPUT_Y;
@@ -88,6 +89,7 @@ void Input::pollInputs()
     Input::inputs.INPUT_SELECT      = false;
     Input::inputs.INPUT_START       = false;
     Input::inputs.INPUT_ESC         = false;
+    Input::inputs.INPUT_F5          = false;
 
     Input::inputs.INPUT_X  = 0;
     Input::inputs.INPUT_Y  = 0;
@@ -172,6 +174,10 @@ void Input::pollInputs()
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
     {
         Input::inputs.INPUT_ESC = true;
+    }
+    if (glfwGetKey(window, GLFW_KEY_F5) == GLFW_PRESS)
+    {
+        Input::inputs.INPUT_F5 = true;
     }
 
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
