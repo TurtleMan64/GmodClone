@@ -84,6 +84,7 @@ void LevelLoader::loadLevel(std::string mapName)
     else if (fname == "map6.map") Global::levelId = LVL_MAP6;
     else if (fname == "map7.map") Global::levelId = LVL_MAP7;
     else if (fname == "map8.map") Global::levelId = LVL_MAP8;
+    else if (fname == "map9.map") Global::levelId = LVL_MAP9;
 
     Global::deleteAllEntites();
 

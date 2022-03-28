@@ -1052,8 +1052,8 @@ void Global::readThreadBehavoir(TcpClient* client)
                                 Global::addChatMessage(name + " joined", Vector3f(0.5f, 1, 0.5f));
                             }
 
-                            char buf[206];
-                            numRead = client->read(buf, 206, 5); CHECK_CONNECTION_R(206, "Could not read player update");
+                            char buf[223];
+                            numRead = client->read(buf, 223, 5); CHECK_CONNECTION_R(223, "Could not read player update");
 
                             int idx = 0;
 
@@ -1102,6 +1102,11 @@ void Global::readThreadBehavoir(TcpClient* client)
                             memcpy(&onlinePlayer->weapon,             &buf[idx], 1); idx+=1;
                             memcpy(&onlinePlayer->health,             &buf[idx], 1); idx+=1;
                             memcpy(&onlinePlayer->inZoneTime,         &buf[idx], 4); idx+=4;
+                            memcpy(&onlinePlayer->isOnRope,           &buf[idx], 1); idx+=1;
+                            memcpy(&onlinePlayer->ropeAnchor.x,       &buf[idx], 4); idx+=4;
+                            memcpy(&onlinePlayer->ropeAnchor.y,       &buf[idx], 4); idx+=4;
+                            memcpy(&onlinePlayer->ropeAnchor.z,       &buf[idx], 4); idx+=4;
+                            memcpy(&onlinePlayer->ropeLength,         &buf[idx], 4); idx+=4;
                             memcpy(&onlinePlayer->animTimerStand,     &buf[idx], 4); idx+=4;
                             memcpy(&onlinePlayer->animTimerWalk,      &buf[idx], 4); idx+=4;
                             memcpy(&onlinePlayer->animTimerRun,       &buf[idx], 4); idx+=4;
@@ -1597,7 +1602,7 @@ void Global::writeThreadBehavior(TcpClient* client)
             //Send main player message
             if (Global::player != nullptr)
             {
-                char buf[203];
+                char buf[220];
                 buf[0] = 2;
 
                 int idx = 1;
@@ -1647,6 +1652,11 @@ void Global::writeThreadBehavior(TcpClient* client)
                 memcpy(&buf[idx], (char*)&Global::player->weapon,             1); idx += 1;
                 memcpy(&buf[idx], (char*)&Global::player->health,             1); idx += 1;
                 memcpy(&buf[idx], (char*)&Global::player->inZoneTime,         4); idx += 4;
+                memcpy(&buf[idx], (char*)&Global::player->isOnRope,           1); idx += 1;
+                memcpy(&buf[idx], (char*)&Global::player->ropeAnchor.x,       4); idx += 4;
+                memcpy(&buf[idx], (char*)&Global::player->ropeAnchor.y,       4); idx += 4;
+                memcpy(&buf[idx], (char*)&Global::player->ropeAnchor.z,       4); idx += 4;
+                memcpy(&buf[idx], (char*)&Global::player->ropeLength,         4); idx += 4;
                 memcpy(&buf[idx], (char*)&Global::player->animTimerStand,     4); idx += 4;
                 memcpy(&buf[idx], (char*)&Global::player->animTimerWalk,      4); idx += 4;
                 memcpy(&buf[idx], (char*)&Global::player->animTimerRun,       4); idx += 4;
@@ -1662,7 +1672,7 @@ void Global::writeThreadBehavior(TcpClient* client)
                 memcpy(&buf[idx], (char*)&Global::player->animBlend,          4); idx += 4;
                 memcpy(&buf[idx], (char*)&currServerSyncedTime,               8); idx += 8;
 
-                numWritten = client->write(buf, 203, 5); CHECK_CONNECTION_W(203, "Could not write player update");
+                numWritten = client->write(buf, 220, 5); CHECK_CONNECTION_W(220, "Could not write player update");
             }
 
             lastSentPlayerMsg = glfwGetTime();

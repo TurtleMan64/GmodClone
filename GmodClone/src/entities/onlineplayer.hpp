@@ -14,27 +14,6 @@ class Animation;
 class OnlinePlayer : public Entity
 {
 private:
-    //static std::list<TexturedModel*> modelsHead;
-    //static std::list<TexturedModel*> modelsFall;
-    //static std::list<TexturedModel*> modelsJump;
-    //static std::list<TexturedModel*> modelsSlide;
-    //static std::list<TexturedModel*> modelsSquat;
-    //static std::list<TexturedModel*> modelsStand;
-
-    static AnimatedModel* modelShrek;
-
-    static Animation* animationStand;
-    static Animation* animationWalk;
-    static Animation* animationRun;
-    static Animation* animationCrouch;
-    static Animation* animationCrawl;
-    static Animation* animationSlide;
-    static Animation* animationJump;
-    static Animation* animationFall;
-    static Animation* animationClimb;
-    static Animation* animationSwing;
-
-    //Dummy* head = nullptr;
     GUIText* nametag = nullptr;
 
     Animation* getAnimation(char index);
@@ -106,6 +85,16 @@ public:
     char weapon = WEAPON_FIST;
 
     char health = 100;
+
+    Dummy* entityWeapon = nullptr;
+    Dummy* entityHookshot = nullptr;
+    Dummy* entityHookshotTip = nullptr;
+    Dummy* entityHookshotHandle = nullptr;
+    Dummy* entityHookshotChain = nullptr;
+
+    bool isOnRope = false;
+    Vector3f ropeAnchor;
+    float ropeLength = 1.0f;
 
     float inZoneTime = 0.0f;
 

@@ -30,8 +30,12 @@
 
 extern float dt;
 
-std::list<TexturedModel*> modelsGun;
-std::list<TexturedModel*> modelsBat;
+std::list<TexturedModel*> Player::modelsGun;
+std::list<TexturedModel*> Player::modelsBat;
+std::list<TexturedModel*> Player::modelsHookshot;
+std::list<TexturedModel*> Player::modelsHookshotTip;
+std::list<TexturedModel*> Player::modelsHookshotHandle;
+std::list<TexturedModel*> Player::modelsHookshotChain;
 
 AnimatedModel* Player::modelShrek  = nullptr;
 
@@ -46,9 +50,6 @@ Animation* Player::animationFall   = nullptr;
 Animation* Player::animationClimb  = nullptr;
 Animation* Player::animationSwing  = nullptr;
 
-//AnimatedModel* modelShrek2 = nullptr;
-//Animation* animationFlair = nullptr;
-
 Player::Player()
 {
     scale = 0.5f;
@@ -60,8 +61,12 @@ Player::Player()
     lookDir.set(0, 0, -1);
     visible = true;
 
-    ObjLoader::loadModel(&modelsGun , "res/Models/Gun/", "GunInHand");
-    ObjLoader::loadModel(&modelsBat , "res/Models/Bat/", "Bat");
+    ObjLoader::loadModel(&Player::modelsGun,            "res/Models/Gun/",      "GunInHand");
+    ObjLoader::loadModel(&Player::modelsBat,            "res/Models/Bat/",      "Bat");
+    ObjLoader::loadModel(&Player::modelsHookshot,       "res/Models/Hookshot/", "HookshotFull");
+    ObjLoader::loadModel(&Player::modelsHookshotTip,    "res/Models/Hookshot/", "HookshotTip");
+    ObjLoader::loadModel(&Player::modelsHookshotHandle, "res/Models/Hookshot/", "HookshotHandle");
+    ObjLoader::loadModel(&Player::modelsHookshotChain,  "res/Models/Hookshot/", "Chain");
 
     Player::modelShrek = AnimatedModelLoader::loadAnimatedModel("res/Models/Human/", "ShrekFinalMeshFrankenstein.mesh");
     
@@ -75,38 +80,38 @@ Player::Player()
     Player::animationFall   = AnimationLoader::loadAnimation("res/Models/Human/Original Mixamo/Falling Idle.anim");
     Player::animationClimb  = AnimationLoader::loadAnimation("res/Models/Human/Original Mixamo/BlenderOutput/Climbing Ladder.anim");
 
-    //modelShrek2 = AnimatedModelLoader::loadAnimatedModel("res/Models/Human/", "ShrekFinalMesh.mesh");
-    //animationFlair = AnimationLoader::loadAnimation("res/Models/Human/Original Mixamo/Fast Run.anim");
-
-    //modelShrek2 = AnimatedModelLoader::loadAnimatedModel("res/Models/Grid/", "Box.mesh");
-    //animationFlair = AnimationLoader::loadAnimation("res/Models/Grid/Box.anim");
-
     for (int i = 0; i < Player::modelShrek->jointCount; i++)
     {
         Matrix4f mat;
         jointTransforms.push_back(mat);
     }
 
-    //printf("modelShrek2->jointCount joint count = %d\n", modelShrek2->jointCount);
-    //for (int i = 0; i < modelShrek2->jointCount; i++)
-    //{
-    //    Matrix4f mat;
-    //    jointTransforms.push_back(mat);
-    //}
+    entityWeapon         = new Dummy(&Player::modelsGun);            INCR_NEW("Dummy");
+    entityHookshot       = new Dummy(&Player::modelsHookshot);       INCR_NEW("Dummy");
+    entityHookshotTip    = new Dummy(&Player::modelsHookshotTip);    INCR_NEW("Dummy");
+    entityHookshotHandle = new Dummy(&Player::modelsHookshotHandle); INCR_NEW("Dummy");
+    entityHookshotChain  = new Dummy(&Player::modelsHookshotChain);  INCR_NEW("Dummy");
 
-    weaponModel = new Dummy(&modelsGun); INCR_NEW("Dummy");
-    weaponModel->visible = false;
+    entityWeapon        ->visible = false;
+    entityHookshot      ->visible = false;
+    entityHookshotTip   ->visible = false;
+    entityHookshotHandle->visible = false;
+    entityHookshotChain ->visible = false;
 
-    entitiesToRender.push_back(weaponModel);
+    entitiesToRender.push_back(entityWeapon);
+    entitiesToRender.push_back(entityHookshot);
+    entitiesToRender.push_back(entityHookshotTip);
+    entitiesToRender.push_back(entityHookshotHandle);
+    entitiesToRender.push_back(entityHookshotChain);
 }
 
-Player::~Player() //this should never actually get called
+Player::~Player() //this should never actually get called since the only player never is deleted
 {
-    if (weaponModel != nullptr)
-    {
-        delete weaponModel; INCR_DEL("Dummy");
-        weaponModel = nullptr;
-    }
+    if (entityWeapon         != nullptr) { delete entityWeapon;         INCR_DEL("Dummy"); entityWeapon         = nullptr; }
+    if (entityHookshot       != nullptr) { delete entityHookshot;       INCR_DEL("Dummy"); entityHookshot       = nullptr; }
+    if (entityHookshotTip    != nullptr) { delete entityHookshotTip;    INCR_DEL("Dummy"); entityHookshotTip    = nullptr; }
+    if (entityHookshotHandle != nullptr) { delete entityHookshotHandle; INCR_DEL("Dummy"); entityHookshotHandle = nullptr; }
+    if (entityHookshotChain  != nullptr) { delete entityHookshotChain;  INCR_DEL("Dummy"); entityHookshotChain  = nullptr; }
 }
 
 void Player::step()
@@ -157,7 +162,7 @@ void Player::step()
         updateCamera();
 
         GuiManager::addGuiToRender(GuiTextureResources::textureHealthbarBG);
-        weaponModel->visible = false;
+        entityWeapon->visible = false;
 
         vel.set(0, 0, 0);
 
@@ -289,10 +294,21 @@ void Player::step()
         float stickAngle = atan2f(Input::inputs.INPUT_Y, Input::inputs.INPUT_X) - Maths::PI/2; //angle you are holding on the stick, with 0 being up
         float stickRadius = sqrtf(Input::inputs.INPUT_X*Input::inputs.INPUT_X + Input::inputs.INPUT_Y*Input::inputs.INPUT_Y);
 
-        Vector3f dirForward = Maths::projectOntoPlane(&lookDir, &yAxis);
-        dirForward.setLength(stickRadius);
+        Vector3f velToAdd;
 
-        Vector3f velToAdd = Maths::rotatePoint(&dirForward, &yAxis, stickAngle + Maths::PI);
+        Vector3f dirForward = Maths::projectOntoPlane(&lookDir, &yAxis);
+
+        if (onGround)
+        {
+            dirForward = Maths::projectOntoPlane(&dirForward, &groundNormal);
+            velToAdd = Maths::rotatePoint(&dirForward, &groundNormal, -(stickAngle + Maths::PI));
+        }
+        else
+        {
+            velToAdd = Maths::rotatePoint(&dirForward, &yAxis, stickAngle + Maths::PI);
+        }
+
+        velToAdd.setLength(stickRadius);
 
         if (onGround)
         {
@@ -571,6 +587,62 @@ void Player::step()
 
             default:
                 break;
+        }
+    }
+
+    // Swinging from rope
+    if (!isOnRope && Input::inputs.INPUT_RIGHT_CLICK && !Input::inputs.INPUT_PREVIOUS_RIGHT_CLICK)
+    {
+        Vector3f camDir = Global::gameCamera->target - Global::gameCamera->eye;
+        camDir.setLength(100.0f);
+
+        Vector3f target = eyePosition + camDir;
+        CollisionResult result = CollisionChecker::checkCollision(&eyePosition, &target);
+
+        if (result.hit)
+        {
+            isOnRope = true;
+            ropeAnchor = result.collidePosition;
+            ropeLength = result.distanceToPosition;
+        }
+    }
+
+    if (isOnRope)
+    {
+        if (Input::inputs.INPUT_RIGHT_CLICK)
+        {
+            Vector3f newVel = vel.scaleCopy(dt);
+
+            for (int i = 0; i < 15; i++) //arbitrary number of iterations
+            {
+                Vector3f nextPosition = eyePosition + newVel;
+
+                Vector3f toAnchorNext    = ropeAnchor - nextPosition;
+
+                if (toAnchorNext.length() > ropeLength) //Rope will be under tension
+                {
+                    toAnchorNext.normalize();
+                    Vector3f newTightPosition = ropeAnchor + toAnchorNext.scaleCopy(-ropeLength);
+                    newVel = newTightPosition - eyePosition;
+
+                    if (vel.lengthSquared() > 2.0f*2.0f)
+                    {
+                        newVel.setLength(vel.length()*dt);
+                    }
+                }
+                else
+                {
+                    break;
+                }
+            }
+
+            newVel.scale(1.0f/dt);
+
+            vel = newVel;
+        }
+        else
+        {
+            isOnRope = false;
         }
     }
 
@@ -870,9 +942,19 @@ void Player::step()
     }
     else
     {
+        //Slow vel down due air drag, but just horizontally
         float ySpd = vel.y;
         vel.y = 0;
-        vel = Maths::applyDrag(&vel, -DRAG_AIR, dt); //Slow vel down due air drag, but just horizontally
+
+        if (!isOnRope)
+        {
+            vel = Maths::applyDrag(&vel, -DRAG_AIR, dt);
+        }
+        else
+        {
+            vel = Maths::applyDrag(&vel, -DRAG_ROPE, dt);
+        }
+
         vel.y = ySpd;
     }
 
@@ -896,7 +978,7 @@ void Player::step()
         VFOV_ADDITION = 0;
     }
 
-    // Make you look in towards the center of the map.
+    // Make you look in towards the center of the map when spawning.
     if (Global::timeUntilRoundStarts > 5.0f)
     {
         if (Global::levelId == LVL_MAP4 ||
@@ -915,84 +997,6 @@ void Player::step()
     }
 
     updateCamera();
-
-    Vector3f xAx(1, 0, 0);
-    Vector3f yAx(0, 1, 0);
-    Vector3f zAx(0, 0, 1);
-
-    switch (weapon)
-    {
-        case WEAPON_FIST:
-        {
-            weaponModel->visible = false;
-            break;
-        }
-
-        case WEAPON_BAT:
-        {
-            weaponModel->visible = true;
-            weaponModel->setModels(&modelsBat);
-            weaponModel->position = Global::gameCamera->eye;
-
-            Maths::sphereAnglesFromPosition(&lookDir, &weaponModel->rotY, &weaponModel->rotZ);
-
-            Matrix4f* mat = &weaponModel->transformationMatrix;
-
-            mat->setIdentity();
-            mat->translate(&weaponModel->position);
-
-            mat->rotate(Maths::toRadians(weaponModel->rotY), &yAx);
-            mat->rotate(Maths::toRadians(weaponModel->rotZ), &zAx);
-
-            Vector3f armOffset(0.25f, -0.4f, 0.2f);
-            mat->translate(&armOffset);
-
-            float batRot = 0.0f;
-            if (useWeaponTimer > WEAPON_COOLDOWN_BAT - 0.07f)
-            {
-                float prog = -((useWeaponTimer - WEAPON_COOLDOWN_BAT)/0.07f);
-                batRot = -prog*80;
-            }
-            else
-            {
-                float prog = useWeaponTimer/0.33f;
-                batRot = -prog*80;
-            }
-
-            mat->rotate(Maths::toRadians(28), &xAx);
-            mat->rotate(Maths::toRadians(70 + batRot), &zAx);
-
-            break;
-        }
-
-        case WEAPON_GUN:
-        {
-            weaponModel->visible = true;
-            weaponModel->setModels(&modelsGun);
-            weaponModel->position = Global::gameCamera->eye;
-
-            Maths::sphereAnglesFromPosition(&lookDir, &weaponModel->rotY, &weaponModel->rotZ);
-
-            Matrix4f* mat = &weaponModel->transformationMatrix;
-
-            mat->setIdentity();
-            mat->translate(&weaponModel->position);
-
-            mat->rotate(Maths::toRadians(weaponModel->rotY), &yAx);
-            mat->rotate(Maths::toRadians(weaponModel->rotZ), &zAx);
-
-            Vector3f armOffset(-0.103481f, -0.158837f, 0.132962f);
-            if (useWeaponTimer > WEAPON_COOLDOWN_GUN - 0.06f)
-            {
-                armOffset.x += (useWeaponTimer - WEAPON_COOLDOWN_GUN)*0.3f;
-            }
-            mat->translate(&armOffset);
-
-            break;
-        }
-
-        default: break;
-    }
 
     if (health < 100)
     {
@@ -1032,6 +1036,11 @@ float Player::getPushValueGround(float deltaTime)
 
 float Player::getPushValueAir(float deltaTime)
 {
+    if (isOnRope)
+    {
+        return FORCE_PUSH_ROPE;
+    }
+
     double fps = 1.0/deltaTime;
     return (float)(9.917682 + (14.17576 - 9.917682)/(1.0 + pow(fps/1.386981, 1.042293)));
 }
@@ -1110,6 +1119,8 @@ void Player::updateCamera()
     Vector3f eye(&position);
     eye.y += eyeHeightSmooth;
 
+    eyePosition = eye;
+
     Vector3f target(&eye);
     target = target + lookDir;
 
@@ -1136,8 +1147,8 @@ void Player::useWeapon()
         default: break;
     }
 
-    Vector3f target = Global::gameCamera->eye + camDir;
-    CollisionResult result = CollisionChecker::checkCollision(&Global::gameCamera->eye, &target);
+    Vector3f target = eyePosition + camDir;
+    CollisionResult result = CollisionChecker::checkCollision(&eyePosition, &target);
 
     Entity* hitEntity = nullptr;
 
@@ -1155,9 +1166,9 @@ void Player::useWeapon()
             case ENTITY_BALL:
             {
                 Vector3f ballCollisionSpot;
-                if (Maths::lineSegmentIntersectsSphere(&Global::gameCamera->eye, &target, &e->position, e->scale, &ballCollisionSpot))
+                if (Maths::lineSegmentIntersectsSphere(&eyePosition, &target, &e->position, e->scale, &ballCollisionSpot))
                 {
-                    float thisDistSquared = (Global::gameCamera->eye - ballCollisionSpot).lengthSquared();
+                    float thisDistSquared = (eyePosition - ballCollisionSpot).lengthSquared();
                     if (thisDistSquared < distToCollisionSquared)
                     {
                         distToCollisionSquared = thisDistSquared;
@@ -1194,9 +1205,9 @@ void Player::useWeapon()
         }
 
         Vector3f playerCollisionSpot;
-        if (Maths::lineSegmentIntersectsCylinder(&Global::gameCamera->eye, &target, &e->position, &otherHead, COLLISION_RADIUS, &playerCollisionSpot))
+        if (Maths::lineSegmentIntersectsCylinder(&eyePosition, &target, &e->position, &otherHead, COLLISION_RADIUS, &playerCollisionSpot))
         {
-            float thisDistSquared = (Global::gameCamera->eye - playerCollisionSpot).lengthSquared();
+            float thisDistSquared = (eyePosition - playerCollisionSpot).lengthSquared();
             if (thisDistSquared < distToCollisionSquared)
             {
                 distToCollisionSquared = thisDistSquared;
@@ -1211,7 +1222,7 @@ void Player::useWeapon()
     if (hitEntity != nullptr)
     {
         camDir.normalize();
-        Vector3f hitPosition = Global::gameCamera->eye + camDir.scaleCopy(sqrtf(distToCollisionSquared));
+        Vector3f hitPosition = eyePosition + camDir.scaleCopy(sqrtf(distToCollisionSquared));
         hitEntity->getHit(&hitPosition, &camDir, weapon);
     }
     else if (result.hit)
@@ -1265,7 +1276,12 @@ int Player::getSoundEffectImpact(int soundType)
 
 std::vector<Entity*>* Player::getEntitiesToRender()
 {
-    return &entitiesToRender;
+    if (health > 0)
+    {
+        return &entitiesToRender;
+    }
+
+    return nullptr;
 }
 
 std::list<TexturedModel*>* Player::getModels()
@@ -1275,14 +1291,12 @@ std::list<TexturedModel*>* Player::getModels()
 
 AnimatedModel* Player::getAnimatedModel()
 {
-    if (Global::camThirdPerson)
+    if (Global::camThirdPerson && health > 0)
     {
         return Player::modelShrek;
     }
-    else
-    {
-        return nullptr;
-    }
+
+    return nullptr;
 }
 
 void Player::die()
@@ -1339,7 +1353,7 @@ void Player::reset()
     externalVel.set(0, 0, 0);
     externalVelPrev.set(0, 0, 0);
     visible = true;
-    weaponModel->visible = false;
+    entityWeapon->visible = false;
 }
 
 void Player::animateMe()
@@ -1359,12 +1373,12 @@ void Player::animateMe()
         if (animSpd > 4.0f)
         {
             animTypeNew = 8;
-            animTimerCrawl += 0.45f*animSpd*dt;
+            animTimerCrawl += 0.35f*animSpd*dt;
         }
         else
         {
             animTypeNew = 3;
-            animTimerCrouch += 0.45f*animSpd*dt;
+            animTimerCrouch += 0.55f*animSpd*dt;
         }
     }
     else if (slideTimer > 0.0f)
@@ -1481,6 +1495,187 @@ void Player::animateMe()
         pose["Head"].rotation = Quaternion::multiply(pose["Head"].rotation, myRotationPitch);
         
         modelShrek->calculateJointTransformsFromPose(&jointTransforms, &pose);
+    }
+
+    // Animating our weapons / hookshot
+    if (isOnRope)
+    {
+        entityHookshot      ->visible = false;
+        entityHookshotHandle->visible = true;
+        entityHookshotTip   ->visible = true;
+        entityHookshotChain ->visible = true;
+
+        if (Global::camThirdPerson)
+        {
+            Vector4f handPos = Vector4f(0.790331f, 1.40341f, -0.002674f, 1.0f);
+            handPos = jointTransforms[11].transform(&handPos);
+            entityHookshotHandle->position.set(handPos.x, handPos.y, handPos.z);
+
+            Matrix4f rotMat = Quaternion::fromMatrix(&jointTransforms[11]).toRotationMatrix();
+
+            entityHookshotHandle->transformationMatrix.setIdentity();
+            entityHookshotHandle->transformationMatrix.translate(&entityHookshotHandle->position);
+            entityHookshotHandle->transformationMatrix.multiply(&rotMat, &entityHookshotHandle->transformationMatrix);
+
+            Vector4f hookPos = Vector4f(0.790331f + 0.2f, 1.40341f, -0.002674f, 1.0f);
+            hookPos = jointTransforms[11].transform(&hookPos);
+            entityHookshotChain->position.set(hookPos.x, hookPos.y, hookPos.z);
+
+            Vector3f toAnchor = ropeAnchor - entityHookshotChain->position;
+            Maths::sphereAnglesFromPosition(&toAnchor, &entityHookshotChain->rotY, &entityHookshotChain->rotZ);
+            entityHookshotChain->updateTransformationMatrix(toAnchor.length() - 0.2f, 1.0f, 1.0f);
+        }
+        else
+        {
+            Maths::createFirstPersonTransform(&eyePosition, 0.2f, -0.158837f, -0.132962f, &lookDir, &entityHookshotHandle->transformationMatrix);
+
+            Vector4f p(0, 0, 0, 1);
+            Vector4f j = entityHookshotHandle->transformationMatrix.transform(&p);
+            Vector3f hookPos(j.x, j.y, j.z);
+            hookPos = hookPos + lookDir.scaleCopy(0.2f);
+
+            Vector3f toAnchor = ropeAnchor - hookPos;
+            entityHookshotChain->position = hookPos;
+            Maths::sphereAnglesFromPosition(&toAnchor, &entityHookshotChain->rotY, &entityHookshotChain->rotZ);
+            entityHookshotChain->updateTransformationMatrix(toAnchor.length() - 0.2f, 1.0f, 1.0f);
+        }
+
+        entityHookshotTip->position = ropeAnchor;
+        entityHookshotTip->rotY = entityHookshotChain->rotY;
+        entityHookshotTip->rotZ = entityHookshotChain->rotZ;
+        entityHookshotTip->updateTransformationMatrix();
+    }
+    else
+    {
+        entityHookshot      ->visible = true;
+        entityHookshotHandle->visible = false;
+        entityHookshotTip   ->visible = false;
+        entityHookshotChain ->visible = false;
+
+        if (Global::camThirdPerson)
+        {
+            Vector4f handPos = Vector4f(0.790331f, 1.40341f, -0.002674f, 1.0f);
+            handPos = jointTransforms[11].transform(&handPos);
+            entityHookshot->position.set(handPos.x, handPos.y, handPos.z);
+
+            Matrix4f rotMat = Quaternion::fromMatrix(&jointTransforms[11]).toRotationMatrix();
+
+            entityHookshot->transformationMatrix.setIdentity();
+            entityHookshot->transformationMatrix.translate(&entityHookshot->position);
+            entityHookshot->transformationMatrix.multiply(&rotMat, &entityHookshot->transformationMatrix);
+            
+            //11 = left hand
+            //2 = right hand
+            //23 = hips
+            //25 = head
+        }
+        else
+        {
+            Maths::createFirstPersonTransform(&eyePosition, 0.2f, -0.158837f, -0.132962f, &lookDir, &entityHookshot->transformationMatrix);
+        }
+    }
+
+    Vector3f xAx(1, 0, 0);
+    Vector3f yAx(0, 1, 0);
+    Vector3f zAx(0, 0, 1);
+
+    switch (weapon)
+    {
+        case WEAPON_FIST:
+        {
+            entityWeapon->visible = false;
+            break;
+        }
+
+        case WEAPON_BAT:
+        {
+            entityWeapon->visible = true;
+            entityWeapon->setModels(&modelsBat);
+
+            if (Global::camThirdPerson)
+            {
+                Vector4f handPos = Vector4f(-0.790331f, 1.40341f, -0.002674f, 1.0f);
+                handPos = jointTransforms[2].transform(&handPos);
+                entityWeapon->position.set(handPos.x, handPos.y, handPos.z);
+
+                Matrix4f rotMat = Quaternion::fromMatrix(&jointTransforms[2]).toRotationMatrix();
+
+                Matrix4f rotOff = Quaternion::fromEulerAngles(-Maths::PI/2, 0, 0).toRotationMatrix();
+
+                entityWeapon->transformationMatrix.setIdentity();
+                entityWeapon->transformationMatrix.translate(&entityWeapon->position);
+                entityWeapon->transformationMatrix.multiply(&rotMat, &entityWeapon->transformationMatrix);
+                entityWeapon->transformationMatrix.multiply(&rotOff, &entityWeapon->transformationMatrix);
+            }
+            else
+            {
+                entityWeapon->position = eyePosition;
+
+                Maths::sphereAnglesFromPosition(&lookDir, &entityWeapon->rotY, &entityWeapon->rotZ);
+
+                Matrix4f* mat = &entityWeapon->transformationMatrix;
+
+                mat->setIdentity();
+                mat->translate(&entityWeapon->position);
+
+                mat->rotate(Maths::toRadians(entityWeapon->rotY), &yAx);
+                mat->rotate(Maths::toRadians(entityWeapon->rotZ), &zAx);
+
+                Vector3f armOffset(0.25f, -0.4f, 0.2f);
+                mat->translate(&armOffset);
+
+                float batRot = 0.0f;
+                if (useWeaponTimer > WEAPON_COOLDOWN_BAT - 0.07f)
+                {
+                    float prog = -((useWeaponTimer - WEAPON_COOLDOWN_BAT)/0.07f);
+                    batRot = -prog*80;
+                }
+                else
+                {
+                    float prog = useWeaponTimer/0.33f;
+                    batRot = -prog*80;
+                }
+
+                mat->rotate(Maths::toRadians(28), &xAx);
+                mat->rotate(Maths::toRadians(70 + batRot), &zAx);
+            }
+            break;
+        }
+
+        case WEAPON_GUN:
+        {
+            entityWeapon->visible = true;
+            entityWeapon->setModels(&modelsGun);
+
+            if (Global::camThirdPerson)
+            {
+                entityWeapon->visible = false;
+            }
+            else
+            {
+                entityWeapon->position = eyePosition;
+
+                Maths::sphereAnglesFromPosition(&lookDir, &entityWeapon->rotY, &entityWeapon->rotZ);
+
+                Matrix4f* mat = &entityWeapon->transformationMatrix;
+
+                mat->setIdentity();
+                mat->translate(&entityWeapon->position);
+
+                mat->rotate(Maths::toRadians(entityWeapon->rotY), &yAx);
+                mat->rotate(Maths::toRadians(entityWeapon->rotZ), &zAx);
+
+                Vector3f armOffset(-0.103481f, -0.158837f, 0.132962f);
+                if (useWeaponTimer > WEAPON_COOLDOWN_GUN - 0.06f)
+                {
+                    armOffset.x += (useWeaponTimer - WEAPON_COOLDOWN_GUN)*0.3f;
+                }
+                mat->translate(&armOffset);
+            }
+            break;
+        }
+
+        default: break;
     }
 }
 

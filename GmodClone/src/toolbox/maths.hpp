@@ -169,6 +169,9 @@ public:
     // of a point a in the new basis
     static Vector3f coordinatesRelativeToBasis(Vector3f* v1, Vector3f* v2, Vector3f* v3, Vector3f* a);
 
+    //Useful for putting a model in front of the camera, with some offset.
+    static void createFirstPersonTransform(Vector3f* center, float x, float y, float z, Vector3f* lookDir, Matrix4f* outTransform);
+
     //tests if a point is inside a cylinder
     static bool pointIsInCylinder(Vector3f* point, Vector3f* cylinderEnd1, Vector3f* cylinderEnd2, float cylinderRadius);
 

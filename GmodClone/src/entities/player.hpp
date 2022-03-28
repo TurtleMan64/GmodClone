@@ -13,7 +13,7 @@ class Animation;
 
 class Player : public Entity
 {
-private:
+public:
     static AnimatedModel* modelShrek;
 
     static Animation* animationStand;
@@ -27,6 +27,14 @@ private:
     static Animation* animationClimb;
     static Animation* animationSwing;
 
+    static std::list<TexturedModel*> modelsGun;
+    static std::list<TexturedModel*> modelsBat;
+    static std::list<TexturedModel*> modelsHookshot;
+    static std::list<TexturedModel*> modelsHookshotTip;
+    static std::list<TexturedModel*> modelsHookshotHandle;
+    static std::list<TexturedModel*> modelsHookshotChain;
+
+private:
     void animateMe();
     Animation* getAnimation(char index);
     float getAnimationTimer(char index);
@@ -58,6 +66,7 @@ public:
     static constexpr float HUMAN_HEIGHT = 1.74f; //1.74 meters
 
     float eyeHeightSmooth = HUMAN_HEIGHT;
+    Vector3f eyePosition;
 
     static constexpr float COLLISION_RADIUS = HUMAN_HEIGHT/4; //collision is 2 spheres
 
@@ -71,9 +80,13 @@ public:
 
     static constexpr float FORCE_GRAVITY = 540.0f/36.7816091954f;
 
+    static constexpr float FORCE_PUSH_ROPE = 4.0f;
+
     static constexpr float DRAG_GROUND = 8.15f;
 
     static constexpr float DRAG_AIR = 1.0;
+
+    static constexpr float DRAG_ROPE = 0.1f;
 
     //replaced with a function that calculates this, since its slightly different based on fps
     //const float JUMP_SPEED = 5.33f;
@@ -132,7 +145,15 @@ public:
 
     char health = 100;
 
-    Dummy* weaponModel = nullptr;
+    Dummy* entityWeapon = nullptr;
+    Dummy* entityHookshot = nullptr;
+    Dummy* entityHookshotTip = nullptr;
+    Dummy* entityHookshotHandle = nullptr;
+    Dummy* entityHookshotChain = nullptr;
+
+    bool isOnRope = false;
+    Vector3f ropeAnchor;
+    float ropeLength = 1.0f;
 
     // Animation variables
     float animTimerStand   = 0.0f;

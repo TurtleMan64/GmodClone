@@ -25,26 +25,6 @@
 #include "../animation/jointtransform.hpp"
 #include "../toolbox/quaternion.hpp"
 
-//std::list<TexturedModel*> OnlinePlayer::modelsHead;
-//std::list<TexturedModel*> OnlinePlayer::modelsFall;
-//std::list<TexturedModel*> OnlinePlayer::modelsJump;
-//std::list<TexturedModel*> OnlinePlayer::modelsSlide;
-//std::list<TexturedModel*> OnlinePlayer::modelsSquat;
-//std::list<TexturedModel*> OnlinePlayer::modelsStand;
-
-AnimatedModel* OnlinePlayer::modelShrek = nullptr;
-
-Animation* OnlinePlayer::animationStand  = nullptr;
-Animation* OnlinePlayer::animationWalk   = nullptr;
-Animation* OnlinePlayer::animationRun    = nullptr;
-Animation* OnlinePlayer::animationCrouch = nullptr;
-Animation* OnlinePlayer::animationCrawl  = nullptr;
-Animation* OnlinePlayer::animationSlide  = nullptr;
-Animation* OnlinePlayer::animationJump   = nullptr;
-Animation* OnlinePlayer::animationFall   = nullptr;
-Animation* OnlinePlayer::animationClimb  = nullptr;
-Animation* OnlinePlayer::animationSwing  = nullptr;
-
 extern float dt;
 
 OnlinePlayer::OnlinePlayer(std::string name, float x, float y, float z)
@@ -59,26 +39,33 @@ OnlinePlayer::OnlinePlayer(std::string name, float x, float y, float z)
     lastGroundNormal.set(0, 1, 0);
     updateTransformationMatrix();
 
-    //head = new Dummy(&OnlinePlayer::modelsHead); INCR_NEW("Dummy");
-
-    //entitiesToRender.push_back(this);
-    //entitiesToRender.push_back(head);
-
-    for (int i = 0; i < OnlinePlayer::modelShrek->jointCount; i++)
+    for (int i = 0; i < Player::modelShrek->jointCount; i++)
     {
         Matrix4f mat;
         jointTransforms.push_back(mat);
     }
+
+    entityWeapon         = new Dummy(&Player::modelsGun);            INCR_NEW("Dummy");
+    entityHookshot       = new Dummy(&Player::modelsHookshot);       INCR_NEW("Dummy");
+    entityHookshotTip    = new Dummy(&Player::modelsHookshotTip);    INCR_NEW("Dummy");
+    entityHookshotHandle = new Dummy(&Player::modelsHookshotHandle); INCR_NEW("Dummy");
+    entityHookshotChain  = new Dummy(&Player::modelsHookshotChain);  INCR_NEW("Dummy");
+
+    entityWeapon        ->visible = false;
+    entityHookshot      ->visible = false;
+    entityHookshotTip   ->visible = false;
+    entityHookshotHandle->visible = false;
+    entityHookshotChain ->visible = false;
+
+    entitiesToRender.push_back(entityWeapon);
+    entitiesToRender.push_back(entityHookshot);
+    entitiesToRender.push_back(entityHookshotTip);
+    entitiesToRender.push_back(entityHookshotHandle);
+    entitiesToRender.push_back(entityHookshotChain);
 }
 
 OnlinePlayer::~OnlinePlayer()
 {
-    //if (head != nullptr)
-    //{
-    //    delete head; INCR_DEL("Dummy");
-    //    head = nullptr;
-    //}
-
     if (nametag != nullptr)
     {
         Global::gameOnlinePlayersSharedMutex.lock();
@@ -87,6 +74,12 @@ OnlinePlayer::~OnlinePlayer()
 
         nametag = nullptr;
     }
+
+    if (entityWeapon         != nullptr) { delete entityWeapon;         INCR_DEL("Dummy"); entityWeapon         = nullptr; }
+    if (entityHookshot       != nullptr) { delete entityHookshot;       INCR_DEL("Dummy"); entityHookshot       = nullptr; }
+    if (entityHookshotTip    != nullptr) { delete entityHookshotTip;    INCR_DEL("Dummy"); entityHookshotTip    = nullptr; }
+    if (entityHookshotHandle != nullptr) { delete entityHookshotHandle; INCR_DEL("Dummy"); entityHookshotHandle = nullptr; }
+    if (entityHookshotChain  != nullptr) { delete entityHookshotChain;  INCR_DEL("Dummy"); entityHookshotChain  = nullptr; }
 }
 
 void OnlinePlayer::step()
@@ -99,57 +92,9 @@ void OnlinePlayer::step()
 
     visible = true;
 
-    //if (isCrouching)
-    //{
-    //    Vector3f dir = lookDir;
-    //    dir.y = 0;
-    //    dir.setLength(0.081732f);
-    //
-    //    head->position = position + dir;
-    //    head->position.y += 0.839022f;
-    //
-    //    head->visible = true;
-    //}
-    //else if (slideTimer > 0.0f)
-    //{
-    //    head->visible = false;
-    //}
-    //else if (vel.y > 1.0f)
-    //{
-    //    head->visible = false;
-    //}
-    //else if (vel.y < -1.0f)
-    //{
-    //    head->visible = false;
-    //}
-    //else
-    //{
-    //    Vector3f dir = lookDir;
-    //    dir.y = 0;
-    //    dir.setLength(0.024672f);
-    //
-    //    head->position = position + dir;
-    //    head->position.y += 1.52786f;
-    //
-    //    head->visible = true;
-    //}
-    //
-    //Maths::sphereAnglesFromPosition(&lookDir, &rotY, &rotZ);
-    //head->rotZ = rotZ;
-    //head->rotY = rotY;
-    //
-    //rotZ = 0;
-
-    //printf("%f\t%f\n", glfwGetTime(), position.x);
-    //printf("dt = %f vel = %f pos = %f\n", dt, vel.x, position.x);
-
-    //updateTransformationMatrix();
-    //head->updateTransformationMatrix();
-
     if (health <= 0)
     {
         visible = false;
-        //head->visible = false;
     }
 
     Vector3f nametagPos = position;
@@ -256,7 +201,7 @@ void OnlinePlayer::step()
 
     if (animBlend <= 1.0f)
     {
-        pose = modelShrek->calculateAnimationPose(
+        pose = Player::modelShrek->calculateAnimationPose(
             getAnimation(animType),
             getAnimationTimer(animType),
             getAnimation(animTypePrevious),
@@ -265,7 +210,7 @@ void OnlinePlayer::step()
     }
     else
     {
-        pose = modelShrek->calculateAnimationPose(
+        pose = Player::modelShrek->calculateAnimationPose(
             getAnimation(animType),
             getAnimationTimer(animType));
     }
@@ -318,41 +263,125 @@ void OnlinePlayer::step()
     Quaternion myRotationPitch = Quaternion::fromEulerAngles(0, 0, directionHead);
     pose["Head"].rotation = Quaternion::multiply(pose["Head"].rotation, myRotationPitch);
         
-    modelShrek->calculateJointTransformsFromPose(&jointTransforms, &pose);
+    Player::modelShrek->calculateJointTransformsFromPose(&jointTransforms, &pose);
+
+    // Animating our weapons / hookshot
+    if (isOnRope)
+    {
+        entityHookshot      ->visible = false;
+        entityHookshotHandle->visible = true;
+        entityHookshotTip   ->visible = true;
+        entityHookshotChain ->visible = true;
+
+        Vector4f handPos = Vector4f(0.790331f, 1.40341f, -0.002674f, 1.0f);
+        handPos = jointTransforms[11].transform(&handPos);
+        entityHookshotHandle->position.set(handPos.x, handPos.y, handPos.z);
+
+        Matrix4f rotMat = Quaternion::fromMatrix(&jointTransforms[11]).toRotationMatrix();
+
+        entityHookshotHandle->transformationMatrix.setIdentity();
+        entityHookshotHandle->transformationMatrix.translate(&entityHookshotHandle->position);
+        entityHookshotHandle->transformationMatrix.multiply(&rotMat, &entityHookshotHandle->transformationMatrix);
+
+        Vector4f hookPos = Vector4f(0.790331f + 0.2f, 1.40341f, -0.002674f, 1.0f);
+        hookPos = jointTransforms[11].transform(&hookPos);
+        entityHookshotChain->position.set(hookPos.x, hookPos.y, hookPos.z);
+
+        Vector3f toAnchor = ropeAnchor - entityHookshotChain->position;
+        Maths::sphereAnglesFromPosition(&toAnchor, &entityHookshotChain->rotY, &entityHookshotChain->rotZ);
+        entityHookshotChain->updateTransformationMatrix(toAnchor.length() - 0.2f, 1.0f, 1.0f);
+
+        entityHookshotTip->position = ropeAnchor;
+        entityHookshotTip->rotY = entityHookshotChain->rotY;
+        entityHookshotTip->rotZ = entityHookshotChain->rotZ;
+        entityHookshotTip->updateTransformationMatrix();
+    }
+    else
+    {
+        entityHookshot      ->visible = true;
+        entityHookshotHandle->visible = false;
+        entityHookshotTip   ->visible = false;
+        entityHookshotChain ->visible = false;
+
+        Vector4f handPos = Vector4f(0.790331f, 1.40341f, -0.002674f, 1.0f);
+        handPos = jointTransforms[11].transform(&handPos);
+        entityHookshot->position.set(handPos.x, handPos.y, handPos.z);
+
+        Matrix4f rotMat = Quaternion::fromMatrix(&jointTransforms[11]).toRotationMatrix();
+
+        entityHookshot->transformationMatrix.setIdentity();
+        entityHookshot->transformationMatrix.translate(&entityHookshot->position);
+        entityHookshot->transformationMatrix.multiply(&rotMat, &entityHookshot->transformationMatrix);
+    }
+
+    Vector3f xAx(1, 0, 0);
+    Vector3f yAx(0, 1, 0);
+    Vector3f zAx(0, 0, 1);
+
+    switch (weapon)
+    {
+        case WEAPON_FIST:
+        {
+            entityWeapon->visible = false;
+            break;
+        }
+
+        case WEAPON_BAT:
+        {
+            entityWeapon->visible = true;
+            entityWeapon->setModels(&Player::modelsBat);
+
+            Vector4f handPos = Vector4f(-0.790331f, 1.40341f, -0.002674f, 1.0f);
+            handPos = jointTransforms[2].transform(&handPos);
+            entityWeapon->position.set(handPos.x, handPos.y, handPos.z);
+
+            Matrix4f rotMat = Quaternion::fromMatrix(&jointTransforms[2]).toRotationMatrix();
+
+            Matrix4f rotOff = Quaternion::fromEulerAngles(-Maths::PI/2, 0, 0).toRotationMatrix();
+
+            entityWeapon->transformationMatrix.setIdentity();
+            entityWeapon->transformationMatrix.translate(&entityWeapon->position);
+            entityWeapon->transformationMatrix.multiply(&rotMat, &entityWeapon->transformationMatrix);
+            entityWeapon->transformationMatrix.multiply(&rotOff, &entityWeapon->transformationMatrix);
+            break;
+        }
+
+        case WEAPON_GUN:
+        {
+            //entityWeapon->visible = true;
+            //entityWeapon->setModels(&Player::modelsGun);
+
+            entityWeapon->visible = false;
+            break;
+        }
+
+        default: break;
+    }
 }
 
 std::vector<Entity*>* OnlinePlayer::getEntitiesToRender()
 {
-    //return &entitiesToRender;
+    if (health > 0)
+    {
+        return &entitiesToRender;
+    }
+
     return nullptr;
 }
 
 std::list<TexturedModel*>* OnlinePlayer::getModels()
 {
-    //if (isCrouching)
-    //{
-    //    return &OnlinePlayer::modelsSquat;
-    //}
-    //else if (slideTimer > 0.0f)
-    //{
-    //    return &OnlinePlayer::modelsSlide;
-    //}
-    //else if (vel.y > 1.0f)
-    //{
-    //    return &OnlinePlayer::modelsJump;
-    //}
-    //else if (vel.y < -1.0f)
-    //{
-    //    return &OnlinePlayer::modelsFall;
-    //}
-    //
-    //return &OnlinePlayer::modelsStand;
     return nullptr;
 }
 
 AnimatedModel* OnlinePlayer::getAnimatedModel()
 {
-    return OnlinePlayer::modelShrek;
+    if (health > 0)
+    {
+        return Player::modelShrek;
+    }
+
+    return nullptr;
 }
 
 int OnlinePlayer::getEntityType()
@@ -478,43 +507,36 @@ void OnlinePlayer::updateCamera()
 
 void OnlinePlayer::loadModels()
 {
-    if (OnlinePlayer::modelShrek == nullptr)
-    {
-        //ObjLoader::loadModel(&OnlinePlayer::modelsHead , "res/Models/Human/", "ShrekHead");
-        //ObjLoader::loadModel(&OnlinePlayer::modelsFall , "res/Models/Human/", "ShrekFall");
-        //ObjLoader::loadModel(&OnlinePlayer::modelsJump , "res/Models/Human/", "ShrekJump");
-        //ObjLoader::loadModel(&OnlinePlayer::modelsSlide, "res/Models/Human/", "ShrekSlide");
-        //ObjLoader::loadModel(&OnlinePlayer::modelsSquat, "res/Models/Human/", "ShrekSquat");
-        //ObjLoader::loadModel(&OnlinePlayer::modelsStand, "res/Models/Human/", "ShrekStand");
-
-        OnlinePlayer::modelShrek = AnimatedModelLoader::loadAnimatedModel("res/Models/Human/", "ShrekFinalMeshFrankenstein.mesh");
-    
-        OnlinePlayer::animationStand  = AnimationLoader::loadAnimation("res/Models/Human/Original Mixamo/Breathing Idle.anim");
-        OnlinePlayer::animationWalk   = AnimationLoader::loadAnimation("res/Models/Human/Original Mixamo/Slow Run.anim");
-        OnlinePlayer::animationRun    = AnimationLoader::loadAnimation("res/Models/Human/Original Mixamo/Fast Run.anim");
-        OnlinePlayer::animationCrouch = AnimationLoader::loadAnimation("res/Models/Human/Original Mixamo/Crouched Walking.anim");
-        OnlinePlayer::animationCrawl  = AnimationLoader::loadAnimation("res/Models/Human/Original Mixamo/Running Crawl.anim");
-        OnlinePlayer::animationSlide  = AnimationLoader::loadAnimation("res/Models/Human/Original Mixamo/Running Slide 2.anim");
-        OnlinePlayer::animationJump   = AnimationLoader::loadAnimation("res/Models/Human/Original Mixamo/Jumping Up.anim");
-        OnlinePlayer::animationFall   = AnimationLoader::loadAnimation("res/Models/Human/Original Mixamo/Falling Idle.anim");
-        OnlinePlayer::animationClimb  = AnimationLoader::loadAnimation("res/Models/Human/Original Mixamo/BlenderOutput/Climbing Ladder.anim");
-    }
+    //if (OnlinePlayer::modelShrek == nullptr)
+    //{
+    //    OnlinePlayer::modelShrek = AnimatedModelLoader::loadAnimatedModel("res/Models/Human/", "ShrekFinalMeshFrankenstein.mesh");
+    //
+    //    OnlinePlayer::animationStand  = AnimationLoader::loadAnimation("res/Models/Human/Original Mixamo/Breathing Idle.anim");
+    //    OnlinePlayer::animationWalk   = AnimationLoader::loadAnimation("res/Models/Human/Original Mixamo/Slow Run.anim");
+    //    OnlinePlayer::animationRun    = AnimationLoader::loadAnimation("res/Models/Human/Original Mixamo/Fast Run.anim");
+    //    OnlinePlayer::animationCrouch = AnimationLoader::loadAnimation("res/Models/Human/Original Mixamo/Crouched Walking.anim");
+    //    OnlinePlayer::animationCrawl  = AnimationLoader::loadAnimation("res/Models/Human/Original Mixamo/Running Crawl.anim");
+    //    OnlinePlayer::animationSlide  = AnimationLoader::loadAnimation("res/Models/Human/Original Mixamo/Running Slide 2.anim");
+    //    OnlinePlayer::animationJump   = AnimationLoader::loadAnimation("res/Models/Human/Original Mixamo/Jumping Up.anim");
+    //    OnlinePlayer::animationFall   = AnimationLoader::loadAnimation("res/Models/Human/Original Mixamo/Falling Idle.anim");
+    //    OnlinePlayer::animationClimb  = AnimationLoader::loadAnimation("res/Models/Human/Original Mixamo/BlenderOutput/Climbing Ladder.anim");
+    //}
 }
 
 Animation* OnlinePlayer::getAnimation(char index)
 {
     switch (index)
     {
-        case 0:  return OnlinePlayer::animationStand;
-        case 1:  return OnlinePlayer::animationWalk;
-        case 2:  return OnlinePlayer::animationRun;
-        case 3:  return OnlinePlayer::animationCrouch;
-        case 4:  return OnlinePlayer::animationSlide;
-        case 5:  return OnlinePlayer::animationJump;
-        case 6:  return OnlinePlayer::animationFall;
-        case 7:  return OnlinePlayer::animationClimb;
-        case 8:  return OnlinePlayer::animationCrawl;
-        default: return OnlinePlayer::animationStand;
+        case 0:  return Player::animationStand;
+        case 1:  return Player::animationWalk;
+        case 2:  return Player::animationRun;
+        case 3:  return Player::animationCrouch;
+        case 4:  return Player::animationSlide;
+        case 5:  return Player::animationJump;
+        case 6:  return Player::animationFall;
+        case 7:  return Player::animationClimb;
+        case 8:  return Player::animationCrawl;
+        default: return Player::animationStand;
     }
 }
 

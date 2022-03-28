@@ -21,8 +21,7 @@ d 1
 numImages 4
 animSpeed 1.5
 mixLinear
-map_Kd LavaBig/Lava1.png
-LavaBig/Lava2.png
-LavaBig/Lava3.png
-LavaBig/Lava4.png
-
+map_Kd ../../Images/LavaBig/Lava1.png
+../../Images/LavaBig/Lava2.png
+../../Images/LavaBig/Lava3.png
+../../Images/LavaBig/Lava4.png

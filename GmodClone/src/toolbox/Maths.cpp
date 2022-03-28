@@ -224,6 +224,25 @@ Vector3f Maths::coordinatesRelativeToBasis(Vector3f* v1, Vector3f* v2, Vector3f*
     return Vector3f(A[0][3], A[1][3], A[2][3]);
 }
 
+void Maths::createFirstPersonTransform(Vector3f* center, float x, float y, float z, Vector3f* lookDir, Matrix4f* mat)
+{
+    Vector3f yAx(0, 1, 0);
+    Vector3f zAx(0, 0, 1);
+
+    float ry;
+    float rz;
+    Maths::sphereAnglesFromPosition(lookDir, &ry, &rz);
+
+    mat->setIdentity();
+    mat->translate(center);
+
+    mat->rotate(Maths::toRadians(ry), &yAx);
+    mat->rotate(Maths::toRadians(rz), &zAx);
+
+    Vector3f offset(x, y, z);
+    mat->translate(&offset);
+}
+
 //Returns the difference between the two angles
 //ang1 and ang2 should be in degrees
 float Maths::compareTwoAngles(float origAng1, float origAng2)
