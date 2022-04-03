@@ -49,7 +49,7 @@
 #include "../toolbox/matrix.hpp"
 #include "../entities/camera.hpp"
 #include "../entities/dummy.hpp"
-#include "../loader/ObjLoader.hpp"
+#include "../loader/objloader.hpp"
 #include "../entities/light.hpp"
 #include "../collision/collisionchecker.hpp"
 #include "../toolbox/split.hpp"

@@ -1,10 +1,14 @@
 #ifndef TCPCLIENT_H
 #define TCPCLIENT_H
 
+#ifdef _WIN32
 #include <winsock2.h>
 #include <Windows.h>
 #include <ws2tcpip.h>
-#include <string>
+#else
+#define SOCKET int
+#define INVALID_SOCKET -1
+#endif
 
 class TcpClient
 {

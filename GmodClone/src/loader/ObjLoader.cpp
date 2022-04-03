@@ -8,7 +8,7 @@
 #include <list>
 
 #include "../collision/collisionmodel.hpp"
-#include "objLoader.hpp"
+#include "objloader.hpp"
 #include "../models/models.hpp"
 #include "../renderEngine/renderEngine.hpp"
 #include "../toolbox/vector.hpp"

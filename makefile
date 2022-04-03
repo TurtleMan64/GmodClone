@@ -1,4 +1,4 @@
-TARGET_EXEC ?= GmodClone/GMC.out
+TARGET_EXEC ?= ../GmodClone/GMC.out
 
 BUILD_DIR ?= makebuild
 SRC_DIRS ?= GmodClone/src/

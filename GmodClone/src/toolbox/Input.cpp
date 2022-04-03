@@ -4,7 +4,7 @@
 #include <GLFW/glfw3.h>
 #include <Windows.h>
 #else
-//#include "/usr/include/GLFW/glfw3.h"
+#include "/usr/include/GLFW/glfw3.h"
 #endif
 
 #include <iostream>
@@ -32,7 +32,7 @@
 #include <fstream>
 #endif
 
-#ifdef _WIN32
+//#ifdef _WIN32
 
 InputStruct Input::inputs{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
 
@@ -197,10 +197,14 @@ void Input::pollInputs()
         Input::inputs.INPUT_X = 1;
     }
 
+    #ifdef _WIN32
     if ((GetKeyState(VK_CAPITAL) & 1) != 0)
     {
         Input::inputs.INPUT_ACTION3 = true;
     }
+    #else
+
+    #endif
 
     /*
     if (glfwGetKey(window, GLFW_KEY_0) == GLFW_PRESS)
@@ -660,4 +664,4 @@ void Input::keyboardCallback(GLFWwindow* /**/, int key, int /**/, int action, in
     }
 }
 
-#endif
+//#endif

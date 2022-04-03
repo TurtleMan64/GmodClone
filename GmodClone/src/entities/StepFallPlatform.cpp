@@ -1,5 +1,6 @@
 #include <list>
 #include <set>
+#include <cstring>
 
 #include "../toolbox/vector.hpp"
 #include "stepfallplatform.hpp"

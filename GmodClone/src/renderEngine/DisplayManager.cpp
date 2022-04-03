@@ -109,13 +109,24 @@ int createDisplay()
     icons[2].pixels = SOIL_load_image((Global::pathToEXE+"res/Images/Icon32.png" ).c_str(), &icons[2].width, &icons[2].height, 0, SOIL_LOAD_RGBA);
     icons[3].pixels = SOIL_load_image((Global::pathToEXE+"res/Images/Icon48.png" ).c_str(), &icons[3].width, &icons[3].height, 0, SOIL_LOAD_RGBA);
     icons[4].pixels = SOIL_load_image((Global::pathToEXE+"res/Images/Icon64.png" ).c_str(), &icons[4].width, &icons[4].height, 0, SOIL_LOAD_RGBA);
-    icons[5].pixels = SOIL_load_image((Global::pathToEXE+"res/Images/Icon128.png").c_str(), &icons[4].width, &icons[4].height, 0, SOIL_LOAD_RGBA);
-    glfwSetWindowIcon(window, 6, icons);
-    SOIL_free_image_data(icons[0].pixels);
-    SOIL_free_image_data(icons[1].pixels);
-    SOIL_free_image_data(icons[2].pixels);
-    SOIL_free_image_data(icons[3].pixels);
-    SOIL_free_image_data(icons[4].pixels);
+    icons[5].pixels = SOIL_load_image((Global::pathToEXE+"res/Images/Icon128.png").c_str(), &icons[5].width, &icons[5].height, 0, SOIL_LOAD_RGBA);
+    
+    if (icons[0].pixels != nullptr &&
+        icons[1].pixels != nullptr &&
+        icons[2].pixels != nullptr &&
+        icons[3].pixels != nullptr &&
+        icons[4].pixels != nullptr &&
+        icons[5].pixels != nullptr)
+    {
+        glfwSetWindowIcon(window, 6, icons);
+    }
+
+    if (icons[0].pixels != nullptr) { SOIL_free_image_data(icons[0].pixels); }
+    if (icons[1].pixels != nullptr) { SOIL_free_image_data(icons[1].pixels); }
+    if (icons[2].pixels != nullptr) { SOIL_free_image_data(icons[2].pixels); }
+    if (icons[3].pixels != nullptr) { SOIL_free_image_data(icons[3].pixels); }
+    if (icons[4].pixels != nullptr) { SOIL_free_image_data(icons[4].pixels); }
+    if (icons[5].pixels != nullptr) { SOIL_free_image_data(icons[5].pixels); }
 
     // glad: load all OpenGL function pointers
     // ---------------------------------------

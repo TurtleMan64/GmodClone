@@ -1,11 +1,11 @@
+#ifdef _WIN32
+
 #include <winsock2.h>
 #include <Windows.h>
 #include <ws2tcpip.h>
 #include <string>
 
 #include "tcpclient.hpp"
-
-#ifdef _WIN32
 
 // Link with ws2_32.lib
 #pragma comment(lib, "Ws2_32.lib")
@@ -310,6 +310,64 @@ void TcpClient::close()
         closesocket(sd);
         sd = INVALID_SOCKET;
     }
+}
+
+#else
+
+#include <string>
+
+#include "tcpclient.hpp"
+
+bool TcpClient::hasInit = false;
+
+TcpClient::TcpClient(SOCKET socket)
+{
+
+}
+
+TcpClient::TcpClient(char* ip, int port, int timeoutSec)
+{
+
+}
+
+TcpClient::TcpClient(const char* ip, int port, int timeoutSec)
+{
+
+}
+
+TcpClient::~TcpClient()
+{
+
+}
+
+void TcpClient::attemptConnection(char* ip, int port, int timeoutSec)
+{
+
+}
+
+bool TcpClient::isOpen()
+{
+    return false;
+}
+
+int TcpClient::write(const void* bytes, int numBytesToSend, int timeoutSec)
+{
+    return 0;
+}
+
+int TcpClient::write(void* bytes, int numBytesToSend, int timeoutSec)
+{
+    return 0;
+}
+
+int TcpClient::read(void* buffer, int numBytesToRead, int timeoutSec)
+{
+    return 0;
+}
+
+void TcpClient::close()
+{
+
 }
 
 #endif
