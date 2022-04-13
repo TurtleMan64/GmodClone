@@ -2,9 +2,9 @@
 #include <GLFW/glfw3.h>
 #include <SOIL/SOIL.h>
 
-#include <vector>  //for std::vector
+#include <vector>
 #include <list>
-#include <string>  //for std::string
+#include <string>
 #include <iostream>
 #include <fstream>
 #include <cmath>
@@ -34,7 +34,7 @@ RawModel Loader::loadToVAO(std::vector<float>* positions,
                            std::vector<int>* indicies)
 {
     GLuint vaoId = createVAO();
-    std::list<GLuint> vboIds;
+    std::vector<GLuint> vboIds;
 
     vboIds.push_back(bindIndiciesBuffer(indicies));
     vboIds.push_back(storeDataInAttributeList(0, 3, positions));
@@ -56,7 +56,7 @@ RawModel Loader::loadToVAO(std::vector<float>* positions,
                            std::vector<int>* indicies)
 {
     GLuint vaoId = createVAO();
-    std::list<GLuint> vboIds;
+    std::vector<GLuint> vboIds;
 
     vboIds.push_back(bindIndiciesBuffer(indicies));
     vboIds.push_back(storeDataInAttributeList(0, 3, positions));
@@ -87,7 +87,7 @@ std::vector<int> Loader::loadToVAO(std::vector<float>* positions, std::vector<fl
 RawModel Loader::loadToVAO(std::vector<float>* positions, int dimensions)
 {
     GLuint vaoId = createVAO();
-    std::list<GLuint> vboIds;
+    std::vector<GLuint> vboIds;
 
     vboIds.push_back(storeDataInAttributeList(0, dimensions, positions));
 
@@ -352,9 +352,9 @@ void Loader::deleteTexture(GLuint texId)
     }
 }
 
-void Loader::deleteTexturedModels(std::list<TexturedModel*>* tm)
+void Loader::deleteTexturedModels(Model* tm)
 {
-    for (auto model : (*tm))
+    for (TexturedModel* model : tm->models)
     {
         model->deleteMe();
     }

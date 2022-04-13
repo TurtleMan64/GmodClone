@@ -11,7 +11,7 @@
 #include "../audio/audioplayer.hpp"
 #include "../audio/source.hpp"
 
-std::list<TexturedModel*> Ball::models;
+Model Ball::models;
 
 extern float dt;
 
@@ -80,7 +80,7 @@ std::vector<Entity*>* Ball::getEntitiesToRender()
     return &entitiesToRender;
 }
 
-std::list<TexturedModel*>* Ball::getModels()
+Model* Ball::getModels()
 {
     return &Ball::models;
 }

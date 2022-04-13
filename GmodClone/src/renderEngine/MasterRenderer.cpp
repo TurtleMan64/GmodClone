@@ -182,7 +182,7 @@ void Master_processEntity(Entity* e)
                 continue;
             }
 
-            std::list<TexturedModel*>* modellist = entity->getModels();
+            Model* modellist = entity->getModels();
 
             if (modellist == nullptr)
             {
@@ -203,7 +203,7 @@ void Master_processEntity(Entity* e)
                     default: break;
                 }
 
-                for (TexturedModel* entityModel : (*modellist))
+                for (TexturedModel* entityModel : modellist->models)
                 {
                     std::list<Entity*>* list = &(*mapToUse)[entityModel];
                     list->push_back(entity);
@@ -211,7 +211,7 @@ void Master_processEntity(Entity* e)
             }
             else
             {
-                for (TexturedModel* entityModel : (*modellist))
+                for (TexturedModel* entityModel : modellist->models)
                 {
                     std::unordered_map<TexturedModel*, std::list<Entity*>>* mapToUse = nullptr;
 

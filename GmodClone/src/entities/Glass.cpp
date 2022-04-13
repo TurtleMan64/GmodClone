@@ -17,7 +17,7 @@
 #include "../audio/audioplayer.hpp"
 #include "../network/tcpclient.hpp"
 
-std::list<TexturedModel*> Glass::models;
+Model Glass::models;
 CollisionModel* Glass::baseCM = nullptr;
 
 extern float dt;
@@ -107,7 +107,7 @@ std::vector<Entity*>* Glass::getEntitiesToRender()
     return &entitiesToRender;
 }
 
-std::list<TexturedModel*>* Glass::getModels()
+Model* Glass::getModels()
 {
     return &Glass::models;
 }

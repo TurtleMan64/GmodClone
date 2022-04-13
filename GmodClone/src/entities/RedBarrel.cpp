@@ -13,7 +13,7 @@
 #include "../audio/source.hpp"
 #include "../entities/entity.hpp"
 
-std::list<TexturedModel*> RedBarrel::models;
+Model RedBarrel::models;
 CollisionModel* RedBarrel::baseCM = nullptr;
 
 extern float dt;
@@ -49,7 +49,7 @@ std::vector<Entity*>* RedBarrel::getEntitiesToRender()
     return &entitiesToRender;
 }
 
-std::list<TexturedModel*>* RedBarrel::getModels()
+Model* RedBarrel::getModels()
 {
     return &RedBarrel::models;
 }

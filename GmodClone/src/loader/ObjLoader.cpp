@@ -5,7 +5,7 @@
 #include <iostream>
 #include <vector>
 #include <unordered_map>
-#include <list>
+#include <vector>
 
 #include "../collision/collisionmodel.hpp"
 #include "objloader.hpp"
@@ -19,8 +19,9 @@
 #include "../collision/triangle3d.hpp"
 #include "fakeTexture.hpp"
 #include "../toolbox/maths.hpp"
+#include "../models/models.hpp"
 
-int ObjLoader::ObjLoader::loadModel(std::list<TexturedModel*>* models, std::string filePath, std::string fileName)
+int ObjLoader::ObjLoader::loadModel(Model* models, std::string filePath, std::string fileName)
 {
     int attemptBinaryOBJ = loadBinaryModel(models, filePath, fileName+".binobj");
 
@@ -51,7 +52,7 @@ int ObjLoader::ObjLoader::loadModel(std::list<TexturedModel*>* models, std::stri
 //int numAdditionalVertices = 0;
 
 //Each TexturedModel contained within 'models' must be deleted later.
-int ObjLoader::loadBinaryModel(std::list<TexturedModel*>* models, std::string filePath, std::string fileName)
+int ObjLoader::loadBinaryModel(Model* models, std::string filePath, std::string fileName)
 {
     if (models->size() > 0)
     {
@@ -224,7 +225,7 @@ int ObjLoader::loadBinaryModel(std::list<TexturedModel*>* models, std::string fi
 }
 
 //Each TexturedModel contained within 'models' must be deleted later.
-int ObjLoader::loadVclModel(std::list<TexturedModel*>* models, std::string filePath, std::string fileName)
+int ObjLoader::loadVclModel(Model* models, std::string filePath, std::string fileName)
 {
     if (models->size() > 0)
     {
@@ -394,7 +395,7 @@ int ObjLoader::loadVclModel(std::list<TexturedModel*>* models, std::string fileP
     return 0;
 }
 
-int ObjLoader::loadObjModel(std::list<TexturedModel*>* models, std::string filePath, std::string fileName)
+int ObjLoader::loadObjModel(Model* models, std::string filePath, std::string fileName)
 {
     if (models->size() > 0)
     {
@@ -800,7 +801,7 @@ void ObjLoader::parseMtl(std::string filePath, std::string fileName, std::unorde
 
 }
 
-int ObjLoader::loadObjModelWithMTL(std::list<TexturedModel*>* models, std::string filePath, std::string fileNameOBJ, std::string fileNameMTL)
+int ObjLoader::loadObjModelWithMTL(Model* models, std::string filePath, std::string fileNameOBJ, std::string fileNameMTL)
 {
     if (models->size() > 0)
     {
@@ -978,7 +979,7 @@ int ObjLoader::loadObjModelWithMTL(std::list<TexturedModel*>* models, std::strin
     return 0;
 }
 
-int ObjLoader::loadBinaryModelWithMTL(std::list<TexturedModel*>* models, std::string filePath, std::string fileNameBin, std::string fileNameMTL)
+int ObjLoader::loadBinaryModelWithMTL(Model* models, std::string filePath, std::string fileNameBin, std::string fileNameMTL)
 {
     if (models->size() > 0)
     {

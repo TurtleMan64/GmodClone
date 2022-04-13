@@ -16,7 +16,7 @@
 #include "../audio/audioplayer.hpp"
 #include "../network/tcpclient.hpp"
 
-std::list<TexturedModel*> FencePlatform::models;
+Model FencePlatform::models;
 CollisionModel* FencePlatform::baseCM = nullptr;
 
 extern float dt;
@@ -63,7 +63,7 @@ std::vector<Entity*>* FencePlatform::getEntitiesToRender()
     return &entitiesToRender;
 }
 
-std::list<TexturedModel*>* FencePlatform::getModels()
+Model* FencePlatform::getModels()
 {
     return &FencePlatform::models;
 }

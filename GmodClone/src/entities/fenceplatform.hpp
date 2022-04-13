@@ -13,7 +13,7 @@ class CollisionModel;
 class FencePlatform : public Entity
 {
 private:
-    static std::list<TexturedModel*> models;
+    static Model models;
     static CollisionModel* baseCM;
 
     CollisionModel* cm = nullptr;
@@ -26,7 +26,7 @@ public:
 
     std::vector<Entity*>* getEntitiesToRender();
 
-    std::list<TexturedModel*>* getModels();
+    Model* getModels();
 
     static void loadModels();
 

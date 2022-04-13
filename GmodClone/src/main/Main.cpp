@@ -125,7 +125,7 @@ double timeNew = 0;
 Camera* Global::gameCamera   = nullptr;
 Player* Global::player       = nullptr;
 
-std::list<TexturedModel*> Global::stageModels;
+Model Global::stageModels;
 Dummy* Global::stageEntity  = nullptr;
 
 Light* Global::lights[4] = {nullptr, nullptr, nullptr, nullptr};

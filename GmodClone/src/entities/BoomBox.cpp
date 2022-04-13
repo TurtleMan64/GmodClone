@@ -16,7 +16,7 @@
 #include "../audio/audioplayer.hpp"
 #include "../network/tcpclient.hpp"
 
-std::list<TexturedModel*> BoomBox::models;
+Model BoomBox::models;
 CollisionModel* BoomBox::baseCM = nullptr;
 
 extern float dt;
@@ -67,7 +67,7 @@ std::vector<Entity*>* BoomBox::getEntitiesToRender()
     return &entitiesToRender;
 }
 
-std::list<TexturedModel*>* BoomBox::getModels()
+Model* BoomBox::getModels()
 {
     return &BoomBox::models;
 }

@@ -1,16 +1,17 @@
 #ifndef ENTITIES_H
 #define ENTITIES_H
 
-class TexturedModel;
 class CollisionModel;
 class Triangle3D;
 class AnimatedModel;
 
 #include <list>
 #include <vector>
+#include <string>
+
 #include "../toolbox/vector.hpp"
 #include "../toolbox/matrix.hpp"
-#include <string>
+#include "../models/models.hpp"
 
 #define ENTITY_BLANK 0
 #define ENTITY_NPC 1
@@ -57,10 +58,10 @@ public:
     //The pose of each bone in the animated model
     std::vector<Matrix4f> jointTransforms;
 
-    static void deleteModels(std::list<TexturedModel*>* modelsToDelete);
+    static void deleteModels(Model* modelsToDelete);
     static void deleteCollisionModel(CollisionModel** colModelToDelete);
     //0 = rendered first (default), 1 = second, 2 = third, 3 = fourth + transparent (no depth testing)
-    static void setModelsRenderOrder(std::list<TexturedModel*>* models, char newOrder);
+    static void setModelsRenderOrder(Model* models, char newOrder);
 
 public:
     Entity();
@@ -71,7 +72,7 @@ public:
 
     virtual std::vector<Entity*>* getEntitiesToRender();
 
-    virtual std::list<TexturedModel*>* getModels();
+    virtual Model* getModels();
 
     virtual AnimatedModel* getAnimatedModel();
 

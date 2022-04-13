@@ -11,7 +11,7 @@ class Source;
 class Ball : public Entity
 {
 private:
-    static std::list<TexturedModel*> models;
+    static Model models;
 
     Source* src = nullptr;
 
@@ -28,7 +28,7 @@ public:
 
     std::vector<Entity*>* getEntitiesToRender();
 
-    std::list<TexturedModel*>* getModels();
+    Model* getModels();
 
     static void loadModels();
 

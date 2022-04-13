@@ -30,12 +30,12 @@
 
 extern float dt;
 
-std::list<TexturedModel*> Player::modelsGun;
-std::list<TexturedModel*> Player::modelsBat;
-std::list<TexturedModel*> Player::modelsHookshot;
-std::list<TexturedModel*> Player::modelsHookshotTip;
-std::list<TexturedModel*> Player::modelsHookshotHandle;
-std::list<TexturedModel*> Player::modelsHookshotChain;
+Model Player::modelsGun;
+Model Player::modelsBat;
+Model Player::modelsHookshot;
+Model Player::modelsHookshotTip;
+Model Player::modelsHookshotHandle;
+Model Player::modelsHookshotChain;
 
 AnimatedModel* Player::modelShrek  = nullptr;
 
@@ -1284,7 +1284,7 @@ std::vector<Entity*>* Player::getEntitiesToRender()
     return nullptr;
 }
 
-std::list<TexturedModel*>* Player::getModels()
+Model* Player::getModels()
 {
     return nullptr;
 }

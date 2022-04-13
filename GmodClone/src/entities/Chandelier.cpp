@@ -8,8 +8,8 @@
 #include "entity.hpp"
 #include "light.hpp"
 
-std::list<TexturedModel*> Chandelier::modelsChandelier;
-std::list<TexturedModel*> Chandelier::modelsWallLamp;
+Model Chandelier::modelsChandelier;
+Model Chandelier::modelsWallLamp;
 
 extern float dt;
 
@@ -76,7 +76,7 @@ std::vector<Entity*>* Chandelier::getEntitiesToRender()
     return &entitiesToRender;
 }
 
-std::list<TexturedModel*>* Chandelier::getModels()
+Model* Chandelier::getModels()
 {
     if (type == 0)
     {

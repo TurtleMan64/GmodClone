@@ -9,7 +9,7 @@
 #include "../models/models.hpp"
 #include "../animation/animatedmodel.hpp"
 
-#include <list>
+#include <vector>
 #include <iostream>
 #include <string>
 
@@ -76,7 +76,7 @@ std::vector<Entity*>* Entity::getEntitiesToRender()
     return nullptr;
 }
 
-std::list<TexturedModel*>* Entity::getModels()
+Model* Entity::getModels()
 {
     return nullptr;
 }
@@ -86,9 +86,9 @@ AnimatedModel* Entity::getAnimatedModel()
     return nullptr;
 }
 
-void Entity::setModelsRenderOrder(std::list<TexturedModel*>* models, char newOrder)
+void Entity::setModelsRenderOrder(Model* models, char newOrder) // TODO can move this into Model
 {
-    for (TexturedModel* model : (*models))
+    for (TexturedModel* model : models->models)
     {
         model->renderOrder = newOrder;
     }
@@ -114,14 +114,14 @@ void Entity::updateTransformationMatrixYXZ()
     Maths::createTransformationMatrixYXZ(&transformationMatrix, &position, rotX, rotY, rotZ, scale);
 }
 
-void Entity::deleteModels(std::list<TexturedModel*>* modelsToDelete)
+void Entity::deleteModels(Model* modelsToDelete) // TODO can move this into Model
 {
-    for (auto model : (*modelsToDelete))
+    for (TexturedModel* model : modelsToDelete->models)
     {
         model->deleteMe();
         delete model; INCR_DEL("TexturedModel");
     }
-    modelsToDelete->clear();
+    modelsToDelete->models.clear();
 }
 
 void Entity::deleteCollisionModel(CollisionModel** colModelToDelete)

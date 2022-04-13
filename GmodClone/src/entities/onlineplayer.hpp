@@ -119,7 +119,7 @@ public:
 
     std::vector<Entity*>* getEntitiesToRender();
 
-    std::list<TexturedModel*>* getModels();
+    Model* getModels();
 
     AnimatedModel* getAnimatedModel();
 

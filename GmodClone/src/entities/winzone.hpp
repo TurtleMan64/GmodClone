@@ -11,7 +11,7 @@ class TexturedModel;
 class WinZone : public Entity
 {
 private:
-    static std::list<TexturedModel*> models;
+    static Model models;
 
 public:
     // Radius of each dimension of rectangular prism
@@ -26,7 +26,7 @@ public:
 
     static void loadModels();
 
-    std::list<TexturedModel*>* getModels();
+    Model* getModels();
 
     std::vector<Entity*>* getEntitiesToRender();
 };

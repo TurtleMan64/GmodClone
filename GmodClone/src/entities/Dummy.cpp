@@ -3,7 +3,7 @@
 #include "../toolbox/vector.hpp"
 #include "dummy.hpp"
 
-Dummy::Dummy(std::list<TexturedModel*>* models)
+Dummy::Dummy(Model* models)
 {
     myModels = models;
     scale = 1;
@@ -30,12 +30,12 @@ std::vector<Entity*>* Dummy::getEntitiesToRender()
     return &entitiesToRender;
 }
 
-std::list<TexturedModel*>* Dummy::getModels()
+Model* Dummy::getModels()
 {
     return myModels;
 }
 
-void Dummy::setModels(std::list<TexturedModel*>* newModels)
+void Dummy::setModels(Model* newModels)
 {
     myModels = newModels;
 }

@@ -98,7 +98,7 @@ public:
 
     static void deleteTexture(GLuint texId);
 
-    static void deleteTexturedModels(std::list<TexturedModel*>* tm);
+    static void deleteTexturedModels(Model* tm);
 
     static void printInfo();
 

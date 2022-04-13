@@ -8,7 +8,7 @@
 #include "../loader/objloader.hpp"
 #include "../entities/player.hpp"
 
-std::list<TexturedModel*> WinZone::models;
+Model WinZone::models;
 
 extern float dt;
 
@@ -41,7 +41,7 @@ void WinZone::step()
     }
 }
 
-std::list<TexturedModel*>* WinZone::getModels()
+Model* WinZone::getModels()
 {
     return &WinZone::models;
 }

@@ -14,8 +14,8 @@ class Dummy;
 class FallBlock : public Entity
 {
 private:
-    static std::list<TexturedModel*> models;
-    static std::list<TexturedModel*> modelsShadow;
+    static Model models;
+    static Model modelsShadow;
     static CollisionModel* baseCM;
 
     CollisionModel* cm = nullptr;
@@ -43,7 +43,7 @@ public:
 
     std::vector<Entity*>* getEntitiesToRender();
 
-    std::list<TexturedModel*>* getModels();
+    Model* getModels();
 
     static void loadModels();
 

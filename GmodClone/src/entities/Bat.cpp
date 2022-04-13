@@ -8,7 +8,7 @@
 #include "../loader/objloader.hpp"
 #include "../entities/entity.hpp"
 
-std::list<TexturedModel*> Bat::models;
+Model Bat::models;
 
 extern float dt;
 
@@ -41,7 +41,7 @@ std::vector<Entity*>* Bat::getEntitiesToRender()
     return &entitiesToRender;
 }
 
-std::list<TexturedModel*>* Bat::getModels()
+Model* Bat::getModels()
 {
     return &Bat::models;
 }

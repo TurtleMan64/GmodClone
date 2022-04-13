@@ -369,7 +369,7 @@ std::vector<Entity*>* OnlinePlayer::getEntitiesToRender()
     return nullptr;
 }
 
-std::list<TexturedModel*>* OnlinePlayer::getModels()
+Model* OnlinePlayer::getModels()
 {
     return nullptr;
 }

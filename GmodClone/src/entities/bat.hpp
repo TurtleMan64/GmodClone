@@ -10,7 +10,7 @@ class TexturedModel;
 class Bat : public Entity
 {
 private:
-    static std::list<TexturedModel*> models;
+    static Model models;
 
     float floatTimer = 0.0f;
 
@@ -21,7 +21,7 @@ public:
 
     std::vector<Entity*>* getEntitiesToRender();
 
-    std::list<TexturedModel*>* getModels();
+    Model* getModels();
 
     static void loadModels();
 

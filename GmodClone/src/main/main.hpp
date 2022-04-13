@@ -25,6 +25,7 @@ class GUIText;
 #include <condition_variable>
 
 #include "../toolbox/vector.hpp"
+#include "../models/models.hpp"
 
 #define GAME_STATE_PAUSED 0
 #define GAME_STATE_RUNNING 1
@@ -97,7 +98,7 @@ public:
     static Camera* gameCamera;
     static Player* player;
 
-    static std::list<TexturedModel*> stageModels;
+    static Model stageModels;
     static Dummy* stageEntity;
 
     static Light* lights[4];

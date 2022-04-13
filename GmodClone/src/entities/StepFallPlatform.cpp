@@ -14,7 +14,7 @@
 #include "../entities/player.hpp"
 #include "../network/tcpclient.hpp"
 
-std::list<TexturedModel*> StepFallPlatform::models;
+Model StepFallPlatform::models;
 CollisionModel* StepFallPlatform::baseCM = nullptr;
 
 extern float dt;
@@ -92,7 +92,7 @@ std::vector<Entity*>* StepFallPlatform::getEntitiesToRender()
     return &entitiesToRender;
 }
 
-std::list<TexturedModel*>* StepFallPlatform::getModels()
+Model* StepFallPlatform::getModels()
 {
     return &StepFallPlatform::models;
 }

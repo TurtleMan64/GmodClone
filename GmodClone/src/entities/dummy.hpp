@@ -9,10 +9,10 @@ class TexturedModel;
 class Dummy : public Entity
 {
 private:
-    std::list<TexturedModel*>* myModels;
+    Model* myModels;
 
 public:
-    Dummy(std::list<TexturedModel*>* models);
+    Dummy(Model* models);
 
     void step();
 
@@ -20,8 +20,8 @@ public:
 
     std::vector<Entity*>* getEntitiesToRender();
 
-    std::list<TexturedModel*>* getModels();
+    Model* getModels();
 
-    void setModels(std::list<TexturedModel*>* newModels);
+    void setModels(Model* newModels);
 };
 #endif

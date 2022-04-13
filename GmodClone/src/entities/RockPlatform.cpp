@@ -16,7 +16,7 @@
 #include "../audio/audioplayer.hpp"
 #include "../network/tcpclient.hpp"
 
-std::list<TexturedModel*> RockPlatform::models;
+Model RockPlatform::models;
 CollisionModel* RockPlatform::baseCM = nullptr;
 
 extern float dt;
@@ -78,7 +78,7 @@ std::vector<Entity*>* RockPlatform::getEntitiesToRender()
     return &entitiesToRender;
 }
 
-std::list<TexturedModel*>* RockPlatform::getModels()
+Model* RockPlatform::getModels()
 {
     return &RockPlatform::models;
 }

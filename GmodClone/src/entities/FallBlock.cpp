@@ -17,8 +17,8 @@
 #include "../network/tcpclient.hpp"
 #include "dummy.hpp"
 
-std::list<TexturedModel*> FallBlock::models;
-std::list<TexturedModel*> FallBlock::modelsShadow;
+Model FallBlock::models;
+Model FallBlock::modelsShadow;
 CollisionModel* FallBlock::baseCM = nullptr;
 
 FallBlock::FallBlock(std::string name, Vector3f pos, float phaseTimer)
@@ -209,7 +209,7 @@ std::vector<Entity*>* FallBlock::getEntitiesToRender()
     return &entitiesToRender;
 }
 
-std::list<TexturedModel*>* FallBlock::getModels()
+Model* FallBlock::getModels()
 {
     return &FallBlock::models;
 }

@@ -15,7 +15,7 @@
 #include "../entities/player.hpp"
 #include "../entities/onlineplayer.hpp"
 
-std::list<TexturedModel*> CollisionBlock::models;
+Model CollisionBlock::models;
 CollisionModel* CollisionBlock::baseCM = nullptr;
 
 extern float dt;
@@ -209,7 +209,7 @@ std::vector<Entity*>* CollisionBlock::getEntitiesToRender()
     return &entitiesToRender;
 }
 
-std::list<TexturedModel*>* CollisionBlock::getModels()
+Model* CollisionBlock::getModels()
 {
     return &CollisionBlock::models;
 }

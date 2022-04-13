@@ -7,7 +7,7 @@
 #include "../loader/objloader.hpp"
 #include "../entities/entity.hpp"
 
-std::list<TexturedModel*> HealthCube::models;
+Model HealthCube::models;
 
 extern float dt;
 
@@ -40,7 +40,7 @@ std::vector<Entity*>* HealthCube::getEntitiesToRender()
     return &entitiesToRender;
 }
 
-std::list<TexturedModel*>* HealthCube::getModels()
+Model* HealthCube::getModels()
 {
     return &HealthCube::models;
 }
