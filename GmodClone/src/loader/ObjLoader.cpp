@@ -52,9 +52,9 @@ int ObjLoader::ObjLoader::loadModel(Model* models, std::string filePath, std::st
 //int numAdditionalVertices = 0;
 
 //Each TexturedModel contained within 'models' must be deleted later.
-int ObjLoader::loadBinaryModel(Model* models, std::string filePath, std::string fileName)
+int ObjLoader::loadBinaryModel(Model* model, std::string filePath, std::string fileName)
 {
-    if (models->isLoaded())
+    if (model->isLoaded())
     {
         return 1;
     }
@@ -209,7 +209,7 @@ int ObjLoader::loadBinaryModel(Model* models, std::string filePath, std::string 
     for (unsigned int i = 0; i < rawModelsList.size(); i++)
     {
         TexturedModel* tm = new TexturedModel(&rawModelsList[i], &modelTextures[i]); INCR_NEW("TexturedModel");
-        models->push_back(tm);
+        model->addTexturedModel(tm);
     }
 
     for (auto vertex : vertices)
@@ -225,9 +225,9 @@ int ObjLoader::loadBinaryModel(Model* models, std::string filePath, std::string 
 }
 
 //Each TexturedModel contained within 'models' must be deleted later.
-int ObjLoader::loadVclModel(Model* models, std::string filePath, std::string fileName)
+int ObjLoader::loadVclModel(Model* model, std::string filePath, std::string fileName)
 {
-    if (models->isLoaded())
+    if (model->isLoaded())
     {
         return 1;
     }
@@ -380,7 +380,7 @@ int ObjLoader::loadVclModel(Model* models, std::string filePath, std::string fil
     for (unsigned int i = 0; i < rawModelsList.size(); i++)
     {
         TexturedModel* tm = new TexturedModel(&rawModelsList[i], &modelTextures[i]); INCR_NEW("TexturedModel");
-        models->push_back(tm);
+        model->addTexturedModel(tm);
     }
 
     for (auto vertex : vertices)
@@ -395,9 +395,9 @@ int ObjLoader::loadVclModel(Model* models, std::string filePath, std::string fil
     return 0;
 }
 
-int ObjLoader::loadObjModel(Model* models, std::string filePath, std::string fileName)
+int ObjLoader::loadObjModel(Model* model, std::string filePath, std::string fileName)
 {
-    if (models->isLoaded())
+    if (model->isLoaded())
     {
         return 1;
     }
@@ -574,7 +574,7 @@ int ObjLoader::loadObjModel(Model* models, std::string filePath, std::string fil
     for (unsigned int i = 0; i < rawModelsList.size(); i++)
     {
         TexturedModel* tm = new TexturedModel(&rawModelsList[i], &modelTextures[i]); INCR_NEW("TexturedModel");
-        models->push_back(tm);
+        model->addTexturedModel(tm);
     }
 
     for (auto vertex : vertices)
@@ -801,9 +801,9 @@ void ObjLoader::parseMtl(std::string filePath, std::string fileName, std::unorde
 
 }
 
-int ObjLoader::loadObjModelWithMTL(Model* models, std::string filePath, std::string fileNameOBJ, std::string fileNameMTL)
+int ObjLoader::loadObjModelWithMTL(Model* model, std::string filePath, std::string fileNameOBJ, std::string fileNameMTL)
 {
-    if (models->isLoaded())
+    if (model->isLoaded())
     {
         return 1;
     }
@@ -964,7 +964,7 @@ int ObjLoader::loadObjModelWithMTL(Model* models, std::string filePath, std::str
     for (unsigned int i = 0; i < rawModelsList.size(); i++)
     {
         TexturedModel* tm = new TexturedModel(&rawModelsList[i], &modelTextures[i]); INCR_NEW("TexturedModel");
-        models->push_back(tm);
+        model->addTexturedModel(tm);
     }
 
     for (auto vertex : vertices)
@@ -979,9 +979,9 @@ int ObjLoader::loadObjModelWithMTL(Model* models, std::string filePath, std::str
     return 0;
 }
 
-int ObjLoader::loadBinaryModelWithMTL(Model* models, std::string filePath, std::string fileNameBin, std::string fileNameMTL)
+int ObjLoader::loadBinaryModelWithMTL(Model* model, std::string filePath, std::string fileNameBin, std::string fileNameMTL)
 {
-    if (models->isLoaded())
+    if (model->isLoaded())
     {
         return 1;
     }
@@ -1135,7 +1135,7 @@ int ObjLoader::loadBinaryModelWithMTL(Model* models, std::string filePath, std::
     for (unsigned int i = 0; i < rawModelsList.size(); i++)
     {
         TexturedModel* tm = new TexturedModel(&rawModelsList[i], &modelTextures[i]); INCR_NEW("TexturedModel");
-        models->push_back(tm);
+        model->addTexturedModel(tm);
     }
 
     for (auto vertex : vertices)

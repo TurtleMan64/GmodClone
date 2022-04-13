@@ -62,7 +62,7 @@ public:
 
     bool isLoaded();
 
-    void push_back(TexturedModel* tm);
+    void addTexturedModel(TexturedModel* tm);
 };
 
 #endif

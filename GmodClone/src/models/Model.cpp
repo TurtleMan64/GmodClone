@@ -26,7 +26,7 @@ bool Model::isLoaded()
     return (int)texturedModels.size() > 0;
 }
 
-void Model::push_back(TexturedModel* tm)
+void Model::addTexturedModel(TexturedModel* tm)
 {
     texturedModels.push_back(tm);
 }
