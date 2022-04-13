@@ -16,7 +16,7 @@
 #include "../audio/audioplayer.hpp"
 #include "../network/tcpclient.hpp"
 
-Model RockPlatform::models;
+Model RockPlatform::model;
 CollisionModel* RockPlatform::baseCM = nullptr;
 
 extern float dt;
@@ -78,9 +78,9 @@ std::vector<Entity*>* RockPlatform::getEntitiesToRender()
     return &entitiesToRender;
 }
 
-Model* RockPlatform::getModels()
+Model* RockPlatform::getModel()
 {
-    return &RockPlatform::models;
+    return &RockPlatform::model;
 }
 
 int RockPlatform::getEntityType()
@@ -100,9 +100,9 @@ std::vector<Triangle3D*>* RockPlatform::getCollisionTriangles()
 
 void RockPlatform::loadModels()
 {
-    if (RockPlatform::models.size() == 0)
+    if (!RockPlatform::model.isLoaded())
     {
-        ObjLoader::loadModel(&RockPlatform::models, "res/Models/RockPlatform/", "RockPlatform");
+        ObjLoader::loadModel(&RockPlatform::model, "res/Models/RockPlatform/", "RockPlatform");
         RockPlatform::baseCM = ObjLoader::loadCollisionModel("res/Models/RockPlatform/", "RockPlatform");
     }
 }

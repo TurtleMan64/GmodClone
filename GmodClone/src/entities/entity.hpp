@@ -58,7 +58,6 @@ public:
     //The pose of each bone in the animated model
     std::vector<Matrix4f> jointTransforms;
 
-    static void deleteModels(Model* modelsToDelete);
     static void deleteCollisionModel(CollisionModel** colModelToDelete);
     //0 = rendered first (default), 1 = second, 2 = third, 3 = fourth + transparent (no depth testing)
     static void setModelsRenderOrder(Model* models, char newOrder);
@@ -72,7 +71,7 @@ public:
 
     virtual std::vector<Entity*>* getEntitiesToRender();
 
-    virtual Model* getModels();
+    virtual Model* getModel();
 
     virtual AnimatedModel* getAnimatedModel();
 

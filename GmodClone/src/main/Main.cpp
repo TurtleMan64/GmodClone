@@ -125,7 +125,7 @@ double timeNew = 0;
 Camera* Global::gameCamera   = nullptr;
 Player* Global::player       = nullptr;
 
-Model Global::stageModels;
+Model Global::stageModel;
 Dummy* Global::stageEntity  = nullptr;
 
 Light* Global::lights[4] = {nullptr, nullptr, nullptr, nullptr};
@@ -288,7 +288,7 @@ int main(int argc, char** argv)
 
     Global::gameState = GAME_STATE_RUNNING;
 
-    Global::stageEntity = new Dummy(&Global::stageModels); INCR_NEW("Entity");
+    Global::stageEntity = new Dummy(&Global::stageModel); INCR_NEW("Entity");
 
     Global::player = new Player; INCR_NEW("Entity");
 

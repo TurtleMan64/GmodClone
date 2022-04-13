@@ -11,7 +11,7 @@
 #include "../audio/audioplayer.hpp"
 #include "../audio/source.hpp"
 
-Model Ball::models;
+Model Ball::model;
 
 extern float dt;
 
@@ -80,9 +80,9 @@ std::vector<Entity*>* Ball::getEntitiesToRender()
     return &entitiesToRender;
 }
 
-Model* Ball::getModels()
+Model* Ball::getModel()
 {
-    return &Ball::models;
+    return &Ball::model;
 }
 
 int Ball::getEntityType()
@@ -105,8 +105,8 @@ void Ball::getHit(Vector3f* /*hitPos*/, Vector3f* hitDir, int weapon)
 
 void Ball::loadModels()
 {
-    if (Ball::models.size() == 0)
+    if (!Ball::model.isLoaded())
     {
-        ObjLoader::loadModel(&Ball::models, "res/Models/Ball/", "Soccer");
+        ObjLoader::loadModel(&Ball::model, "res/Models/Ball/", "Soccer");
     }
 }

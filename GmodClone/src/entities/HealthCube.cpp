@@ -7,7 +7,7 @@
 #include "../loader/objloader.hpp"
 #include "../entities/entity.hpp"
 
-Model HealthCube::models;
+Model HealthCube::model;
 
 extern float dt;
 
@@ -40,9 +40,9 @@ std::vector<Entity*>* HealthCube::getEntitiesToRender()
     return &entitiesToRender;
 }
 
-Model* HealthCube::getModels()
+Model* HealthCube::getModel()
 {
-    return &HealthCube::models;
+    return &HealthCube::model;
 }
 
 int HealthCube::getEntityType()
@@ -52,8 +52,8 @@ int HealthCube::getEntityType()
 
 void HealthCube::loadModels()
 {
-    if (HealthCube::models.size() == 0)
+    if (!HealthCube::model.isLoaded())
     {
-        ObjLoader::loadModel(&HealthCube::models, "res/Models/HealthCube/", "HealthCube");
+        ObjLoader::loadModel(&HealthCube::model, "res/Models/HealthCube/", "HealthCube");
     }
 }

@@ -10,7 +10,7 @@ class TexturedModel;
 class HealthCube : public Entity
 {
 private:
-    static Model models;
+    static Model model;
 
     float floatTimer = 0.0f;
 
@@ -21,7 +21,7 @@ public:
 
     std::vector<Entity*>* getEntitiesToRender();
 
-    Model* getModels();
+    Model* getModel();
 
     static void loadModels();
 

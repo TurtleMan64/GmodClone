@@ -1,11 +1,11 @@
 #include <glad/glad.h>
+
 #include <fstream>
 #include <string>
 #include <cstring>
 #include <iostream>
 #include <vector>
 #include <unordered_map>
-#include <vector>
 
 #include "../collision/collisionmodel.hpp"
 #include "objloader.hpp"
@@ -54,7 +54,7 @@ int ObjLoader::ObjLoader::loadModel(Model* models, std::string filePath, std::st
 //Each TexturedModel contained within 'models' must be deleted later.
 int ObjLoader::loadBinaryModel(Model* models, std::string filePath, std::string fileName)
 {
-    if (models->size() > 0)
+    if (models->isLoaded())
     {
         return 1;
     }
@@ -227,7 +227,7 @@ int ObjLoader::loadBinaryModel(Model* models, std::string filePath, std::string 
 //Each TexturedModel contained within 'models' must be deleted later.
 int ObjLoader::loadVclModel(Model* models, std::string filePath, std::string fileName)
 {
-    if (models->size() > 0)
+    if (models->isLoaded())
     {
         return 1;
     }
@@ -397,7 +397,7 @@ int ObjLoader::loadVclModel(Model* models, std::string filePath, std::string fil
 
 int ObjLoader::loadObjModel(Model* models, std::string filePath, std::string fileName)
 {
-    if (models->size() > 0)
+    if (models->isLoaded())
     {
         return 1;
     }
@@ -803,7 +803,7 @@ void ObjLoader::parseMtl(std::string filePath, std::string fileName, std::unorde
 
 int ObjLoader::loadObjModelWithMTL(Model* models, std::string filePath, std::string fileNameOBJ, std::string fileNameMTL)
 {
-    if (models->size() > 0)
+    if (models->isLoaded())
     {
         return 1;
     }
@@ -981,7 +981,7 @@ int ObjLoader::loadObjModelWithMTL(Model* models, std::string filePath, std::str
 
 int ObjLoader::loadBinaryModelWithMTL(Model* models, std::string filePath, std::string fileNameBin, std::string fileNameMTL)
 {
-    if (models->size() > 0)
+    if (models->isLoaded())
     {
         return 1;
     }

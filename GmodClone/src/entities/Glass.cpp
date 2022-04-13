@@ -17,7 +17,7 @@
 #include "../audio/audioplayer.hpp"
 #include "../network/tcpclient.hpp"
 
-Model Glass::models;
+Model Glass::model;
 CollisionModel* Glass::baseCM = nullptr;
 
 extern float dt;
@@ -107,9 +107,9 @@ std::vector<Entity*>* Glass::getEntitiesToRender()
     return &entitiesToRender;
 }
 
-Model* Glass::getModels()
+Model* Glass::getModel()
 {
-    return &Glass::models;
+    return &Glass::model;
 }
 
 int Glass::getEntityType()
@@ -129,9 +129,9 @@ std::vector<Triangle3D*>* Glass::getCollisionTriangles()
 
 void Glass::loadModels()
 {
-    if (Glass::models.size() == 0)
+    if (!Glass::model.isLoaded())
     {
-        ObjLoader::loadModel(&Glass::models, "res/Models/Glass/", "Glass");
+        ObjLoader::loadModel(&Glass::model, "res/Models/Glass/", "Glass");
         Glass::baseCM = ObjLoader::loadCollisionModel("res/Models/Glass/", "Glass");
     }
 }

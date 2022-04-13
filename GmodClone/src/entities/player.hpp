@@ -27,12 +27,12 @@ public:
     static Animation* animationClimb;
     static Animation* animationSwing;
 
-    static Model modelsGun;
-    static Model modelsBat;
-    static Model modelsHookshot;
-    static Model modelsHookshotTip;
-    static Model modelsHookshotHandle;
-    static Model modelsHookshotChain;
+    static Model modelGun;
+    static Model modelBat;
+    static Model modelHookshot;
+    static Model modelHookshotTip;
+    static Model modelHookshotHandle;
+    static Model modelHookshotChain;
 
 private:
     void animateMe();
@@ -179,7 +179,7 @@ public:
 
     std::vector<Entity*>* getEntitiesToRender();
 
-    Model* getModels();
+    Model* getModel();
 
     AnimatedModel* getAnimatedModel();
 

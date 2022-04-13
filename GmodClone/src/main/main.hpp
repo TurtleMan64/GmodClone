@@ -98,7 +98,7 @@ public:
     static Camera* gameCamera;
     static Player* player;
 
-    static Model stageModels;
+    static Model stageModel;
     static Dummy* stageEntity;
 
     static Light* lights[4];

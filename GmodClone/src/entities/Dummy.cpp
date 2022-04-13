@@ -30,7 +30,7 @@ std::vector<Entity*>* Dummy::getEntitiesToRender()
     return &entitiesToRender;
 }
 
-Model* Dummy::getModels()
+Model* Dummy::getModel()
 {
     return myModels;
 }

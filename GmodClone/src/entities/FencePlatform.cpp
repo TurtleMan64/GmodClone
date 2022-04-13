@@ -16,7 +16,7 @@
 #include "../audio/audioplayer.hpp"
 #include "../network/tcpclient.hpp"
 
-Model FencePlatform::models;
+Model FencePlatform::model;
 CollisionModel* FencePlatform::baseCM = nullptr;
 
 extern float dt;
@@ -63,9 +63,9 @@ std::vector<Entity*>* FencePlatform::getEntitiesToRender()
     return &entitiesToRender;
 }
 
-Model* FencePlatform::getModels()
+Model* FencePlatform::getModel()
 {
-    return &FencePlatform::models;
+    return &FencePlatform::model;
 }
 
 int FencePlatform::getEntityType()
@@ -85,9 +85,9 @@ std::vector<Triangle3D*>* FencePlatform::getCollisionTriangles()
 
 void FencePlatform::loadModels()
 {
-    if (FencePlatform::models.size() == 0)
+    if (!FencePlatform::model.isLoaded())
     {
-        ObjLoader::loadModel(&FencePlatform::models, "res/Models/FencePlatform/", "FencePlatform");
+        ObjLoader::loadModel(&FencePlatform::model, "res/Models/FencePlatform/", "FencePlatform");
         FencePlatform::baseCM = ObjLoader::loadCollisionModel("res/Models/FencePlatform/", "FencePlatform");
     }
 }

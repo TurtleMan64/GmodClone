@@ -11,8 +11,8 @@ class TexturedModel;
 class Chandelier : public Entity
 {
 private:
-    static Model modelsChandelier;
-    static Model modelsWallLamp;
+    static Model modelChandelier;
+    static Model modelWallLamp;
 
     int lightIdx = 1;
 
@@ -31,7 +31,7 @@ public:
 
     std::vector<Entity*>* getEntitiesToRender();
 
-    Model* getModels();
+    Model* getModel();
 
     static void loadModels();
 

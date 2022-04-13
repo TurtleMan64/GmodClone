@@ -8,8 +8,8 @@
 #include "entity.hpp"
 #include "light.hpp"
 
-Model Chandelier::modelsChandelier;
-Model Chandelier::modelsWallLamp;
+Model Chandelier::modelChandelier;
+Model Chandelier::modelWallLamp;
 
 extern float dt;
 
@@ -76,15 +76,15 @@ std::vector<Entity*>* Chandelier::getEntitiesToRender()
     return &entitiesToRender;
 }
 
-Model* Chandelier::getModels()
+Model* Chandelier::getModel()
 {
     if (type == 0)
     {
-        return &Chandelier::modelsChandelier;
+        return &Chandelier::modelChandelier;
     }
     else
     {
-        return &Chandelier::modelsWallLamp;
+        return &Chandelier::modelWallLamp;
     }
 }
 
@@ -95,9 +95,9 @@ int Chandelier::getEntityType()
 
 void Chandelier::loadModels()
 {
-    if (Chandelier::modelsChandelier.size() == 0)
+    if (!Chandelier::modelChandelier.isLoaded())
     {
-        ObjLoader::loadModel(&Chandelier::modelsChandelier, "res/Models/Chandelier/", "Chandelier");
-        ObjLoader::loadModel(&Chandelier::modelsWallLamp,   "res/Models/Chandelier/", "Lamp");
+        ObjLoader::loadModel(&Chandelier::modelChandelier, "res/Models/Chandelier/", "Chandelier");
+        ObjLoader::loadModel(&Chandelier::modelWallLamp,   "res/Models/Chandelier/", "Lamp");
     }
 }

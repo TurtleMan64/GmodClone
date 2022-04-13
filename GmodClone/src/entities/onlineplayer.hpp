@@ -119,7 +119,7 @@ public:
 
     std::vector<Entity*>* getEntitiesToRender();
 
-    Model* getModels();
+    Model* getModel();
 
     AnimatedModel* getAnimatedModel();
 

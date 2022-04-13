@@ -131,8 +131,8 @@ void LevelLoader::loadLevel(std::string mapName)
     std::string modelVisualLine;
     getlineSafe(file, modelVisualLine);
     std::vector<std::string> visualModel = split(modelVisualLine, ' ');
-    Entity::deleteModels(&Global::stageModels);
-    ObjLoader::loadModel(&Global::stageModels, visualModel[0], visualModel[1]);
+    Global::stageModel.deleteMe();
+    ObjLoader::loadModel(&Global::stageModel, visualModel[0], visualModel[1]);
 
     std::string modelCollisionLine;
     getlineSafe(file, modelCollisionLine);

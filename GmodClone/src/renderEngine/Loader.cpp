@@ -354,7 +354,7 @@ void Loader::deleteTexture(GLuint texId)
 
 void Loader::deleteTexturedModels(Model* tm)
 {
-    for (TexturedModel* model : tm->models)
+    for (TexturedModel* model : tm->texturedModels)
     {
         model->deleteMe();
     }

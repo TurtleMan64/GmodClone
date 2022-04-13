@@ -2,6 +2,7 @@
 
 #include <vector>
 
+#include "../main/main.hpp"
 #include "models.hpp"
 #include "../textures/modeltexture.hpp"
 
@@ -12,15 +13,20 @@ Model::Model()
 
 void Model::deleteMe()
 {
-
+    for (TexturedModel* model : texturedModels)
+    {
+        model->deleteMe();
+        delete model; INCR_DEL("TexturedModel");
+    }
+    texturedModels.clear();
 }
 
-int Model::size()
+bool Model::isLoaded()
 {
-    return (int)models.size();
+    return (int)texturedModels.size() > 0;
 }
 
 void Model::push_back(TexturedModel* tm)
 {
-    models.push_back(tm);
+    texturedModels.push_back(tm);
 }

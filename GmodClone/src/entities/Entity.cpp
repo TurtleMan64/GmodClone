@@ -76,7 +76,7 @@ std::vector<Entity*>* Entity::getEntitiesToRender()
     return nullptr;
 }
 
-Model* Entity::getModels()
+Model* Entity::getModel()
 {
     return nullptr;
 }
@@ -88,7 +88,7 @@ AnimatedModel* Entity::getAnimatedModel()
 
 void Entity::setModelsRenderOrder(Model* models, char newOrder) // TODO can move this into Model
 {
-    for (TexturedModel* model : models->models)
+    for (TexturedModel* model : models->texturedModels)
     {
         model->renderOrder = newOrder;
     }
@@ -112,16 +112,6 @@ void Entity::updateTransformationMatrix(float scaleX, float scaleY, float scaleZ
 void Entity::updateTransformationMatrixYXZ()
 {
     Maths::createTransformationMatrixYXZ(&transformationMatrix, &position, rotX, rotY, rotZ, scale);
-}
-
-void Entity::deleteModels(Model* modelsToDelete) // TODO can move this into Model
-{
-    for (TexturedModel* model : modelsToDelete->models)
-    {
-        model->deleteMe();
-        delete model; INCR_DEL("TexturedModel");
-    }
-    modelsToDelete->models.clear();
 }
 
 void Entity::deleteCollisionModel(CollisionModel** colModelToDelete)

@@ -17,8 +17,8 @@
 #include "../network/tcpclient.hpp"
 #include "dummy.hpp"
 
-Model FallBlock::models;
-Model FallBlock::modelsShadow;
+Model FallBlock::model;
+Model FallBlock::modelShadow;
 CollisionModel* FallBlock::baseCM = nullptr;
 
 FallBlock::FallBlock(std::string name, Vector3f pos, float phaseTimer)
@@ -34,7 +34,7 @@ FallBlock::FallBlock(std::string name, Vector3f pos, float phaseTimer)
     position.y = HEIGHT_TOP;
     visible = true;
 
-    shadow = new Dummy(&FallBlock::modelsShadow); INCR_NEW("Dummy");
+    shadow = new Dummy(&FallBlock::modelShadow); INCR_NEW("Dummy");
     shadow->baseAlpha = 0.5f;
 
     entitiesToRender.push_back(this);
@@ -209,9 +209,9 @@ std::vector<Entity*>* FallBlock::getEntitiesToRender()
     return &entitiesToRender;
 }
 
-Model* FallBlock::getModels()
+Model* FallBlock::getModel()
 {
-    return &FallBlock::models;
+    return &FallBlock::model;
 }
 
 int FallBlock::getEntityType()
@@ -233,10 +233,10 @@ std::vector<Triangle3D*>* FallBlock::getCollisionTriangles()
 
 void FallBlock::loadModels()
 {
-    if (FallBlock::models.size() == 0)
+    if (!FallBlock::model.isLoaded())
     {
-        ObjLoader::loadModel(&FallBlock::models,          "res/Models/FallBlock/", "FallBlock2");
-        ObjLoader::loadModel(&FallBlock::modelsShadow,    "res/Models/FallBlock/", "Shadow");
+        ObjLoader::loadModel(&FallBlock::model,          "res/Models/FallBlock/", "FallBlock2");
+        ObjLoader::loadModel(&FallBlock::modelShadow,    "res/Models/FallBlock/", "Shadow");
         FallBlock::baseCM = ObjLoader::loadCollisionModel("res/Models/FallBlock/", "FallBlock2");
     }
 }

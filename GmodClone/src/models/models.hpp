@@ -54,13 +54,13 @@ public:
 class Model
 {
 public:
-    std::vector<TexturedModel*> models;
+    std::vector<TexturedModel*> texturedModels;
 
     Model();
 
     void deleteMe();
 
-    int size();
+    bool isLoaded();
 
     void push_back(TexturedModel* tm);
 };

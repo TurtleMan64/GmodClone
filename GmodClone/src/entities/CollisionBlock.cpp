@@ -15,7 +15,7 @@
 #include "../entities/player.hpp"
 #include "../entities/onlineplayer.hpp"
 
-Model CollisionBlock::models;
+Model CollisionBlock::model;
 CollisionModel* CollisionBlock::baseCM = nullptr;
 
 extern float dt;
@@ -209,9 +209,9 @@ std::vector<Entity*>* CollisionBlock::getEntitiesToRender()
     return &entitiesToRender;
 }
 
-Model* CollisionBlock::getModels()
+Model* CollisionBlock::getModel()
 {
-    return &CollisionBlock::models;
+    return &CollisionBlock::model;
 }
 
 int CollisionBlock::getEntityType()
@@ -226,9 +226,9 @@ std::vector<Triangle3D*>* CollisionBlock::getCollisionTriangles()
 
 void CollisionBlock::loadModels()
 {
-    if (CollisionBlock::models.size() == 0)
+    if (!CollisionBlock::model.isLoaded())
     {
-        ObjLoader::loadModel(&CollisionBlock::models, "res/Models/CollisionBlock/", "CollisionBlock");
+        ObjLoader::loadModel(&CollisionBlock::model, "res/Models/CollisionBlock/", "CollisionBlock");
         CollisionBlock::baseCM = ObjLoader::loadCollisionModel("res/Models/CollisionBlock/", "CollisionBlock");
     }
 }

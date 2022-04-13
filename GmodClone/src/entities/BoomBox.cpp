@@ -16,7 +16,7 @@
 #include "../audio/audioplayer.hpp"
 #include "../network/tcpclient.hpp"
 
-Model BoomBox::models;
+Model BoomBox::model;
 CollisionModel* BoomBox::baseCM = nullptr;
 
 extern float dt;
@@ -67,9 +67,9 @@ std::vector<Entity*>* BoomBox::getEntitiesToRender()
     return &entitiesToRender;
 }
 
-Model* BoomBox::getModels()
+Model* BoomBox::getModel()
 {
-    return &BoomBox::models;
+    return &BoomBox::model;
 }
 
 int BoomBox::getEntityType()
@@ -84,9 +84,9 @@ std::vector<Triangle3D*>* BoomBox::getCollisionTriangles()
 
 void BoomBox::loadModels()
 {
-    if (BoomBox::models.size() == 0)
+    if (!BoomBox::model.isLoaded())
     {
-        ObjLoader::loadModel(&BoomBox::models, "res/Models/BoomBox/", "BoomBox");
+        ObjLoader::loadModel(&BoomBox::model, "res/Models/BoomBox/", "BoomBox");
         BoomBox::baseCM = ObjLoader::loadCollisionModel("res/Models/BoomBox/", "BoomBox");
     }
 }

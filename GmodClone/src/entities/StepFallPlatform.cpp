@@ -14,7 +14,7 @@
 #include "../entities/player.hpp"
 #include "../network/tcpclient.hpp"
 
-Model StepFallPlatform::models;
+Model StepFallPlatform::model;
 CollisionModel* StepFallPlatform::baseCM = nullptr;
 
 extern float dt;
@@ -92,9 +92,9 @@ std::vector<Entity*>* StepFallPlatform::getEntitiesToRender()
     return &entitiesToRender;
 }
 
-Model* StepFallPlatform::getModels()
+Model* StepFallPlatform::getModel()
 {
-    return &StepFallPlatform::models;
+    return &StepFallPlatform::model;
 }
 
 int StepFallPlatform::getEntityType()
@@ -114,9 +114,9 @@ std::vector<Triangle3D*>* StepFallPlatform::getCollisionTriangles()
 
 void StepFallPlatform::loadModels()
 {
-    if (StepFallPlatform::models.size() == 0)
+    if (!StepFallPlatform::model.isLoaded())
     {
-        ObjLoader::loadModel(&StepFallPlatform::models, "res/Models/StepFallPlatform/", "StepFallPlatform");
+        ObjLoader::loadModel(&StepFallPlatform::model, "res/Models/StepFallPlatform/", "StepFallPlatform");
         StepFallPlatform::baseCM = ObjLoader::loadCollisionModel("res/Models/StepFallPlatform/", "Collision");
     }
 }

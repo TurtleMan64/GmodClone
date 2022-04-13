@@ -8,7 +8,7 @@
 #include "../loader/objloader.hpp"
 #include "../entities/player.hpp"
 
-Model WinZone::models;
+Model WinZone::model;
 
 extern float dt;
 
@@ -41,9 +41,9 @@ void WinZone::step()
     }
 }
 
-Model* WinZone::getModels()
+Model* WinZone::getModel()
 {
-    return &WinZone::models;
+    return &WinZone::model;
 }
 
 std::vector<Entity*>* WinZone::getEntitiesToRender()
@@ -58,8 +58,8 @@ int WinZone::getEntityType()
 
 void WinZone::loadModels()
 {
-    if (WinZone::models.size() == 0)
+    if (!WinZone::model.isLoaded())
     {
-        ObjLoader::loadModel(&WinZone::models, "res/Models/WinZone/", "WinZone");
+        ObjLoader::loadModel(&WinZone::model, "res/Models/WinZone/", "WinZone");
     }
 }

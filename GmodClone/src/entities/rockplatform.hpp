@@ -14,7 +14,7 @@ class CollisionModel;
 class RockPlatform : public Entity
 {
 private:
-    static Model models;
+    static Model model;
     static CollisionModel* baseCM;
 
     CollisionModel* cm = nullptr;
@@ -29,7 +29,7 @@ public:
 
     std::vector<Entity*>* getEntitiesToRender();
 
-    Model* getModels();
+    Model* getModel();
 
     static void loadModels();
 

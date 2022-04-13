@@ -30,12 +30,12 @@
 
 extern float dt;
 
-Model Player::modelsGun;
-Model Player::modelsBat;
-Model Player::modelsHookshot;
-Model Player::modelsHookshotTip;
-Model Player::modelsHookshotHandle;
-Model Player::modelsHookshotChain;
+Model Player::modelGun;
+Model Player::modelBat;
+Model Player::modelHookshot;
+Model Player::modelHookshotTip;
+Model Player::modelHookshotHandle;
+Model Player::modelHookshotChain;
 
 AnimatedModel* Player::modelShrek  = nullptr;
 
@@ -61,12 +61,12 @@ Player::Player()
     lookDir.set(0, 0, -1);
     visible = true;
 
-    ObjLoader::loadModel(&Player::modelsGun,            "res/Models/Gun/",      "GunInHand");
-    ObjLoader::loadModel(&Player::modelsBat,            "res/Models/Bat/",      "Bat");
-    ObjLoader::loadModel(&Player::modelsHookshot,       "res/Models/Hookshot/", "HookshotFull");
-    ObjLoader::loadModel(&Player::modelsHookshotTip,    "res/Models/Hookshot/", "HookshotTip");
-    ObjLoader::loadModel(&Player::modelsHookshotHandle, "res/Models/Hookshot/", "HookshotHandle");
-    ObjLoader::loadModel(&Player::modelsHookshotChain,  "res/Models/Hookshot/", "Chain");
+    ObjLoader::loadModel(&Player::modelGun,            "res/Models/Gun/",      "GunInHand");
+    ObjLoader::loadModel(&Player::modelBat,            "res/Models/Bat/",      "Bat");
+    ObjLoader::loadModel(&Player::modelHookshot,       "res/Models/Hookshot/", "HookshotFull");
+    ObjLoader::loadModel(&Player::modelHookshotTip,    "res/Models/Hookshot/", "HookshotTip");
+    ObjLoader::loadModel(&Player::modelHookshotHandle, "res/Models/Hookshot/", "HookshotHandle");
+    ObjLoader::loadModel(&Player::modelHookshotChain,  "res/Models/Hookshot/", "Chain");
 
     Player::modelShrek = AnimatedModelLoader::loadAnimatedModel("res/Models/Human/", "ShrekFinalMeshFrankenstein.mesh");
 
@@ -86,11 +86,11 @@ Player::Player()
         jointTransforms.push_back(mat);
     }
 
-    entityWeapon         = new Dummy(&Player::modelsGun);            INCR_NEW("Dummy");
-    entityHookshot       = new Dummy(&Player::modelsHookshot);       INCR_NEW("Dummy");
-    entityHookshotTip    = new Dummy(&Player::modelsHookshotTip);    INCR_NEW("Dummy");
-    entityHookshotHandle = new Dummy(&Player::modelsHookshotHandle); INCR_NEW("Dummy");
-    entityHookshotChain  = new Dummy(&Player::modelsHookshotChain);  INCR_NEW("Dummy");
+    entityWeapon         = new Dummy(&Player::modelGun);            INCR_NEW("Dummy");
+    entityHookshot       = new Dummy(&Player::modelHookshot);       INCR_NEW("Dummy");
+    entityHookshotTip    = new Dummy(&Player::modelHookshotTip);    INCR_NEW("Dummy");
+    entityHookshotHandle = new Dummy(&Player::modelHookshotHandle); INCR_NEW("Dummy");
+    entityHookshotChain  = new Dummy(&Player::modelHookshotChain);  INCR_NEW("Dummy");
 
     entityWeapon        ->visible = false;
     entityHookshot      ->visible = false;
@@ -1284,7 +1284,7 @@ std::vector<Entity*>* Player::getEntitiesToRender()
     return nullptr;
 }
 
-Model* Player::getModels()
+Model* Player::getModel()
 {
     return nullptr;
 }
@@ -1590,7 +1590,7 @@ void Player::animateMe()
         case WEAPON_BAT:
         {
             entityWeapon->visible = true;
-            entityWeapon->setModels(&modelsBat);
+            entityWeapon->setModels(&modelBat);
 
             if (Global::camThirdPerson)
             {
@@ -1645,7 +1645,7 @@ void Player::animateMe()
         case WEAPON_GUN:
         {
             entityWeapon->visible = true;
-            entityWeapon->setModels(&modelsGun);
+            entityWeapon->setModels(&modelGun);
 
             if (Global::camThirdPerson)
             {

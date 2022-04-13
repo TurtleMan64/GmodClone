@@ -8,7 +8,7 @@
 #include "../loader/objloader.hpp"
 #include "../entities/entity.hpp"
 
-Model Bat::models;
+Model Bat::model;
 
 extern float dt;
 
@@ -41,9 +41,9 @@ std::vector<Entity*>* Bat::getEntitiesToRender()
     return &entitiesToRender;
 }
 
-Model* Bat::getModels()
+Model* Bat::getModel()
 {
-    return &Bat::models;
+    return &Bat::model;
 }
 
 int Bat::getEntityType()
@@ -53,8 +53,8 @@ int Bat::getEntityType()
 
 void Bat::loadModels()
 {
-    if (Bat::models.size() == 0)
+    if (!Bat::model.isLoaded())
     {
-        ObjLoader::loadModel(&Bat::models, "res/Models/Bat/", "Display");
+        ObjLoader::loadModel(&Bat::model, "res/Models/Bat/", "Display");
     }
 }

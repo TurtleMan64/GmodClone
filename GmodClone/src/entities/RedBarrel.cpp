@@ -13,7 +13,7 @@
 #include "../audio/source.hpp"
 #include "../entities/entity.hpp"
 
-Model RedBarrel::models;
+Model RedBarrel::model;
 CollisionModel* RedBarrel::baseCM = nullptr;
 
 extern float dt;
@@ -49,9 +49,9 @@ std::vector<Entity*>* RedBarrel::getEntitiesToRender()
     return &entitiesToRender;
 }
 
-Model* RedBarrel::getModels()
+Model* RedBarrel::getModel()
 {
-    return &RedBarrel::models;
+    return &RedBarrel::model;
 }
 
 int RedBarrel::getEntityType()
@@ -86,9 +86,9 @@ void RedBarrel::getHit(Vector3f* /*hitPos*/, Vector3f* /*hitDir*/, int weapon)
 
 void RedBarrel::loadModels()
 {
-    if (RedBarrel::models.size() == 0)
+    if (!RedBarrel::model.isLoaded())
     {
-        ObjLoader::loadModel(&RedBarrel::models, "res/Models/RedBarrel/", "RedBarrel");
+        ObjLoader::loadModel(&RedBarrel::model, "res/Models/RedBarrel/", "RedBarrel");
         RedBarrel::baseCM = ObjLoader::loadCollisionModel("res/Models/RedBarrel/", "RedBarrel");
     }
 }

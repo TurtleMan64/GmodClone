@@ -45,11 +45,11 @@ OnlinePlayer::OnlinePlayer(std::string name, float x, float y, float z)
         jointTransforms.push_back(mat);
     }
 
-    entityWeapon         = new Dummy(&Player::modelsGun);            INCR_NEW("Dummy");
-    entityHookshot       = new Dummy(&Player::modelsHookshot);       INCR_NEW("Dummy");
-    entityHookshotTip    = new Dummy(&Player::modelsHookshotTip);    INCR_NEW("Dummy");
-    entityHookshotHandle = new Dummy(&Player::modelsHookshotHandle); INCR_NEW("Dummy");
-    entityHookshotChain  = new Dummy(&Player::modelsHookshotChain);  INCR_NEW("Dummy");
+    entityWeapon         = new Dummy(&Player::modelGun);            INCR_NEW("Dummy");
+    entityHookshot       = new Dummy(&Player::modelHookshot);       INCR_NEW("Dummy");
+    entityHookshotTip    = new Dummy(&Player::modelHookshotTip);    INCR_NEW("Dummy");
+    entityHookshotHandle = new Dummy(&Player::modelHookshotHandle); INCR_NEW("Dummy");
+    entityHookshotChain  = new Dummy(&Player::modelHookshotChain);  INCR_NEW("Dummy");
 
     entityWeapon        ->visible = false;
     entityHookshot      ->visible = false;
@@ -329,7 +329,7 @@ void OnlinePlayer::step()
         case WEAPON_BAT:
         {
             entityWeapon->visible = true;
-            entityWeapon->setModels(&Player::modelsBat);
+            entityWeapon->setModels(&Player::modelBat);
 
             Vector4f handPos = Vector4f(-0.790331f, 1.40341f, -0.002674f, 1.0f);
             handPos = jointTransforms[2].transform(&handPos);
@@ -349,7 +349,7 @@ void OnlinePlayer::step()
         case WEAPON_GUN:
         {
             //entityWeapon->visible = true;
-            //entityWeapon->setModels(&Player::modelsGun);
+            //entityWeapon->setModels(&Player::modelGun);
 
             entityWeapon->visible = false;
             break;
@@ -369,7 +369,7 @@ std::vector<Entity*>* OnlinePlayer::getEntitiesToRender()
     return nullptr;
 }
 
-Model* OnlinePlayer::getModels()
+Model* OnlinePlayer::getModel()
 {
     return nullptr;
 }
@@ -507,9 +507,9 @@ void OnlinePlayer::updateCamera()
 
 void OnlinePlayer::loadModels()
 {
-    //if (OnlinePlayer::modelShrek == nullptr)
+    //if (OnlinePlayer::modelhrek == nullptr)
     //{
-    //    OnlinePlayer::modelShrek = AnimatedModelLoader::loadAnimatedModel("res/Models/Human/", "ShrekFinalMeshFrankenstein.mesh");
+    //    OnlinePlayer::modelhrek = AnimatedModelLoader::loadAnimatedModel("res/Models/Human/", "ShrekFinalMeshFrankenstein.mesh");
     //
     //    OnlinePlayer::animationStand  = AnimationLoader::loadAnimation("res/Models/Human/Original Mixamo/Breathing Idle.anim");
     //    OnlinePlayer::animationWalk   = AnimationLoader::loadAnimation("res/Models/Human/Original Mixamo/Slow Run.anim");

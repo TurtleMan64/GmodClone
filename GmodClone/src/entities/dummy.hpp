@@ -20,7 +20,7 @@ public:
 
     std::vector<Entity*>* getEntitiesToRender();
 
-    Model* getModels();
+    Model* getModel();
 
     void setModels(Model* newModels);
 };
