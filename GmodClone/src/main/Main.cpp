@@ -1967,3 +1967,18 @@ void Global::updateMusic()
         }
     }
 }
+
+bool Global::levelHasRopes()
+{
+    switch (Global::levelId)
+    {
+        case LVL_HUB:
+        case LVL_MAP1:
+        case LVL_MAP3:
+        case LVL_MAP6:
+            return true;
+
+        default:
+            return false;
+    }
+}

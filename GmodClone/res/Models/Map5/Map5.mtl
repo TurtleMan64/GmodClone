@@ -20,6 +20,7 @@ Ni 0.0
 d 1
 numImages 4
 animSpeed 1.5
+glow 1
 mixLinear
 map_Kd ../../Images/LavaBig/Lava1.png
 ../../Images/LavaBig/Lava2.png

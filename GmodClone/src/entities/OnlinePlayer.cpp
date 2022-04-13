@@ -266,52 +266,62 @@ void OnlinePlayer::step()
     Player::modelShrek->calculateJointTransformsFromPose(&jointTransforms, &pose);
 
     // Animating our weapons / hookshot
-    if (isOnRope)
+    if (Global::levelHasRopes())
     {
-        entityHookshot      ->visible = false;
-        entityHookshotHandle->visible = true;
-        entityHookshotTip   ->visible = true;
-        entityHookshotChain ->visible = true;
+        if (isOnRope)
+        {
+            entityHookshot      ->visible = false;
+            entityHookshotHandle->visible = true;
+            entityHookshotTip   ->visible = true;
+            entityHookshotChain ->visible = true;
 
-        Vector4f handPos = Vector4f(0.790331f, 1.40341f, -0.002674f, 1.0f);
-        handPos = jointTransforms[11].transform(&handPos);
-        entityHookshotHandle->position.set(handPos.x, handPos.y, handPos.z);
+            Vector4f handPos = Vector4f(0.790331f, 1.40341f, -0.002674f, 1.0f);
+            handPos = jointTransforms[11].transform(&handPos);
+            entityHookshotHandle->position.set(handPos.x, handPos.y, handPos.z);
 
-        Matrix4f rotMat = Quaternion::fromMatrix(&jointTransforms[11]).toRotationMatrix();
+            Matrix4f rotMat = Quaternion::fromMatrix(&jointTransforms[11]).toRotationMatrix();
 
-        entityHookshotHandle->transformationMatrix.setIdentity();
-        entityHookshotHandle->transformationMatrix.translate(&entityHookshotHandle->position);
-        entityHookshotHandle->transformationMatrix.multiply(&rotMat, &entityHookshotHandle->transformationMatrix);
+            entityHookshotHandle->transformationMatrix.setIdentity();
+            entityHookshotHandle->transformationMatrix.translate(&entityHookshotHandle->position);
+            entityHookshotHandle->transformationMatrix.multiply(&rotMat, &entityHookshotHandle->transformationMatrix);
 
-        Vector4f hookPos = Vector4f(0.790331f + 0.2f, 1.40341f, -0.002674f, 1.0f);
-        hookPos = jointTransforms[11].transform(&hookPos);
-        entityHookshotChain->position.set(hookPos.x, hookPos.y, hookPos.z);
+            Vector4f hookPos = Vector4f(0.790331f + 0.2f, 1.40341f, -0.002674f, 1.0f);
+            hookPos = jointTransforms[11].transform(&hookPos);
+            entityHookshotChain->position.set(hookPos.x, hookPos.y, hookPos.z);
 
-        Vector3f toAnchor = ropeAnchor - entityHookshotChain->position;
-        Maths::sphereAnglesFromPosition(&toAnchor, &entityHookshotChain->rotY, &entityHookshotChain->rotZ);
-        entityHookshotChain->updateTransformationMatrix(toAnchor.length() - 0.2f, 1.0f, 1.0f);
+            Vector3f toAnchor = ropeAnchor - entityHookshotChain->position;
+            Maths::sphereAnglesFromPosition(&toAnchor, &entityHookshotChain->rotY, &entityHookshotChain->rotZ);
+            entityHookshotChain->updateTransformationMatrix(toAnchor.length() - 0.2f, 1.0f, 1.0f);
 
-        entityHookshotTip->position = ropeAnchor;
-        entityHookshotTip->rotY = entityHookshotChain->rotY;
-        entityHookshotTip->rotZ = entityHookshotChain->rotZ;
-        entityHookshotTip->updateTransformationMatrix();
+            entityHookshotTip->position = ropeAnchor;
+            entityHookshotTip->rotY = entityHookshotChain->rotY;
+            entityHookshotTip->rotZ = entityHookshotChain->rotZ;
+            entityHookshotTip->updateTransformationMatrix();
+        }
+        else
+        {
+            entityHookshot      ->visible = true;
+            entityHookshotHandle->visible = false;
+            entityHookshotTip   ->visible = false;
+            entityHookshotChain ->visible = false;
+
+            Vector4f handPos = Vector4f(0.790331f, 1.40341f, -0.002674f, 1.0f);
+            handPos = jointTransforms[11].transform(&handPos);
+            entityHookshot->position.set(handPos.x, handPos.y, handPos.z);
+
+            Matrix4f rotMat = Quaternion::fromMatrix(&jointTransforms[11]).toRotationMatrix();
+
+            entityHookshot->transformationMatrix.setIdentity();
+            entityHookshot->transformationMatrix.translate(&entityHookshot->position);
+            entityHookshot->transformationMatrix.multiply(&rotMat, &entityHookshot->transformationMatrix);
+        }
     }
     else
     {
-        entityHookshot      ->visible = true;
+        entityHookshot      ->visible = false;
         entityHookshotHandle->visible = false;
         entityHookshotTip   ->visible = false;
         entityHookshotChain ->visible = false;
-
-        Vector4f handPos = Vector4f(0.790331f, 1.40341f, -0.002674f, 1.0f);
-        handPos = jointTransforms[11].transform(&handPos);
-        entityHookshot->position.set(handPos.x, handPos.y, handPos.z);
-
-        Matrix4f rotMat = Quaternion::fromMatrix(&jointTransforms[11]).toRotationMatrix();
-
-        entityHookshot->transformationMatrix.setIdentity();
-        entityHookshot->transformationMatrix.translate(&entityHookshot->position);
-        entityHookshot->transformationMatrix.multiply(&rotMat, &entityHookshot->transformationMatrix);
     }
 
     Vector3f xAx(1, 0, 0);

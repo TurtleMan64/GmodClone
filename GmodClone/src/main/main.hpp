@@ -176,5 +176,7 @@ public:
     static Vector3f safeZoneEnd;
 
     static void updateMusic();
+
+    static bool levelHasRopes();
 };
 #endif
