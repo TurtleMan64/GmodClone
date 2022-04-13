@@ -22,13 +22,13 @@ public:
     static Vbo* create(GLuint type);
 
     void bind();
-	
-	void unbind();
-	
-	void storeData(std::vector<float>* data);
 
-	void storeData(std::vector<int>* data);
+    void unbind();
 
-	void deleteMe();
+    void storeData(std::vector<float>* data);
+
+    void storeData(std::vector<int>* data);
+
+    void deleteMe();
 };
 #endif

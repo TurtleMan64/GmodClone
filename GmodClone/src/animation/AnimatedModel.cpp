@@ -40,7 +40,7 @@ void AnimatedModel::deleteMe()
     rootJoint->deleteChildren();
     delete rootJoint; INCR_DEL("Joint");
     rootJoint = nullptr;
-    
+
     Loader::deleteTexture(texture);
 }
 
@@ -90,7 +90,7 @@ std::unordered_map<std::string, JointTransform> AnimatedModel::calculateAnimatio
     }
 
     blend = Maths::clamp(0.0f, 1.0f - blend, 0.999999f);
-    
+
     std::vector<Keyframe> frames1 = getPreviousAndNextFrames(animation1, time1);
     float progression1 = calculateProgression(&frames1[0], &frames1[1], time1);
     std::unordered_map<std::string, JointTransform> pose1 = interpolatePoses(&frames1[0], &frames1[1], progression1);
@@ -149,7 +149,7 @@ void AnimatedModel::applyPoseToJoints(std::unordered_map<std::string, JointTrans
 
     Matrix4f currentTransform;
     parentTransform->multiply(&currentLocalTransform, &currentTransform);
-    
+
     for (Joint* childJoint : joint->children)
     {
         applyPoseToJoints(currentPose, childJoint, &currentTransform);

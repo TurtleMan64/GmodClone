@@ -19,7 +19,7 @@ private:
 
     void bindPrivate();
 
-	void unbindPrivate();
+    void unbindPrivate();
 
 public:
     static constexpr int BYTES_PER_FLOAT = 4;
@@ -35,16 +35,16 @@ public:
 
     int getIndexCount();
 
-	void bind(std::vector<GLuint>* attributes);
+    void bind(std::vector<GLuint>* attributes);
 
-	void unbind(std::vector<GLuint>* attributes);
-	
-	void createIndexBuffer(std::vector<int>* indices);
+    void unbind(std::vector<GLuint>* attributes);
 
-	void createAttribute(GLuint attribute, std::vector<float>* data, GLint attrSize);
-	
-	void createIntAttribute(GLuint attribute, std::vector<int>* data, GLint attrSize);
-	
-	void deleteMe();
+    void createIndexBuffer(std::vector<int>* indices);
+
+    void createAttribute(GLuint attribute, std::vector<float>* data, GLint attrSize);
+
+    void createIntAttribute(GLuint attribute, std::vector<int>* data, GLint attrSize);
+
+    void deleteMe();
 };
 #endif

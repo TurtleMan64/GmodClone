@@ -110,7 +110,7 @@ int createDisplay()
     icons[3].pixels = SOIL_load_image((Global::pathToEXE+"res/Images/Icon48.png" ).c_str(), &icons[3].width, &icons[3].height, 0, SOIL_LOAD_RGBA);
     icons[4].pixels = SOIL_load_image((Global::pathToEXE+"res/Images/Icon64.png" ).c_str(), &icons[4].width, &icons[4].height, 0, SOIL_LOAD_RGBA);
     icons[5].pixels = SOIL_load_image((Global::pathToEXE+"res/Images/Icon128.png").c_str(), &icons[5].width, &icons[5].height, 0, SOIL_LOAD_RGBA);
-    
+
     if (icons[0].pixels != nullptr &&
         icons[1].pixels != nullptr &&
         icons[2].pixels != nullptr &&

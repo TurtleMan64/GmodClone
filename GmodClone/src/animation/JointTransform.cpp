@@ -38,9 +38,9 @@ void JointTransform::calculateLocalTransform(Matrix4f* localTransform, bool /*is
     {
         Matrix4f positionMatrix;
         positionMatrix.translate(&position);
-    
+
         Matrix4f rotationMatrix = rotation.toRotationMatrix();
-    
+
         positionMatrix.multiply(&rotationMatrix, localTransform);
     }
 }
@@ -96,7 +96,7 @@ JointTransform JointTransform::interpolate(JointTransform* frameA, JointTransfor
 Vector3f JointTransform::interpolate(Vector3f* start, Vector3f* end, float progression)
 {
     float x = start->x + (end->x - start->x) * progression;
-	float y = start->y + (end->y - start->y) * progression;
-	float z = start->z + (end->z - start->z) * progression;
-	return Vector3f(x, y, z);
+    float y = start->y + (end->y - start->y) * progression;
+    float z = start->z + (end->z - start->z) * progression;
+    return Vector3f(x, y, z);
 }

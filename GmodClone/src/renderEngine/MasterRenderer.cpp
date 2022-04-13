@@ -231,7 +231,7 @@ void Master_processEntity(Entity* e)
             }
         }
     }
-    
+
     if (e->getAnimatedModel() != nullptr)
     {
         animatedEntitiesMap[e->getAnimatedModel()].push_back(e);

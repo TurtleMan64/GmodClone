@@ -174,11 +174,11 @@ void FallBlock::step()
                 }
             }
         }
-        else // We have come to a stop 
+        else // We have come to a stop
         {
             visible = true;
             shadow->visible = false;
-        
+
             if (oneLastAdjust)
             {
                 oneLastAdjust = false;

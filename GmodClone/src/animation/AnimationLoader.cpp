@@ -93,7 +93,7 @@ Animation* AnimationLoader::loadAnimation(char* filename)
                 {
                     //editing rotation around the y axis later on (to make the model look in the direction he is going)
                     // seems to happen after the translation is applied or something. so the translation ends up being offset
-                    // by some amount. so if we set 
+                    // by some amount. so if we set
                     //translation.x = 0;
                     //translation.z = 0;
                 }

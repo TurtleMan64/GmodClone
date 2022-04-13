@@ -21,10 +21,10 @@ void Joint::calcInverseBindTransform(Matrix4f* parentBindTransform)
     inverseBindTransform.set(&bindTransform);
     inverseBindTransform.invert();
 
-	for (Joint* child : children)
+    for (Joint* child : children)
     {
         child->calcInverseBindTransform(&bindTransform);
-	}
+    }
 }
 
 void Joint::deleteChildren()
@@ -33,6 +33,6 @@ void Joint::deleteChildren()
     {
         child->deleteChildren();
         delete child; INCR_DEL("Joint");
-	}
+    }
     children.clear();
 }

@@ -214,7 +214,7 @@ void OnlinePlayer::step()
             getAnimation(animType),
             getAnimationTimer(animType));
     }
-        
+
     if (animType == 7)//ladder
     {
         Vector3f velFlat = lookDir;
@@ -258,11 +258,11 @@ void OnlinePlayer::step()
             pose["Hips"].lookAtAndTranslate(lookFlat, position);
         }
     }
-        
+
     float directionHead = atan2f(lookDir.y, sqrtf(lookDir.x*lookDir.x + lookDir.z*lookDir.z));
     Quaternion myRotationPitch = Quaternion::fromEulerAngles(0, 0, directionHead);
     pose["Head"].rotation = Quaternion::multiply(pose["Head"].rotation, myRotationPitch);
-        
+
     Player::modelShrek->calculateJointTransformsFromPose(&jointTransforms, &pose);
 
     // Animating our weapons / hookshot

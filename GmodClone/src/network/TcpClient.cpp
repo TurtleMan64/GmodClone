@@ -85,7 +85,7 @@ void TcpClient::attemptConnection(char* ip, int port, int timeoutSec)
         struct addrinfo* ptr = nullptr;
         for (ptr=result; ptr != nullptr; ptr=ptr->ai_next)
         {
-            struct sockaddr_in* addr = (struct sockaddr_in *)ptr->ai_addr; 
+            struct sockaddr_in* addr = (struct sockaddr_in *)ptr->ai_addr;
 
             inet_ntop(AF_INET, &(addr->sin_addr), dnsIp, 32);
         }

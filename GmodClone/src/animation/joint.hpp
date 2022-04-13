@@ -19,7 +19,7 @@ public:
 
     Matrix4f animatedTransform;
     Matrix4f inverseBindTransform;
-    
+
     Joint(int index, std::string name, Matrix4f* bindLocalTransform);
 
     void calcInverseBindTransform(Matrix4f* parentBindTransform);

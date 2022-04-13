@@ -89,7 +89,7 @@ void GeometryLoader::readNormals()
         float y = std::stof(normalsRaw[i*3 + 1]);
         float z = std::stof(normalsRaw[i*3 + 2]);
         Vector4f norm(x, y, z, 0.0f);
-        
+
         Matrix4f CORRECTION;
         Vector3f xAxis(1, 0, 0);
         CORRECTION.rotate(Maths::toRadians(-90), &xAxis);
@@ -161,22 +161,22 @@ float GeometryLoader::convertDataToArrays()
         }
         Vector3f position = currentVertex->getPosition();
         Vector2f textureCoord = textures[currentVertex->getTextureIndex()];
-		Vector3f normalVector = normals[currentVertex->getNormalIndex()];
-		verticesArray[i * 3 + 0] = position.x;
-		verticesArray[i * 3 + 1] = position.y;
-		verticesArray[i * 3 + 2] = position.z;
-		texturesArray[i * 2 + 0] = textureCoord.x;
-		texturesArray[i * 2 + 1] = 1 - textureCoord.y;
-		normalsArray [i * 3 + 0] = normalVector.x;
-		normalsArray [i * 3 + 1] = normalVector.y;
-		normalsArray [i * 3 + 2] = normalVector.z;
-		VertexSkinData weights = currentVertex->weightsData;
-		jointIdsArray[i * 3 + 0] = weights.jointIds[0];
-		jointIdsArray[i * 3 + 1] = weights.jointIds[1];
-		jointIdsArray[i * 3 + 2] = weights.jointIds[2];
-		weightsArray [i * 3 + 0] = weights.weights[0];
-		weightsArray [i * 3 + 1] = weights.weights[1];
-		weightsArray [i * 3 + 2] = weights.weights[2];
+        Vector3f normalVector = normals[currentVertex->getNormalIndex()];
+        verticesArray[i * 3 + 0] = position.x;
+        verticesArray[i * 3 + 1] = position.y;
+        verticesArray[i * 3 + 2] = position.z;
+        texturesArray[i * 2 + 0] = textureCoord.x;
+        texturesArray[i * 2 + 1] = 1 - textureCoord.y;
+        normalsArray [i * 3 + 0] = normalVector.x;
+        normalsArray [i * 3 + 1] = normalVector.y;
+        normalsArray [i * 3 + 2] = normalVector.z;
+        VertexSkinData weights = currentVertex->weightsData;
+        jointIdsArray[i * 3 + 0] = weights.jointIds[0];
+        jointIdsArray[i * 3 + 1] = weights.jointIds[1];
+        jointIdsArray[i * 3 + 2] = weights.jointIds[2];
+        weightsArray [i * 3 + 0] = weights.weights[0];
+        weightsArray [i * 3 + 1] = weights.weights[1];
+        weightsArray [i * 3 + 2] = weights.weights[2];
     }
     return furthestPoint;
 }
@@ -185,28 +185,28 @@ Vertex2* GeometryLoader::dealWithAlreadyProcessedVertex(Vertex2* previousVertex,
 {
     if (previousVertex->hasSameTextureAndNormal(newTextureIndex, newNormalIndex))
     {
-	    indices.push_back(previousVertex->getIndex());
-	    return previousVertex;
+        indices.push_back(previousVertex->getIndex());
+        return previousVertex;
     }
     else
     {
-		Vertex2* anotherVertex = previousVertex->getDuplicateVertex();
-		if (anotherVertex != nullptr)
+        Vertex2* anotherVertex = previousVertex->getDuplicateVertex();
+        if (anotherVertex != nullptr)
         {
-			return dealWithAlreadyProcessedVertex(anotherVertex, newTextureIndex, newNormalIndex);
-		}
+            return dealWithAlreadyProcessedVertex(anotherVertex, newTextureIndex, newNormalIndex);
+        }
         else
         {
-			Vertex2* duplicateVertex = new Vertex2((int)vertices.size(), previousVertex->getPosition(), previousVertex->weightsData); INCR_NEW("Vertex2");
-			verticesToDelete.push_back(duplicateVertex);
+            Vertex2* duplicateVertex = new Vertex2((int)vertices.size(), previousVertex->getPosition(), previousVertex->weightsData); INCR_NEW("Vertex2");
+            verticesToDelete.push_back(duplicateVertex);
             duplicateVertex->setTextureIndex(newTextureIndex);
-			duplicateVertex->setNormalIndex(newNormalIndex);
-			previousVertex->setDuplicateVertex(duplicateVertex);
-			vertices.push_back(duplicateVertex);
-			indices.push_back(duplicateVertex->getIndex());
-			return duplicateVertex;
-		}
-	}
+            duplicateVertex->setNormalIndex(newNormalIndex);
+            previousVertex->setDuplicateVertex(duplicateVertex);
+            vertices.push_back(duplicateVertex);
+            indices.push_back(duplicateVertex->getIndex());
+            return duplicateVertex;
+        }
+    }
 }
 
 void GeometryLoader::initArrays()

@@ -116,7 +116,7 @@ AnimatedModel* AnimatedModelLoader::loadAnimatedModel(char* folder, char* filena
             {
                 rootJoint = newJoint;
             }
-            
+
             boneNameToJoint[boneTokens[0]] = newJoint;
             if (i != 1) //root bone doesnt have a parent
             {
@@ -173,138 +173,138 @@ Vao* AnimatedModelLoader::createVao(MeshData* data)
     std::vector<GLuint> blank;
     vao->bind(&blank);
     vao->createIndexBuffer(&data->indices);
-	vao->createAttribute   (0, &data->vertices,      3);
-	vao->createAttribute   (1, &data->textureCoords, 2);
-	vao->createAttribute   (2, &data->normals,       3);
-	vao->createIntAttribute(3, &data->jointIds,      3);
-	vao->createAttribute   (4, &data->vertexWeights, 3);
-	vao->unbind(&blank);
+    vao->createAttribute   (0, &data->vertices,      3);
+    vao->createAttribute   (1, &data->textureCoords, 2);
+    vao->createAttribute   (2, &data->normals,       3);
+    vao->createIntAttribute(3, &data->jointIds,      3);
+    vao->createAttribute   (4, &data->vertexWeights, 3);
+    vao->unbind(&blank);
 
-    //printf("indices size = %d\n", (int)data->indices.size()); 
+    //printf("indices size = %d\n", (int)data->indices.size());
     //for (int i = 0; i < (int)data->indices.size(); i++)
     //{
-    //    printf("%d ", data->indices[i]); 
+    //    printf("%d ", data->indices[i]);
     //}
     //printf("\n");
     //
-    //printf("vertices size = %d\n", (int)data->vertices.size()); 
+    //printf("vertices size = %d\n", (int)data->vertices.size());
     //for (int i = 0; i < (int)data->vertices.size(); i++)
     //{
-    //    printf("%f ", data->vertices[i]); 
+    //    printf("%f ", data->vertices[i]);
     //}
     //printf("\n");
     //
-    //printf("textureCoords size = %d\n", (int)data->textureCoords.size()); 
+    //printf("textureCoords size = %d\n", (int)data->textureCoords.size());
     //for (int i = 0; i < (int)data->textureCoords.size(); i++)
     //{
-    //    printf("%f ", data->textureCoords[i]); 
+    //    printf("%f ", data->textureCoords[i]);
     //}
     //printf("\n");
     //
-    //printf("normals size = %d\n", (int)data->normals.size()); 
+    //printf("normals size = %d\n", (int)data->normals.size());
     //for (int i = 0; i < (int)data->normals.size(); i++)
     //{
-    //    printf("%f ", data->normals[i]); 
+    //    printf("%f ", data->normals[i]);
     //}
     //printf("\n");
     //
-    //printf("jointIds size = %d\n", (int)data->jointIds.size()); 
+    //printf("jointIds size = %d\n", (int)data->jointIds.size());
     //for (int i = 0; i < (int)data->jointIds.size(); i++)
     //{
-    //    printf("%d ", data->jointIds[i]); 
+    //    printf("%d ", data->jointIds[i]);
     //}
     //printf("\n");
     //
-    //printf("vertexWeights size = %d\n", (int)data->vertexWeights.size()); 
+    //printf("vertexWeights size = %d\n", (int)data->vertexWeights.size());
     //for (int i = 0; i < (int)data->vertexWeights.size(); i++)
     //{
-    //    printf("%f ", data->vertexWeights[i]); 
+    //    printf("%f ", data->vertexWeights[i]);
     //}
     //printf("\n");
 
-    //printf("indices size = %d\n", (int)data->indices.size()); 
+    //printf("indices size = %d\n", (int)data->indices.size());
     //for (int i = 0; i < 10; i++)
     //{
-    //    printf("%d ", data->indices[i]); 
+    //    printf("%d ", data->indices[i]);
     //}
     //printf("\n");
     //
-    //printf("vertices size = %d\n", (int)data->vertices.size()); 
+    //printf("vertices size = %d\n", (int)data->vertices.size());
     //for (int i = 0; i < 10; i++)
     //{
-    //    printf("%f ", data->vertices[i]); 
+    //    printf("%f ", data->vertices[i]);
     //}
     //printf("\n");
     //
-    //printf("textureCoords size = %d\n", (int)data->textureCoords.size()); 
+    //printf("textureCoords size = %d\n", (int)data->textureCoords.size());
     //for (int i = 0; i < 10; i++)
     //{
-    //    printf("%f ", data->textureCoords[i]); 
+    //    printf("%f ", data->textureCoords[i]);
     //}
     //printf("\n");
     //
-    //printf("normals size = %d\n", (int)data->normals.size()); 
+    //printf("normals size = %d\n", (int)data->normals.size());
     //for (int i = 0; i < 10; i++)
     //{
-    //    printf("%f ", data->normals[i]); 
+    //    printf("%f ", data->normals[i]);
     //}
     //printf("\n");
     //
-    //printf("jointIds size = %d\n", (int)data->jointIds.size()); 
+    //printf("jointIds size = %d\n", (int)data->jointIds.size());
     //for (int i = 0; i < 10; i++)
     //{
-    //    printf("%d ", data->jointIds[i]); 
+    //    printf("%d ", data->jointIds[i]);
     //}
     //printf("\n");
     //
-    //printf("vertexWeights size = %d\n", (int)data->vertexWeights.size()); 
+    //printf("vertexWeights size = %d\n", (int)data->vertexWeights.size());
     //for (int i = 0; i < 10; i++)
     //{
-    //    printf("%f ", data->vertexWeights[i]); 
+    //    printf("%f ", data->vertexWeights[i]);
     //}
     //printf("\n");
 
-    //printf("indices size = %d\n", (int)data->indices.size()); 
+    //printf("indices size = %d\n", (int)data->indices.size());
     //for (int i = (int)data->indices.size() - 10; i < (int)data->indices.size(); i++)
     //{
-    //    printf("%d ", data->indices[i]); 
+    //    printf("%d ", data->indices[i]);
     //}
     //printf("\n");
     //
-    //printf("vertices size = %d\n", (int)data->vertices.size()); 
+    //printf("vertices size = %d\n", (int)data->vertices.size());
     //for (int i = (int)data->vertices.size() - 10; i < (int)data->vertices.size(); i++)
     //{
-    //    printf("%f ", data->vertices[i]); 
+    //    printf("%f ", data->vertices[i]);
     //}
     //printf("\n");
     //
-    //printf("textureCoords size = %d\n", (int)data->textureCoords.size()); 
+    //printf("textureCoords size = %d\n", (int)data->textureCoords.size());
     //for (int i = (int)data->textureCoords.size() - 10; i < (int)data->textureCoords.size(); i++)
     //{
-    //    printf("%f ", data->textureCoords[i]); 
+    //    printf("%f ", data->textureCoords[i]);
     //}
     //printf("\n");
     //
-    //printf("normals size = %d\n", (int)data->normals.size()); 
+    //printf("normals size = %d\n", (int)data->normals.size());
     //for (int i = (int)data->normals.size() - 10; i < (int)data->normals.size(); i++)
     //{
-    //    printf("%f ", data->normals[i]); 
+    //    printf("%f ", data->normals[i]);
     //}
     //printf("\n");
     //
-    //printf("jointIds size = %d\n", (int)data->jointIds.size()); 
+    //printf("jointIds size = %d\n", (int)data->jointIds.size());
     //for (int i = (int)data->jointIds.size() - 10; i < (int)data->jointIds.size(); i++)
     //{
-    //    printf("%d ", data->jointIds[i]); 
+    //    printf("%d ", data->jointIds[i]);
     //}
     //printf("\n");
     //
-    //printf("vertexWeights size = %d\n", (int)data->vertexWeights.size()); 
+    //printf("vertexWeights size = %d\n", (int)data->vertexWeights.size());
     //for (int i = (int)data->vertexWeights.size() - 10; i < (int)data->vertexWeights.size(); i++)
     //{
-    //    printf("%f ", data->vertexWeights[i]); 
+    //    printf("%f ", data->vertexWeights[i]);
     //}
     //printf("\n");
 
-	return vao;
+    return vao;
 }

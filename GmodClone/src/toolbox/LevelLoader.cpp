@@ -276,10 +276,10 @@ void LevelLoader::loadLevel(std::string mapName)
             int z = (int)(5*Maths::random()) - 2;
 
             i++;
-        
+
             std::string id = std::to_string(i);
             id = "FB" + id;
-        
+
             FallBlock* fblock = new FallBlock(id, Vector3f(x*8.0f, 0, z*8.0f), 8.0f + i); INCR_NEW("Entity");
             Global::addEntity(fblock);
         }

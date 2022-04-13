@@ -69,7 +69,7 @@ Player::Player()
     ObjLoader::loadModel(&Player::modelsHookshotChain,  "res/Models/Hookshot/", "Chain");
 
     Player::modelShrek = AnimatedModelLoader::loadAnimatedModel("res/Models/Human/", "ShrekFinalMeshFrankenstein.mesh");
-    
+
     Player::animationStand  = AnimationLoader::loadAnimation("res/Models/Human/Original Mixamo/Breathing Idle.anim");
     Player::animationWalk   = AnimationLoader::loadAnimation("res/Models/Human/Original Mixamo/Slow Run.anim");
     Player::animationRun    = AnimationLoader::loadAnimation("res/Models/Human/Original Mixamo/Fast Run.anim");
@@ -1055,7 +1055,7 @@ void Player::updateCamera()
 {
     if (Input::inputs.INPUT_F5 && !Input::inputs.INPUT_PREVIOUS_F5)
     {
-        Global::camThirdPerson = !Global::camThirdPerson;    
+        Global::camThirdPerson = !Global::camThirdPerson;
     }
 
     Vector3f yAxis(0, 1, 0);
@@ -1445,7 +1445,7 @@ void Player::animateMe()
                 getAnimation(animType),
                 getAnimationTimer(animType));
         }
-        
+
         if (animType == 7)//ladder
         {
             Vector3f velFlat = lookDir;
@@ -1489,11 +1489,11 @@ void Player::animateMe()
                 pose["Hips"].lookAtAndTranslate(lookFlat, position);
             }
         }
-        
+
         float directionHead = atan2f(lookDir.y, sqrtf(lookDir.x*lookDir.x + lookDir.z*lookDir.z));
         Quaternion myRotationPitch = Quaternion::fromEulerAngles(0, 0, directionHead);
         pose["Head"].rotation = Quaternion::multiply(pose["Head"].rotation, myRotationPitch);
-        
+
         modelShrek->calculateJointTransformsFromPose(&jointTransforms, &pose);
     }
 
@@ -1563,7 +1563,7 @@ void Player::animateMe()
             entityHookshot->transformationMatrix.setIdentity();
             entityHookshot->transformationMatrix.translate(&entityHookshot->position);
             entityHookshot->transformationMatrix.multiply(&rotMat, &entityHookshot->transformationMatrix);
-            
+
             //11 = left hand
             //2 = right hand
             //23 = hips

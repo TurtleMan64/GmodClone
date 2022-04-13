@@ -48,7 +48,7 @@ private:
     void calculateJointTransforms(std::vector<Matrix4f>* outJointTransforms);
 
     void applyPoseToJoints(std::unordered_map<std::string, JointTransform>* currentPose, Joint* joint, Matrix4f* parentTransform);
-    
+
     std::vector<Keyframe> getPreviousAndNextFrames(Animation* animation, float time);
 
     float calculateProgression(Keyframe* previousFrame, Keyframe* nextFrame, float time);
