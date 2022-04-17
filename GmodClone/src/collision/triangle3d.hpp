@@ -27,7 +27,7 @@ public:
     float C;
     float D;
 
-    char type; //0 = normal, 1 = bounce, 2 = death
+    char type; //0 = normal, 1 = bounce, 2 = death, 3 = cant hookshot
 
     char sound; //0 = concrete (default), 1 = dirt, 2 = grass, 3 = metal, 4 = snow, 5 = water, 6 = wood
 

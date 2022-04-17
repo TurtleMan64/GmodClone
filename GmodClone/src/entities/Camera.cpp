@@ -6,6 +6,7 @@
 #include "../toolbox/input.hpp"
 #include "../toolbox/maths.hpp"
 #include "../main/main.hpp"
+#include "../renderEngine/renderEngine.hpp"
 
 #include <cmath>
 
@@ -106,13 +107,12 @@ void Camera::setViewMatrixValues(Vector3f* newEye, Vector3f* newTarget, Vector3f
 
 Matrix4f Camera::calculateProjectionViewMatrix()
 {
-    extern Matrix4f* projectionMatrix;
     Matrix4f viewMatrix;
 
     Maths::createViewMatrix(&viewMatrix, this);
 
     Matrix4f projectionViewMatrix;
-    projectionMatrix->multiply(&viewMatrix, &projectionViewMatrix);
+    Master_getProjectionMatrix()->multiply(&viewMatrix, &projectionViewMatrix);
 
     return projectionViewMatrix;
 }

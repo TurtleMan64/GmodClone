@@ -773,8 +773,7 @@ Vector2f Maths::calcScreenCoordsOfWorldPoint(Vector3f* worldPoint)
     viewMatrix.multiply(&modelViewMatrix, &modelViewMatrix);
 
     Matrix4f result;
-    extern Matrix4f* projectionMatrix;
-    projectionMatrix->multiply(&modelViewMatrix, &result);
+    Master_getProjectionMatrix()->multiply(&modelViewMatrix, &result);
     Vector4f vec4(0, 0, 0, 1);
     Vector4f gl_Position = result.transform(&vec4);
 

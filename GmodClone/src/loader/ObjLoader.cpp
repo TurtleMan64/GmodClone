@@ -1419,6 +1419,10 @@ CollisionModel* ObjLoader::loadCollisionModel(std::string filePath, std::string 
                             {
                                 fakeTextures.back().type = 2;
                             }
+                            else if (strcmp(lineSplitMTL[1], "nohook") == 0)
+                            {
+                                fakeTextures.back().type = 3;
+                            }
                         }
                         else if (strcmp(lineSplitMTL[0], "sound") == 0 ||
                                  strcmp(lineSplitMTL[0], "\tsound") == 0)
@@ -1557,6 +1561,10 @@ CollisionModel* ObjLoader::loadBinaryCollisionModel(std::string filePath, std::s
                     else if (strcmp(lineSplitMTL[1], "death") == 0)
                     {
                         fakeTextures.back().type = 2;
+                    }
+                    else if (strcmp(lineSplitMTL[1], "nohook") == 0)
+                    {
+                        fakeTextures.back().type = 3;
                     }
                 }
                 else if (strcmp(lineSplitMTL[0], "sound") == 0 ||

@@ -35,7 +35,7 @@ std::unordered_map<TexturedModel*, std::list<Entity*>> entitiesMapNoDepth;
 std::unordered_map<TexturedModel*, std::list<Entity*>> entitiesMapTransparent;
 std::unordered_map<AnimatedModel*, std::vector<Entity*>> animatedEntitiesMap;
 
-Matrix4f* projectionMatrix = nullptr;
+Matrix4f projectionMatrix;
 
 float VFOV_BASE = 60; //Vertical fov
 float VFOV_ADDITION = 0; //additional fov due to the vehicle going fast
@@ -64,9 +64,9 @@ void Master_init()
 {
     shader = new ShaderProgram("res/Shaders/entity/Vertex.glsl", "res/Shaders/entity/Fragment.glsl"); INCR_NEW("ShaderProgram");
 
-    projectionMatrix = new Matrix4f; INCR_NEW("Matrix4f");
+    //projectionMatrix = new Matrix4f; INCR_NEW("Matrix4f");
 
-    renderer = new EntityRenderer(shader, projectionMatrix); INCR_NEW("EntityRenderer");
+    renderer = new EntityRenderer(shader, &projectionMatrix); INCR_NEW("EntityRenderer");
     Master_makeProjectionMatrix();
 
     animatedModelRenderer = new AnimatedModelRenderer;
@@ -333,7 +333,7 @@ void Master_cleanUp()
     shader->cleanUp();
     delete shader; INCR_DEL("ShaderProgram");
     delete renderer; INCR_DEL("EntityRenderer");
-    delete projectionMatrix; INCR_DEL("Matrix4f");
+    //delete projectionMatrix; INCR_DEL("Matrix4f");
 
     //shadowMapRenderer->cleanUp();
     //delete shadowMapRenderer; INCR_DEL("ShadowMapMasterRenderer");
@@ -375,14 +375,14 @@ void Master_makeProjectionMatrix()
 
     float frustum_length = FAR_PLANE - NEAR_PLANE;
 
-    projectionMatrix->m00 = x_scale;
-    projectionMatrix->m11 = y_scale;
-    projectionMatrix->m22 = -((FAR_PLANE + NEAR_PLANE) / frustum_length);
-    projectionMatrix->m23 = -1;
-    projectionMatrix->m32 = -((2 * NEAR_PLANE * FAR_PLANE) / frustum_length);
-    projectionMatrix->m33 = 0;
+    projectionMatrix.m00 = x_scale;
+    projectionMatrix.m11 = y_scale;
+    projectionMatrix.m22 = -((FAR_PLANE + NEAR_PLANE) / frustum_length);
+    projectionMatrix.m23 = -1;
+    projectionMatrix.m32 = -((2 * NEAR_PLANE * FAR_PLANE) / frustum_length);
+    projectionMatrix.m33 = 0;
 
-    renderer->updateProjectionMatrix(projectionMatrix);
+    renderer->updateProjectionMatrix(&projectionMatrix);
 
     //if (Global::renderParticles)
     {
@@ -397,7 +397,7 @@ void Master_makeProjectionMatrix()
 
 Matrix4f* Master_getProjectionMatrix()
 {
-    return projectionMatrix;
+    return &projectionMatrix;
 }
 
 float Master_getVFOV()

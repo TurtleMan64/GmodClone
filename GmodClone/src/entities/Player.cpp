@@ -599,7 +599,7 @@ void Player::step()
         Vector3f target = eyePosition + camDir;
         CollisionResult result = CollisionChecker::checkCollision(&eyePosition, &target);
 
-        if (result.hit)
+        if (result.hit && result.tri->type == 0)
         {
             isOnRope = true;
             ropeAnchor = result.collidePosition;
@@ -1354,6 +1354,10 @@ void Player::reset()
     externalVelPrev.set(0, 0, 0);
     visible = true;
     entityWeapon->visible = false;
+
+    isOnRope = false;
+    ropeAnchor.set(0,0,0);
+    ropeLength = 1.0f;
 }
 
 void Player::animateMe()

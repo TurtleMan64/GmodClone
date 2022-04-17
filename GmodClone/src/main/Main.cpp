@@ -3,19 +3,11 @@
 #define NOMINMAX
 #endif
 
-#ifdef _WIN32
-#include <winsock2.h>
-#include <Windows.h>
-#include <ws2tcpip.h>
-#include <tchar.h>
-#endif
-
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
 #include <iostream>
 #include <fstream>
-
 #include <string>
 #include <cstring>
 #include <unordered_map>
@@ -26,7 +18,6 @@
 #include <shared_mutex>
 #include <condition_variable>
 #include <algorithm>
-
 #include <chrono>
 #include <ctime>
 #include <random>
@@ -402,11 +393,14 @@ int main(int argc, char** argv)
                     Global::gameOnlinePlayersSharedMutex.lock_shared();
                     for (auto const& entry : Global::gameOnlinePlayers)
                     {
-                        playerZoneTimes.push_back(entry.second->inZoneTime);
+                        if (entry.second->health > 0)
+                        {
+                            playerZoneTimes.push_back(entry.second->inZoneTime);
+                        }
                     }
                     Global::gameOnlinePlayersSharedMutex.unlock_shared();
 
-                    if (playerZoneTimes.size() > 1)
+                    if (playerZoneTimes.size() >= 2)
                     {
                         std::sort(playerZoneTimes.begin(), playerZoneTimes.end());
 
@@ -1976,6 +1970,8 @@ bool Global::levelHasRopes()
         case LVL_MAP1:
         case LVL_MAP3:
         case LVL_MAP6:
+        case LVL_TEST:
+        case LVL_EQ:
             return true;
 
         default:
