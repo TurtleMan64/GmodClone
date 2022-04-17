@@ -20,42 +20,42 @@ Tr 0
 renderOrder 1
 animSpeed 16.0
 numImages 36
-map_Kd ../../Images/WaterRipple/0.png
-../../Images/WaterRipple/1.png
-../../Images/WaterRipple/2.png
-../../Images/WaterRipple/3.png
-../../Images/WaterRipple/4.png
-../../Images/WaterRipple/5.png
-../../Images/WaterRipple/6.png
-../../Images/WaterRipple/7.png
-../../Images/WaterRipple/8.png
-../../Images/WaterRipple/9.png
-../../Images/WaterRipple/10.png
-../../Images/WaterRipple/11.png
-../../Images/WaterRipple/12.png
-../../Images/WaterRipple/13.png
-../../Images/WaterRipple/14.png
-../../Images/WaterRipple/15.png
-../../Images/WaterRipple/16.png
-../../Images/WaterRipple/17.png
-../../Images/WaterRipple/18.png
-../../Images/WaterRipple/19.png
-../../Images/WaterRipple/20.png
-../../Images/WaterRipple/21.png
-../../Images/WaterRipple/22.png
-../../Images/WaterRipple/23.png
-../../Images/WaterRipple/24.png
-../../Images/WaterRipple/25.png
-../../Images/WaterRipple/26.png
-../../Images/WaterRipple/27.png
-../../Images/WaterRipple/28.png
-../../Images/WaterRipple/29.png
-../../Images/WaterRipple/30.png
-../../Images/WaterRipple/31.png
-../../Images/WaterRipple/32.png
-../../Images/WaterRipple/33.png
-../../Images/WaterRipple/34.png
-../../Images/WaterRipple/35.png
+map_Kd ../../Images/SharedTextures/WaterRipple/0.png
+../../Images/SharedTextures/WaterRipple/1.png
+../../Images/SharedTextures/WaterRipple/2.png
+../../Images/SharedTextures/WaterRipple/3.png
+../../Images/SharedTextures/WaterRipple/4.png
+../../Images/SharedTextures/WaterRipple/5.png
+../../Images/SharedTextures/WaterRipple/6.png
+../../Images/SharedTextures/WaterRipple/7.png
+../../Images/SharedTextures/WaterRipple/8.png
+../../Images/SharedTextures/WaterRipple/9.png
+../../Images/SharedTextures/WaterRipple/10.png
+../../Images/SharedTextures/WaterRipple/11.png
+../../Images/SharedTextures/WaterRipple/12.png
+../../Images/SharedTextures/WaterRipple/13.png
+../../Images/SharedTextures/WaterRipple/14.png
+../../Images/SharedTextures/WaterRipple/15.png
+../../Images/SharedTextures/WaterRipple/16.png
+../../Images/SharedTextures/WaterRipple/17.png
+../../Images/SharedTextures/WaterRipple/18.png
+../../Images/SharedTextures/WaterRipple/19.png
+../../Images/SharedTextures/WaterRipple/20.png
+../../Images/SharedTextures/WaterRipple/21.png
+../../Images/SharedTextures/WaterRipple/22.png
+../../Images/SharedTextures/WaterRipple/23.png
+../../Images/SharedTextures/WaterRipple/24.png
+../../Images/SharedTextures/WaterRipple/25.png
+../../Images/SharedTextures/WaterRipple/26.png
+../../Images/SharedTextures/WaterRipple/27.png
+../../Images/SharedTextures/WaterRipple/28.png
+../../Images/SharedTextures/WaterRipple/29.png
+../../Images/SharedTextures/WaterRipple/30.png
+../../Images/SharedTextures/WaterRipple/31.png
+../../Images/SharedTextures/WaterRipple/32.png
+../../Images/SharedTextures/WaterRipple/33.png
+../../Images/SharedTextures/WaterRipple/34.png
+../../Images/SharedTextures/WaterRipple/35.png
 
 newmtl None_White.png
 Ns 20.000000

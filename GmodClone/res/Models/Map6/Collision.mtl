@@ -31,7 +31,7 @@ Ks 0.300000 0.300000 0.300000
 Ni 0.000000
 d 1.000000
 illum 2
-map_Kd Rock_N.png
+map_Kd ../../Images/SharedTextures/Rock/Rock1_N.png
 
 newmtl None_Wall.png
 Ns 20.000000

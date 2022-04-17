@@ -10,13 +10,13 @@ newmtl None_Tile_Blue.png
 Ns 20.000000
 Ni 0.000000
 d 1.000000
-map_Kd Tile_Blue.png Tile_N.png
+map_Kd ../../Images/SharedTextures/Tile/Tile_Blue.png ../../Images/SharedTextures/Tile/Tile_N.png
 
 newmtl None_Tile_Black.png
 Ns 20.000000
 Ni 0.000000
 d 1.000000
-map_Kd Tile_Black.png Tile_N.png
+map_Kd ../../Images/SharedTextures/Tile/Tile_Black.png ../../Images/SharedTextures/Tile/Tile_N.png
 
 newmtl Tex_0007_0.001
 Ns 20
@@ -28,19 +28,19 @@ newmtl None_Tile_Yellow.png
 Ns 20.000000
 Ni 0.000000
 d 1.000000
-map_Kd Tile_Yellow.png Tile_N.png
+map_Kd ../../Images/SharedTextures/Tile/Tile_Yellow.png ../../Images/SharedTextures/Tile/Tile_N.png
 
 newmtl None_Tile_Red.png
 Ns 20.000000
 Ni 0.000000
 d 1.000000
-map_Kd Tile_Red.png Tile_N.png
+map_Kd ../../Images/SharedTextures/Tile/Tile_Red.png ../../Images/SharedTextures/Tile/Tile_N.png
 
 newmtl None
 Ns 20.000000
 Ni 0.000000
 d 1.000000
-map_Kd Rubber.png Rubber_N.png
+map_Kd ../../Images/SharedTextures/Rubber.png ../../Images/SharedTextures/Rubber_N.png
 
 newmtl None_Tile.png
 Ns 20.000000
@@ -53,23 +53,22 @@ newmtl None_Tile_Aqua.png
 Ns 20.000000
 Ni 0.000000
 d 1.000000
-map_Kd Tile_Aqua.png Tile_N.png
+map_Kd ../../Images/SharedTextures/Tile/Tile_Aqua.png ../../Images/SharedTextures/Tile/Tile_N.png
 
 newmtl None_Tile_Green.png
 Ns 20.000000
 Ni 0.000000
 d 1.000000
-map_Kd Tile_Green.png Tile_N.png
+map_Kd ../../Images/SharedTextures/Tile/Tile_Green.png ../../Images/SharedTextures/Tile/Tile_N.png
 
 newmtl None_Tile.png_Tile_N.png
 Ns 20.000000
 Ni 0.000000
 d 1.000000
-map_Kd Tile_Black.png Tile_N.png
+map_Kd ../../Images/SharedTextures/Tile/Tile_Black.png ../../Images/SharedTextures/Tile/Tile_N.png
 
 newmtl None_Tile_Orange.png
 Ns 20.000000
 Ni 0.000000
 d 1.000000
-map_Kd Tile_Orange.png Tile_N.png
-
+map_Kd ../../Images/SharedTextures/Tile/Tile_Orange.png ../../Images/SharedTextures/Tile/Tile_N.png

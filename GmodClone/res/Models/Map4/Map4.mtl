@@ -13,7 +13,7 @@ newmtl CA_PillarWater02_01
 Ns 20.000000
 Ni 0.1
 d 1.000000
-map_Kd Rock_A.png Rock_N.png
+map_Kd ../../Images/SharedTextures/Rock/Rock1.png ../../Images/SharedTextures/Rock/Rock1_N.png
 
 newmtl CA_PillarWater02_01_CA_Wall02_02.png
 Ns 20.000000

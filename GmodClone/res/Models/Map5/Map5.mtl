@@ -9,7 +9,7 @@ Ks 0.8 0.8 0.8
 Ni 0.4
 d 1
 illum 2
-map_Kd Rock.png Rock_N.png
+map_Kd ../../Images/SharedTextures/Rock/Rock2.png ../../Images/SharedTextures/Rock/Rock2_N.png
 
 newmtl None
 Ns 20
@@ -22,7 +22,7 @@ numImages 4
 animSpeed 1.5
 glow 1
 mixLinear
-map_Kd ../../Images/LavaBig/Lava1.png
-../../Images/LavaBig/Lava2.png
-../../Images/LavaBig/Lava3.png
-../../Images/LavaBig/Lava4.png
+map_Kd ../../Images/SharedTextures/LavaBig/Lava1.png
+../../Images/SharedTextures/LavaBig/Lava2.png
+../../Images/SharedTextures/LavaBig/Lava3.png
+../../Images/SharedTextures/LavaBig/Lava4.png
