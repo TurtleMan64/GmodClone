@@ -8,4 +8,4 @@ d 0
 Tr 0
 renderOrder 2
 illum 2
-map_Kd Fence.png
+map_Kd ../../Images/SharedTextures/Fence.png ../../Images/SharedTextures/Fence_N.png

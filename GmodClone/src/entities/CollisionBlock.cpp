@@ -49,8 +49,6 @@ CollisionBlock::~CollisionBlock()
     }
 }
 
-float prevPosX = 0.0f;
-
 void CollisionBlock::step()
 {
     float syncedTime = (((float)Global::syncedGlobalTime) - timeOffset)/timePeriod;

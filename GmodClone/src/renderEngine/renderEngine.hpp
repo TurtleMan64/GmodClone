@@ -90,6 +90,9 @@ public:
     //Loads a texture without any interpolation
     static GLuint loadTextureNoInterpolation(const char* fileName);
 
+    //Loads a texture into GPU memory, returns the GLuint id
+    static GLuint loadTexture3D(const char* filename);
+
     static void cleanUp();
 
     static void deleteVAO(GLuint vaoId);

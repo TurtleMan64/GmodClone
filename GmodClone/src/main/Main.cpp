@@ -584,7 +584,7 @@ int main(int argc, char** argv)
 
         Global::updateChatMessages();
 
-        if (Global::player->weapon == WEAPON_GUN)
+        if (!Global::camThirdPerson && (Global::player->weapon == WEAPON_GUN || Global::levelHasRopes()))
         {
             GuiManager::addGuiToRender(GuiTextureResources::textureCrosshair);
         }
@@ -1972,6 +1972,7 @@ bool Global::levelHasRopes()
         case LVL_MAP6:
         case LVL_TEST:
         case LVL_EQ:
+        case LVL_MAP9:
             return true;
 
         default:

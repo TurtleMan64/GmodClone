@@ -1,0 +1,57 @@
+# Material Count: 9
+
+newmtl None_Rubber.png
+Ns 20
+Ni 0.3
+type bounce
+d 1
+map_Kd ../../Images/SharedTextures/Rubber.png
+
+newmtl None_Tile_Black.png
+Ns 20
+Ni 0.3
+d 1
+map_Kd ../../Images/SharedTextures/Tile/Tile_Black.png
+
+newmtl None_Tile_Blue.png
+Ns 20
+Ni 0.3
+d 1
+map_Kd ../../Images/SharedTextures/Tile/Tile_Blue.png
+
+newmtl None_Tile_Orange.png
+Ns 20
+Ni 0.3
+d 1
+map_Kd ../../Images/SharedTextures/Tile/Tile_Orange.png
+
+newmtl None_Tile_Yellow.png
+Ns 20
+Ni 0.3
+d 1
+map_Kd ../../Images/SharedTextures/Tile/Tile_Yellow.png
+
+newmtl None_Tile_Green.png
+Ns 20
+Ni 0.3
+d 1
+map_Kd ../../Images/SharedTextures/Tile/Tile_Green.png
+
+newmtl None
+Ns 20
+Ni 0.3
+d 1
+map_Kd ../../Images/SharedTextures/Tile/Tile_Red.png
+
+newmtl None_Grass.jpg
+Ns 20
+Ni 0.0
+sound grass
+d 1
+map_Kd Grass.jpg
+
+newmtl None_Tile_Aqua.png
+Ns 20
+Ni 0.3
+d 1
+map_Kd ../../Images/SharedTextures/Tile/Tile_Aqua.png

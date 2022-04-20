@@ -254,6 +254,53 @@ GLuint Loader::loadTextureNoInterpolation(const char* fileName)
     return textureId;
 }
 
+GLuint Loader::loadTexture3D(const char* filename)
+{
+    std::vector<char> bytes;
+
+    for (int i = 0; i < 256; i++)
+    {
+        int width, height, channels;
+        unsigned char* image = SOIL_load_image((Global::pathToEXE + filename + std::to_string(i)).c_str(), &width, &height, &channels, SOIL_LOAD_RGBA);
+
+        if (image == nullptr)
+        {
+            const char* err = SOIL_last_result();
+            std::fprintf(stdout, "Error loading image '%s', because '%s'\n", (Global::pathToEXE + filename + std::to_string(i)).c_str(), err);
+            return GL_NONE;
+        }
+
+        for (int j = 0; j < width*height*channels; j++)
+        {
+            bytes.push_back(image[j]);
+        }
+
+        SOIL_free_image_data(image);
+    }
+
+    GLuint textureId = 0;
+    glGenTextures(1, &textureId);
+
+    glBindTexture(GL_TEXTURE_3D, textureId);
+
+    //Texture wrapping
+    glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_R, GL_REPEAT);
+
+    //Texel interpolation
+    glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+    //create
+    glTexImage3D(GL_TEXTURE_3D, 0, GL_RGBA, 256, 256, 256, 0, GL_RGBA, GL_UNSIGNED_BYTE, &bytes[0]);
+
+    glBindTexture(GL_TEXTURE_3D, 0);
+
+
+    return textureId;
+}
+
 GLuint Loader::createVAO()
 {
     GLuint vaoId = 0;

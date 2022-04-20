@@ -77,7 +77,7 @@ Player::Player()
     Player::animationCrawl  = AnimationLoader::loadAnimation("res/Models/Human/Original Mixamo/Running Crawl.anim");
     Player::animationSlide  = AnimationLoader::loadAnimation("res/Models/Human/Original Mixamo/Running Slide 2.anim");
     Player::animationJump   = AnimationLoader::loadAnimation("res/Models/Human/Original Mixamo/Jumping Up.anim");
-    Player::animationFall   = AnimationLoader::loadAnimation("res/Models/Human/Original Mixamo/Falling Idle.anim");
+    Player::animationFall   = AnimationLoader::loadAnimation("res/Models/Human/Original Mixamo/Dancing Twerk.anim"); //Falling Idle
     Player::animationClimb  = AnimationLoader::loadAnimation("res/Models/Human/Original Mixamo/BlenderOutput/Climbing Ladder.anim");
 
     for (int i = 0; i < Player::modelShrek->jointCount; i++)
