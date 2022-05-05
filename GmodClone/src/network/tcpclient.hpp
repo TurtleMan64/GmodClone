@@ -42,7 +42,7 @@ public:
 
     bool isOpen();
 
-    void close();
+    void closeConnection();
 };
 
 #endif

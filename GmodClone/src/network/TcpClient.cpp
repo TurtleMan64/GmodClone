@@ -1,14 +1,28 @@
 #ifdef _WIN32
-
 #include <winsock2.h>
 #include <Windows.h>
 #include <ws2tcpip.h>
+#else
+#include <sys/socket.h>
+#include <unistd.h>
+#include <string.h>
+#include <sys/types.h>
+#include <sys/ioctl.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
+#include <netdb.h>
+#include <stdio.h>
+#include <stdlib.h>
+#endif
+
 #include <string>
 
 #include "tcpclient.hpp"
 
+#ifdef _WIN32
 // Link with ws2_32.lib
 #pragma comment(lib, "Ws2_32.lib")
+#endif
 
 bool TcpClient::hasInit = false;
 
@@ -16,8 +30,10 @@ TcpClient::TcpClient(SOCKET socket)
 {
     if (!TcpClient::hasInit)
     {
+        #ifdef _WIN32
         WSADATA wsaData;
         WSAStartup(0x0101, &wsaData);
+        #endif
         TcpClient::hasInit = true;
     }
 
@@ -28,8 +44,10 @@ TcpClient::TcpClient(char* ip, int port, int timeoutSec)
 {
     if (!TcpClient::hasInit)
     {
+        #ifdef _WIN32
         WSADATA wsaData;
         WSAStartup(0x0101, &wsaData);
+        #endif
         TcpClient::hasInit = true;
     }
 
@@ -40,8 +58,10 @@ TcpClient::TcpClient(const char* ip, int port, int timeoutSec)
 {
     if (!TcpClient::hasInit)
     {
+        #ifdef _WIN32
         WSADATA wsaData;
         WSAStartup(0x0101, &wsaData);
+        #endif
         TcpClient::hasInit = true;
     }
 
@@ -50,11 +70,7 @@ TcpClient::TcpClient(const char* ip, int port, int timeoutSec)
 
 TcpClient::~TcpClient()
 {
-    if (sd != INVALID_SOCKET)
-    {
-        closesocket(sd);
-        sd = INVALID_SOCKET;
-    }
+    closeConnection();
 }
 
 void TcpClient::attemptConnection(char* ip, int port, int timeoutSec)
@@ -68,7 +84,7 @@ void TcpClient::attemptConnection(char* ip, int port, int timeoutSec)
     struct addrinfo* result = nullptr;
     struct addrinfo  hints;
 
-    ZeroMemory(&hints, sizeof(hints));
+    memset(&hints, 0, sizeof(hints));
     hints.ai_family   = AF_UNSPEC;
     hints.ai_socktype = SOCK_STREAM;
     hints.ai_protocol = IPPROTO_TCP;
@@ -97,7 +113,12 @@ void TcpClient::attemptConnection(char* ip, int port, int timeoutSec)
     memset((char*)&sad, 0, sizeof(sad)); // clear sockaddr structure
     sad.sin_family = AF_INET; // set family to Internet
 
+    #ifdef _WIN32
     InetPton(AF_INET, (PCSTR)(dnsIp), &sad.sin_addr.s_addr);
+    #else
+    inet_pton(AF_INET, dnsIp, &sad.sin_addr.s_addr);
+    #endif
+
     sad.sin_port = htons((u_short)port);
 
     // Map TCP transport protocol name to protocol number
@@ -126,8 +147,7 @@ void TcpClient::attemptConnection(char* ip, int port, int timeoutSec)
     {
         if (connect(sd, (struct sockaddr *)&sad, sizeof(sad)) < 0)
         {
-            closesocket(sd);
-            sd = INVALID_SOCKET;
+            closeConnection();
             return;
         }
 
@@ -135,24 +155,44 @@ void TcpClient::attemptConnection(char* ip, int port, int timeoutSec)
     }
 
     // Set the socket in non-blocking
+
+    #ifdef _WIN32
     unsigned long iMode = 1;
     int iResult = ioctlsocket(sd, FIONBIO, &iMode);
     if (iResult != NO_ERROR)
     {
-        closesocket(sd);
-        sd = INVALID_SOCKET;
+        closeConnection();
         return;
     }
+    #else
+    unsigned long iMode = 1;
+    int iResult = ioctl(sd, FIONBIO, &iMode);
+    if (iResult < 0)
+    {
+        closeConnection();
+        return;
+    }
+    #endif
 
     connect(sd, (struct sockaddr*)&sad, sizeof(sad));
 
     // Put socket back into blocking mode
+
+    #ifdef _WIN32
     iMode = 0;
     iResult = ioctlsocket(sd, FIONBIO, &iMode);
     if (iResult != NO_ERROR)
     {
-
+        printf("Failed to put socket back into blocking mode!\n");
     }
+    #else
+    iMode = 0;
+    iResult = ioctl(sd, FIONBIO, &iMode);
+    if (iResult < 0)
+    {
+        printf("Failed to put socket back into blocking mode!\n");
+    }
+    #endif
 
     fd_set setWrite;
     FD_ZERO(&setWrite);
@@ -170,8 +210,7 @@ void TcpClient::attemptConnection(char* ip, int port, int timeoutSec)
     }
     else
     {
-        closesocket(sd);
-        sd = INVALID_SOCKET;
+        closeConnection();
     }
 }
 
@@ -210,14 +249,12 @@ int TcpClient::write(void* bytes, int numBytesToSend, int timeoutSec)
 
             if (selectval == -1)
             {
-                closesocket(sd);
-                sd = INVALID_SOCKET;
+                closeConnection();
                 return currentBytesSent;
             }
             else if (selectval == 0) // Timeout happened
             {
-                closesocket(sd);
-                sd = INVALID_SOCKET;
+                closeConnection();
                 return currentBytesSent;
             }
         }
@@ -229,14 +266,12 @@ int TcpClient::write(void* bytes, int numBytesToSend, int timeoutSec)
 
         if (numBytesSent == -1)
         {
-            closesocket(sd);
-            sd = INVALID_SOCKET;
+            closeConnection();
             return currentBytesSent;
         }
         else if (numBytesSent == 0)
         {
-            closesocket(sd);
-            sd = INVALID_SOCKET;
+            closeConnection();
             return currentBytesSent;
         }
 
@@ -269,8 +304,7 @@ int TcpClient::read(void* buffer, int numBytesToRead, int timeoutSec)
             int selectval = select((int)sd + 1, &setRead, NULL, NULL, &timeout);
             if (selectval == -1)
             {
-                closesocket(sd);
-                sd = INVALID_SOCKET;
+                closeConnection();
                 return -1;
             }
             else if (selectval == 0) // Timeout happened
@@ -285,15 +319,13 @@ int TcpClient::read(void* buffer, int numBytesToRead, int timeoutSec)
 
         if (numBytesRead == -1)
         {
-            closesocket(sd);
-            sd = INVALID_SOCKET;
+            closeConnection();
             return -1;
         }
 
         if (numBytesRead == 0)
         {
-            closesocket(sd);
-            sd = INVALID_SOCKET;
+            closeConnection();
             return -2;
         }
 
@@ -303,7 +335,8 @@ int TcpClient::read(void* buffer, int numBytesToRead, int timeoutSec)
     return currentBytesRead;
 }
 
-void TcpClient::close()
+#ifdef _WIN32
+void TcpClient::closeConnection()
 {
     if (sd != INVALID_SOCKET)
     {
@@ -311,63 +344,13 @@ void TcpClient::close()
         sd = INVALID_SOCKET;
     }
 }
-
 #else
-
-#include <string>
-
-#include "tcpclient.hpp"
-
-bool TcpClient::hasInit = false;
-
-TcpClient::TcpClient(SOCKET socket)
+void TcpClient::closeConnection()
 {
-
+    if (sd != INVALID_SOCKET)
+    {
+        close(sd);
+        sd = INVALID_SOCKET;
+    }
 }
-
-TcpClient::TcpClient(char* ip, int port, int timeoutSec)
-{
-
-}
-
-TcpClient::TcpClient(const char* ip, int port, int timeoutSec)
-{
-
-}
-
-TcpClient::~TcpClient()
-{
-
-}
-
-void TcpClient::attemptConnection(char* ip, int port, int timeoutSec)
-{
-
-}
-
-bool TcpClient::isOpen()
-{
-    return false;
-}
-
-int TcpClient::write(const void* bytes, int numBytesToSend, int timeoutSec)
-{
-    return 0;
-}
-
-int TcpClient::write(void* bytes, int numBytesToSend, int timeoutSec)
-{
-    return 0;
-}
-
-int TcpClient::read(void* buffer, int numBytesToRead, int timeoutSec)
-{
-    return 0;
-}
-
-void TcpClient::close()
-{
-
-}
-
 #endif
