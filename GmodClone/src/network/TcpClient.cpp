@@ -6,13 +6,12 @@
 #include <sys/socket.h>
 #include <unistd.h>
 #include <string.h>
-#include <sys/types.h>
-#include <sys/ioctl.h>
-#include <netinet/in.h>
 #include <arpa/inet.h>
 #include <netdb.h>
-#include <stdio.h>
-#include <stdlib.h>
+#include <errno.h>
+#include <fcntl.h>
+#include <poll.h>
+#include <time.h>
 #endif
 
 #include <string>
@@ -94,7 +93,7 @@ void TcpClient::attemptConnection(char* ip, int port, int timeoutSec)
     int dwRetval = getaddrinfo(ip, std::to_string(port).c_str(), &hints, &result);
     if (dwRetval != 0)
     {
-        printf("error when get addr info\n");
+        printf("Error when calling getaddrinfo.\n");
     }
     else
     {
@@ -139,7 +138,7 @@ void TcpClient::attemptConnection(char* ip, int port, int timeoutSec)
     const char flag = 1;
     if (setsockopt(sd, SOL_SOCKET, SO_REUSEADDR, &flag, sizeof(char)) == -1)
     {
-
+        printf("Could not eliminate the 'address already in use' error message\n");
     }
 
     // If the timeout is < 0, block until connection succeeds or error
@@ -154,9 +153,8 @@ void TcpClient::attemptConnection(char* ip, int port, int timeoutSec)
         return;
     }
 
-    // Set the socket in non-blocking
-
     #ifdef _WIN32
+    // Set the socket in non-blocking
     unsigned long iMode = 1;
     int iResult = ioctlsocket(sd, FIONBIO, &iMode);
     if (iResult != NO_ERROR)
@@ -164,17 +162,18 @@ void TcpClient::attemptConnection(char* ip, int port, int timeoutSec)
         closeConnection();
         return;
     }
+
+    if (connect(sd, (struct sockaddr*)&sad, sizeof(sad)) < 0)
+    {
+        // This is expected, connect should be in progress.
+    }
     #else
-    unsigned long iMode = 1;
-    int iResult = ioctl(sd, FIONBIO, &iMode);
-    if (iResult < 0)
+    if (connectWithTimeout(sd, (struct sockaddr*)&sad, sizeof(sad), timeoutSec*1000) < 0)
     {
         closeConnection();
         return;
     }
     #endif
-
-    connect(sd, (struct sockaddr*)&sad, sizeof(sad));
 
     // Put socket back into blocking mode
 
@@ -185,14 +184,6 @@ void TcpClient::attemptConnection(char* ip, int port, int timeoutSec)
     {
         printf("Failed to put socket back into blocking mode!\n");
     }
-    #else
-    iMode = 0;
-    iResult = ioctl(sd, FIONBIO, &iMode);
-    if (iResult < 0)
-    {
-        printf("Failed to put socket back into blocking mode!\n");
-    }
-    #endif
 
     fd_set setWrite;
     FD_ZERO(&setWrite);
@@ -203,6 +194,7 @@ void TcpClient::attemptConnection(char* ip, int port, int timeoutSec)
     timeout.tv_usec = 0;
 
     // Wait until socket can be written to, or until timeout
+    printf("Waiting until socket can be written to...\n");
     select(0, nullptr, &setWrite, nullptr, &timeout);
     if (FD_ISSET(sd, &setWrite))
     {
@@ -212,6 +204,7 @@ void TcpClient::attemptConnection(char* ip, int port, int timeoutSec)
     {
         closeConnection();
     }
+    #endif
 }
 
 bool TcpClient::isOpen()
@@ -349,8 +342,114 @@ void TcpClient::closeConnection()
 {
     if (sd != INVALID_SOCKET)
     {
+        printf("Closing the connection\n");
         close(sd);
         sd = INVALID_SOCKET;
     }
+}
+#endif
+
+#ifdef _WIN32
+int TcpClient::connectWithTimeout(SOCKET sockfd, const struct sockaddr* addr, socklen_t addrlen, unsigned int timeout_ms)
+{
+    return -1;
+}
+#else
+//https://stackoverflow.com/questions/2597608/c-socket-connection-timeout
+int TcpClient::connectWithTimeout(SOCKET sockfd, const struct sockaddr* addr, socklen_t addrlen, unsigned int timeout_ms)
+{
+    int rc = 0;
+
+    // Set O_NONBLOCK
+    int sockfd_flags_before;
+    if ((sockfd_flags_before=fcntl(sockfd,F_GETFL,0)<0))
+    {
+        return -1;
+    }
+
+    if (fcntl(sockfd,F_SETFL,sockfd_flags_before | O_NONBLOCK)<0)
+    {
+        return -1;
+    }
+
+    // Start connecting (asynchronously)
+    do
+    {
+        if (connect(sockfd, addr, addrlen) < 0)
+        {
+            // Did connect return an error? If so, we'll fail.
+            if ((errno != EWOULDBLOCK) && (errno != EINPROGRESS))
+            {
+                rc = -1;
+            }
+            // Otherwise, we'll wait for it to complete.
+            else
+            {
+                // Set a deadline timestamp 'timeout' ms from now (needed b/c poll can be interrupted)
+                struct timespec now;
+                if (clock_gettime(CLOCK_MONOTONIC, &now)<0)
+                {
+                    rc=-1; break;
+                }
+
+                struct timespec deadline = { .tv_sec = now.tv_sec,
+                                             .tv_nsec = now.tv_nsec + timeout_ms*1000000l};
+                // Wait for the connection to complete.
+                do
+                {
+                    // Calculate how long until the deadline
+                    if (clock_gettime(CLOCK_MONOTONIC, &now)<0)
+                    {
+                        rc=-1; break;
+                    }
+
+                    int ms_until_deadline = (int)(  (deadline.tv_sec  - now.tv_sec)*1000l
+                                                  + (deadline.tv_nsec - now.tv_nsec)/1000000l);
+                    if (ms_until_deadline<0)
+                    {
+                        rc=0; break;
+                    }
+
+                    // Wait for connect to complete (or for the timeout deadline)
+                    struct pollfd pfds[] = { { .fd = sockfd, .events = POLLOUT, .revents = 0 } };
+                    rc = poll(pfds, 1, ms_until_deadline);
+                    // If poll 'succeeded', make sure it *really* succeeded
+                    if (rc>0)
+                    {
+                        int error = 0; socklen_t len = sizeof(error);
+                        int retval = getsockopt(sockfd, SOL_SOCKET, SO_ERROR, &error, &len);
+                        if (retval==0)
+                        {
+                            errno = error;
+                        }
+
+                        if (error!=0)
+                        {
+                            rc=-1;
+                        }
+                    }
+                }
+                // If poll was interrupted, try again.
+                while (rc==-1 && errno==EINTR);
+
+                // Did poll timeout? If so, fail.
+                if (rc==0)
+                {
+                    errno = ETIMEDOUT;
+                    rc=-1;
+                }
+            }
+        }
+    }
+    while(0);
+
+    // Restore original O_NONBLOCK state
+    if (fcntl(sockfd,F_SETFL,sockfd_flags_before)<0)
+    {
+        return -1;
+    }
+
+    // Success
+    return rc;
 }
 #endif

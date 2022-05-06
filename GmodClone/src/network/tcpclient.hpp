@@ -8,6 +8,7 @@
 #else
 #define SOCKET int
 #define INVALID_SOCKET -1
+#include <sys/socket.h>
 #endif
 
 class TcpClient
@@ -18,6 +19,8 @@ private:
     SOCKET sd = INVALID_SOCKET;
 
     void attemptConnection(char* ip, int port, int timeoutSec);
+
+    int connectWithTimeout(SOCKET sockfd, const struct sockaddr *addr, socklen_t addrlen, unsigned int timeout_ms);
 
 public:
     TcpClient(SOCKET socket);
