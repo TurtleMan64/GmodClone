@@ -280,19 +280,19 @@ GLuint Loader::loadTexture3D(const char* filename)
     {
         int width, height, channels;
         unsigned char* image = SOIL_load_image((Global::pathToEXE + filename + std::to_string(i) + ".bmp").c_str(), &width, &height, &channels, SOIL_LOAD_AUTO);
-    
+
         if (image == nullptr)
         {
             const char* err = SOIL_last_result();
             std::fprintf(stdout, "Error loading image '%s', because '%s'\n", (Global::pathToEXE + filename + std::to_string(i) + ".bmp").c_str(), err);
             return GL_NONE;
         }
-    
+
         for (int j = 0; j < width*height*channels; j++)
         {
             bytes.push_back(image[j]);
         }
-    
+
         SOIL_free_image_data(image);
     }
 

@@ -151,7 +151,7 @@ void Master_render(Camera* camera, float clipX, float clipY, float clipZ, float 
     shader->loadWaterColor(&waterColor);
     shader->loadWaterBlendAmount(waterBlendAmount);
     shader->loadLightMapData(
-        Global::lightMapOriginX, Global::lightMapOriginY, Global::lightMapOriginZ, 
+        Global::lightMapOriginX, Global::lightMapOriginY, Global::lightMapOriginZ,
         Global::lightMapSizeX, Global::lightMapSizeY, Global::lightMapSizeZ);
     shader->connectTextureUnits();
 
