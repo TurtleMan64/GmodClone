@@ -20,6 +20,13 @@ public:
     int location_lightDirection;
     int location_jointTransforms[MAX_JOINTS];
     int location_diffuseMap;
+    int location_lightMap;
+    int location_lightMapOriginX;
+    int location_lightMapOriginY;
+    int location_lightMapOriginZ;
+    int location_lightMapSizeX;
+    int location_lightMapSizeY;
+    int location_lightMapSizeZ;
 
     AnimatedModelShader();
 

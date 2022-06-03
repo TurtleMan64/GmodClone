@@ -1,5 +1,6 @@
 res/Models/Hub/ Hub         # Visual Stage Model
 res/Models/Hub/ Collision   # Collision Stage Model
+res/Models/Hub/Hub.shadow   # Shadow Map
 -16 0.1 -8    0 0.1 8       # Player Spawning Zone Endpoints
 -100 -100 -100 100 100 100  # Player Safe Zone Endpoints
 0.745 0.905 0.96            # Sky Color

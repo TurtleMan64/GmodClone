@@ -40,6 +40,7 @@
 #include "../entities/bat.hpp"
 #include "../entities/winzone.hpp"
 #include "../entities/fallblock.hpp"
+#include "../renderEngine/renderEngine.hpp"
 
 void LevelLoader::loadLevel(std::string mapName)
 {
@@ -73,18 +74,19 @@ void LevelLoader::loadLevel(std::string mapName)
         return;
     }
 
-    if      (fname == "hub.map")  Global::levelId = LVL_HUB;
-    else if (fname == "map1.map") Global::levelId = LVL_MAP1;
-    else if (fname == "map2.map") Global::levelId = LVL_MAP2;
-    else if (fname == "map3.map") Global::levelId = LVL_MAP3;
-    else if (fname == "eq.map")   Global::levelId = LVL_EQ;
-    else if (fname == "map4.map") Global::levelId = LVL_MAP4;
-    else if (fname == "test.map") Global::levelId = LVL_TEST;
-    else if (fname == "map5.map") Global::levelId = LVL_MAP5;
-    else if (fname == "map6.map") Global::levelId = LVL_MAP6;
-    else if (fname == "map7.map") Global::levelId = LVL_MAP7;
-    else if (fname == "map8.map") Global::levelId = LVL_MAP8;
-    else if (fname == "map9.map") Global::levelId = LVL_MAP9;
+    if      (fname == "hub.map")   Global::levelId = LVL_HUB;
+    else if (fname == "map1.map")  Global::levelId = LVL_MAP1;
+    else if (fname == "map2.map")  Global::levelId = LVL_MAP2;
+    else if (fname == "map3.map")  Global::levelId = LVL_MAP3;
+    else if (fname == "eq.map")    Global::levelId = LVL_EQ;
+    else if (fname == "map4.map")  Global::levelId = LVL_MAP4;
+    else if (fname == "test.map")  Global::levelId = LVL_TEST;
+    else if (fname == "map5.map")  Global::levelId = LVL_MAP5;
+    else if (fname == "map6.map")  Global::levelId = LVL_MAP6;
+    else if (fname == "map7.map")  Global::levelId = LVL_MAP7;
+    else if (fname == "map8.map")  Global::levelId = LVL_MAP8;
+    else if (fname == "map9.map")  Global::levelId = LVL_MAP9;
+    else if (fname == "map10.map") Global::levelId = LVL_MAP10;
 
     Global::deleteAllEntites();
 
@@ -145,6 +147,12 @@ void LevelLoader::loadLevel(std::string mapName)
     }
     CollisionChecker::constructChunkDatastructure();
     delete cm; INCR_DEL("CollisionModel");
+
+    std::string lightMapLine;
+    getlineSafe(file, lightMapLine);
+    std::vector<std::string> lightMapSplit = split(lightMapLine, ' ');
+    Loader::deleteTexture(Global::lightMap);
+    Global::lightMap = Loader::loadTextureShadowMap(lightMapSplit[0].c_str());
 
     std::string playerSpawnZoneLine;
     getlineSafe(file, playerSpawnZoneLine);

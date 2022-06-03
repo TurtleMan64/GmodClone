@@ -56,6 +56,13 @@ private:
     int location_clock;
     int location_noise;
     int location_entityId;
+    int location_lightMap;
+    int location_lightMapOriginX;
+    int location_lightMapOriginY;
+    int location_lightMapOriginZ;
+    int location_lightMapSizeX;
+    int location_lightMapSizeY;
+    int location_lightMapSizeZ;
 
 public:
     ShaderProgram(const char*, const char*);
@@ -123,6 +130,8 @@ public:
     void loadEntityId(unsigned int value);
 
     void loadNoise(float value);
+
+    void loadLightMapData(float x, float y, float z, float width, float height, float depth);
 
     void connectTextureUnits();
 

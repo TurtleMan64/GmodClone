@@ -61,23 +61,24 @@ class Message
 {
 public:
     int length = 0;
-    char buf[250] = {0};
+    char buf[255] = {0};
     Message(const Message &other);
     Message();
 };
 
-#define LVL_HUB   0
-#define LVL_MAP1  1
-#define LVL_MAP2  2
-#define LVL_MAP3  3
-#define LVL_EQ    4
-#define LVL_MAP4  5
-#define LVL_TEST  6
-#define LVL_MAP5  7
-#define LVL_MAP6  8
-#define LVL_MAP7  9
-#define LVL_MAP8 10
-#define LVL_MAP9 11
+#define LVL_HUB    0
+#define LVL_MAP1   1
+#define LVL_MAP2   2
+#define LVL_MAP3   3
+#define LVL_EQ     4
+#define LVL_MAP4   5
+#define LVL_TEST   6
+#define LVL_MAP5   7
+#define LVL_MAP6   8
+#define LVL_MAP7   9
+#define LVL_MAP8  10
+#define LVL_MAP9  11
+#define LVL_MAP10 12
 
 class Global
 {
@@ -94,6 +95,14 @@ public:
     static int levelId;
     static std::shared_mutex levelMutex;
     static std::string levelToLoad;
+
+    static GLuint lightMap;
+    static float lightMapOriginX;
+    static float lightMapOriginY;
+    static float lightMapOriginZ;
+    static float lightMapSizeX;
+    static float lightMapSizeY;
+    static float lightMapSizeZ;
 
     static Camera* gameCamera;
     static Player* player;

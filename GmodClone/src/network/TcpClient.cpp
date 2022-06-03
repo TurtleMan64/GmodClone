@@ -194,7 +194,6 @@ void TcpClient::attemptConnection(char* ip, int port, int timeoutSec)
     timeout.tv_usec = 0;
 
     // Wait until socket can be written to, or until timeout
-    printf("Waiting until socket can be written to...\n");
     select(0, nullptr, &setWrite, nullptr, &timeout);
     if (FD_ISSET(sd, &setWrite))
     {
@@ -350,7 +349,7 @@ void TcpClient::closeConnection()
 #endif
 
 #ifdef _WIN32
-int TcpClient::connectWithTimeout(SOCKET sockfd, const struct sockaddr* addr, socklen_t addrlen, unsigned int timeout_ms)
+int TcpClient::connectWithTimeout(SOCKET, const struct sockaddr*, socklen_t, unsigned int)
 {
     return -1;
 }

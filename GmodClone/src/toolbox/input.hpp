@@ -29,6 +29,13 @@ struct InputStruct
     volatile bool INPUT_F5;
     volatile bool INPUT_DPADU;
     volatile bool INPUT_DPADD;
+    volatile bool INPUT_1;
+    volatile bool INPUT_2;
+    volatile bool INPUT_3;
+    volatile bool INPUT_4;
+    volatile bool INPUT_5;
+    volatile bool INPUT_6;
+    volatile bool INPUT_7;
 
     volatile float INPUT_PREVIOUS_X;
     volatile float INPUT_PREVIOUS_Y;
@@ -48,6 +55,13 @@ struct InputStruct
     volatile bool INPUT_PREVIOUS_START;
     volatile bool INPUT_PREVIOUS_ESC;
     volatile bool INPUT_PREVIOUS_F5;
+    volatile bool INPUT_PREVIOUS_1;
+    volatile bool INPUT_PREVIOUS_2;
+    volatile bool INPUT_PREVIOUS_3;
+    volatile bool INPUT_PREVIOUS_4;
+    volatile bool INPUT_PREVIOUS_5;
+    volatile bool INPUT_PREVIOUS_6;
+    volatile bool INPUT_PREVIOUS_7;
 
     volatile int MENU_X;
     volatile int MENU_Y;

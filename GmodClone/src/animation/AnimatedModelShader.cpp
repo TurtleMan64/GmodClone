@@ -27,6 +27,7 @@ void AnimatedModelShader::connectTextureUnits()
 {
     start();
     loadInt(location_diffuseMap, 0);
+    loadInt(location_lightMap, 7);
     stop();
 }
 
@@ -78,7 +79,14 @@ void AnimatedModelShader::getAllUniformLocations()
     {
         location_jointTransforms[i] = getUniformLocation(("jointTransforms[" + std::to_string(i) + "]").c_str());
     }
-    location_diffuseMap = getUniformLocation("location_diffuseMap");
+    location_diffuseMap      = getUniformLocation("diffuseMap");
+    location_lightMap        = getUniformLocation("lightMap");
+    location_lightMapOriginX = getUniformLocation("lightMapOriginX");
+    location_lightMapOriginY = getUniformLocation("lightMapOriginY");
+    location_lightMapOriginZ = getUniformLocation("lightMapOriginZ");
+    location_lightMapSizeX   = getUniformLocation("lightMapSizeX");
+    location_lightMapSizeY   = getUniformLocation("lightMapSizeY");
+    location_lightMapSizeZ   = getUniformLocation("lightMapSizeZ");
 }
 
 int AnimatedModelShader::getUniformLocation(const char* uniformName)

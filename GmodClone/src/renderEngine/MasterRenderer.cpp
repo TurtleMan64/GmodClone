@@ -39,8 +39,8 @@ Matrix4f projectionMatrix;
 
 float VFOV_BASE = 60; //Vertical fov
 float VFOV_ADDITION = 0; //additional fov due to the vehicle going fast
-const float NEAR_PLANE = 0.05f; //0.5
-const float FAR_PLANE = 3000.0f; //15000
+constexpr float NEAR_PLANE = 0.05f; //0.5
+constexpr float FAR_PLANE = 3000.0f; //15000
 
 void prepare();
 void prepareTransparentRender();
@@ -150,6 +150,9 @@ void Master_render(Camera* camera, float clipX, float clipY, float clipZ, float 
     Vector3f waterColor(1,1,1);
     shader->loadWaterColor(&waterColor);
     shader->loadWaterBlendAmount(waterBlendAmount);
+    shader->loadLightMapData(
+        Global::lightMapOriginX, Global::lightMapOriginY, Global::lightMapOriginZ, 
+        Global::lightMapSizeX, Global::lightMapSizeY, Global::lightMapSizeZ);
     shader->connectTextureUnits();
 
     glDepthMask(true);
@@ -164,7 +167,7 @@ void Master_render(Camera* camera, float clipX, float clipY, float clipZ, float 
 
     //animatedModel->animate(animation, (float)glfwGetTime());
     //animatedModel.doAnimation(&animation, (float)glfwGetTime());
-    animatedModelRenderer->render(&animatedEntitiesMap);
+    animatedModelRenderer->render(&animatedEntitiesMap); //idea - put this before the other entities
 
     ANALYSIS_DONE("Master Render");
 }
@@ -269,6 +272,9 @@ void prepare()
 
     //glActiveTexture(GL_TEXTURE3);
     //glBindTexture(GL_TEXTURE_2D, randomMap);
+
+    glActiveTexture(GL_TEXTURE7);
+    glBindTexture(GL_TEXTURE_2D, Global::lightMap);
 
     if (Global::renderWithCulling)
     {

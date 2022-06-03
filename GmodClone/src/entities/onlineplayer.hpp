@@ -98,6 +98,8 @@ public:
 
     float inZoneTime = 0.0f;
 
+    char danceIndex = -1;
+
     float animTimerStand   = 0.0f;
     float animTimerWalk    = 0.0f;
     float animTimerRun     = 0.0f;
@@ -108,6 +110,7 @@ public:
     float animTimerClimb   = 0.0f;
     float animTimerCrawl   = 0.0f;
     float animTimerSwing   = 0.0f;
+    float animTimerDance   = 0.0f;
     char  animType         = 0;
     char  animTypePrevious = 0;
     float animBlend        = 0.0f;

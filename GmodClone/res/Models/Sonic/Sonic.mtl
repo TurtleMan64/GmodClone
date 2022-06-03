@@ -1,0 +1,29 @@
+# Material file for Sonic.obj
+
+newmtl 02___Default
+Ns 10
+d 1
+illum 2
+Kd 0.5882 0.5882 0.5882
+Ks 0.0 0.0 0.0
+Ka 0.5882 0.5882 0.5882
+map_Kd ch_sonic_b.png
+
+newmtl 01___Default
+Ns 10
+d 1
+illum 2
+Kd 0.5882 0.5882 0.5882
+Ks 0.0 0.0 0.0
+Ka 0.5882 0.5882 0.5882
+map_Kd ch_sonic_a.png
+
+newmtl 03___Default
+Ns 10
+d 1
+illum 2
+Kd 0.5882 0.5882 0.5882
+Ks 0.0 0.0 0.0
+Ka 0.5882 0.5882 0.5882
+map_Kd ch_sonic_eye.png
+

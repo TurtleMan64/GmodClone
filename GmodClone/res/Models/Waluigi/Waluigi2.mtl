@@ -1,0 +1,14 @@
+# Material Count: 2
+
+newmtl waluigi_eye
+Ns 1.000000
+Ni 0.000000
+d 1.000000
+map_Kd Tex_0043_0.png
+
+newmtl waluigi_body
+Ns 1.000000
+Ni 0.000000
+d 1.000000
+map_Kd Tex_0041_0.png
+

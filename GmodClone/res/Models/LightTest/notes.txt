@@ -1,0 +1,17 @@
+step 1:
+generate 3d array of voxel. i guess use the same resolution as the final light map will be as i probably wont have enough RAM to do more. it should cover the entire 3d object
+
+step 2:
+iterate over every light triangle. will need to iterate with the same density. 
+
+step 3:
+at each spot on the light triangle, cast a ray outward in every direction. 
+each ray starts with an "intensity" value. the intensity value is larger when the ray aligns with the normal of the triangle. 
+and also for certain lights, the intensity decreases as the ray travels (for instance, like a lamp or a candle or something low power. for the sun, this wouldnt be right.)
+when you cast the ray, check where it intersects with the map. then, increase the light value at every voxel that the ray passed through by the current intensity of the ray.
+    you might need to be careful here. if the ray only passes through a very small part of the voxel, then maybe it shouldnt increase the voxels light value very much.
+when the ray intersects a triangle, cast it out again in all directions. as before, decrease the intensity of the current ray as the angle goes further away from the perfect bounced direction.
+    the intensity decrease should also be a attribute of the material. like mirrors not decreasing it at all, but something like carpet decreasing it a lot.
+keep on doing this until the ray intensity is too small to make a difference anymore.
+
+after all of this, the 3d voxel array will be filled with the light values which i can then save to some file format and import as a light map.

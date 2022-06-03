@@ -49,6 +49,13 @@ Animation* Player::animationJump   = nullptr;
 Animation* Player::animationFall   = nullptr;
 Animation* Player::animationClimb  = nullptr;
 Animation* Player::animationSwing  = nullptr;
+Animation* Player::animationEmote1 = nullptr;
+Animation* Player::animationEmote2 = nullptr;
+Animation* Player::animationEmote3 = nullptr;
+Animation* Player::animationEmote4 = nullptr;
+Animation* Player::animationEmote5 = nullptr;
+Animation* Player::animationEmote6 = nullptr;
+Animation* Player::animationEmote7 = nullptr;
 
 Player::Player()
 {
@@ -68,7 +75,7 @@ Player::Player()
     ObjLoader::loadModel(&Player::modelHookshotHandle, "res/Models/Hookshot/", "HookshotHandle");
     ObjLoader::loadModel(&Player::modelHookshotChain,  "res/Models/Hookshot/", "Chain");
 
-    Player::modelShrek = AnimatedModelLoader::loadAnimatedModel("res/Models/Human/", "ShrekFinalMeshFrankenstein.mesh");
+    Player::modelShrek = AnimatedModelLoader::loadAnimatedModel("res/Models/Snake/", "SnakeFinal.mesh"); //ShrekFinalMeshFrankenstein
 
     Player::animationStand  = AnimationLoader::loadAnimation("res/Models/Human/Original Mixamo/Breathing Idle.anim");
     Player::animationWalk   = AnimationLoader::loadAnimation("res/Models/Human/Original Mixamo/Slow Run.anim");
@@ -77,8 +84,15 @@ Player::Player()
     Player::animationCrawl  = AnimationLoader::loadAnimation("res/Models/Human/Original Mixamo/Running Crawl.anim");
     Player::animationSlide  = AnimationLoader::loadAnimation("res/Models/Human/Original Mixamo/Running Slide 2.anim");
     Player::animationJump   = AnimationLoader::loadAnimation("res/Models/Human/Original Mixamo/Jumping Up.anim");
-    Player::animationFall   = AnimationLoader::loadAnimation("res/Models/Human/Original Mixamo/Dancing Twerk.anim"); //Falling Idle
+    Player::animationFall   = AnimationLoader::loadAnimation("res/Models/Human/Original Mixamo/Falling Idle.anim");
     Player::animationClimb  = AnimationLoader::loadAnimation("res/Models/Human/Original Mixamo/BlenderOutput/Climbing Ladder.anim");
+    Player::animationEmote1 = AnimationLoader::loadAnimation("res/Models/Human/Original Mixamo/Dancing Twerk.anim");
+    Player::animationEmote2 = AnimationLoader::loadAnimation("res/Models/Human/Original Mixamo/Gangnam Style.anim");
+    Player::animationEmote3 = AnimationLoader::loadAnimation("res/Models/Human/Original Mixamo/Macarena Dance.anim");
+    Player::animationEmote4 = AnimationLoader::loadAnimation("res/Models/Human/Original Mixamo/Northern Soul Floor Combo.anim");
+    Player::animationEmote5 = AnimationLoader::loadAnimation("res/Models/Human/Original Mixamo/Northern Soul Spin Combo.anim");
+    Player::animationEmote6 = AnimationLoader::loadAnimation("res/Models/Human/Original Mixamo/Breakdance Footwork 3.anim");
+    Player::animationEmote7 = AnimationLoader::loadAnimation("res/Models/Human/Original Mixamo/Flair2.anim");
 
     for (int i = 0; i < Player::modelShrek->jointCount; i++)
     {
@@ -1129,7 +1143,10 @@ void Player::updateCamera()
 
     if (Global::camThirdPerson)
     {
-        eye = eye + lookDir.scaleCopy(-2.2f);
+        extern float VFOV_BASE;
+        float f = 0.02f*(VFOV_BASE - 75.0f);
+
+        eye = eye + lookDir.scaleCopy(-2.2f + f);
     }
 
     Global::gameCamera->setViewMatrixValues(&eye, &target, &up);
@@ -1419,6 +1436,75 @@ void Player::animateMe()
         animTimerFall = 0.0f;
     }
 
+    animTimerDance += dt;
+    if (Input::inputs.INPUT_1)
+    {
+        danceIndex = 0;
+        animTypeNew = 9;
+        if (!Input::inputs.INPUT_PREVIOUS_1)
+        {
+            animTimerDance = 0.0f;
+        }
+    }
+    else if (Input::inputs.INPUT_2)
+    {
+        danceIndex = 1;
+        animTypeNew = 10;
+        if (!Input::inputs.INPUT_PREVIOUS_2)
+        {
+            animTimerDance = 0.0f;
+        }
+    }
+    else if (Input::inputs.INPUT_3)
+    {
+        danceIndex = 2;
+        animTypeNew = 11;
+        if (!Input::inputs.INPUT_PREVIOUS_3)
+        {
+            animTimerDance = 0.0f;
+        }
+    }
+    else if (Input::inputs.INPUT_4)
+    {
+        danceIndex = 3;
+        animTypeNew = 12;
+        if (!Input::inputs.INPUT_PREVIOUS_4)
+        {
+            animTimerDance = 0.0f;
+        }
+    }
+    else if (Input::inputs.INPUT_5)
+    {
+        danceIndex = 4;
+        animTypeNew = 13;
+        if (!Input::inputs.INPUT_PREVIOUS_5)
+        {
+            animTimerDance = 0.0f;
+        }
+    }
+    else if (Input::inputs.INPUT_6)
+    {
+        danceIndex = 5;
+        animTypeNew = 14;
+        if (!Input::inputs.INPUT_PREVIOUS_6)
+        {
+            animTimerDance = 0.0f;
+        }
+    }
+    else if (Input::inputs.INPUT_7)
+    {
+        danceIndex = 6;
+        animTypeNew = 15;
+        if (!Input::inputs.INPUT_PREVIOUS_7)
+        {
+            animTimerDance = 0.0f;
+        }
+    }
+    else
+    {
+        danceIndex = -1;
+    }
+
     if (animType != animTypeNew)
     {
         animTypePrevious = animType;
@@ -1494,9 +1580,19 @@ void Player::animateMe()
             }
         }
 
+        // head up/down
         float directionHead = atan2f(lookDir.y, sqrtf(lookDir.x*lookDir.x + lookDir.z*lookDir.z));
         Quaternion myRotationPitch = Quaternion::fromEulerAngles(0, 0, directionHead);
         pose["Head"].rotation = Quaternion::multiply(pose["Head"].rotation, myRotationPitch);
+
+        // head left/right
+        Vector3f lookFlat(lookDir.x, 0, lookDir.z);
+        Vector3f velFlat(vel.x, 0, vel.z);
+        Vector3f yAxis(0, 1, 0);
+        float headDiff = Maths::signedAngleBetweenVectors(&lookFlat, &velFlat, &yAxis);
+        headDiff = Maths::clamp(-0.85f, headDiff, 0.85f);
+        Quaternion myRotationYaw = Quaternion::fromEulerAngles(0, headDiff, 0);
+        pose["Head"].rotation = Quaternion::multiply(pose["Head"].rotation, myRotationYaw);
 
         modelShrek->calculateJointTransformsFromPose(&jointTransforms, &pose);
     }
@@ -1533,7 +1629,10 @@ void Player::animateMe()
             }
             else
             {
-                Maths::createFirstPersonTransform(&eyePosition, 0.2f, -0.158837f, -0.132962f, &lookDir, &entityHookshotHandle->transformationMatrix);
+                extern float VFOV_BASE;
+                float f = (VFOV_BASE - 75.0f)/25.0f;
+
+                Maths::createFirstPersonTransform(&eyePosition, 0.2f, -0.158837f - 0.1f*f, -0.132962f - 0.1f*f, &lookDir, &entityHookshotHandle->transformationMatrix);
 
                 Vector4f p(0, 0, 0, 1);
                 Vector4f j = entityHookshotHandle->transformationMatrix.transform(&p);
@@ -1577,7 +1676,10 @@ void Player::animateMe()
             }
             else
             {
-                Maths::createFirstPersonTransform(&eyePosition, 0.2f, -0.158837f, -0.132962f, &lookDir, &entityHookshot->transformationMatrix);
+                extern float VFOV_BASE;
+                float f = (VFOV_BASE - 75.0f)/25.0f;
+
+                Maths::createFirstPersonTransform(&eyePosition, 0.2f, -0.158837f - 0.1f*f, -0.132962f - 0.1f*f, &lookDir, &entityHookshot->transformationMatrix);
             }
         }
     }
@@ -1636,6 +1738,7 @@ void Player::animateMe()
                 mat->rotate(Maths::toRadians(entityWeapon->rotZ), &zAx);
 
                 Vector3f armOffset(0.25f, -0.4f, 0.2f);
+
                 mat->translate(&armOffset);
 
                 float batRot = 0.0f;
@@ -1697,15 +1800,22 @@ Animation* Player::getAnimation(char index)
 {
     switch (index)
     {
-        case 0:  return Player::animationStand;
-        case 1:  return Player::animationWalk;
-        case 2:  return Player::animationRun;
-        case 3:  return Player::animationCrouch;
-        case 4:  return Player::animationSlide;
-        case 5:  return Player::animationJump;
-        case 6:  return Player::animationFall;
-        case 7:  return Player::animationClimb;
-        case 8:  return Player::animationCrawl;
+        case  0: return Player::animationStand;
+        case  1: return Player::animationWalk;
+        case  2: return Player::animationRun;
+        case  3: return Player::animationCrouch;
+        case  4: return Player::animationSlide;
+        case  5: return Player::animationJump;
+        case  6: return Player::animationFall;
+        case  7: return Player::animationClimb;
+        case  8: return Player::animationCrawl;
+        case  9: return Player::animationEmote1;
+        case 10: return Player::animationEmote2;
+        case 11: return Player::animationEmote3;
+        case 12: return Player::animationEmote4;
+        case 13: return Player::animationEmote5;
+        case 14: return Player::animationEmote6;
+        case 15: return Player::animationEmote7;
         default: return Player::animationStand;
     }
 }
@@ -1714,15 +1824,22 @@ float Player::getAnimationTimer(char index)
 {
     switch (index)
     {
-        case 0:  return animTimerStand;
-        case 1:  return animTimerRun; //use the same timer for walk and run
-        case 2:  return animTimerRun;
-        case 3:  return animTimerCrouch;
-        case 4:  return animTimerSlide;
-        case 5:  return animTimerJump;
-        case 6:  return animTimerFall;
-        case 7:  return animTimerClimb;
-        case 8:  return animTimerCrawl;
+        case  0: return animTimerStand;
+        case  1: return animTimerRun; //use the same timer for walk and run
+        case  2: return animTimerRun;
+        case  3: return animTimerCrouch;
+        case  4: return animTimerSlide;
+        case  5: return animTimerJump;
+        case  6: return animTimerFall;
+        case  7: return animTimerClimb;
+        case  8: return animTimerCrawl;
+        case  9:
+        case 10:
+        case 11:
+        case 12:
+        case 13:
+        case 14:
+        case 15: return animTimerDance;
         default: return animTimerStand;
     }
 }

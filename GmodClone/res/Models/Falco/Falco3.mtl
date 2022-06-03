@@ -1,0 +1,8 @@
+# Material Count: 1
+
+newmtl everything
+Ns 96.000000
+Ni 0.000000
+d 1.000000
+map_Kd F:\CSWorkspace\ObjTextureCombiner\everything.png
+

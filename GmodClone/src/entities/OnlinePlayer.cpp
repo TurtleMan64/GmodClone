@@ -185,6 +185,12 @@ void OnlinePlayer::step()
         animTimerFall = 0.0f;
     }
 
+    // dancing
+    if (danceIndex != -1)
+    {
+        animTypeNew = 9 + danceIndex;
+    }
+
     if (animType != animTypeNew)
     {
         animTypePrevious = animType;
@@ -259,9 +265,19 @@ void OnlinePlayer::step()
         }
     }
 
+    // head up/down
     float directionHead = atan2f(lookDir.y, sqrtf(lookDir.x*lookDir.x + lookDir.z*lookDir.z));
     Quaternion myRotationPitch = Quaternion::fromEulerAngles(0, 0, directionHead);
     pose["Head"].rotation = Quaternion::multiply(pose["Head"].rotation, myRotationPitch);
+
+    // head left/right
+    Vector3f lookFlat(lookDir.x, 0, lookDir.z);
+    Vector3f velFlat(vel.x, 0, vel.z);
+    //Vector3f yAxis(0, 1, 0);
+    float headDiff = -Maths::signedAngleBetweenVectors(&lookFlat, &velFlat, &yAxis);
+    headDiff = Maths::clamp(-0.85f, headDiff, 0.85f);
+    Quaternion myRotationYaw = Quaternion::fromEulerAngles(0, headDiff, 0);
+    pose["Head"].rotation = Quaternion::multiply(pose["Head"].rotation, myRotationYaw);
 
     Player::modelShrek->calculateJointTransformsFromPose(&jointTransforms, &pose);
 
@@ -537,15 +553,22 @@ Animation* OnlinePlayer::getAnimation(char index)
 {
     switch (index)
     {
-        case 0:  return Player::animationStand;
-        case 1:  return Player::animationWalk;
-        case 2:  return Player::animationRun;
-        case 3:  return Player::animationCrouch;
-        case 4:  return Player::animationSlide;
-        case 5:  return Player::animationJump;
-        case 6:  return Player::animationFall;
-        case 7:  return Player::animationClimb;
-        case 8:  return Player::animationCrawl;
+        case  0: return Player::animationStand;
+        case  1: return Player::animationWalk;
+        case  2: return Player::animationRun;
+        case  3: return Player::animationCrouch;
+        case  4: return Player::animationSlide;
+        case  5: return Player::animationJump;
+        case  6: return Player::animationFall;
+        case  7: return Player::animationClimb;
+        case  8: return Player::animationCrawl;
+        case  9: return Player::animationEmote1;
+        case 10: return Player::animationEmote2;
+        case 11: return Player::animationEmote3;
+        case 12: return Player::animationEmote4;
+        case 13: return Player::animationEmote5;
+        case 14: return Player::animationEmote6;
+        case 15: return Player::animationEmote7;
         default: return Player::animationStand;
     }
 }
@@ -554,15 +577,22 @@ float OnlinePlayer::getAnimationTimer(char index)
 {
     switch (index)
     {
-        case 0:  return animTimerStand;
-        case 1:  return animTimerRun; //use the same timer for walk and run
-        case 2:  return animTimerRun;
-        case 3:  return animTimerCrouch;
-        case 4:  return animTimerSlide;
-        case 5:  return animTimerJump;
-        case 6:  return animTimerFall;
-        case 7:  return animTimerClimb;
-        case 8:  return animTimerCrawl;
+        case  0: return animTimerStand;
+        case  1: return animTimerRun; //use the same timer for walk and run
+        case  2: return animTimerRun;
+        case  3: return animTimerCrouch;
+        case  4: return animTimerSlide;
+        case  5: return animTimerJump;
+        case  6: return animTimerFall;
+        case  7: return animTimerClimb;
+        case  8: return animTimerCrawl;
+        case  9:
+        case 10:
+        case 11:
+        case 12:
+        case 13:
+        case 14:
+        case 15: return animTimerDance;
         default: return animTimerStand;
     }
 }

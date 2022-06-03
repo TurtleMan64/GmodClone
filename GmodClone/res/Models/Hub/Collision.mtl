@@ -1,33 +1,21 @@
-# Blender MTL File: 'None'
-# Material Count: 10
+# Material Count: 3
 
-newmtl Rubber
+newmtl None_BedDudleyTex0.png
 Ns 20.000000
-Ka 0.000000 0.000000 0.000000
-Kd 0.800000 0.800000 0.800000
-Ks 0.240000 0.240000 0.240000
 Ni 0.000000
 d 1.000000
-type bounce
-illum 2
-map_Kd Rubber_N.png
-
-newmtl BedDudleyTex0
-Ns 50.000000
-Ka 0.000000 0.000000 0.000000
-Kd 0.800000 0.800000 0.800000
-Ks 0.000000 0.000000 0.000000
-Ni 0.000000
-d 1.000000
-illum 1
 map_Kd BedDudleyTex0.png
 
-newmtl Tile
+newmtl None_Tile.png_Tile_N.png
 Ns 20.000000
-Ka 0.000000 0.000000 0.000000
-Kd 0.800000 0.800000 0.800000
-Ks 0.240000 0.240000 0.240000
 Ni 0.000000
 d 1.000000
-illum 2
-map_Kd Tile_White.png
+map_Kd ./../Images/SharedTextures\Tile\Tile_N.png
+
+newmtl None
+Ns 20.000000
+Ni 0.000000
+type bounce
+d 1.000000
+map_Kd ./../Images/SharedTextures\Rubber_N.png
+

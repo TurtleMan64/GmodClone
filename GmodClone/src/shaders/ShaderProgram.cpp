@@ -233,6 +233,13 @@ void ShaderProgram::getAllUniformLocations()
     location_clock                    = getUniformLocation("clock");
     location_noise                    = getUniformLocation("noise");
     location_entityId                 = getUniformLocation("entityId");
+    location_lightMap                 = getUniformLocation("lightMap");
+    location_lightMapOriginX          = getUniformLocation("lightMapOriginX");
+    location_lightMapOriginY          = getUniformLocation("lightMapOriginY");
+    location_lightMapOriginZ          = getUniformLocation("lightMapOriginZ");
+    location_lightMapSizeX            = getUniformLocation("lightMapSizeX");
+    location_lightMapSizeY            = getUniformLocation("lightMapSizeY");
+    location_lightMapSizeZ            = getUniformLocation("lightMapSizeZ");
 }
 
 int ShaderProgram::getUniformLocation(const char* uniformName)
@@ -301,6 +308,7 @@ void ShaderProgram::connectTextureUnits()
     loadInt(location_textureSampler2, 1);
     loadInt(location_normalMap, 2);
     loadInt(location_randomMap, 3);
+    loadInt(location_lightMap,  7);
     loadInt(location_depthBufferTransparent, 8);
 }
 
@@ -347,6 +355,16 @@ void ShaderProgram::loadEntityId(unsigned int value)
 void ShaderProgram::loadNoise(float value)
 {
     loadFloat(location_noise, value);
+}
+
+void ShaderProgram::loadLightMapData(float x, float y, float z, float width, float height, float depth)
+{
+    loadFloat(location_lightMapOriginX, x);
+    loadFloat(location_lightMapOriginY, y);
+    loadFloat(location_lightMapOriginZ, z);
+    loadFloat(location_lightMapSizeX, width);
+    loadFloat(location_lightMapSizeY, height);
+    loadFloat(location_lightMapSizeZ, depth);
 }
 
 void ShaderProgram::loadWaterColor(Vector3f* color)

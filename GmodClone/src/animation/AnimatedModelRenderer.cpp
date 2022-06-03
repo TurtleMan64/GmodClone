@@ -29,6 +29,9 @@ void AnimatedModelRenderer::render(std::unordered_map<AnimatedModel*, std::vecto
 
     prepare();
 
+    glActiveTexture(GL_TEXTURE7);
+    glBindTexture(GL_TEXTURE_2D, Global::lightMap);
+
     for (auto entry : (*animatedEntitiesMap))
     {
         AnimatedModel* animatedModel = entry.first;
@@ -81,6 +84,13 @@ void AnimatedModelRenderer::prepare()
     Matrix4f projectionViewMatrix = Global::gameCamera->calculateProjectionViewMatrix();
     shader->loadMatrix(shader->location_projectionViewMatrix, &projectionViewMatrix);
     shader->loadVector(shader->location_lightDirection, &Global::lights[0]->direction);
+
+    shader->loadFloat(shader->location_lightMapOriginX, Global::lightMapOriginX);
+    shader->loadFloat(shader->location_lightMapOriginY, Global::lightMapOriginY);
+    shader->loadFloat(shader->location_lightMapOriginZ, Global::lightMapOriginZ);
+    shader->loadFloat(shader->location_lightMapSizeX,   Global::lightMapSizeX);
+    shader->loadFloat(shader->location_lightMapSizeY,   Global::lightMapSizeY);
+    shader->loadFloat(shader->location_lightMapSizeZ,   Global::lightMapSizeZ);
 
     glEnable(GL_MULTISAMPLE);
     glDisable(GL_BLEND);

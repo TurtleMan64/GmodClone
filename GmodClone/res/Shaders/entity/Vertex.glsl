@@ -10,6 +10,7 @@ out vec3 toCameraVector;
 out vec3 toLightVector[4];
 out vec2 pass_textureCoords;
 out vec4 pass_vertexColor;
+out vec4 pass_worldCoords;
 
 uniform mat4 transformationMatrix;
 uniform mat4 projectionMatrix;
@@ -28,6 +29,7 @@ uniform vec4 clipPlaneBehind;
 void main(void)
 {
 	vec4 worldPosition = transformationMatrix * vec4(position, 1.0);
+    pass_worldCoords = worldPosition;
     
     gl_ClipDistance[0] = dot(worldPosition, clipPlaneBehind);
     

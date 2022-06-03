@@ -96,6 +96,9 @@ public:
     //calculates the angle in radians between two vectors
     static float angleBetweenVectors(Vector3f* A, Vector3f* B);
 
+    //calculates the signed angle in radians between two vectors. N should probably be the normal of the shared plane of A and B.
+    static float signedAngleBetweenVectors(Vector3f* A, Vector3f* B, Vector3f* N);
+
     //given two points A and B, returns which one is closer to a point Test
     static Vector3f getCloserPoint(Vector3f* A, Vector3f* B, Vector3f* testPoint);
 

@@ -1,0 +1,15 @@
+# Material Count: 2
+
+newmtl None
+Ns 20
+Ni 0.02
+d 1
+map_Kd ../../Images/SharedTextures/Marble.png
+
+newmtl None_Rubber.png
+Ns 20
+Ni 0.02
+type bounce
+d 1
+map_Kd ../../Images/SharedTextures/Rubber.png
+

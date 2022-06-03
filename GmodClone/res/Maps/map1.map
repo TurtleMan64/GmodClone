@@ -1,11 +1,12 @@
-res/Models/Map1/ Map1      # Visual Stage Model
-res/Models/Map1/ Collision # Collision Stage Model
--13 0 -20   -10 0 -15      # Player Spawning Zone Endpoints
-69.5 26 -52.3 78.4 81 -41  # Player Safe Zone Endpoints
-0.745 0.905 0.96           # Sky Color
--0.2 -1 -0.4               # Sun Direction
-1 0 1                      # Camera Direction
-300                        # Round Time Duration (seconds)
+res/Models/Map1/ Map1       # Visual Stage Model
+res/Models/Map1/ Collision  # Collision Stage Model
+res/Models/Map1/Map1.shadow # Shadow Map
+-13 0 -20   -10 0 -15       # Player Spawning Zone Endpoints
+69.5 26 -52.3 78.4 81 -41   # Player Safe Zone Endpoints
+0.745 0.905 0.96            # Sky Color
+-0.2 -1 -0.4                # Sun Direction
+1 0 1                       # Camera Direction
+300                         # Round Time Duration (seconds)
 
 # Soccer Ball
 2 B1 72.991318 28.784624 -46.660568

@@ -1,0 +1,32 @@
+# Material Count: 5
+
+newmtl mat7.001
+Ns 6.000000
+Ni 0.000000
+d 1.000000
+map_Kd fit_snake_bes.png
+
+newmtl mat10.001
+Ns 6.000000
+Ni 0.000000
+d 1.000000
+map_Kd fit_snake_atama.png
+
+newmtl mat1.001
+Ns 6.000000
+Ni 0.000000
+d 1.000000
+map_Kd fit_snake_eye.png
+
+newmtl mat6.001
+Ns 6.000000
+Ni 0.000000
+d 1.000000
+map_Kd fit_snake_body.png
+
+newmtl mat5.001
+Ns 6.000000
+Ni 0.000000
+d 1.000000
+map_Kd fit_snake_article.png
+

@@ -550,6 +550,43 @@ float Maths::angleBetweenVectors(Vector3f* A, Vector3f* B)
     return acosf(dotProduct);
 }
 
+// https://stackoverflow.com/questions/5188561/signed-angle-between-two-3d-vectors-with-same-origin-within-the-same-plane
+float Maths::signedAngleBetweenVectors(Vector3f* A, Vector3f* B, Vector3f* N)
+{
+    float mag = A->length()*B->length();
+
+    if (mag < 0.0000001f)
+    {
+        return 0;
+    }
+
+    Vector3f A2(A);
+    Vector3f B2(B);
+    A2.normalize();
+    B2.normalize();
+
+    float dotProduct = A2.dot(&B2);
+
+    if (dotProduct >= 1.0f) //Vectors are extremely similar, return 0
+    {
+        return 0;
+    }
+    else if (dotProduct <= -1.0f) //Vectors are opposite direction, return pi
+    {
+        return Maths::PI;
+    }
+
+    float angle = acosf(dotProduct);
+
+    Vector3f v3 = A2.cross(&B2);
+    if (v3.dot(N) < 0.0f)
+    {
+        return -angle;
+    }
+
+    return angle;
+}
+
 Vector3f Maths::getCloserPoint(Vector3f* A, Vector3f* B, Vector3f* testPoint)
 {
     Vector3f deltaA(A);

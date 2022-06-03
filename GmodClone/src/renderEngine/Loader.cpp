@@ -131,6 +131,8 @@ void Loader::updateVBO(GLuint vbo, int bufferNumFloats, std::vector<float>* buff
 
 GLuint Loader::loadTexture(const char* fileName)
 {
+    //fileName = "res/Images/NormalMapFlat.png";
+
     if (Loader::textures.find(fileName) != Loader::textures.end())
     {
         //texture is already loaded, return the GLuint
@@ -256,25 +258,41 @@ GLuint Loader::loadTextureNoInterpolation(const char* fileName)
 
 GLuint Loader::loadTexture3D(const char* filename)
 {
-    std::vector<char> bytes;
+    std::vector<unsigned char> bytes;
 
-    for (int i = 0; i < 256; i++)
+    //for (int i = 0; i < 512; i++)
+    //{
+    //    for (int x = 0; x < 512; x++)
+    //    {
+    //        for (int y = 0; y < 512; y++)
+    //        {
+    //            bytes.push_back((unsigned char)i);
+    //            //bytes.push_back((unsigned char)255);
+    //            ///bytes.push_back((unsigned char)255);
+    //            //bytes.push_back((unsigned char)255);
+    //        }
+    //    }
+    //}
+
+    constexpr int RESOLUTION = 128;
+
+    for (int i = 0; i < RESOLUTION; i++)
     {
         int width, height, channels;
-        unsigned char* image = SOIL_load_image((Global::pathToEXE + filename + std::to_string(i)).c_str(), &width, &height, &channels, SOIL_LOAD_RGBA);
-
+        unsigned char* image = SOIL_load_image((Global::pathToEXE + filename + std::to_string(i) + ".bmp").c_str(), &width, &height, &channels, SOIL_LOAD_AUTO);
+    
         if (image == nullptr)
         {
             const char* err = SOIL_last_result();
-            std::fprintf(stdout, "Error loading image '%s', because '%s'\n", (Global::pathToEXE + filename + std::to_string(i)).c_str(), err);
+            std::fprintf(stdout, "Error loading image '%s', because '%s'\n", (Global::pathToEXE + filename + std::to_string(i) + ".bmp").c_str(), err);
             return GL_NONE;
         }
-
+    
         for (int j = 0; j < width*height*channels; j++)
         {
             bytes.push_back(image[j]);
         }
-
+    
         SOIL_free_image_data(image);
     }
 
@@ -289,14 +307,99 @@ GLuint Loader::loadTexture3D(const char* filename)
     glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_R, GL_REPEAT);
 
     //Texel interpolation
-    glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
     //create
-    glTexImage3D(GL_TEXTURE_3D, 0, GL_RGBA, 256, 256, 256, 0, GL_RGBA, GL_UNSIGNED_BYTE, &bytes[0]);
+    //glTexImage3D(GL_TEXTURE_3D, 0, GL_RGBA, 256, 256, 256, 0, GL_RGBA, GL_UNSIGNED_BYTE, &bytes[0]);
+    glTexImage3D(GL_TEXTURE_3D, 0, GL_RGB, RESOLUTION, RESOLUTION, RESOLUTION, 0, GL_RGB, GL_UNSIGNED_BYTE, &bytes[0]);
+
+    //create mipmap
+    //glGenerateMipmap(GL_TEXTURE_2D);
+    //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+
+    //glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_LOD_BIAS, -0.4f);
 
     glBindTexture(GL_TEXTURE_3D, 0);
 
+    return textureId;
+}
+
+
+GLuint Loader::loadTextureShadowMap(const char* filename)
+{
+    std::vector<float> data;
+
+    std::ifstream input(Global::pathToEXE + filename, std::ios::binary);
+
+    if (!input.is_open())
+    {
+        printf("Couldn't open %s\n", (Global::pathToEXE + filename).c_str());
+        return GL_NONE;
+    }
+
+    double sdvs;
+    input.read((char*)&sdvs, 8);
+
+    int resolution;
+    input.read((char*)&resolution, sizeof(int));
+
+    //float lightMapOriginX;
+    //float lightMapOriginY;
+    //float lightMapOriginZ;
+    //float lightMapSizeX;
+    //float lightMapSizeY;
+    //float lightMapSizeZ;
+    input.read((char*)&Global::lightMapOriginX, sizeof(float));
+    input.read((char*)&Global::lightMapOriginY, sizeof(float));
+    input.read((char*)&Global::lightMapOriginZ, sizeof(float));
+    input.read((char*)&Global::lightMapSizeX,   sizeof(float));
+    input.read((char*)&Global::lightMapSizeY,   sizeof(float));
+    input.read((char*)&Global::lightMapSizeZ,   sizeof(float));
+
+    for (int i = 0; i < resolution*resolution; i++)
+    {
+        float v;
+        input.read((char*)&v, 4);
+        data.push_back(v);
+    }
+
+    input.close();
+
+    //for (int x = 0; x < 1024; x++)
+    //{
+    //    for (int y = 0; y < 1024; y++)
+    //    {
+    //        float value = x/1024.0f;
+    //        data.push_back(value);
+    //    }
+    //}
+
+    GLuint textureId = 0;
+    glGenTextures(1, &textureId);
+
+    glBindTexture(GL_TEXTURE_2D, textureId);
+
+    //Texture wrapping
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+    //Texel interpolation
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+    //create
+    //glTexImage3D(GL_TEXTURE_3D, 0, GL_RGBA, 256, 256, 256, 0, GL_RGBA, GL_UNSIGNED_BYTE, &bytes[0]);
+    //glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, RESOLUTION, RESOLUTION, RESOLUTION, 0, GL_RGB, GL_UNSIGNED_BYTE, &bytes[0]);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_R32F, resolution, resolution, 0, GL_RED, GL_FLOAT, (const void*)(&data[0]));
+
+    //create mipmap
+    //glGenerateMipmap(GL_TEXTURE_2D);
+    //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+
+    //glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_LOD_BIAS, -0.4f);
+
+    glBindTexture(GL_TEXTURE_2D, 0);
 
     return textureId;
 }

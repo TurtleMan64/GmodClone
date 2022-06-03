@@ -4,6 +4,7 @@ in vec3 toCameraVector;
 in vec3 toLightVector[4];
 in vec2 pass_textureCoords;
 in vec4 pass_vertexColor;
+in vec4 pass_worldCoords; //only needed for light map
 
 out vec4 out_Color;
 
@@ -20,6 +21,15 @@ uniform float glowAmount;
 uniform vec3  baseColor;
 uniform float baseAlpha;
 uniform float mixFactor;
+
+// shadow map
+uniform sampler2D lightMap;
+uniform float lightMapOriginX;
+uniform float lightMapOriginY;
+uniform float lightMapOriginZ;
+uniform float lightMapSizeX;
+uniform float lightMapSizeY;
+uniform float lightMapSizeZ;
 
 uniform float fogDensity;
 uniform float fogGradient;
@@ -86,6 +96,98 @@ void main(void)
     vec4 rawTextureColor = mix(texture(textureSampler, pass_textureCoords), texture(textureSampler2, pass_textureCoords), mixFactor);
     rawTextureColor.rgb *= baseColor*pass_vertexColor.rgb;
     rawTextureColor.a   *= baseAlpha*pass_vertexColor.a*0.5; //for some bizarre reason, 0.5 alpha is seen as full opaque...
+    
+    //const float lightMapOriginX = -28.690516;
+    //const float lightMapOriginY = -10.288731;
+    //const float lightMapOriginZ = -28.690516;
+    //const float lightMapSizeX   =  57.381031;
+    //const float lightMapSizeY   =  22.145657;
+    //const float lightMapSizeZ   =  57.381031;
+    
+    // don't do shadow map stuff for some stages. we can tell if a stage has it if this value is too small
+    if (lightMapSizeX > 2.0)
+    {
+        //uint fragX = uint(gl_FragCoord.x);
+        //uint fragY = uint(gl_FragCoord.y);
+        //
+        //uint idx = fragX + fragY*2000 + (clock + entityId)*2073600;
+        
+        //float ran1 = random(idx);
+        //float ran2 = random(idx+1);
+        //
+        //float dx = (ran2/128)*cos(ran1*3.14*2);
+        //float dz = (ran2/128)*sin(ran1*3.14*2);
+        
+        //float dx = random(idx)  /2000.0;
+        //float dy = random(idx+1)/2000.0;
+        //float dz = random(idx+2)/2000.0;
+        
+        //vec4 lightMapColor = texture(lightMap, 
+        //vec3( ((pass_worldCoords.x - lightMapOriginX)/lightMapSizeX) + dx,
+        //     -((pass_worldCoords.y - lightMapOriginY)/lightMapSizeY) + dy,
+        //      ((pass_worldCoords.z - lightMapOriginZ)/lightMapSizeZ) + dz));
+        //
+        //const float ambientLight = 0.1;
+        //
+        //rawTextureColor.rgb *= min(lightMapColor.r + ambientLight, 1.0);
+        
+        vec2 ourSpot = vec2(((pass_worldCoords.x) - lightMapOriginX)/lightMapSizeX, ((pass_worldCoords.z) - lightMapOriginZ)/lightMapSizeZ);
+        
+        if (ourSpot.x >= 0.0 && ourSpot.x < 1.0 && ourSpot.y >= 0.0 && ourSpot.y < 1.0)
+        {
+            //todo these hard coded values need to be adjusted basedon the map size
+            vec2 ourSpot1 = vec2(((pass_worldCoords.x - 0.05) - lightMapOriginX)/lightMapSizeX, ((pass_worldCoords.z - 0.05) - lightMapOriginZ)/lightMapSizeZ);
+            vec2 ourSpot2 = vec2(((pass_worldCoords.x + 0.05) - lightMapOriginX)/lightMapSizeX, ((pass_worldCoords.z - 0.05) - lightMapOriginZ)/lightMapSizeZ);
+            vec2 ourSpot3 = vec2(((pass_worldCoords.x - 0.05) - lightMapOriginX)/lightMapSizeX, ((pass_worldCoords.z + 0.05) - lightMapOriginZ)/lightMapSizeZ);
+            vec2 ourSpot4 = vec2(((pass_worldCoords.x + 0.05) - lightMapOriginX)/lightMapSizeX, ((pass_worldCoords.z + 0.05) - lightMapOriginZ)/lightMapSizeZ);
+            
+            float depth1 = texture(lightMap, ourSpot1).r;
+            float depth2 = texture(lightMap, ourSpot2).r;
+            float depth3 = texture(lightMap, ourSpot3).r;
+            float depth4 = texture(lightMap, ourSpot4).r;
+            
+            if ((pass_worldCoords.y < ((lightMapOriginY + lightMapSizeY) - (depth1*lightMapSizeY)) - 0.03) &&
+                (pass_worldCoords.y < ((lightMapOriginY + lightMapSizeY) - (depth2*lightMapSizeY)) - 0.03) &&
+                (pass_worldCoords.y < ((lightMapOriginY + lightMapSizeY) - (depth3*lightMapSizeY)) - 0.03) &&
+                (pass_worldCoords.y < ((lightMapOriginY + lightMapSizeY) - (depth4*lightMapSizeY)) - 0.03))
+            {
+                uint fragX = uint(gl_FragCoord.x);
+                uint fragY = uint(gl_FragCoord.y);
+                
+                uint idx = fragX + fragY*2000 + (clock + entityId)*2073600;
+                
+                float ran1 = random(idx);
+                float ran2 = random(idx+1);
+                
+                int numInside = 4;
+                
+                for (int i = 0; i < 4; i++)
+                {
+                    float dx = ((ran2 * 0.2) + 0.05)*cos((ran1 + (i / 4.0))* 3.14 * 2);
+                    float dz = ((ran2 * 0.2) + 0.05)*sin((ran1 + (i / 4.0))* 3.14 * 2);
+                    
+                    vec2 ranSpot = vec2(((pass_worldCoords.x + dx) - lightMapOriginX)/lightMapSizeX, ((pass_worldCoords.z + dz) - lightMapOriginZ)/lightMapSizeZ);
+                    
+                    float ranDepth = texture(lightMap, ranSpot).r;
+                    
+                    if (pass_worldCoords.y < ((lightMapOriginY + lightMapSizeY) - (ranDepth*lightMapSizeY)) - 0.03)
+                    {
+
+                    }
+                    else
+                    {
+                        numInside = 0;
+                        break;
+                    }
+                }
+                
+                if (numInside == 4)
+                {
+                    rawTextureColor.rgb *= 0.75;
+                }
+            }
+        }
+    }
 
     if (hasTransparency == 0)
     {

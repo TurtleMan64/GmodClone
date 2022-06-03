@@ -34,7 +34,7 @@
 
 //#ifdef _WIN32
 
-InputStruct Input::inputs{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+InputStruct Input::inputs{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
 
 //vars for use by us
 double mousePreviousX = 0;
@@ -69,6 +69,13 @@ void Input::pollInputs()
     Input::inputs.INPUT_PREVIOUS_START       = Input::inputs.INPUT_START;
     Input::inputs.INPUT_PREVIOUS_ESC         = Input::inputs.INPUT_ESC;
     Input::inputs.INPUT_PREVIOUS_F5          = Input::inputs.INPUT_F5;
+    Input::inputs.INPUT_PREVIOUS_1           = Input::inputs.INPUT_1;
+    Input::inputs.INPUT_PREVIOUS_2           = Input::inputs.INPUT_2;
+    Input::inputs.INPUT_PREVIOUS_3           = Input::inputs.INPUT_3;
+    Input::inputs.INPUT_PREVIOUS_4           = Input::inputs.INPUT_4;
+    Input::inputs.INPUT_PREVIOUS_5           = Input::inputs.INPUT_5;
+    Input::inputs.INPUT_PREVIOUS_6           = Input::inputs.INPUT_6;
+    Input::inputs.INPUT_PREVIOUS_7           = Input::inputs.INPUT_7;
 
     Input::inputs.INPUT_PREVIOUS_X  = Input::inputs.INPUT_X;
     Input::inputs.INPUT_PREVIOUS_Y  = Input::inputs.INPUT_Y;
@@ -90,6 +97,13 @@ void Input::pollInputs()
     Input::inputs.INPUT_START       = false;
     Input::inputs.INPUT_ESC         = false;
     Input::inputs.INPUT_F5          = false;
+    Input::inputs.INPUT_1           = false;
+    Input::inputs.INPUT_2           = false;
+    Input::inputs.INPUT_3           = false;
+    Input::inputs.INPUT_4           = false;
+    Input::inputs.INPUT_5           = false;
+    Input::inputs.INPUT_6           = false;
+    Input::inputs.INPUT_7           = false;
 
     Input::inputs.INPUT_X  = 0;
     Input::inputs.INPUT_Y  = 0;
@@ -178,6 +192,34 @@ void Input::pollInputs()
     if (glfwGetKey(window, GLFW_KEY_F5) == GLFW_PRESS)
     {
         Input::inputs.INPUT_F5 = true;
+    }
+    if (glfwGetKey(window, GLFW_KEY_1) == GLFW_PRESS)
+    {
+        Input::inputs.INPUT_1 = true;
+    }
+    if (glfwGetKey(window, GLFW_KEY_2) == GLFW_PRESS)
+    {
+        Input::inputs.INPUT_2 = true;
+    }
+    if (glfwGetKey(window, GLFW_KEY_3) == GLFW_PRESS)
+    {
+        Input::inputs.INPUT_3 = true;
+    }
+    if (glfwGetKey(window, GLFW_KEY_4) == GLFW_PRESS)
+    {
+        Input::inputs.INPUT_4 = true;
+    }
+    if (glfwGetKey(window, GLFW_KEY_5) == GLFW_PRESS)
+    {
+        Input::inputs.INPUT_5 = true;
+    }
+    if (glfwGetKey(window, GLFW_KEY_6) == GLFW_PRESS)
+    {
+        Input::inputs.INPUT_6 = true;
+    }
+    if (glfwGetKey(window, GLFW_KEY_7) == GLFW_PRESS)
+    {
+        Input::inputs.INPUT_7 = true;
     }
 
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)

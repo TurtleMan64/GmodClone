@@ -26,6 +26,13 @@ public:
     static Animation* animationFall;
     static Animation* animationClimb;
     static Animation* animationSwing;
+    static Animation* animationEmote1;
+    static Animation* animationEmote2;
+    static Animation* animationEmote3;
+    static Animation* animationEmote4;
+    static Animation* animationEmote5;
+    static Animation* animationEmote6;
+    static Animation* animationEmote7;
 
     static Model modelGun;
     static Model modelBat;
@@ -155,6 +162,8 @@ public:
     Vector3f ropeAnchor;
     float ropeLength = 1.0f;
 
+    char danceIndex = -1;
+
     // Animation variables
     float animTimerStand   = 0.0f;
     float animTimerWalk    = 0.0f;
@@ -166,6 +175,7 @@ public:
     float animTimerClimb   = 0.0f;
     float animTimerCrawl   = 0.0f;
     float animTimerSwing   = 0.0f;
+    float animTimerDance   = 0.0f;
     char  animType         = 0;
     char  animTypePrevious = 0;
     float animBlend        = 0.0f;

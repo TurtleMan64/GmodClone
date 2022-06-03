@@ -93,6 +93,8 @@ public:
     //Loads a texture into GPU memory, returns the GLuint id
     static GLuint loadTexture3D(const char* filename);
 
+    static GLuint loadTextureShadowMap(const char* filename);
+
     static void cleanUp();
 
     static void deleteVAO(GLuint vaoId);

@@ -142,12 +142,12 @@ int createDisplay()
     std::fprintf(stdout, "GLSL version:   %s\n", glGetString(GL_SHADING_LANGUAGE_VERSION));
     std::fprintf(stdout, "GLFW version:   %s\n", glfwGetVersionString());
 
-    int dataas = 0;
-    glGetIntegerv(GL_MAX_TEXTURE_SIZE, &dataas); // 32768
-    printf("data = %d\n", dataas);
+    //int dataas = 0;
+    //glGetIntegerv(GL_MAX_TEXTURE_SIZE, &dataas); // 32768
+    //printf("data = %d\n", dataas);
 
-    glGetIntegerv(GL_MAX_3D_TEXTURE_SIZE, &dataas); // 16384
-    printf("data = %d\n", dataas);
+    //glGetIntegerv(GL_MAX_3D_TEXTURE_SIZE, &dataas); // 16384
+   // printf("data = %d\n", dataas);
 
     glfwSwapInterval(1); //1 = vsync. 0 = off. 2 = half monitor refresh rate
     glEnable(GL_MULTISAMPLE);
