@@ -84,6 +84,7 @@ CollisionResult CollisionChecker::checkCollision(float x, float y, float z, floa
         result.hit = true;
         result.directionToPosition = directionToCollisionPosition;
         result.distanceToPosition = distanceToCollisionPosition;
+        result.collidePosition = point + directionToCollisionPosition.scaleCopy(distanceToCollisionPosition);
         result.tri = closestCollisionTriangle;
         result.entity = closestEntity;
         return result;

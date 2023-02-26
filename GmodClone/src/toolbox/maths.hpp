@@ -183,6 +183,10 @@ public:
 
     static Vector3f closestPointFromPointToLine(Vector3f* point, Vector3f* p1, Vector3f* p2);
 
+    static Vector3f calcBarycentricCoordsFromPoint(Vector3f* point, Triangle3D* tri);
+
+    static Vector3f calcPointFromBarycentricCoords(Vector3f* bary, Triangle3D* tri);
+
     static bool sphereIntersectsTriangle(Vector3f* sphereCenter, float sphereRadius, Triangle3D* tri, float* outDistanceToTriangle, Vector3f* outDirectionToTriangle);
 
     static bool raycastIntersectsTriangle(Vector3f* rayOrigin, Vector3f* rayDir, Triangle3D* tri, Vector3f* outCollisionPosition);

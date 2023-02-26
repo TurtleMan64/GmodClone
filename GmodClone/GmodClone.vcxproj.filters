@@ -330,6 +330,9 @@
     <ClCompile Include="src\models\Model.cpp">
       <Filter>Source Files\models</Filter>
     </ClCompile>
+    <ClCompile Include="src\entities\CollisionBlock2.cpp">
+      <Filter>Source Files\entities</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\toolbox\getline.hpp">
@@ -583,6 +586,9 @@
     </ClInclude>
     <ClInclude Include="src\animation\keyframedata.hpp">
       <Filter>Source Files\animation</Filter>
+    </ClInclude>
+    <ClInclude Include="src\entities\collisionblock2.hpp">
+      <Filter>Source Files\entities</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

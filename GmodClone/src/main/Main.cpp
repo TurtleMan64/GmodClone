@@ -75,6 +75,7 @@
 #include "../entities/winzone.hpp"
 #include "../entities/onlineplayer.hpp"
 #include "../entities/fallblock.hpp"
+#include "../entities/collisionblock2.hpp"
 
 Message::Message(const Message &other)
 {
@@ -181,7 +182,8 @@ int main(int argc, char** argv)
 
     increaseProcessPriority();
 
-    Maths::initRandom((unsigned long)time(nullptr));
+    //Maths::initRandom((unsigned long)time(nullptr));
+    Maths::initRandom(0);
 
     Maths::random();
 
@@ -250,6 +252,7 @@ int main(int argc, char** argv)
     Bat::loadModels();
     WinZone::loadModels();
     FallBlock::loadModels();
+    CollisionBlock2::loadModels();
 
     Global::player = new Player; INCR_NEW("Entity");
 
@@ -294,7 +297,7 @@ int main(int argc, char** argv)
 
     Global::stageEntity = new Dummy(&Global::stageModel); INCR_NEW("Entity");
 
-    LevelLoader::loadLevel("hub");
+    LevelLoader::loadLevel("test");
 
     GUIText* fpsText = new GUIText("0", 0.02f, Global::fontConsolas, 1.0f, 0.0f, 2, true); INCR_NEW("GUIText");
 
@@ -499,9 +502,35 @@ int main(int argc, char** argv)
                     glfwSwapInterval(1);
                 }
 
+                std::vector<Entity*> collisionBlocks;
+                std::vector<Entity*> balls;
+
+
                 for (Entity* e : Global::gameEntities)
                 {
+                    if (e->getEntityType() == ENTITY_COLLISION_BLOCK || e->getEntityType() == ENTITY_COLLISION_BLOCK_2)
+                    {
+                        collisionBlocks.push_back(e);
+                    }
+                    else if (e->getEntityType() == ENTITY_BALL)
+                    {
+                        balls.push_back(e);
+                        e->step();
+                    }
+                    else
+                    {
+                        e->step();
+                    }
+                }
+
+                for (Entity* e : collisionBlocks)
+                {
                     e->step();
+                }
+
+                for (Entity* e : balls)
+                {
+                    ((Ball*)e)->movingBlocksAreDone();
                 }
 
                 Global::gameOnlinePlayersSharedMutex.lock_shared();

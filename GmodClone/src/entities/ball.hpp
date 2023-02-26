@@ -7,6 +7,7 @@ class Source;
 #include <list>
 #include "entity.hpp"
 #include "../toolbox/vector.hpp"
+#include "../collision/collisionchecker.hpp"
 
 class Ball : public Entity
 {
@@ -14,6 +15,11 @@ private:
     static Model model;
 
     Source* src = nullptr;
+
+    // Vars to be used after the moving blocks have moved.
+    CollisionResult resultPrev;
+    Vector3f baryCoordsPrev;
+    Vector3f velPrev;
 
     const float gravityForce = 0.588f*60;
 
@@ -35,5 +41,7 @@ public:
     int getEntityType();
 
     void getHit(Vector3f* hitPos, Vector3f* hitDir, int weapon);
+
+    void movingBlocksAreDone();
 };
 #endif

@@ -180,6 +180,7 @@
     <ClCompile Include="src\entities\BoomBox.cpp" />
     <ClCompile Include="src\entities\Chandelier.cpp" />
     <ClCompile Include="src\entities\CollisionBlock.cpp" />
+    <ClCompile Include="src\entities\CollisionBlock2.cpp" />
     <ClCompile Include="src\entities\FallBlock.cpp" />
     <ClCompile Include="src\entities\FencePlatform.cpp" />
     <ClCompile Include="src\entities\Glass.cpp" />
@@ -272,6 +273,7 @@
     <ClInclude Include="src\entities\boombox.hpp" />
     <ClInclude Include="src\entities\chandelier.hpp" />
     <ClInclude Include="src\entities\collisionblock.hpp" />
+    <ClInclude Include="src\entities\collisionblock2.hpp" />
     <ClInclude Include="src\entities\fallblock.hpp" />
     <ClInclude Include="src\entities\fenceplatform.hpp" />
     <ClInclude Include="src\entities\glass.hpp" />

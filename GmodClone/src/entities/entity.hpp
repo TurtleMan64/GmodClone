@@ -30,6 +30,7 @@ class AnimatedModel;
 #define ENTITY_BAT 14
 #define ENTITY_WIN_ZONE 15
 #define ENTITY_FALL_BLOCK 16
+#define ENTITY_COLLISION_BLOCK_2 17
 
 #define WEAPON_FIST 0
 #define WEAPON_BAT 1
@@ -85,7 +86,7 @@ public:
 
     virtual void die();
 
-    virtual int getEntityType();
+    virtual int getEntityType(); //could make this not a function
 
     virtual std::vector<Triangle3D*>* getCollisionTriangles();
 

@@ -75,7 +75,7 @@ Player::Player()
     ObjLoader::loadModel(&Player::modelHookshotHandle, "res/Models/Hookshot/", "HookshotHandle");
     ObjLoader::loadModel(&Player::modelHookshotChain,  "res/Models/Hookshot/", "Chain");
 
-    Player::modelShrek = AnimatedModelLoader::loadAnimatedModel("res/Models/Snake/", "SnakeFinal.mesh"); //ShrekFinalMeshFrankenstein
+    Player::modelShrek = AnimatedModelLoader::loadAnimatedModel("res/Models/Human/", "ShrekFinalMeshFrankenstein.mesh"); //ShrekFinalMeshFrankenstein
 
     Player::animationStand  = AnimationLoader::loadAnimation("res/Models/Human/Original Mixamo/Breathing Idle.anim");
     Player::animationWalk   = AnimationLoader::loadAnimation("res/Models/Human/Original Mixamo/Slow Run.anim");
@@ -131,6 +131,8 @@ Player::~Player() //this should never actually get called since the only player 
 void Player::step()
 {
     Vector3f yAxis(0, -1, 0);
+
+    double startTime = glfwGetTime();
 
     if (Global::levelId == LVL_MAP5 || Global::levelId == LVL_MAP4 || Global::levelId == LVL_MAP7)
     {
@@ -273,7 +275,7 @@ void Player::step()
 
                 if (!onGround)
                 {
-                    //determine if we move the player back down ( so they cant get infinite height by spamming crouch
+                    //determine if we move the player back down (so they cant get infinite height by spamming crouch)
                     float distanceToFloor = -1.0f;
                     const int NUM_ITERATIONS = 200; //can probably reduce this, but makes things possibly choppier
                     for (int i = 0; i < NUM_ITERATIONS; i++)
@@ -726,6 +728,14 @@ void Player::step()
             {
                 collideEntityImTouching = result.entity;
             }
+
+            // if we arent moving very far, dont bother doing any more collision checks, in case
+            // the next check keeps on saying that we collide. this way, we dont waste the entire 20 checks not moving anywhere.
+            if (distanceToMoveAway < 0.0001f)
+            {
+                //printf("cutting off at %d\n", c);
+                break;
+            }
         }
         else
         {
@@ -784,6 +794,14 @@ void Player::step()
                 if (result.entity != nullptr)
                 {
                     collideEntityImTouching = result.entity;
+                }
+                //TODO: sometimes the player step takes 17 millis. try to figure out why. i guess record time at different spots and find the one that takes the most
+                // if we arent moving very far, dont bother doing any more collision checks, in case
+                // the next check keeps on saying that we collide. this way, we dont waste the entire 20 checks not moving anywhere.
+                if (distanceToMoveAway < 0.0001f)
+                {
+                    //printf("cutting off at %d\n", c);
+                    break;
                 }
             }
             else
@@ -1023,6 +1041,12 @@ void Player::step()
     updateTransformationMatrix();
 
     animateMe();
+
+    //double endTime = glfwGetTime();
+
+    //double timeDiff = (endTime - startTime)*1000.0;
+
+    //printf("%f\n", timeDiff);
 }
 
 float Player::getPushValueGround(float deltaTime)

@@ -41,6 +41,7 @@
 #include "../entities/winzone.hpp"
 #include "../entities/fallblock.hpp"
 #include "../renderEngine/renderEngine.hpp"
+#include "../entities/collisionblock2.hpp"
 
 void LevelLoader::loadLevel(std::string mapName)
 {
@@ -346,6 +347,16 @@ void LevelLoader::processLine(std::vector<std::string>& dat)
                 toI(dat[5]), toF(dat[6]), toF(dat[7]), toF(dat[8]),
                 (bool)toI(dat[9]),
                 toF(dat[10]));
+            INCR_NEW("Entity");
+            Global::addEntity(block);
+            break;
+        }
+
+        case ENTITY_COLLISION_BLOCK_2:
+        {
+            CollisionBlock2* block = new CollisionBlock2(dat[1],
+                Vector3f(toF(dat[2]), toF(dat[3]), toF(dat[4])),
+                toF(dat[5]), toF(dat[6]), toF(dat[7]), toF(dat[8]), toF(dat[9]));
             INCR_NEW("Entity");
             Global::addEntity(block);
             break;

@@ -615,6 +615,7 @@ Vector3f Maths::calculatePerpendicular(Vector3f* vec)
     return perpen;
 }
 
+//idea: i think for this you might be able to just do projectOntoPlane(A, line) and then subtract that from A to get this. since this + projectOntoPlane should be == A
 Vector3f Maths::projectAlongLine(Vector3f* A, Vector3f* line)
 {
     Vector3f master(A);
@@ -842,6 +843,42 @@ Vector3f Maths::closestPointFromPointToLine(Vector3f* p, Vector3f* l1, Vector3f*
     t = Maths::clamp(0.0f, t, 1.0f);
 
     return Vector3f(l1->x + t * (l2->x - l1->x), l1->y + t * (l2->y - l1->y), l1->z + t * (l2->z - l1->z));
+}
+
+//https://gamedev.stackexchange.com/questions/23743/whats-the-most-efficient-way-to-find-barycentric-coordinates
+Vector3f Maths::calcBarycentricCoordsFromPoint(Vector3f* point, Triangle3D* tri)
+{
+    Vector3f v0 = Vector3f(tri->p2X, tri->p2Y, tri->p2Z) - Vector3f(tri->p1X, tri->p1Y, tri->p1Z);
+    Vector3f v1 = Vector3f(tri->p3X, tri->p3Y, tri->p3Z) - Vector3f(tri->p1X, tri->p1Y, tri->p1Z);
+    Vector3f v2 = *point                                 - Vector3f(tri->p1X, tri->p1Y, tri->p1Z);
+
+    float d00 = (v0.dot(&v0));
+    float d01 = (v0.dot(&v1));
+    float d11 = (v1.dot(&v1));
+    float d20 = (v2.dot(&v0));
+    float d21 = (v2.dot(&v1));
+    float denom = d00 * d11 - d01 * d01;
+
+    float v = (d11 * d20 - d01 * d21) / denom;
+    float w = (d00 * d21 - d01 * d20) / denom;
+    float u = 1.0f - v - w;
+
+    return Vector3f(u, v, w);
+}
+
+//https://stackoverflow.com/questions/11262391/from-barycentric-to-cartesian
+Vector3f Maths::calcPointFromBarycentricCoords(Vector3f* bary, Triangle3D* tri)
+{
+    Vector3f v0 = Vector3f(tri->p1X, tri->p1Y, tri->p1Z);
+    Vector3f v1 = Vector3f(tri->p2X, tri->p2Y, tri->p2Z);
+    Vector3f v2 = Vector3f(tri->p3X, tri->p3Y, tri->p3Z);
+
+    // this works???
+    v0.scale(bary->x);
+    v1.scale(bary->y);
+    v2.scale(bary->z);
+
+    return v0 + v1 + v2;
 }
 
 //https://stackoverflow.com/questions/34043955/detect-collision-between-sphere-and-triangle-in-three-js

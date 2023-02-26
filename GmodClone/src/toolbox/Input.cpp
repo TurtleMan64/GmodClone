@@ -17,6 +17,7 @@
 #include "../main/main.hpp"
 #include "input.hpp"
 #include "../entities/camera.hpp"
+#include "../entities/ball.hpp"
 #include "maths.hpp"
 #include "../toolbox/split.hpp"
 #include "../toolbox/getline.hpp"
@@ -274,13 +275,16 @@ void Input::pollInputs()
     #ifdef DEV_MODE
     if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS)
     {
-        printf("%f %f %f\n", Global::player->position.x, Global::player->position.y, Global::player->position.z);
+        //printf("%f %f %f\n", Global::player->position.x, Global::player->position.y, Global::player->position.z);
     }
     #endif
 
     #ifdef DEV_MODE
     if (Input::inputs.INPUT_LB && !Input::inputs.INPUT_PREVIOUS_LB)
     {
+        Ball* ball = new Ball("myball", Vector3f(Global::player->position.x, Global::player->position.y + 0.5f, Global::player->position.z), Vector3f(0, 0, 0));
+        Global::addEntity(ball);
+        printf("%f %f %f\n", Global::player->position.x, Global::player->position.y, Global::player->position.z);
         /*
         if (Global::gameMainPlayer != nullptr)
         {

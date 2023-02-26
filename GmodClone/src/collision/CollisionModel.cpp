@@ -301,6 +301,53 @@ void CollisionModel::transformModelWithScale(CollisionModel* targetModel, Vector
     targetModel->generateMinMaxValues();
 }
 
+void CollisionModel::transformModelWithScale(CollisionModel* targetModel, Vector3f* translate, float yRot, float scaleX, float scaleY, float scaleZ)
+{
+    if (targetModel->triangles.size() != triangles.size())
+    {
+        std::fprintf(stdout, "Warning: Trying to transform a collision model based on another collision model that doesn't have the same amount of triangles.\n");
+        return;
+    }
+
+    float angleRadY = Maths::toRadians(yRot);
+
+    Vector3f yAxis(0, 1, 0);
+
+    int i = 0;
+    for (Triangle3D* tri : triangles)
+    {
+        Vector3f newPoint1(tri->p1X*scaleX, tri->p1Y*scaleY, tri->p1Z*scaleZ);
+        newPoint1 = Maths::rotatePoint(&newPoint1, &yAxis, angleRadY);
+        newPoint1 = newPoint1 + translate;
+
+        Vector3f newPoint2(tri->p2X*scaleX, tri->p2Y*scaleY, tri->p2Z*scaleZ);
+        newPoint2 = Maths::rotatePoint(&newPoint2, &yAxis, angleRadY);
+        newPoint2 = newPoint2 + translate;
+
+        Vector3f newPoint3(tri->p3X*scaleX, tri->p3Y*scaleY, tri->p3Z*scaleZ);
+        newPoint3 = Maths::rotatePoint(&newPoint3, &yAxis, angleRadY);
+        newPoint3 = newPoint3 + translate;
+
+        Triangle3D* newTri = targetModel->triangles[i];
+        newTri->p1X      = newPoint1.x;
+        newTri->p1Y      = newPoint1.y;
+        newTri->p1Z      = newPoint1.z;
+        newTri->p2X      = newPoint2.x;
+        newTri->p2Y      = newPoint2.y;
+        newTri->p2Z      = newPoint2.z;
+        newTri->p3X      = newPoint3.x;
+        newTri->p3Y      = newPoint3.y;
+        newTri->p3Z      = newPoint3.z;
+        newTri->type     = tri->type;
+        newTri->sound    = tri->sound;
+        newTri->particle = tri->particle;
+        newTri->generateValues();
+        i++;
+    }
+
+    targetModel->generateMinMaxValues();
+}
+
 void CollisionModel::transformModelWithScale(CollisionModel* targetModel, Vector3f* translate, Vector3f* scale)
 {
     if (targetModel->triangles.size() != triangles.size())

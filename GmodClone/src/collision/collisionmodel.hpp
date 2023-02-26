@@ -45,6 +45,9 @@ public:
     void transformModelWithScale(CollisionModel* targetModel, Vector3f* translate, float yRot, float scale);
 
     //makes a collision model be the transformed version of this collision model
+    void transformModelWithScale(CollisionModel* targetModel, Vector3f* translate, float yRot, float scaleX, float scaleY, float scaleZ);
+
+    //makes a collision model be the transformed version of this collision model
     void transformModelWithScale(CollisionModel* targetModel, Vector3f* translate, Vector3f* scale);
 
     //makes a collision model be the transformed version of this collision model
