@@ -127,8 +127,6 @@ LightModel Global::stageLightModel;
 Light* Global::lights[4] = {nullptr, nullptr, nullptr, nullptr};
 Vector3f Global::skyColor(1, 1, 1);
 
-Vector3f Global::waterColor(0, 0.25f, 1.0f);
-float Global::waterHeight = -7.1f;
 WaterRenderer* Global::gameWaterRenderer = nullptr;
 WaterFrameBuffers* Global::gameWaterFBOs = nullptr;
 std::vector<WaterTile*> Global::gameWaterTiles;
@@ -308,13 +306,13 @@ int main(int argc, char** argv)
         }
         Global::gameWaterTiles.clear();
 
-        for (int r = -1; r <= 2; r++)
-        {
-            for (int c = -1; c <= 2; c++)
-            {
-                Global::gameWaterTiles.push_back(new WaterTile(r * WaterTile::TILE_SIZE * 2 - WaterTile::TILE_SIZE, c * WaterTile::TILE_SIZE * 2 - WaterTile::TILE_SIZE)); INCR_NEW("WaterTile");
-            }
-        }
+        //for (int r = -1; r <= 2; r++)
+        //{
+        //    for (int c = -1; c <= 2; c++)
+        //    {
+        //        Global::gameWaterTiles.push_back(new WaterTile(r * WaterTile::TILE_SIZE * 2 - WaterTile::TILE_SIZE, c * WaterTile::TILE_SIZE * 2 - WaterTile::TILE_SIZE)); INCR_NEW("WaterTile");
+        //    }
+        //}
     }
 
     long long secSinceEpoch = std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now().time_since_epoch()).count();
@@ -666,41 +664,47 @@ int main(int argc, char** argv)
 
         Master_render(&cam, 0, 0, 0, 0, 0.0f);
 
+        if (Global::gameWaterTiles.size() >= 0)
         {
-            glDisable(GL_MULTISAMPLE);
-            bool aboveWater = (cam.eye.y > Global::waterHeight);
-        
-            const float offsetWater = 0.06f;
-        
-            //reflection render
-            Global::gameWaterFBOs->bindReflectionFrameBuffer();
-            cam.mirrorForWater();
-            if (aboveWater)
+            //glDisable(GL_MULTISAMPLE);
+            for (WaterTile* tile : Global::gameWaterTiles)
             {
-                Master_render(&cam, 0, 1, 0, offsetWater - Global::waterHeight, 0.1f);
-            }
-            else
-            {
-                Master_render(&cam, 0, -1, 0, offsetWater + Global::waterHeight, 0.1f);
-            }
-            cam.mirrorForWater();
-            Global::gameWaterFBOs->unbindCurrentFrameBuffer();
-        
-            //refraction render
-            Global::gameWaterFBOs->bindRefractionFrameBuffer();
-            if (aboveWater)
-            {
-                Master_render(&cam, 0, -1, 0, offsetWater + Global::waterHeight, 0.1f);
-            }
-            else
-            {
-                Master_render(&cam, 0, 1, 0, offsetWater - Global::waterHeight, 0.1f);
-            }
-            Global::gameWaterFBOs->unbindCurrentFrameBuffer();
+                float waterHeight = tile->pos.y;
 
-            Global::gameWaterRenderer->render(&Global::gameWaterTiles, &cam, nullptr);
+                bool aboveWater = (cam.eye.y > waterHeight);
 
-            glEnable(GL_MULTISAMPLE);
+                const float offsetWater = 0.06f;
+
+                //reflection render
+                Global::gameWaterFBOs->bindReflectionFrameBuffer();
+                cam.mirrorForWater(waterHeight);
+                if (aboveWater)
+                {
+                    Master_render(&cam, 0, 1, 0, offsetWater - waterHeight, tile->murkiness);
+                }
+                else
+                {
+                    Master_render(&cam, 0, -1, 0, offsetWater + waterHeight, tile->murkiness);
+                }
+                cam.mirrorForWater(waterHeight);
+                Global::gameWaterFBOs->unbindCurrentFrameBuffer();
+
+                //refraction render
+                Global::gameWaterFBOs->bindRefractionFrameBuffer();
+                if (aboveWater)
+                {
+                    Master_render(&cam, 0, -1, 0, offsetWater + waterHeight, tile->murkiness);
+                }
+                else
+                {
+                    Master_render(&cam, 0, 1, 0, offsetWater - waterHeight, tile->murkiness);
+                }
+                Global::gameWaterFBOs->unbindCurrentFrameBuffer();
+
+                Global::gameWaterRenderer->render(tile, &cam, nullptr);
+            }
+
+            //glEnable(GL_MULTISAMPLE);
         }
 
         Master_clearAllEntities();

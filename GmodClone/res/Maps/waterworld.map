@@ -7,3 +7,7 @@ res/Models/WaterworldRemaster/Blank.shadow          # Shadow Map
 -0.2 -1 -0.4                    # Sun Direction
 0 0 -1                          # Camera Direction
 60000000                        # Round Time Duration (seconds)
+
+18      -1.46142  -7.08155 32.6205     77.9204 7.0 55.6317         0        0 0.2 1    0.15
+18       0.012025 -3.08343 -8.26566    6.84001 2.0  7.10949        0        0 0.2 1    0.15
+18      50.7434 -3.68673 -13.9785      9.1617  2.00 7.42238        0        0 0.2 1    0.15

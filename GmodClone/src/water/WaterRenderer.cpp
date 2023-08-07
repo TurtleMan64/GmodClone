@@ -24,7 +24,7 @@ WaterRenderer::WaterRenderer(WaterShader* shader, Matrix4f* projectionMatrix, Wa
     setUpVAO();
 }
 
-void WaterRenderer::prepareRender(Camera* camera, Light* sun)
+void WaterRenderer::prepareRender(WaterTile* tile, Camera* camera, Light* sun)
 {
     shader->start();
     shader->loadViewMatrix(camera);
@@ -44,9 +44,9 @@ void WaterRenderer::prepareRender(Camera* camera, Light* sun)
     moveFactor = fmodf(moveFactor, 1);
     shader->loadMoveFactor(moveFactor);
     shader->loadSun(sun);
-    shader->loadWaterHeight(Global::waterHeight);
-    shader->loadWaterMurkyAmount(0.15f);
-    shader->loadWaterColor(&Global::waterColor);
+    shader->loadWaterHeight(tile->pos.y);
+    shader->loadWaterMurkyAmount(tile->murkiness);
+    shader->loadWaterColor(&tile->color);
     glBindVertexArray(quad->getVaoId());
     glEnableVertexAttribArray(0);
     glActiveTexture(GL_TEXTURE0);
@@ -92,21 +92,16 @@ void WaterRenderer::setUpVAO()
     quad = new RawModel(Loader::loadToVAO(&vertices, 2)); INCR_NEW("RawModel");
 }
 
-void WaterRenderer::render(std::vector<WaterTile*>* water, Camera* camera, Light* sun)
+void WaterRenderer::render(WaterTile* tile, Camera* camera, Light* sun)
 {
-    prepareRender(camera, sun);
-    float xOff = camera->eye.x;
-    float zOff = camera->eye.z;
-    const int waterTileCount = (int)water->size();
-    for (int i = 0; i < waterTileCount; i++)
-    {
-        WaterTile* tile = water->at(i);
-        Matrix4f modelMatrix;
-        Vector3f tilePosition(tile->centerX + xOff, Global::waterHeight, tile->centerZ + zOff);
-        Maths::createTransformationMatrix(&modelMatrix, &tilePosition, 0, 0, 0, 0, WaterTile::TILE_SIZE);
-        shader->loadModelMatrix(&modelMatrix);
-        glDrawArrays(GL_TRIANGLES, 0, quad->getVertexCount());
-    }
+    prepareRender(tile, camera, sun);
+
+    Matrix4f modelMatrix;
+    Vector3f tilePosition(tile->pos.x, tile->pos.y, tile->pos.z);
+    Maths::createTransformationMatrix(&modelMatrix, &tilePosition, 0, tile->rotY, 0, 0, tile->scale.x, 1, tile->scale.z);
+    shader->loadModelMatrix(&modelMatrix);
+    glDrawArrays(GL_TRIANGLES, 0, quad->getVertexCount());
+
     unbind();
 }
 

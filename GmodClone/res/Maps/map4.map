@@ -8,3 +8,5 @@ res/Models/Map4/Blank.shadow # Shadow Map
 -1 0 0                       # Camera Direction
 45                           # Round Time Duration (seconds)
 
+# Water
+18      0 -6.22098 0     64 16 64         0        0 0.1 0.8    0.3

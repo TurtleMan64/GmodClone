@@ -42,6 +42,7 @@
 #include "../entities/fallblock.hpp"
 #include "../renderEngine/renderEngine.hpp"
 #include "../entities/collisionblock2.hpp"
+#include "../water/watertile.hpp"
 
 void LevelLoader::loadLevel(std::string mapName)
 {
@@ -92,6 +93,12 @@ void LevelLoader::loadLevel(std::string mapName)
 
     Global::deleteAllEntites();
 
+    for (WaterTile* tile : Global::gameWaterTiles)
+    {
+        delete tile; INCR_DEL("WaterTile");
+    }
+    Global::gameWaterTiles.clear();
+
     if (Global::player->health > 0)
     {
         Global::player->health = 100;
@@ -108,7 +115,7 @@ void LevelLoader::loadLevel(std::string mapName)
     }
     else
     {
-        Global::timeUntilRoundStarts = 12.0f;
+        Global::timeUntilRoundStarts = 1.0f; //12
     }
 
     if (Global::levelId == LVL_MAP6)
@@ -469,6 +476,19 @@ void LevelLoader::processLine(std::vector<std::string>& dat)
                 Vector3f(toF(dat[5]), toF(dat[6]), toF(dat[7]))); //Size
             INCR_NEW("Entity");
             Global::addEntity(win);
+            break;
+        }
+
+        case ENTITY_WATER_BLOCK:
+        {
+            WaterTile* tile = new WaterTile(
+                Vector3f(toF(dat[1]), toF(dat[2]), toF(dat[3])),  //Postion
+                Vector3f(toF(dat[4]), toF(dat[5]), toF(dat[6])),  //Scale
+                toF(dat[7]),                                      //Rotation
+                Vector3f(toF(dat[8]), toF(dat[9]), toF(dat[10])), //Color
+                toF(dat[11]));                                    //Murkiness
+            INCR_NEW("WaterTile");
+            Global::gameWaterTiles.push_back(tile);
             break;
         }
 

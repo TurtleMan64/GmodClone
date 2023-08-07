@@ -3,10 +3,9 @@
 in vec4 clipSpace;
 in vec2 textureCoords;
 in vec3 toCameraVector;
-in vec3 passCameraPosition;
+//in vec3 passCameraPosition;
 //in vec3 fromLightVector;
-
-in vec3 worldposition;
+//in vec3 worldPosition;
 
 out vec4 out_Color;
 out vec4 out_BrightColor;
@@ -22,6 +21,7 @@ uniform float waterHeight;
 uniform float moveFactor;
 uniform float murkiness;
 uniform vec3 waterColor;
+uniform vec3 cameraPosition;
 
 const float NEAR = 0.05;
 const float FAR = 3000.0;
@@ -31,18 +31,18 @@ const float shineDamper = 80.0;
 const float reflectivity = 0.80;
 
 
-bool pixelIsInBounds(sampler2D tex, ivec2 coords, ivec2 size, out vec4 color)
-{
-    if (coords.x < 0 || coords.x >= size.x ||
-        coords.y < 0 || coords.y >= size.y)
-    {
-        return false;
-    }
-    
-    color = texelFetch(tex, coords, 0);
-    
-    return !(color.x > 0.99 && color.y < 0.01 && color.z > 0.99);
-}
+//bool pixelIsInBounds(sampler2D tex, ivec2 coords, ivec2 size, out vec4 color)
+//{
+//    if (coords.x < 0 || coords.x >= size.x ||
+//        coords.y < 0 || coords.y >= size.y)
+//    {
+//        return false;
+//    }
+//    
+//    color = texelFetch(tex, coords, 0);
+//    
+//    return !(color.x > 0.99 && color.y < 0.01 && color.z > 0.99);
+//}
 
 void main(void)
 {
@@ -59,7 +59,7 @@ void main(void)
     depth = gl_FragCoord.z;
     float waterDistance = (2.0*NEAR*FAR)/((FAR + NEAR) - ((2.0*depth) - 1.0)*(FAR - NEAR));
     //float waterDepth = floorDistance - waterDistance;
-    float waterDepthFactor = clamp((floorDistance - waterDistance)*8, 0.0, 1.0);
+    float waterDepthFactor = clamp((floorDistance - waterDistance)*2, 0.0, 1.0);
     
     vec2 rawDudvMapVal = texture(dudvMap, vec2(textureCoords.x + moveFactor, textureCoords.y)).rg;
     vec2 distortedTexCoords = rawDudvMapVal*0.1;
@@ -76,39 +76,40 @@ void main(void)
     
     totalDistortion*=steepness;
     
-    ivec2 tSize = textureSize(refractionTexture, 0);
+    //idea that worked when the sky color is a solid color. otherwise useless
+    //{
+    //    ivec2 tSize = textureSize(refractionTexture, 0);
+    //    
+    //    vec4 refractColor;
+    //    vec4 reflectColor;
+    //    
+    //    float d = 0.0078125;
+    //    
+    //    if  (pixelIsInBounds(refractionTexture, ivec2((refractTexCoords + totalDistortion)*tSize), tSize, refractColor)) {}
+    //    else if (pixelIsInBounds(refractionTexture, ivec2((refractTexCoords + vec2(-d, 0))*tSize), tSize, refractColor)) {}
+    //    else if (pixelIsInBounds(refractionTexture, ivec2((refractTexCoords + vec2( d, 0))*tSize), tSize, refractColor)) {}
+    //    else if (pixelIsInBounds(refractionTexture, ivec2((refractTexCoords + vec2(0, -d))*tSize), tSize, refractColor)) {}
+    //    else if (pixelIsInBounds(refractionTexture, ivec2((refractTexCoords + vec2(0,  d))*tSize), tSize, refractColor)) {}
+    //    else
+    //    {
+    //        refractColor = vec4(0, 1, 1, 1);
+    //    }
+    //    
+    //    if  (pixelIsInBounds(reflectionTexture, ivec2((reflectTexCoords + totalDistortion)*tSize), tSize, reflectColor)) {}
+    //    else if (pixelIsInBounds(reflectionTexture, ivec2((reflectTexCoords + vec2(-d, 0))*tSize), tSize, reflectColor)) {}
+    //    else if (pixelIsInBounds(reflectionTexture, ivec2((reflectTexCoords + vec2( d, 0))*tSize), tSize, reflectColor)) {}
+    //    else if (pixelIsInBounds(reflectionTexture, ivec2((reflectTexCoords + vec2(0, -d))*tSize), tSize, reflectColor)) {}
+    //    else if (pixelIsInBounds(reflectionTexture, ivec2((reflectTexCoords + vec2(0,  d))*tSize), tSize, reflectColor)) {}
+    //    else
+    //    {
+    //        reflectColor = vec4(0, 1, 1, 1);
+    //    }
+    //}
     
-    vec4 refractColor;
-    vec4 reflectColor;
+    vec4 refractColor = texture(refractionTexture, refractTexCoords + totalDistortion);
+    vec4 reflectColor = texture(reflectionTexture, reflectTexCoords + totalDistortion);
     
-    float d = 0.0078125;
-    
-    if  (pixelIsInBounds(refractionTexture, ivec2((refractTexCoords + totalDistortion)*tSize), tSize, refractColor)) {}
-    else if (pixelIsInBounds(refractionTexture, ivec2((refractTexCoords + vec2(-d, 0))*tSize), tSize, refractColor)) {}
-    else if (pixelIsInBounds(refractionTexture, ivec2((refractTexCoords + vec2( d, 0))*tSize), tSize, refractColor)) {}
-    else if (pixelIsInBounds(refractionTexture, ivec2((refractTexCoords + vec2(0, -d))*tSize), tSize, refractColor)) {}
-    else if (pixelIsInBounds(refractionTexture, ivec2((refractTexCoords + vec2(0,  d))*tSize), tSize, refractColor)) {}
-    else
-    {
-        refractColor = vec4(0, 1, 1, 1);
-    }
-    
-    if  (pixelIsInBounds(reflectionTexture, ivec2((reflectTexCoords + totalDistortion)*tSize), tSize, reflectColor)) {}
-    else if (pixelIsInBounds(reflectionTexture, ivec2((reflectTexCoords + vec2(-d, 0))*tSize), tSize, reflectColor)) {}
-    else if (pixelIsInBounds(reflectionTexture, ivec2((reflectTexCoords + vec2( d, 0))*tSize), tSize, reflectColor)) {}
-    else if (pixelIsInBounds(reflectionTexture, ivec2((reflectTexCoords + vec2(0, -d))*tSize), tSize, reflectColor)) {}
-    else if (pixelIsInBounds(reflectionTexture, ivec2((reflectTexCoords + vec2(0,  d))*tSize), tSize, reflectColor)) {}
-    else
-    {
-        reflectColor = vec4(0, 1, 1, 1);
-    }
-    
-    //out_Color = reflectColor;
-    //return;
-    
-    //refractColor*=0.85;
-    
-    if (passCameraPosition.y <= waterHeight)
+    if (cameraPosition.y <= waterHeight)
     {
         refractiveFactor = -refractiveFactor*2;
         
@@ -119,7 +120,7 @@ void main(void)
         refractColor = mix(refractColor, vec4(waterColor, 1.0), waterDepthFactor*murkiness);
     }
     
-    // adjust the mix factor
+    // adjust the mix factor as a stylistic choice
     refractiveFactor*=2.0;
     refractiveFactor = clamp(refractiveFactor, 0.4, 0.9);
     

@@ -27,7 +27,7 @@ public:
 
     //changes the camera so that it becomes a mirror image of itself, with
     //the mirror plane being the water
-    void mirrorForWater();
+    void mirrorForWater(float waterHeight);
 
     Vector3f* getFadePosition1();
 

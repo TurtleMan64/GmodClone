@@ -8,3 +8,5 @@ res/Models/Map7/Blank.shadow # Shadow Map
 1 0 1                        # Camera Direction
 90                           # Round Time Duration (seconds)
 
+# Water
+18      0 -4.92764 0     297 40 297         0        0 0.1 0.8    0.3

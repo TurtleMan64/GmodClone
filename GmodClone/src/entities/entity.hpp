@@ -31,6 +31,7 @@ class AnimatedModel;
 #define ENTITY_WIN_ZONE 15
 #define ENTITY_FALL_BLOCK 16
 #define ENTITY_COLLISION_BLOCK_2 17
+#define ENTITY_WATER_BLOCK 18
 
 #define WEAPON_FIST 0
 #define WEAPON_BAT 1

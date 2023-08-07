@@ -116,8 +116,6 @@ public:
     static Light* lights[4];
     static Vector3f skyColor;
 
-    static Vector3f waterColor;
-    static float waterHeight;
     static WaterRenderer* gameWaterRenderer;
     static WaterFrameBuffers* gameWaterFBOs;
     static std::vector<WaterTile*> gameWaterTiles;

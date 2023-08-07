@@ -25,7 +25,7 @@ private:
     WaterShader* shader = nullptr;
     WaterFrameBuffers* fbos = nullptr;
 
-    void prepareRender(Camera* camera, Light* sun);
+    void prepareRender(WaterTile* tile, Camera* camera, Light* sun);
 
     void unbind();
 
@@ -36,7 +36,7 @@ public:
 
     WaterRenderer(WaterShader* shader, Matrix4f* projectionMatrix, WaterFrameBuffers* fbos);
 
-    void render(std::vector<WaterTile*>* water, Camera* camera, Light* sun);
+    void render(WaterTile* tile, Camera* camera, Light* sun);
 
     void updateProjectionMatrix(Matrix4f* projectionMatrix);
 };

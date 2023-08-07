@@ -1,14 +1,17 @@
 #ifndef WATERTILE_H
 #define WATERTILE_H
 
+#include "../toolbox/vector.hpp"
+
 class WaterTile
 {
 public:
-    float centerX;
-    float centerZ;
+    Vector3f pos;
+    Vector3f scale;
+    float rotY;
+    Vector3f color;
+    float murkiness;
 
-    static constexpr float TILE_SIZE = 30.0f;
-
-    WaterTile(float centerX, float centerZ);
+    WaterTile(Vector3f pos, Vector3f scale, float rotY, Vector3f color, float murkiness);
 };
 #endif

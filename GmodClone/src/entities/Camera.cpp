@@ -18,7 +18,7 @@ Camera::Camera()
     up.set(0, 1, 0);
 }
 
-void Camera::mirrorForWater()
+void Camera::mirrorForWater(float waterHeight)
 {
     Vector3f waterNormal(0, 1, 0);
     Vector3f view = target - eye;
@@ -27,7 +27,7 @@ void Camera::mirrorForWater()
     newUp.inv();
     up = newUp;
 
-    float yDiff = eye.y - Global::waterHeight;
+    float yDiff = eye.y - waterHeight;
     eye.y -= yDiff*2;
     target = eye+view;
 }
