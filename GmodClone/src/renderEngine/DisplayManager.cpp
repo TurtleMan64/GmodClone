@@ -13,6 +13,7 @@
 #include "../main/main.hpp"
 #include "../toolbox/split.hpp"
 #include "../toolbox/getline.hpp"
+#include "../water/waterframebuffers.hpp"
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void window_close_callback(GLFWwindow* window);
@@ -150,7 +151,7 @@ int createDisplay()
    // printf("data = %d\n", dataas);
 
     glfwSwapInterval(1); //1 = vsync. 0 = off. 2 = half monitor refresh rate
-    glEnable(GL_MULTISAMPLE);
+    //glEnable(GL_MULTISAMPLE);
 
     //int windowSamples;
     //glGetIntegerv(GL_MAX_SAMPLES, &windowSamples);
@@ -228,7 +229,7 @@ void framebuffer_size_callback(GLFWwindow* /*windowHandle*/, int width, int heig
     glViewport(0, 0, width, height);
     SCR_WIDTH = width;
     SCR_HEIGHT = height;
-    //Global::displaySizeChanged = 2; too hard, memory leaks
+    Global::windowSizeChanged = true;
     Master_makeProjectionMatrix();
 }
 

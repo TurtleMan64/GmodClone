@@ -21,7 +21,7 @@
 #include "../toolbox/maths.hpp"
 #include "../models/models.hpp"
 
-int ObjLoader::ObjLoader::loadModel(Model* models, std::string filePath, std::string fileName)
+int ObjLoader::loadModel(Model* models, std::string filePath, std::string fileName)
 {
     int attemptBinaryOBJ = loadBinaryModel(models, filePath, fileName+".binobj");
 
@@ -614,19 +614,20 @@ void ObjLoader::parseMtl(std::string filePath, std::string fileName, std::unorde
 
     //default values
     std::string currentMaterialName = "DefaultMtl";
-    float currentShineDamperValue = 20.0f;
-    float currentReflectivityValue = 0.0f;
-    float currentTransparencyValue = 1.0f;
-    float currentFakeLightingValue = 1.0f;
-    float currentGlowAmountValue = 0.0f;
-    float currentNoiseValue = 1.0f;
-    float currentScrollXValue = 0.0f;
-    float currentScrollYValue = 0.0f;
-    int   currentNumImages = 1;
-    float currentAnimSpeed = 0.0f;
-    int   currentMixingType = 1;
-    float currentFogScale = 1.0f;
-    int   currentRenderOrder = 0;
+    float  currentShineDamperValue = 20.0f;
+    float  currentReflectivityValue = 0.0f;
+    float  currentTransparencyValue = 1.0f;
+    float  currentFakeLightingValue = 1.0f;
+    float  currentGlowAmountValue = 0.0f;
+    float  currentNoiseValue = 1.0f;
+    float  currentScrollXValue = 0.0f;
+    float  currentScrollYValue = 0.0f;
+    int    currentNumImages = 1;
+    float  currentAnimSpeed = 0.0f;
+    int    currentMixingType = 1;
+    float  currentFogScale = 1.0f;
+    int    currentRenderOrder = 0;
+    GLuint currentLightMap = GL_NONE;
 
     while (!file.eof())
     {
@@ -656,6 +657,14 @@ void ObjLoader::parseMtl(std::string filePath, std::string fileName, std::unorde
                 currentMixingType = 1;
                 currentFogScale = 1.0f;
                 currentRenderOrder = 0;
+                currentLightMap = GL_NONE;
+            }
+            else if (strcmp(lineSplit[0], "\tmap_Ka") == 0 || strcmp(lineSplit[0], "map_Ka") == 0) // Lightmap
+            {
+                std::string imageFilenameString = filePath + lineSplit[1];
+                char* fname = (char*)imageFilenameString.c_str();
+
+                currentLightMap = Loader::loadTextureNoMipmap(fname);
             }
             else if (strcmp(lineSplit[0], "\tmap_Kd") == 0 || strcmp(lineSplit[0], "map_Kd") == 0) //end of material found, generate it with all its attrributes
             {
@@ -701,6 +710,7 @@ void ObjLoader::parseMtl(std::string filePath, std::string fileName, std::unorde
                 ModelTexture newTexture(&textureIds);
 
                 newTexture.normalMapId = normalMapId;
+                newTexture.lightMapId = currentLightMap;
                 newTexture.shineDamper = currentShineDamperValue;
                 newTexture.reflectivity = currentReflectivityValue;
                 newTexture.hasTransparency = true;
@@ -1150,6 +1160,183 @@ int ObjLoader::loadBinaryModelWithMTL(Model* model, std::string filePath, std::s
     return 0;
 }
 
+int ObjLoader::loadLightModel(LightModel* model, std::string filePath, std::string fileName)
+{
+    if (model->isLoaded())
+    {
+        return 1;
+    }
+
+    std::ifstream file(Global::pathToEXE + filePath + fileName);
+    if (!file.is_open())
+    {
+        //std::fprintf(stdout, "Error: Cannot load file '%s'\n", (filePath + fileName).c_str());
+        file.close();
+        return -1;
+    }
+
+    std::string line;
+
+    //std::string lightmapName = "";
+    std::vector<Vertex*> vertices;
+    std::vector<Vector2f> uvDiffuse;
+    std::vector<Vector2f> uvLight;
+    std::vector<Vector3f> normals;
+    std::vector<int> indices;
+
+    std::unordered_map<std::string, ModelTexture> mtlMap;
+
+    std::vector<RawModel> rawModelsList;
+    std::vector<ModelTexture> modelTextures;
+
+    //int foundFaces = 0;
+
+    //getlineSafe(file, line);
+    //std::vector<std::string> tok = split(line, ' ');
+    //lightmapName = tok[1];
+
+    getlineSafe(file, line);
+    std::vector<std::string> tok = split(line, ' ');
+    std::string mtllibName = tok[1];
+    parseMtl(filePath, mtllibName, &mtlMap);
+
+    getlineSafe(file, line);
+    tok = split(line, ' ');
+    int numModels = std::stoi(tok[1]);
+
+    getlineSafe(file, line);
+
+    int numTokens = 0;
+    char** tokens = nullptr;
+    char* buf = new char[10000000]; INCR_NEW("char*");
+
+    for (int m = 0; m < numModels; m++)
+    {
+        // Material name
+        getlineSafe(file, line);
+        memcpy(buf, line.c_str(), line.size() + 1);
+        tokens = split(buf, ' ', &numTokens);
+        std::string materialName = tokens[1];
+        free(tokens);
+
+        // Vertex positions
+        getlineSafe(file, line);
+        memcpy(buf, line.c_str(), line.size() + 1);
+        tokens = split(buf, ' ', &numTokens);
+        for (int i = 1; i < numTokens; i += 3)
+        {
+            Vector3f vertex(
+                std::stof(tokens[i+0], nullptr) * 1.0f,
+                std::stof(tokens[i+1], nullptr) * 1.0f,
+                std::stof(tokens[i+2], nullptr) * 1.0f);
+
+            Vertex* newVertex = new Vertex((int)vertices.size(), &vertex); INCR_NEW("Vertex");
+            vertices.push_back(newVertex);
+        }
+        free(tokens);
+
+        // Normals
+        getlineSafe(file, line);
+        memcpy(buf, line.c_str(), line.size() + 1);
+        tokens = split(buf, ' ', &numTokens);
+        for (int i = 1; i < numTokens; i += 3)
+        {
+            Vector3f norm(
+                std::stof(tokens[i + 0], nullptr),
+                std::stof(tokens[i + 1], nullptr),
+                std::stof(tokens[i + 2], nullptr));
+
+            normals.push_back(norm);
+        }
+        free(tokens);
+
+        // UV Diffuse
+        getlineSafe(file, line);
+        memcpy(buf, line.c_str(), line.size() + 1);
+        tokens = split(buf, ' ', &numTokens);
+        for (int i = 1; i < numTokens; i += 2)
+        {
+            Vector2f uv(
+                std::stof(tokens[i + 0], nullptr),
+                std::stof(tokens[i + 1], nullptr));
+
+            uvDiffuse.push_back(uv);
+        }
+        free(tokens);
+
+        // UV Light
+        getlineSafe(file, line);
+        memcpy(buf, line.c_str(), line.size() + 1);
+        tokens = split(buf, ' ', &numTokens);
+        for (int i = 1; i < numTokens; i += 2)
+        {
+            Vector2f uv(
+                std::stof(tokens[i + 0], nullptr),
+                std::stof(tokens[i + 1], nullptr));
+
+            uvLight.push_back(uv);
+        }
+        free(tokens);
+
+        // Indices
+        getlineSafe(file, line);
+        memcpy(buf, line.c_str(), line.size() + 1);
+        tokens = split(buf, ' ', &numTokens);
+        for (int i = 1; i < numTokens; i+=9)
+        {
+            Vertex* v0 = processVertexBinary(std::stoi(tokens[i + 0]) + 1, std::stoi(tokens[i + 2]) + 1, std::stoi(tokens[i + 1]) + 1, &vertices, &indices);
+            Vertex* v1 = processVertexBinary(std::stoi(tokens[i + 3]) + 1, std::stoi(tokens[i + 5]) + 1, std::stoi(tokens[i + 4]) + 1, &vertices, &indices);
+            Vertex* v2 = processVertexBinary(std::stoi(tokens[i + 6]) + 1, std::stoi(tokens[i + 8]) + 1, std::stoi(tokens[i + 7]) + 1, &vertices, &indices);
+
+            calculateTangents(v0, v1, v2, &uvDiffuse);
+        }
+        free(tokens);
+
+        getlineSafe(file, line);
+
+        modelTextures.push_back(mtlMap[materialName]);
+
+        //save the model we've been building so far...
+        removeUnusedVertices(&vertices);
+        std::vector<float> verticesArray;
+        std::vector<float> uvDiffuseArray;
+        std::vector<float> uvLightArray;
+        std::vector<float> normalsArray;
+        std::vector<float> colorsArray;
+        std::vector<float> tangentsArray;
+
+        convertDataWithLightToArrays(&vertices, &uvDiffuse, &uvLight, &normals, &verticesArray, &uvDiffuseArray, &uvLightArray, &normalsArray, &colorsArray, &tangentsArray);
+        rawModelsList.push_back(Loader::loadToVAO(&verticesArray, &uvDiffuseArray, &uvLightArray, &normalsArray, &colorsArray, &tangentsArray, &indices));
+
+        indices.clear();
+        vertices.clear();
+        uvDiffuse.clear();
+        uvLight.clear();
+        normals.clear();
+        indices.clear();
+    }
+
+    file.close();
+
+    //go through rawModelsList and modelTextures to construct and add to the given TexturedModel list
+    for (unsigned int i = 0; i < rawModelsList.size(); i++)
+    {
+        TexturedModel* tm = new TexturedModel(&rawModelsList[i], &modelTextures[i]); INCR_NEW("TexturedModel");
+        model->addTexturedModel(tm);
+    }
+
+    for (auto vertex : vertices)
+    {
+        delete vertex; INCR_DEL("Vertex");
+    }
+
+    deleteUnusedMtl(&mtlMap, &modelTextures);
+    modelTextures.clear();
+    mtlMap.clear();
+
+    return 0;
+}
+
 Vertex* ObjLoader::processVertex(char** vertex,
     std::vector<Vertex*>* vertices,
     std::vector<int>* indices)
@@ -1271,6 +1458,46 @@ void ObjLoader::convertDataToArrays(
         verticesArray->push_back(position->z);
         texturesArray->push_back(textureCoord->x);
         texturesArray->push_back(1 - textureCoord->y);
+        normalsArray->push_back(normalVector->x);
+        normalsArray->push_back(normalVector->y);
+        normalsArray->push_back(normalVector->z);
+        colorsArray->push_back(currentVertex->color.x);
+        colorsArray->push_back(currentVertex->color.y);
+        colorsArray->push_back(currentVertex->color.z);
+        colorsArray->push_back(currentVertex->color.w);
+        tangentsArray->push_back(tangent->x);
+        tangentsArray->push_back(tangent->y);
+        tangentsArray->push_back(tangent->z);
+    }
+}
+
+
+void ObjLoader::convertDataWithLightToArrays(
+    std::vector<Vertex*>* vertices,
+    std::vector<Vector2f>* uvDiffuse,
+    std::vector<Vector2f>* uvLight,
+    std::vector<Vector3f>* normals,
+    std::vector<float>* verticesArray,
+    std::vector<float>* uvDiffuseArray,
+    std::vector<float>* uvLightArray,
+    std::vector<float>* normalsArray,
+    std::vector<float>* colorsArray,
+    std::vector<float>* tangentsArray)
+{
+    for (auto currentVertex : (*vertices))
+    {
+        Vector3f* position = currentVertex->getPosition();
+        Vector2f* textureCoordDiffuse = &(*uvDiffuse)[currentVertex->getTextureIndex()];
+        Vector2f* textureCoordLight = &(*uvLight)[currentVertex->getTextureIndex()];
+        Vector3f* normalVector = &(*normals)[currentVertex->getNormalIndex()];
+        Vector3f* tangent = &currentVertex->averagedTangent;
+        verticesArray->push_back(position->x);
+        verticesArray->push_back(position->y);
+        verticesArray->push_back(position->z);
+        uvDiffuseArray->push_back(textureCoordDiffuse->x);
+        uvDiffuseArray->push_back(1 - textureCoordDiffuse->y);
+        uvLightArray->push_back(textureCoordLight->x);
+        uvLightArray->push_back(1 - textureCoordLight->y);
         normalsArray->push_back(normalVector->x);
         normalsArray->push_back(normalVector->y);
         normalsArray->push_back(normalVector->z);

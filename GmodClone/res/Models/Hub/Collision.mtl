@@ -1,21 +1,93 @@
-# Material Count: 3
+# Blender 3.6.1 MTL File: 'Hub2.blend'
+# www.blender.org
 
-newmtl None_BedDudleyTex0.png
-Ns 20.000000
+newmtl Aqua
+Ns 19.999990
+Ka 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
 Ni 0.000000
 d 1.000000
+illum 1
+map_Kd ../../Images/SharedTextures/Tile/Tile_Aqua.png
+
+newmtl Bed
+Ns 19.999990
+Ka 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 0.000000
+d 1.000000
+illum 1
 map_Kd BedDudleyTex0.png
 
-newmtl None_Tile.png_Tile_N.png
-Ns 20.000000
+newmtl Black
+Ns 19.999990
+Ka 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
 Ni 0.000000
 d 1.000000
-map_Kd ./../Images/SharedTextures\Tile\Tile_N.png
+illum 1
+map_Kd ../../Images/SharedTextures/Tile/Tile_Black.png
 
-newmtl None
-Ns 20.000000
+newmtl Blue
+Ns 19.999990
+Ka 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
 Ni 0.000000
+d 1.000000
+illum 1
+map_Kd ../../Images/SharedTextures/Tile/Tile_Blue.png
+
+newmtl Green
+Ns 19.999990
+Ka 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 0.000000
+d 1.000000
+illum 1
+map_Kd ../../Images/SharedTextures/Tile/Tile_Green.png
+
+newmtl Orange
+Ns 19.999990
+Ka 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 0.000000
+d 1.000000
+illum 1
+map_Kd ../../Images/SharedTextures/Tile/Tile_Orange.png
+
+newmtl Red
+Ns 19.999990
+Ka 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 0.000000
+d 1.000000
+illum 1
+map_Kd ../../Images/SharedTextures/Tile/Tile_Red.png
+
+newmtl Rubber
+Ns 19.999990
+Ka 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 0.000000
+d 1.000000
 type bounce
-d 1.000000
-map_Kd ./../Images/SharedTextures\Rubber_N.png
+illum 1
+map_Kd ../../Images/SharedTextures/Rubber.png
 
+newmtl Yellow
+Ns 19.999990
+Ka 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 0.000000
+d 1.000000
+illum 1
+map_Kd ../../Images/SharedTextures/Tile/Tile_Yellow.png

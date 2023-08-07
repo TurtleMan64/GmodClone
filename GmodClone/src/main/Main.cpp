@@ -76,6 +76,10 @@
 #include "../entities/onlineplayer.hpp"
 #include "../entities/fallblock.hpp"
 #include "../entities/collisionblock2.hpp"
+#include "../water/waterframebuffers.hpp"
+#include "../water/watertile.hpp"
+#include "../water/waterrenderer.hpp"
+#include "../water/watershader.hpp"
 
 Message::Message(const Message &other)
 {
@@ -117,11 +121,17 @@ double timeNew = 0;
 Camera* Global::gameCamera   = nullptr;
 Player* Global::player       = nullptr;
 
-Model Global::stageModel;
-Dummy* Global::stageEntity  = nullptr;
+LightModel Global::stageLightModel;
+//Dummy* Global::stageEntity  = nullptr;
 
 Light* Global::lights[4] = {nullptr, nullptr, nullptr, nullptr};
 Vector3f Global::skyColor(1, 1, 1);
+
+Vector3f Global::waterColor(0, 0.25f, 1.0f);
+float Global::waterHeight = -7.1f;
+WaterRenderer* Global::gameWaterRenderer = nullptr;
+WaterFrameBuffers* Global::gameWaterFBOs = nullptr;
+std::vector<WaterTile*> Global::gameWaterTiles;
 
 FontType* Global::fontConsolas = nullptr;
 
@@ -132,6 +142,8 @@ bool Global::framerateUnlock = false;
 bool Global::camThirdPerson = true;
 
 bool Global::useFullscreen = false;
+
+bool Global::windowSizeChanged = false;
 
 extern unsigned int SCR_WIDTH;
 extern unsigned int SCR_HEIGHT;
@@ -284,6 +296,27 @@ int main(int argc, char** argv)
     //Global::lightMap = Loader::loadTexture3D("res/Images/3dtest/Out");
     Global::lightMap = Loader::loadTextureShadowMap("res/Models/Map8/Map8.shadow");
 
+    Global::gameWaterFBOs = new WaterFrameBuffers; INCR_NEW("WaterFrameBuffers");
+    WaterShader* waterShader = new WaterShader; INCR_NEW("WaterShader");
+    Global::gameWaterRenderer = new WaterRenderer(waterShader, Master_getProjectionMatrix(), Global::gameWaterFBOs); INCR_NEW("WaterRenderer");
+
+    //if (Global::useHighQualityWater)
+    {
+        for (WaterTile* tile : Global::gameWaterTiles)
+        {
+            delete tile; INCR_DEL("WaterTile");
+        }
+        Global::gameWaterTiles.clear();
+
+        for (int r = -1; r <= 2; r++)
+        {
+            for (int c = -1; c <= 2; c++)
+            {
+                Global::gameWaterTiles.push_back(new WaterTile(r * WaterTile::TILE_SIZE * 2 - WaterTile::TILE_SIZE, c * WaterTile::TILE_SIZE * 2 - WaterTile::TILE_SIZE)); INCR_NEW("WaterTile");
+            }
+        }
+    }
+
     long long secSinceEpoch = std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now().time_since_epoch()).count();
 
     glfwSetTime(0);
@@ -295,9 +328,11 @@ int main(int argc, char** argv)
 
     Global::gameState = GAME_STATE_RUNNING;
 
-    Global::stageEntity = new Dummy(&Global::stageModel); INCR_NEW("Entity");
+    //Global::stageEntity = new Dummy(&Global::stageModel); INCR_NEW("Entity");
 
-    LevelLoader::loadLevel("test");
+    //ObjLoader::loadLightModel(&Global::stageLightModel, "res/Models/WaterworldRemaster/", "WaterworldRemaster.lightmesh");
+
+    LevelLoader::loadLevel("hub");
 
     GUIText* fpsText = new GUIText("0", 0.02f, Global::fontConsolas, 1.0f, 0.0f, 2, true); INCR_NEW("GUIText");
 
@@ -428,6 +463,14 @@ int main(int argc, char** argv)
             }
         }
 
+        if (Global::windowSizeChanged)
+        {
+            Global::windowSizeChanged = false;
+
+            Global::gameWaterFBOs->cleanUp();
+            Global::gameWaterFBOs->init();
+        }
+
         Input::pollInputs();
 
         frameCount++;
@@ -503,8 +546,7 @@ int main(int argc, char** argv)
                 }
 
                 std::vector<Entity*> collisionBlocks;
-                std::vector<Entity*> balls;
-
+                std::vector<Ball*> balls;
 
                 for (Entity* e : Global::gameEntities)
                 {
@@ -514,7 +556,7 @@ int main(int argc, char** argv)
                     }
                     else if (e->getEntityType() == ENTITY_BALL)
                     {
-                        balls.push_back(e);
+                        balls.push_back((Ball*)e);
                         e->step();
                     }
                     else
@@ -528,9 +570,15 @@ int main(int argc, char** argv)
                     e->step();
                 }
 
-                for (Entity* e : balls)
+                for (Ball* ball : balls)
                 {
-                    ((Ball*)e)->movingBlocksAreDone();
+                    ball->movingBlocksAreDone();
+                    ball->ballsCollidedWith.clear();
+                }
+
+                for (Ball* ball : balls)
+                {
+                    ball->bounceOffOtherBalls(&balls);
                 }
 
                 Global::gameOnlinePlayersSharedMutex.lock_shared();
@@ -614,9 +662,46 @@ int main(int argc, char** argv)
         Global::gameOnlinePlayersSharedMutex.unlock_shared();
 
         Master_processEntity(Global::player);
-        Master_processEntity(Global::stageEntity);
+        //Master_processEntity(Global::stageEntity);
 
         Master_render(&cam, 0, 0, 0, 0, 0.0f);
+
+        {
+            glDisable(GL_MULTISAMPLE);
+            bool aboveWater = (cam.eye.y > Global::waterHeight);
+        
+            const float offsetWater = 0.06f;
+        
+            //reflection render
+            Global::gameWaterFBOs->bindReflectionFrameBuffer();
+            cam.mirrorForWater();
+            if (aboveWater)
+            {
+                Master_render(&cam, 0, 1, 0, offsetWater - Global::waterHeight, 0.1f);
+            }
+            else
+            {
+                Master_render(&cam, 0, -1, 0, offsetWater + Global::waterHeight, 0.1f);
+            }
+            cam.mirrorForWater();
+            Global::gameWaterFBOs->unbindCurrentFrameBuffer();
+        
+            //refraction render
+            Global::gameWaterFBOs->bindRefractionFrameBuffer();
+            if (aboveWater)
+            {
+                Master_render(&cam, 0, -1, 0, offsetWater + Global::waterHeight, 0.1f);
+            }
+            else
+            {
+                Master_render(&cam, 0, 1, 0, offsetWater - Global::waterHeight, 0.1f);
+            }
+            Global::gameWaterFBOs->unbindCurrentFrameBuffer();
+
+            Global::gameWaterRenderer->render(&Global::gameWaterTiles, &cam, nullptr);
+
+            glEnable(GL_MULTISAMPLE);
+        }
 
         Master_clearAllEntities();
 
@@ -2015,6 +2100,7 @@ bool Global::levelHasRopes()
         case LVL_TEST:
         case LVL_EQ:
         case LVL_MAP9:
+        case LVL_WATER:
             return true;
 
         default:

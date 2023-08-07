@@ -1,0 +1,73 @@
+# Material Count: 11
+
+newmtl None_Grass.jpg_Fence.png
+Ns 20.000000
+Ni 0.3
+Tr 0
+renderOrder 2
+d 1.000000
+map_Kd ../../Images/SharedTextures/Fence.png
+
+newmtl None_Tile_Black.png.001
+Ns 20
+Ni 0.3
+d 1
+map_Kd ../../Images/SharedTextures/Tile/Tile_Black.png
+
+newmtl None_Tile_Orange.png
+Ns 20.000000
+Ni 0.000000
+glow 1
+type nohook
+d 1.000000
+map_Kd White.png
+
+newmtl None_Tile_Blue.png.001
+Ns 20
+Ni 0.3
+d 1
+map_Kd ../../Images/SharedTextures/Tile/Tile_Blue.png
+
+newmtl None_Tile_Green.png.001
+Ns 20
+Ni 0.3
+d 1
+map_Kd ../../Images/SharedTextures/Tile/Tile_Green.png
+
+newmtl None_Tile_Orange.png.001
+Ns 20
+Ni 0.3
+d 1
+map_Kd ../../Images/SharedTextures/Tile/Tile_Orange.png
+
+newmtl None_Tile_Yellow.png.001
+Ns 20
+Ni 0.3
+d 1
+map_Kd ../../Images/SharedTextures/Tile/Tile_Yellow.png
+
+newmtl None_Grass.jpg
+Ns 20
+Ni 0.0
+sound grass
+d 1
+map_Kd Grass.jpg
+
+newmtl None.001
+Ns 20
+Ni 0.3
+d 1
+map_Kd ../../Images/SharedTextures/Tile/Tile_Red.png
+
+newmtl None_Rubber.png.001
+Ns 20
+Ni 0.3
+type bounce
+d 1
+map_Kd ../../Images/SharedTextures/Rubber.png
+
+newmtl None_Tile_Aqua.png.001
+Ns 20
+Ni 0.3
+d 1
+map_Kd ../../Images/SharedTextures/Tile/Tile_Aqua.png

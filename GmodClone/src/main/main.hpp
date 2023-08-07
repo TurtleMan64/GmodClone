@@ -12,6 +12,9 @@ class TcpClient;
 class Dummy;
 class TexturedModel;
 class GUIText;
+class WaterRenderer;
+class WaterFrameBuffers;
+class WaterTile;
 
 #include <string>
 #include <random>
@@ -79,6 +82,7 @@ public:
 #define LVL_MAP8  10
 #define LVL_MAP9  11
 #define LVL_MAP10 12
+#define LVL_WATER 13
 
 class Global
 {
@@ -107,11 +111,16 @@ public:
     static Camera* gameCamera;
     static Player* player;
 
-    static Model stageModel;
-    static Dummy* stageEntity;
+    static LightModel stageLightModel;
 
     static Light* lights[4];
     static Vector3f skyColor;
+
+    static Vector3f waterColor;
+    static float waterHeight;
+    static WaterRenderer* gameWaterRenderer;
+    static WaterFrameBuffers* gameWaterFBOs;
+    static std::vector<WaterTile*> gameWaterTiles;
 
     static FontType* fontConsolas;
     static int countNew;
@@ -124,6 +133,8 @@ public:
     static int renderCount;
     static float fpsLimit; //experiment to try to busy wait to maintain a target fps
     static bool useFullscreen;
+
+    static bool windowSizeChanged;
 
     static bool renderParticles;
 

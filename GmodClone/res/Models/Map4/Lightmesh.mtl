@@ -1,0 +1,5 @@
+newmtl Rock1
+Ni 0.15
+map_Ka light_diffuse.png
+map_Kd ../../Images/SharedTextures/Rock/Rock1.png ../../Images/SharedTextures/Rock/Rock1_N.png
+

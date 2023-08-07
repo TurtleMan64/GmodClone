@@ -70,6 +70,32 @@ RawModel Loader::loadToVAO(std::vector<float>* positions,
     return RawModel(vaoId, (int)indicies->size(), &vboIds);
 }
 
+
+//for 3d models with normal maps //NORMAL_
+RawModel Loader::loadToVAO(std::vector<float>* positions,
+    std::vector<float>* textureCoordsDiffuse,
+    std::vector<float>* textureCoordsLight,
+    std::vector<float>* normals,
+    std::vector<float>* vertexColors,
+    std::vector<float>* tangents,
+    std::vector<int>* indicies)
+{
+    GLuint vaoId = createVAO();
+    std::vector<GLuint> vboIds;
+
+    vboIds.push_back(bindIndiciesBuffer(indicies));
+    vboIds.push_back(storeDataInAttributeList(0, 3, positions));
+    vboIds.push_back(storeDataInAttributeList(1, 2, textureCoordsDiffuse));
+    vboIds.push_back(storeDataInAttributeList(2, 3, normals));
+    vboIds.push_back(storeDataInAttributeList(3, 4, vertexColors));
+    vboIds.push_back(storeDataInAttributeList(4, 3, tangents));
+    vboIds.push_back(storeDataInAttributeList(5, 2, textureCoordsLight));
+
+    unbindVAO();
+
+    return RawModel(vaoId, (int)indicies->size(), &vboIds);
+}
+
 //for text
 std::vector<int> Loader::loadToVAO(std::vector<float>* positions, std::vector<float>* textureCoords)
 {
@@ -256,6 +282,56 @@ GLuint Loader::loadTextureNoInterpolation(const char* fileName)
     return textureId;
 }
 
+GLuint Loader::loadTextureNoMipmap(const char* fileName)
+{
+    if (Loader::textures.find(fileName) != Loader::textures.end())
+    {
+        //texture is already loaded, return the GLuint
+        TextureEntry* entry = &Loader::textures[fileName];
+        entry->count = entry->count + 1;
+        return entry->id;
+    }
+
+    int width, height, channels;
+    unsigned char* image = SOIL_load_image((Global::pathToEXE + fileName).c_str(), &width, &height, &channels, SOIL_LOAD_RGB);
+
+    if (image == nullptr)
+    {
+        const char* err = SOIL_last_result();
+        std::fprintf(stdout, "Error loading image '%s', because '%s'\n", (Global::pathToEXE + fileName).c_str(), err);
+        return GL_NONE;
+    }
+
+    GLuint textureId = 0;
+    glGenTextures(1, &textureId);
+
+    TextureEntry entry;
+    entry.count = 1;
+    entry.id = textureId;
+    textures[fileName] = entry;
+    Loader::texIdToFilename[textureId] = fileName;
+
+    glBindTexture(GL_TEXTURE_2D, textureId);
+
+    //Texture wrapping
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+    //Texel interpolation
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+    //create
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
+
+    SOIL_free_image_data(image);
+
+    glBindTexture(GL_TEXTURE_2D, 0);
+
+
+    return textureId;
+}
+
 GLuint Loader::loadTexture3D(const char* filename)
 {
     std::vector<unsigned char> bytes;
@@ -400,6 +476,44 @@ GLuint Loader::loadTextureShadowMap(const char* filename)
     //glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_LOD_BIAS, -0.4f);
 
     glBindTexture(GL_TEXTURE_2D, 0);
+
+    return textureId;
+}
+
+GLuint Loader::loadCubeMap(std::vector<std::string> filenames)
+{
+    GLuint textureId = 0;
+    glGenTextures(1, &textureId);
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_CUBE_MAP, textureId);
+
+    int side = GL_TEXTURE_CUBE_MAP_POSITIVE_X;
+
+    for (std::string fname : filenames)
+    {
+        int width, height, channels;
+        unsigned char* image = SOIL_load_image((Global::pathToEXE + fname).c_str(), &width, &height, &channels, SOIL_LOAD_RGB);
+
+        if (image == nullptr)
+        {
+            const char* err = SOIL_last_result();
+            std::fprintf(stdout, "Error loading image '%s', because '%s'\n", (Global::pathToEXE + fname).c_str(), err);
+            return GL_NONE;
+        }
+
+        glTexImage2D(side, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
+        side++;
+
+        SOIL_free_image_data(image);
+    }
+
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+    glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
 
     return textureId;
 }

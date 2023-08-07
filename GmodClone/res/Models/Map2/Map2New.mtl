@@ -1,0 +1,44 @@
+# Material Count: 7
+
+newmtl None_bushsky.png_TexturesCom_OrnamentBorder0093_1_seamless_.000
+Ns 20.000000
+Ni 0.3
+d 1.000000
+map_Kd CrownMolding.jpg
+
+newmtl None_TexturesCom_Wood_WallTrim_1K_.png
+Ns 20.000000
+Ni 0.4
+d 1.000000
+map_Kd WoodTrim.png
+
+newmtl None_WallTiles.png
+Ns 20.000000
+Ni 0.4
+d 1.000000
+map_Kd WallTiles.png
+
+newmtl None_bushsky.png_TexturesCom_OrnamentBorder0093_1_seamless_S.jp
+Ns 20.000000
+Ni 0.1
+d 1.000000
+map_Kd Wallpaper.jpg
+
+newmtl None_grass.png
+Ns 20.000000
+Ni 0.4
+d 1.000000
+map_Kd Marble.png
+
+newmtl None_sky.png
+Ns 20.000000
+Ni 0.1
+d 1.000000
+map_Kd Ceiling.jpg
+
+newmtl None
+Ns 20.000000
+Ni 0.000000
+d 1.000000
+map_Kd Tex_0006_0.png
+

@@ -23,7 +23,7 @@ uniform float useFakeLighting;
 uniform float texOffX;
 uniform float texOffY;
 
-//uniform vec4 clipPlane;
+uniform vec4 clipPlane;
 uniform vec4 clipPlaneBehind;
 
 void main(void)
@@ -31,7 +31,8 @@ void main(void)
 	vec4 worldPosition = transformationMatrix * vec4(position, 1.0);
     pass_worldCoords = worldPosition;
     
-    gl_ClipDistance[0] = dot(worldPosition, clipPlaneBehind);
+    gl_ClipDistance[0] = dot(worldPosition, clipPlane);
+	gl_ClipDistance[1] = dot(worldPosition, clipPlaneBehind);
     
     mat4 modelViewMatrix = viewMatrix * transformationMatrix;
 	vec4 positionRelativeToCam = modelViewMatrix * vec4(position, 1.0);

@@ -21,6 +21,7 @@ private:
 
 public:
     GLuint normalMapId = GL_NONE;
+    GLuint lightMapId = GL_NONE;
     float shineDamper = 20.0f;
     float reflectivity = 0.0f;
     float scrollX = 0.0f;

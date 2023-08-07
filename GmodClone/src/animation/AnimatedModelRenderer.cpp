@@ -20,7 +20,7 @@ AnimatedModelRenderer::AnimatedModelRenderer()
     shader = new AnimatedModelShader(); INCR_NEW("AnimatedModelShader");
 }
 
-void AnimatedModelRenderer::render(std::unordered_map<AnimatedModel*, std::vector<Entity*>>* animatedEntitiesMap)
+void AnimatedModelRenderer::render(std::unordered_map<AnimatedModel*, std::vector<Entity*>>* animatedEntitiesMap, float clipX, float clipY, float clipZ, float clipW)
 {
     if (animatedEntitiesMap->size() == 0)
     {
@@ -31,6 +31,9 @@ void AnimatedModelRenderer::render(std::unordered_map<AnimatedModel*, std::vecto
 
     glActiveTexture(GL_TEXTURE7);
     glBindTexture(GL_TEXTURE_2D, Global::lightMap);
+
+    Vector4f clip(clipX, clipY, clipZ, clipW);
+    shader->loadVector4(shader->location_clipPlane, &clip);
 
     for (auto entry : (*animatedEntitiesMap))
     {
@@ -92,9 +95,10 @@ void AnimatedModelRenderer::prepare()
     shader->loadFloat(shader->location_lightMapSizeY,   Global::lightMapSizeY);
     shader->loadFloat(shader->location_lightMapSizeZ,   Global::lightMapSizeZ);
 
-    glEnable(GL_MULTISAMPLE);
+    //glEnable(GL_MULTISAMPLE);
     glDisable(GL_BLEND);
     glEnable(GL_DEPTH_TEST);
+    glEnable(GL_CLIP_DISTANCE0);
 }
 
 void AnimatedModelRenderer::finish()

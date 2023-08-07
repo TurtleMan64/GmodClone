@@ -1,0 +1,116 @@
+newmtl tile_2_04
+map_Ka tile_2_04_mixed.png
+map_Kd tile_2_04.png
+
+newmtl tiles_blue
+map_Ka tiles_blue_mixed.png
+map_Kd tiles_blue.png
+
+newmtl combineglass001a
+Tr 0
+renderOrder 2
+map_Ka combineglass001a_mixed.png
+map_Kd combineglass001a.png
+
+newmtl metalgrate013b
+Tr 0
+renderOrder 1
+map_Ka metalgrate013b_mixed.png
+map_Kd metalgrate013b.png
+
+newmtl concrete_1_04
+map_Ka concrete_1_04_mixed.png
+map_Kd concrete_1_04.png
+
+newmtl tnnl_w4b
+map_Ka tnnl_w4b_mixed.png
+map_Kd tnnl_w4b.png
+
+newmtl metalrail013a
+Tr 0
+renderOrder 1
+map_Ka metalrail013a_mixed.png
+map_Kd metalrail013a.png
+
+newmtl metalbar001c
+Tr 0
+renderOrder 1
+map_Ka metalbar001c_mixed.png
+map_Kd metalbar001c.png
+
+newmtl greymetal_labwall
+map_Ka greymetal_labwall_mixed.png
+map_Kd greymetal_labwall.png
+
+newmtl plastic_yellow
+map_Ka plastic_yellow_mixed.png
+map_Kd plastic_yellow.png
+
+newmtl showerhead_decal
+map_Ka showerhead_decal_mixed.png
+map_Kd showerhead_decal.png
+
+newmtl csrev_metaltruss_ceiling_01
+map_Ka csrev_metaltruss_ceiling_01_mixed.png
+map_Kd csrev_metaltruss_ceiling_01.png
+
+newmtl sy_concrete_floor_tile_002a
+map_Ka sy_concrete_floor_tile_002a_mixed.png
+map_Kd sy_concrete_floor_tile_002a.png
+
+newmtl bricks_a
+map_Ka bricks_a_mixed.png
+map_Kd bricks_a.png
+
+newmtl ibeam_brown
+map_Ka ibeam_brown_mixed.png
+map_Kd ibeam_brown.png
+
+newmtl metalfloor005a
+map_Ka metalfloor005a_mixed.png
+map_Kd metalfloor005a.png
+
+newmtl metal2
+map_Ka metal2_mixed.png
+map_Kd metal2.png
+
+newmtl tiles_white
+map_Ka tiles_white_mixed.png
+map_Kd tiles_white.png
+
+newmtl plastic_blue
+map_Ka plastic_blue_mixed.png
+map_Kd plastic_blue.png
+
+newmtl out_wall7_a
+map_Ka out_wall7_a_mixed.png
+map_Kd out_wall7_a.png
+
+newmtl c1a4b_w3b_panel
+map_Ka c1a4b_w3b_panel_mixed.png
+map_Kd c1a4b_w3b_panel.png
+
+newmtl metal_a
+map_Ka metal_a_mixed.png
+map_Kd metal_a.png
+
+newmtl hazardstrip001a
+map_Ka hazardstrip001a_mixed.png
+map_Kd hazardstrip001a.png
+
+newmtl vent_03
+map_Ka vent_03_mixed.png
+map_Kd vent_03.png
+
+newmtl bricks_b
+map_Ka bricks_b_mixed.png
+map_Kd bricks_b.png
+
+newmtl slide_yellow
+map_Ka slide_yellow_mixed.png
+map_Kd slide_yellow.png
+
+newmtl slide_blue
+map_Ka slide_blue_mixed.png
+map_Kd slide_blue.png
+

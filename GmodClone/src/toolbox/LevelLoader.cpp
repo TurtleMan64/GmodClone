@@ -75,19 +75,20 @@ void LevelLoader::loadLevel(std::string mapName)
         return;
     }
 
-    if      (fname == "hub.map")   Global::levelId = LVL_HUB;
-    else if (fname == "map1.map")  Global::levelId = LVL_MAP1;
-    else if (fname == "map2.map")  Global::levelId = LVL_MAP2;
-    else if (fname == "map3.map")  Global::levelId = LVL_MAP3;
-    else if (fname == "eq.map")    Global::levelId = LVL_EQ;
-    else if (fname == "map4.map")  Global::levelId = LVL_MAP4;
-    else if (fname == "test.map")  Global::levelId = LVL_TEST;
-    else if (fname == "map5.map")  Global::levelId = LVL_MAP5;
-    else if (fname == "map6.map")  Global::levelId = LVL_MAP6;
-    else if (fname == "map7.map")  Global::levelId = LVL_MAP7;
-    else if (fname == "map8.map")  Global::levelId = LVL_MAP8;
-    else if (fname == "map9.map")  Global::levelId = LVL_MAP9;
-    else if (fname == "map10.map") Global::levelId = LVL_MAP10;
+    if      (fname == "hub.map")        Global::levelId = LVL_HUB;
+    else if (fname == "map1.map")       Global::levelId = LVL_MAP1;
+    else if (fname == "map2.map")       Global::levelId = LVL_MAP2;
+    else if (fname == "map3.map")       Global::levelId = LVL_MAP3;
+    else if (fname == "eq.map")         Global::levelId = LVL_EQ;
+    else if (fname == "map4.map")       Global::levelId = LVL_MAP4;
+    else if (fname == "test.map")       Global::levelId = LVL_TEST;
+    else if (fname == "map5.map")       Global::levelId = LVL_MAP5;
+    else if (fname == "map6.map")       Global::levelId = LVL_MAP6;
+    else if (fname == "map7.map")       Global::levelId = LVL_MAP7;
+    else if (fname == "map8.map")       Global::levelId = LVL_MAP8;
+    else if (fname == "map9.map")       Global::levelId = LVL_MAP9;
+    else if (fname == "map10.map")      Global::levelId = LVL_MAP10;
+    else if (fname == "waterworld.map") Global::levelId = LVL_WATER;
 
     Global::deleteAllEntites();
 
@@ -134,8 +135,10 @@ void LevelLoader::loadLevel(std::string mapName)
     std::string modelVisualLine;
     getlineSafe(file, modelVisualLine);
     std::vector<std::string> visualModel = split(modelVisualLine, ' ');
-    Global::stageModel.deleteMe();
-    ObjLoader::loadModel(&Global::stageModel, visualModel[0], visualModel[1]);
+    //Global::stageModel.deleteMe();
+    //ObjLoader::loadModel(&Global::stageModel, visualModel[0], visualModel[1]);
+    Global::stageLightModel.deleteMe();
+    ObjLoader::loadLightModel(&Global::stageLightModel, visualModel[0], visualModel[1] + ".lightmesh");
 
     std::string modelCollisionLine;
     getlineSafe(file, modelCollisionLine);

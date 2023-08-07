@@ -1,22 +1,12 @@
-# Blender MTL File: 'None'
-# Material Count: 2
+# Blender 3.6.1 MTL File: 'Map4.blend'
+# www.blender.org
 
-newmtl CA_PillarWater02_01
-Ns 20.000000
-Ka 0.000000 0.000000 0.000000
-Kd 0.640000 0.640000 0.640000
+newmtl Rock1
+Ns 19.999990
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
 Ks 0.000000 0.000000 0.000000
-Ni 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 0.100000
 d 1.000000
 illum 1
-map_Kd CA_Wall04_01.png
-
-newmtl CA_PillarWater02_01_CA_Wall02_02.png
-Ns 20.000000
-Ka 0.000000 0.000000 0.000000
-Kd 0.640000 0.640000 0.640000
-Ks 0.000000 0.000000 0.000000
-Ni 0.000000
-d 1.000000
-illum 1
-map_Kd CA_Wall04_01.png

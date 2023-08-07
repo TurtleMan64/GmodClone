@@ -16,6 +16,7 @@
 #include "../animation/animatedmodelloader.hpp"
 #include "../animation/animation.hpp"
 #include "../animation/animationloader.hpp"
+#include "../water/waterrenderer.hpp"
 
 #include <iostream>
 #include <list>
@@ -25,6 +26,8 @@
 ShaderProgram* shader = nullptr;
 EntityRenderer* renderer = nullptr;
 AnimatedModelRenderer* animatedModelRenderer = nullptr;
+StageRenderer* stageRenderer = nullptr;
+SkyboxRenderer* skyboxRenderer = nullptr;
 ShadowMapMasterRenderer* shadowMapRenderer = nullptr;
 ShadowMapMasterRenderer2* shadowMapRenderer2 = nullptr;
 
@@ -64,13 +67,14 @@ void Master_init()
 {
     shader = new ShaderProgram("res/Shaders/entity/Vertex.glsl", "res/Shaders/entity/Fragment.glsl"); INCR_NEW("ShaderProgram");
 
-    //projectionMatrix = new Matrix4f; INCR_NEW("Matrix4f");
+    projectionMatrix = new Matrix4f; INCR_NEW("Matrix4f");
 
     renderer = new EntityRenderer(shader, &projectionMatrix); INCR_NEW("EntityRenderer");
-    Master_makeProjectionMatrix();
-
     animatedModelRenderer = new AnimatedModelRenderer;
+    stageRenderer = new StageRenderer;
+    skyboxRenderer = new SkyboxRenderer;
 
+    Master_makeProjectionMatrix();
 
 
     //animatedModel = AnimatedModelLoader::loadAnimatedModel("res/Models/Human", "shrek5.mesh");
@@ -122,6 +126,16 @@ void Master_render(Camera* camera, float clipX, float clipY, float clipZ, float 
 
     Master_makeProjectionMatrix();
 
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glClearColor(1.0f, 0.0f, 1.0f, 1);
+
+    //if (clipY >= 0.0f)
+    {
+        skyboxRenderer->render(clipX, clipY, clipZ, clipW);
+    }
+
+    //glClear(GL_DEPTH_BUFFER_BIT);
+
     prepare();
     shader->start();
     shader->loadClipPlane(clipX, clipY, clipZ, clipW);
@@ -162,12 +176,13 @@ void Master_render(Camera* camera, float clipX, float clipY, float clipZ, float 
     renderer->render(&entitiesMapPass3, nullptr, nullptr);
     glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
     glBindTexture(GL_TEXTURE_2D, 0);
-    glDisable(GL_CLIP_DISTANCE0);
     shader->stop();
 
     //animatedModel->animate(animation, (float)glfwGetTime());
     //animatedModel.doAnimation(&animation, (float)glfwGetTime());
-    animatedModelRenderer->render(&animatedEntitiesMap); //idea - put this before the other entities
+    animatedModelRenderer->render(&animatedEntitiesMap, clipX, clipY, clipZ, clipW); //idea - put this before the other entities
+
+    stageRenderer->render(&Global::stageLightModel, clipX, clipY, clipZ, clipW);
 
     ANALYSIS_DONE("Master Render");
 }
@@ -253,7 +268,7 @@ void Master_clearAllEntities()
 
 void prepare()
 {
-    glEnable(GL_MULTISAMPLE);
+    //glEnable(GL_MULTISAMPLE);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
@@ -261,8 +276,8 @@ void prepare()
 
     glEnable(GL_DEPTH_TEST);
     glDepthMask(true);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    glClearColor(Global::skyColor.x, Global::skyColor.y, Global::skyColor.z, 1);
+    //glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    //glClearColor(1.0f, 0.0f, 1.0f, 1);
 
     //glActiveTexture(GL_TEXTURE5);
     //glBindTexture(GL_TEXTURE_2D, Master_getShadowMapTexture());
@@ -390,14 +405,18 @@ void Master_makeProjectionMatrix()
 
     renderer->updateProjectionMatrix(&projectionMatrix);
 
+    stageRenderer->updateProjectionMatrix(&projectionMatrix);
+
     //if (Global::renderParticles)
     {
         //ParticleMaster::updateProjectionMatrix(projectionMatrix);
     }
 
-    //if (Global::useHighQualityWater && Global::gameWaterRenderer != nullptr)
+    skyboxRenderer->updateProjectionMatrix(&projectionMatrix);
+
+    if (Global::gameWaterRenderer != nullptr)
     {
-        //Global::gameWaterRenderer->updateProjectionMatrix(projectionMatrix);
+        Global::gameWaterRenderer->updateProjectionMatrix(&projectionMatrix);
     }
 }
 

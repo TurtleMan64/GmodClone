@@ -282,7 +282,8 @@ void Input::pollInputs()
     #ifdef DEV_MODE
     if (Input::inputs.INPUT_LB && !Input::inputs.INPUT_PREVIOUS_LB)
     {
-        Ball* ball = new Ball("myball", Vector3f(Global::player->position.x, Global::player->position.y + 0.5f, Global::player->position.z), Vector3f(0, 0, 0));
+        Vector3f dir = Global::player->lookDir;
+        Ball* ball = new Ball("myball", Vector3f(Global::player->eyePosition.x + 2*dir.x, Global::player->eyePosition.y + 2*dir.y, Global::player->eyePosition.z + 2*dir.z), Vector3f(0, 0, 0));
         Global::addEntity(ball);
         printf("%f %f %f\n", Global::player->position.x, Global::player->position.y, Global::player->position.z);
         /*

@@ -1,0 +1,28 @@
+newmtl CrownMolding
+map_Ka light_mixed.png
+map_Kd CrownMolding.jpg
+
+newmtl Wallpaper
+map_Ka light_mixed.png
+map_Kd Wallpaper.jpg
+
+newmtl Tex_0006_0
+map_Ka light_mixed.png
+map_Kd Tex_0006_0.png
+
+newmtl Ceiling
+map_Ka light_mixed.png
+map_Kd Ceiling.jpg
+
+newmtl WoodTrim
+map_Ka light_mixed.png
+map_Kd WoodTrim.png
+
+newmtl WallTiles
+map_Ka light_mixed.png
+map_Kd WallTiles.png
+
+newmtl Marble
+map_Ka light_mixed.png
+map_Kd Marble.png
+

@@ -27,6 +27,7 @@ public:
     int location_lightMapSizeX;
     int location_lightMapSizeY;
     int location_lightMapSizeZ;
+    int location_clipPlane;
 
     AnimatedModelShader();
 
@@ -55,6 +56,8 @@ public:
     void loadUnsignedInt(int, unsigned int);
 
     void loadVector(int, Vector3f*);
+
+    void loadVector4(int, Vector4f*);
 
     void loadBoolean(int, bool);
 

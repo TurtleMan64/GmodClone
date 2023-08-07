@@ -1,0 +1,123 @@
+# Blender MTL File: 'None'
+# Material Count: 11
+
+newmtl Rubber
+Ns 20.000000
+Ka 0.000000 0.000000 0.000000
+Kd 0.640000 0.640000 0.640000
+Ks 0.000000 0.000000 0.000000
+Ni 0.000000
+d 1.000000
+illum 1
+map_Ka Mixed.png
+map_Kd Rubber.png
+
+newmtl Bed
+Ns 20.000000
+Ka 0.000000 0.000000 0.000000
+Kd 0.640000 0.640000 0.640000
+Ks 0.000000 0.000000 0.000000
+Ni 0.000000
+d 1.000000
+illum 1
+map_Ka Mixed.png
+map_Kd BedDudleyTex0.png
+
+newmtl Sus
+Ns 20.000000
+Ka 0.000000 0.000000 0.000000
+Kd 0.640000 0.640000 0.640000
+Ks 0.000000 0.000000 0.000000
+Ni 0.000000
+d 1.000000
+illum 1
+map_Ka Mixed.png
+map_Kd Sus.png
+
+newmtl Black
+Ns 20.000000
+Ka 0.000000 0.000000 0.000000
+Kd 0.640000 0.640000 0.640000
+Ks 0.000000 0.000000 0.000000
+Ni 0.000000
+d 1.000000
+illum 1
+map_Ka Mixed.png
+map_Kd ../../Images/SharedTextures/Tile/Tile_Black.png ../../Images/SharedTextures/Tile/Tile_N.png
+
+newmtl Aqua
+Ns 20.000000
+Ka 0.000000 0.000000 0.000000
+Kd 0.640000 0.640000 0.640000
+Ks 0.000000 0.000000 0.000000
+Ni 0.000000
+d 1.000000
+illum 1
+map_Ka Mixed.png
+map_Kd ../../Images/SharedTextures/Tile/Tile_Aqua.png ../../Images/SharedTextures/Tile/Tile_N.png
+
+newmtl Blue
+Ns 20.000000
+Ka 0.000000 0.000000 0.000000
+Kd 0.640000 0.640000 0.640000
+Ks 0.000000 0.000000 0.000000
+Ni 0.000000
+d 1.000000
+illum 1
+map_Ka Mixed.png
+map_Kd ../../Images/SharedTextures/Tile/Tile_Blue.png ../../Images/SharedTextures/Tile/Tile_N.png
+
+newmtl Green
+Ns 20.000000
+Ka 0.000000 0.000000 0.000000
+Kd 0.640000 0.640000 0.640000
+Ks 0.000000 0.000000 0.000000
+Ni 0.000000
+d 1.000000
+illum 1
+map_Ka Mixed.png
+map_Kd ../../Images/SharedTextures/Tile/Tile_Green.png ../../Images/SharedTextures/Tile/Tile_N.png
+
+newmtl Orange
+Ns 20.000000
+Ka 0.000000 0.000000 0.000000
+Kd 0.640000 0.640000 0.640000
+Ks 0.000000 0.000000 0.000000
+Ni 0.000000
+d 1.000000
+illum 1
+map_Ka Mixed.png
+map_Kd ../../Images/SharedTextures/Tile/Tile_Orange.png ../../Images/SharedTextures/Tile/Tile_N.png
+
+newmtl Red
+Ns 20.000000
+Ka 0.000000 0.000000 0.000000
+Kd 0.640000 0.640000 0.640000
+Ks 0.000000 0.000000 0.000000
+Ni 0.000000
+d 1.000000
+illum 1
+map_Ka Mixed.png
+map_Kd ../../Images/SharedTextures/Tile/Tile_Red.png ../../Images/SharedTextures/Tile/Tile_N.png
+
+newmtl Yellow
+Ns 20.000000
+Ka 0.000000 0.000000 0.000000
+Kd 0.640000 0.640000 0.640000
+Ks 0.000000 0.000000 0.000000
+Ni 0.000000
+d 1.000000
+illum 1
+map_Ka Mixed.png
+map_Kd ../../Images/SharedTextures/Tile/Tile_Yellow.png ../../Images/SharedTextures/Tile/Tile_N.png
+
+newmtl Ladder
+Ns 20.000000
+Ka 0.000000 0.000000 0.000000
+Kd 0.640000 0.640000 0.640000
+Ks 0.000000 0.000000 0.000000
+Ni 0.000000
+d 1.000000
+illum 1
+map_Ka Mixed.png
+map_Kd Tex_0007_0.png

@@ -30,3 +30,29 @@ void Model::addTexturedModel(TexturedModel* tm)
 {
     texturedModels.push_back(tm);
 }
+
+
+LightModel::LightModel()
+{
+
+}
+
+void LightModel::deleteMe()
+{
+    for (TexturedModel* model : texturedModels)
+    {
+        model->deleteMe();
+        delete model; INCR_DEL("TexturedModel");
+    }
+    texturedModels.clear();
+}
+
+bool LightModel::isLoaded()
+{
+    return (int)texturedModels.size() > 0;
+}
+
+void LightModel::addTexturedModel(TexturedModel* tm)
+{
+    texturedModels.push_back(tm);
+}

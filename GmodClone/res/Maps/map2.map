@@ -1,5 +1,5 @@
 res/Models/Map2/ Map2        # Visual Stage Model
-res/Models/Map2/ Map2        # Collision Stage Model
+res/Models/Map2/ Collision   # Collision Stage Model
 res/Models/Map2/Blank.shadow # Shadow Map
 -6.8 0 -6.8     0 0 6.8      # Player Spawning Zone Endpoints
 41.8 -1 -8    51.8 20 8      # Player Safe Zone Endpoints
@@ -15,9 +15,10 @@ res/Models/Map2/Blank.shadow # Shadow Map
 8 G7 G8 36.0 0 0
 
 # Chandelier
+11 CH0 00.0 7.0  0     0   0    0.1 0.01    1
 11 CH1 46.8 7.0  0     0   0    0.1 0.01    1
-11 CH2 24.9 4.5 -8     1 -90    0.1 0.01    2
-11 CH3 24.9 4.5  8     1  90    0.1 0.01    3
+11 CH2 25.0 4.5 -8     1 -90    0.1 0.01    2
+11 CH3 25.0 4.5  8     1  90    0.1 0.01    3
 
 # Bat
 14 BAT1 46.8 0  0

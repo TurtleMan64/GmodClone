@@ -1,0 +1,62 @@
+# Blender MTL File: 'Map6New.blend'
+# Material Count: 6
+
+newmtl None
+Ns 20.000000
+Ka 0.000000 0.000000 0.000000
+Kd 0.640000 0.640000 0.640000
+Ks 0.300000 0.300000 0.300000
+Ni 0.000000
+d 1.000000
+illum 2
+map_Kd Pebbles.png
+
+newmtl None_0.png
+Ns 20.000000
+Ka 0.000000 0.000000 0.000000
+Kd 0.640000 0.640000 0.640000
+Ks 0.000000 0.000000 0.000000
+Ni 0.000000
+d 1.000000
+illum 1
+map_Kd D:\CWorkspace\GmodClone\GmodClone\res\Images\SharedTextures\WaterRipple\0.png
+
+newmtl None_Moss.png
+Ns 20.000000
+Ka 0.000000 0.000000 0.000000
+Kd 0.640000 0.640000 0.640000
+Ks 0.300000 0.300000 0.300000
+Ni 0.000000
+d 1.000000
+illum 2
+map_Kd Moss.png
+
+newmtl None_Prodigy_material_43.png
+Ns 20.000000
+Ka 0.000000 0.000000 0.000000
+Kd 0.640000 0.640000 0.640000
+Ks 0.000000 0.000000 0.000000
+Ni 0.000000
+d 1.000000
+illum 1
+map_Kd Wood.png
+
+newmtl None_Rock_A.png
+Ns 20.000000
+Ka 0.000000 0.000000 0.000000
+Kd 0.640000 0.640000 0.640000
+Ks 0.300000 0.300000 0.300000
+Ni 0.000000
+d 1.000000
+illum 2
+map_Kd D:\CWorkspace\GmodClone\GmodClone\res\Images\SharedTextures\Rock\Rock1.png
+
+newmtl None_Wall.png
+Ns 20.000000
+Ka 0.000000 0.000000 0.000000
+Kd 0.640000 0.640000 0.640000
+Ks 0.300000 0.300000 0.300000
+Ni 0.000000
+d 1.000000
+illum 2
+map_Kd Wall.png

@@ -1,0 +1,20 @@
+newmtl Lava
+Ni 0.0
+d 1
+numImages 4
+animSpeed 1.5
+glow 1
+mixLinear
+map_Ka light_diffuse.png
+map_Kd ../../Images/SharedTextures/LavaBig/Lava1.png
+../../Images/SharedTextures/LavaBig/Lava2.png
+../../Images/SharedTextures/LavaBig/Lava3.png
+../../Images/SharedTextures/LavaBig/Lava4.png
+
+
+newmtl Rock
+Ni 0.4
+d 1
+illum 2
+map_Ka light_diffuse.png
+map_Kd ../../Images/SharedTextures/Rock/Rock2.png ../../Images/SharedTextures/Rock/Rock2_N.png

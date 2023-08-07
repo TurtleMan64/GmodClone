@@ -48,6 +48,18 @@ private:
         std::vector<float>* colorsArray,
         std::vector<float>* tangentsArray);
 
+    static void convertDataWithLightToArrays(
+        std::vector<Vertex*>* vertices,
+        std::vector<Vector2f>* uvDiffuse,
+        std::vector<Vector2f>* uvLight,
+        std::vector<Vector3f>* normals,
+        std::vector<float>* verticesArray,
+        std::vector<float>* uvDiffuseArray,
+        std::vector<float>* uvLightArray,
+        std::vector<float>* normalsArray,
+        std::vector<float>* colorsArray,
+        std::vector<float>* tangentsArray);
+
     static void calculateTangents(Vertex* v0, Vertex* v1, Vertex* v2, std::vector<Vector2f>* textures);
 
 public:
@@ -71,6 +83,10 @@ private:
     static int loadVclModel(Model* models, std::string filePath, std::string fileName);
 
 public:
+    //Each TexturedModel contained within 'models' must be deleted later.
+    //Returns 0 if successful, 1 if model is already loaded, -1 if file couldn't be loaded
+    static int loadLightModel(LightModel* model, std::string filePath, std::string fileName);
+
     //Each TexturedModel contained within 'models' must be deleted later.
     //Returns 0 if successful, 1 if model is already loaded, -1 if file couldn't be loaded
     static int loadObjModelWithMTL(Model* models, std::string filePath, std::string fileNameOBJ, std::string fileNameMTL);

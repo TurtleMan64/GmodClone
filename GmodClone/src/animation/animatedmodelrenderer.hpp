@@ -22,7 +22,7 @@ public:
 
     AnimatedModelRenderer();
 
-    void render(std::unordered_map<AnimatedModel*, std::vector<Entity*>>* animatedEntitiesMap);
+    void render(std::unordered_map<AnimatedModel*, std::vector<Entity*>>* animatedEntitiesMap, float clipX, float clipY, float clipZ, float clipW);
 
     void cleanUp();
 

@@ -61,6 +61,12 @@
     <Filter Include="Source Files\openglObjects">
       <UniqueIdentifier>{4ce17a14-28aa-421a-a892-d609305c272a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\water">
+      <UniqueIdentifier>{91f1d229-f483-4608-b270-7b96c7a00a57}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\skybox">
+      <UniqueIdentifier>{95186884-00cc-47b8-b8a0-96820c610ac6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\glad.c">
@@ -333,6 +339,30 @@
     <ClCompile Include="src\entities\CollisionBlock2.cpp">
       <Filter>Source Files\entities</Filter>
     </ClCompile>
+    <ClCompile Include="src\shaders\StageShader.cpp">
+      <Filter>Source Files\shaders</Filter>
+    </ClCompile>
+    <ClCompile Include="src\renderEngine\StageRenderer.cpp">
+      <Filter>Source Files\renderEngine</Filter>
+    </ClCompile>
+    <ClCompile Include="src\water\WaterFrameBuffers.cpp">
+      <Filter>Source Files\water</Filter>
+    </ClCompile>
+    <ClCompile Include="src\water\WaterRenderer.cpp">
+      <Filter>Source Files\water</Filter>
+    </ClCompile>
+    <ClCompile Include="src\water\WaterShader.cpp">
+      <Filter>Source Files\water</Filter>
+    </ClCompile>
+    <ClCompile Include="src\water\WaterTile.cpp">
+      <Filter>Source Files\water</Filter>
+    </ClCompile>
+    <ClCompile Include="src\skybox\SkyboxShader.cpp">
+      <Filter>Source Files\skybox</Filter>
+    </ClCompile>
+    <ClCompile Include="src\renderEngine\SkyboxRenderer.cpp">
+      <Filter>Source Files\renderEngine</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\toolbox\getline.hpp">
@@ -589,6 +619,24 @@
     </ClInclude>
     <ClInclude Include="src\entities\collisionblock2.hpp">
       <Filter>Source Files\entities</Filter>
+    </ClInclude>
+    <ClInclude Include="src\shaders\StageShader.hpp">
+      <Filter>Source Files\shaders</Filter>
+    </ClInclude>
+    <ClInclude Include="src\water\waterframebuffers.hpp">
+      <Filter>Source Files\water</Filter>
+    </ClInclude>
+    <ClInclude Include="src\water\waterrenderer.hpp">
+      <Filter>Source Files\water</Filter>
+    </ClInclude>
+    <ClInclude Include="src\water\watershader.hpp">
+      <Filter>Source Files\water</Filter>
+    </ClInclude>
+    <ClInclude Include="src\water\watertile.hpp">
+      <Filter>Source Files\water</Filter>
+    </ClInclude>
+    <ClInclude Include="src\skybox\SkyboxShader.hpp">
+      <Filter>Source Files\skybox</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

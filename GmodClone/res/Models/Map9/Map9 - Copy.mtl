@@ -4,20 +4,19 @@ newmtl None_Brick.png_Rock2.png
 Ns 20.000000
 Ni 0.3
 d 1.000000
-map_Kd ../../Images/SharedTextures/Rock/Rock2.png ../../Images/SharedTextures/Rock/Rock2_N.png
+map_Kd ../../Images/SharedTextures/Rock/Rock2.png
 
 newmtl None_Brick.png_Brick_N.png
-Ns 20
-Ni 0.1
-d 1
-map_Kd Brick.png Brick_N.png
-
-newmtl None_Brick.png
 Ns 20.000000
-Ni 0.000000
-type bounce
+Ni 0.2
 d 1.000000
-map_Kd bounce.png
+map_Kd Brick2.png
+
+newmtl None_Brick.png_Brick_N.png_Brick.png
+Ns 20.000000
+Ni 0.2
+d 1.000000
+map_Kd Brick.png
 
 newmtl None_Lava1.png
 Ns 20
@@ -29,12 +28,9 @@ type death
 glow 1
 mixLinear
 map_Kd ../../Images/SharedTextures/LavaBig/Lava1.png
-../../Images/SharedTextures/LavaBig/Lava2.png
-../../Images/SharedTextures/LavaBig/Lava3.png
-../../Images/SharedTextures/LavaBig/Lava4.png
 
 newmtl None
 Ns 20
-Ni 0.1
+Ni 0.2
 d 1
-map_Kd ../../Images/SharedTextures/Marble.png ../../Images/SharedTextures/Marble_N.png
+map_Kd ../../Images/SharedTextures/Marble.png

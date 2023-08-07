@@ -15,6 +15,7 @@ out vec4 pass_worldPosition;
 
 uniform mat4 jointTransforms[MAX_JOINTS];
 uniform mat4 projectionViewMatrix;
+uniform vec4 clipPlane;
 
 void main(void)
 {
@@ -32,6 +33,7 @@ void main(void)
 	}
 	
 	gl_Position = projectionViewMatrix * totalLocalPos;
+	gl_ClipDistance[0] = dot(totalLocalPos, clipPlane);
 	pass_normal = totalNormal.xyz;
 	pass_textureCoords = in_textureCoords;
     pass_worldPosition = totalLocalPos;

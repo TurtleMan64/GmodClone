@@ -87,6 +87,7 @@ void AnimatedModelShader::getAllUniformLocations()
     location_lightMapSizeX   = getUniformLocation("lightMapSizeX");
     location_lightMapSizeY   = getUniformLocation("lightMapSizeY");
     location_lightMapSizeZ   = getUniformLocation("lightMapSizeZ");
+    location_clipPlane       = getUniformLocation("clipPlane");
 }
 
 int AnimatedModelShader::getUniformLocation(const char* uniformName)
@@ -112,6 +113,11 @@ void AnimatedModelShader::loadUnsignedInt(int location, unsigned int value)
 void AnimatedModelShader::loadVector(int location, Vector3f* vect)
 {
     glUniform3f(location, vect->x, vect->y, vect->z);
+}
+
+void AnimatedModelShader::loadVector4(int location, Vector4f* vect)
+{
+    glUniform4f(location, vect->x, vect->y, vect->z, vect->w);
 }
 
 void AnimatedModelShader::loadBoolean(int location, bool value)

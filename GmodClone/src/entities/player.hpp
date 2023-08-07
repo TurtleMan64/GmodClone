@@ -162,6 +162,8 @@ public:
     Vector3f ropeAnchor;
     float ropeLength = 1.0f;
 
+    //bool isInWater = false;
+
     char danceIndex = -1;
 
     // Animation variables
@@ -176,6 +178,7 @@ public:
     float animTimerCrawl   = 0.0f;
     float animTimerSwing   = 0.0f;
     float animTimerDance   = 0.0f;
+    //float animTimerSwim    = 0.0f;
     char  animType         = 0;
     char  animTypePrevious = 0;
     float animBlend        = 0.0f;

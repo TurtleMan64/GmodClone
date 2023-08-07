@@ -1,0 +1,112 @@
+# Blender MTL File: 'None'
+# Material Count: 10
+
+newmtl Stone
+Ns 20.000000
+Ka 0.000000 0.000000 0.000000
+Kd 0.640000 0.640000 0.640000
+Ks 0.000000 0.000000 0.000000
+Ni 0.000000
+d 1.000000
+illum 1
+map_Ka Mixed.png
+map_Kd cobblestone_material_11.png
+
+newmtl Grass
+Ns 20.000000
+Ka 0.000000 0.000000 0.000000
+Kd 0.640000 0.640000 0.640000
+Ks 0.000000 0.000000 0.000000
+Ni 0.000000
+d 1.000000
+illum 1
+map_Ka Mixed.png
+map_Kd Chateau_material_7.png
+
+newmtl Bounce
+Ns 20.000000
+Ka 0.000000 0.000000 0.000000
+Kd 0.640000 0.640000 0.640000
+Ks 0.000000 0.000000 0.000000
+Ni 0.000000
+d 1.000000
+illum 1
+map_Ka Mixed.png
+map_Kd Chateau_material_73.png
+
+newmtl Plank
+Ns 20.000000
+Ka 0.000000 0.000000 0.000000
+Kd 0.640000 0.640000 0.640000
+Ks 0.000000 0.000000 0.000000
+Ni 0.000000
+d 1.000000
+illum 1
+map_Ka Mixed.png
+map_Kd Chateau_material_79.png
+
+newmtl Steel
+Ns 20.000000
+Ka 0.000000 0.000000 0.000000
+Kd 0.640000 0.640000 0.640000
+Ks 0.000000 0.000000 0.000000
+Ni 0.000000
+d 1.000000
+illum 1
+map_Ka Mixed.png
+map_Kd Prodigy_material_26.png
+
+newmtl Rivet
+Ns 20.000000
+Ka 0.000000 0.000000 0.000000
+Kd 0.640000 0.640000 0.640000
+Ks 0.000000 0.000000 0.000000
+Ni 0.000000
+d 1.000000
+illum 1
+map_Ka Mixed.png
+map_Kd Prodigy_material_30.png
+
+newmtl Box
+Ns 20.000000
+Ka 0.000000 0.000000 0.000000
+Kd 0.640000 0.640000 0.640000
+Ks 0.000000 0.000000 0.000000
+Ni 0.000000
+d 1.000000
+illum 1
+map_Ka Mixed.png
+map_Kd Prodigy_material_43.png
+
+newmtl Wood
+Ns 20.000000
+Ka 0.000000 0.000000 0.000000
+Kd 0.640000 0.640000 0.640000
+Ks 0.000000 0.000000 0.000000
+Ni 0.000000
+d 1.000000
+illum 1
+map_Ka Mixed.png
+map_Kd Vertigo_material_30.png
+
+newmtl Cobble
+Ns 20.000000
+Ka 0.000000 0.000000 0.000000
+Kd 0.640000 0.640000 0.640000
+Ks 0.000000 0.000000 0.000000
+Ni 0.000000
+d 1.000000
+illum 1
+map_Ka Mixed.png
+map_Kd cobblestone_material_0.png
+
+newmtl CobbleMoss
+Ns 20.000000
+Ka 0.000000 0.000000 0.000000
+Kd 0.640000 0.640000 0.640000
+Ks 0.000000 0.000000 0.000000
+Ni 0.000000
+d 1.000000
+illum 1
+map_Ka Mixed.png
+map_Kd cobblestone_material_25.png

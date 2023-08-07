@@ -65,4 +65,20 @@ public:
     void addTexturedModel(TexturedModel* tm);
 };
 
+class LightModel
+{
+public:
+    //GLuint lightMapId = GL_NONE;
+
+    std::vector<TexturedModel*> texturedModels;
+
+    LightModel();
+
+    void deleteMe();
+
+    bool isLoaded();
+
+    void addTexturedModel(TexturedModel* tm);
+};
+
 #endif

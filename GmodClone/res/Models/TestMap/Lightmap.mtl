@@ -1,0 +1,52 @@
+# Blender MTL File: 'None'
+# Material Count: 5
+
+newmtl White
+Ns 20.000000
+Ka 0.000000 0.000000 0.000000
+Kd 0.640000 0.640000 0.640000
+Ks 0.400000 0.400000 0.400000
+Ni 0.000000
+d 1.000000
+illum 2
+map_Kd Tile.png
+
+newmtl Blue
+Ns 20.000000
+Ka 0.000000 0.000000 0.000000
+Kd 0.640000 0.640000 0.640000
+Ks 0.000000 0.000000 0.000000
+Ni 0.000000
+d 1.000000
+illum 1
+map_Kd water_material_2.png
+
+newmtl Stripe
+Ns 20.000000
+Ka 0.000000 0.000000 0.000000
+Kd 0.640000 0.640000 0.640000
+Ks 0.000000 0.000000 0.000000
+Ni 0.000000
+d 1.000000
+illum 1
+map_Kd water_material_3.png
+
+newmtl Yellow
+Ns 20.000000
+Ka 0.000000 0.000000 0.000000
+Kd 0.640000 0.640000 0.640000
+Ks 0.000000 0.000000 0.000000
+Ni 0.000000
+d 1.000000
+illum 1
+map_Kd water_material_4.png
+
+newmtl Aqua
+Ns 20.000000
+Ka 0.000000 0.000000 0.000000
+Kd 0.640000 0.640000 0.640000
+Ks 0.000000 0.000000 0.000000
+Ni 0.000000
+d 1.000000
+illum 1
+map_Kd water_material_5.png

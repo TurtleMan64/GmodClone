@@ -22,32 +22,32 @@
     <VCProjectVersion>15.0</VCProjectVersion>
     <ProjectGuid>{606B3FC6-02B7-4313-A986-22A449774EE6}</ProjectGuid>
     <RootNamespace>GmodClone</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.19041.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
@@ -228,7 +228,11 @@
     <ClCompile Include="src\renderEngine\Loader.cpp" />
     <ClCompile Include="src\renderEngine\MasterRenderer.cpp" />
     <ClCompile Include="src\renderEngine\Renderer.cpp" />
+    <ClCompile Include="src\renderEngine\SkyboxRenderer.cpp" />
+    <ClCompile Include="src\renderEngine\StageRenderer.cpp" />
     <ClCompile Include="src\shaders\ShaderProgram.cpp" />
+    <ClCompile Include="src\shaders\StageShader.cpp" />
+    <ClCompile Include="src\skybox\SkyboxShader.cpp" />
     <ClCompile Include="src\textures\ModelTexture.cpp" />
     <ClCompile Include="src\toolbox\Getline.cpp" />
     <ClCompile Include="src\toolbox\Input.cpp" />
@@ -238,6 +242,10 @@
     <ClCompile Include="src\toolbox\Quaternion.cpp" />
     <ClCompile Include="src\toolbox\Split.cpp" />
     <ClCompile Include="src\toolbox\Vector.cpp" />
+    <ClCompile Include="src\water\WaterFrameBuffers.cpp" />
+    <ClCompile Include="src\water\WaterRenderer.cpp" />
+    <ClCompile Include="src\water\WaterShader.cpp" />
+    <ClCompile Include="src\water\WaterTile.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h" />
@@ -316,6 +324,8 @@
     <ClInclude Include="src\openglObjects\vbo.hpp" />
     <ClInclude Include="src\renderEngine\renderEngine.hpp" />
     <ClInclude Include="src\shaders\shaderprogram.hpp" />
+    <ClInclude Include="src\shaders\StageShader.hpp" />
+    <ClInclude Include="src\skybox\SkyboxShader.hpp" />
     <ClInclude Include="src\textures\modeltexture.hpp" />
     <ClInclude Include="src\toolbox\getline.hpp" />
     <ClInclude Include="src\toolbox\input.hpp" />
@@ -325,6 +335,10 @@
     <ClInclude Include="src\toolbox\quaternion.hpp" />
     <ClInclude Include="src\toolbox\split.hpp" />
     <ClInclude Include="src\toolbox\vector.hpp" />
+    <ClInclude Include="src\water\waterframebuffers.hpp" />
+    <ClInclude Include="src\water\waterrenderer.hpp" />
+    <ClInclude Include="src\water\watershader.hpp" />
+    <ClInclude Include="src\water\watertile.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="GmodClone.rc" />

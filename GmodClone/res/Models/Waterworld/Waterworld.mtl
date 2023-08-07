@@ -1,0 +1,371 @@
+# Blender 3.4.1 MTL File: 'Waterworld2.blend'
+# www.blender.org
+
+newmtl building_template007a
+Ns 19.999990
+Ka 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 0.000000
+d 1.000000
+illum 1
+map_Ka building_template007a_light.png
+map_Kd building_template007a.png
+
+newmtl citadel_metalwall101b
+Ns 19.999990
+Ka 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 0.000000
+d 1.000000
+illum 1
+map_Ka citadel_metalwall101b_light.png
+map_Kd citadel_metalwall101b.png
+
+newmtl combineball_glow_red_1
+Ns 19.999990
+Ka 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 0.000000
+d 1.000000
+illum 1
+map_Ka combineball_glow_red_1_light.png
+map_Kd combineball_glow_red_1.png
+
+newmtl combineglass001a
+Ns 19.999990
+Ka 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 0.000000
+illum 1
+map_Ka combineglass001a_light.png
+map_Kd combineglass001a.png
+
+newmtl concretefloor008a
+Ns 19.999990
+Ka 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 0.000000
+d 1.000000
+illum 1
+map_Ka concretefloor008a_light.png
+map_Kd concretefloor008a.png
+
+newmtl concretewall003a
+Ns 19.999990
+Ka 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 0.000000
+d 1.000000
+illum 1
+map_Ka concretewall003a_light.png
+map_Kd concretewall003a.png
+
+newmtl concretewall007a
+Ns 19.999990
+Ka 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 0.000000
+d 1.000000
+illum 1
+map_Ka concretewall007a_light.png
+map_Kd concretewall007a.png
+
+newmtl concretewall041a
+Ns 19.999990
+Ka 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 0.000000
+d 1.000000
+illum 1
+map_Ka concretewall041a_light.png
+map_Kd concretewall041a.png
+
+newmtl decalmetalgrate017a
+Ns 19.999990
+Ka 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 0.000000
+d 1.000000
+illum 1
+map_Ka decalmetalgrate017a_light.png
+map_Kd decalmetalgrate017a.png
+
+newmtl dev_blendmeasure
+Ns 19.999990
+Ka 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 0.000000
+d 1.000000
+illum 1
+map_Ka metalwall001a_light.png
+map_Kd metalwall001a.png
+
+newmtl dglz_plastic_blue
+Ns 10.000005
+Ka 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 0.000000
+d 1.000000
+illum 1
+map_Ka dglz_plastic_blue_light.png
+map_Kd dglz_plastic_blue.png
+
+newmtl dglz_plastic_yellow
+Ns 10.000005
+Ka 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 0.000000
+d 1.000000
+illum 1
+map_Ka dglz_plastic_yellow_light.png
+map_Kd dglz_plastic_yellow.png
+
+newmtl dglz_tiles_blue_01
+Ns 10.000005
+Ka 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 0.000000
+d 1.000000
+illum 1
+map_Ka dglz_tiles_blue_01_light.png
+map_Kd dglz_tiles_blue_01.png
+
+newmtl dglz_tiles_blue_03
+Ns 10.000005
+Ka 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 0.000000
+d 1.000000
+illum 1
+map_Ka dglz_tiles_blue_03_light.png
+map_Kd dglz_tiles_blue_03.png
+
+newmtl dglz_tiles_white_01
+Ns 10.000005
+Ka 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 0.000000
+d 1.000000
+illum 1
+map_Ka dglz_tiles_white_01_light.png
+map_Kd dglz_tiles_white_01.png
+
+newmtl glasswindowbreak070a
+Ns 19.999990
+Ka 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 0.000000
+illum 1
+map_Ka glasswindowbreak070a_light.png
+map_Kd glasswindowbreak070a.png
+
+newmtl metalbar001c
+Ns 19.999990
+Ka 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 0.000000
+illum 1
+map_Ka metalbar001c_light.png
+map_Kd metalbar001c.png
+
+newmtl metalfence001a
+Ns 19.999990
+Ka 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 0.000000
+illum 1
+map_Ka metalfence001a_light.png
+map_Kd metalfence001a.png
+
+newmtl metalhull010b
+Ns 19.999990
+Ka 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 0.000000
+d 1.000000
+illum 1
+map_Ka metalhull010b_light.png
+map_Kd metalhull010b.png
+
+newmtl metalpipe006a
+Ns 19.999990
+Ka 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 0.000000
+d 1.000000
+illum 1
+map_Ka metalpipe006a_light.png
+map_Kd metalpipe006a.png
+
+newmtl metalpipe007a
+Ns 19.999990
+Ka 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 0.000000
+d 1.000000
+illum 1
+map_Ka metalpipe007a_light.png
+map_Kd metalpipe007a.png
+
+newmtl metalpipe009b
+Ns 19.999990
+Ka 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 0.000000
+d 1.000000
+illum 1
+map_Ka metalpipe009b_light.png
+map_Kd metalpipe009b.png
+
+newmtl metalvent001a
+Ns 19.999990
+Ka 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 0.000000
+d 1.000000
+illum 1
+map_Ka metalvent001a_light.png
+map_Kd metalvent001a.png
+
+newmtl metalwall001a
+Ns 19.999990
+Ka 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 0.000000
+d 1.000000
+illum 1
+map_Ka metalwall001a_light.png
+map_Kd metalwall001a.png
+
+newmtl metalwall020a
+Ns 19.999990
+Ka 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 0.000000
+d 1.000000
+illum 1
+map_Ka metalwall020a_light.png
+map_Kd metalwall020a.png
+
+newmtl metalwall061e
+Ns 19.999990
+Ka 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 0.000000
+illum 1
+map_Ka metalwall061e_light.png
+map_Kd metalwall061e.png
+
+newmtl metalwall086a
+Ns 19.999990
+Ka 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 0.000000
+d 1.000000
+illum 1
+map_Ka metalwall086a_light.png
+map_Kd metalwall086a.png
+
+newmtl plasterwall005c
+Ns 19.999990
+Ka 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 0.000000
+d 1.000000
+illum 1
+map_Ka plasterwall005c_light.png
+map_Kd plasterwall005c.png
+
+newmtl tilefloor003a
+Ns 19.999990
+Ka 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 0.000000
+d 1.000000
+illum 1
+map_Ka tilefloor003a_light.png
+map_Kd tilefloor003a.png
+
+newmtl tilefloor009a
+Ns 19.999990
+Ka 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 0.000000
+d 1.000000
+illum 1
+map_Ka tilefloor009a_light.png
+map_Kd tilefloor009a.png
+
+newmtl tilefloor010a
+Ns 19.999990
+Ka 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 0.000000
+d 1.000000
+illum 1
+map_Ka tilefloor010a_light.png
+map_Kd tilefloor010a.png
+
+newmtl tilefloor012a
+Ns 19.999990
+Ka 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 0.000000
+d 1.000000
+illum 1
+map_Ka tilefloor012a_light.png
+map_Kd tilefloor012a.png
+
+newmtl tilefloor019a
+Ns 19.999990
+Ka 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 0.000000
+d 1.000000
+illum 1
+map_Ka tilefloor019a_light.png
+map_Kd tilefloor019a.png
+
+newmtl tilewall009d
+Ns 19.999990
+Ka 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 0.000000
+d 1.000000
+illum 1
+map_Ka tilewall009d_light.png
+map_Kd tilewall009d.png

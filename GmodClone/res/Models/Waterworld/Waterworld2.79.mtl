@@ -1,0 +1,362 @@
+# Blender MTL File: 'None'
+# Material Count: 36
+
+newmtl building_template/building_template007a
+Ns 20.000000
+Ka 0.000000 0.000000 0.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.000000 0.000000 0.000000
+Ni 0.000000
+d 1.000000
+illum 1
+map_Kd C:\Users\Anders\Desktop\waterworld\ttt_waterworld_157420728\maps\bspsrc\blenderout\building_template007a.png
+
+newmtl concrete/concretefloor008a
+Ns 20.000000
+Ka 0.000000 0.000000 0.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.000000 0.000000 0.000000
+Ni 0.000000
+d 1.000000
+illum 1
+map_Kd C:\Users\Anders\Desktop\waterworld\ttt_waterworld_157420728\maps\bspsrc\blenderout\concretefloor008a.png
+
+newmtl concrete/concretewall003a
+Ns 20.000000
+Ka 0.000000 0.000000 0.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.000000 0.000000 0.000000
+Ni 0.000000
+d 1.000000
+illum 1
+map_Kd C:\Users\Anders\Desktop\waterworld\ttt_waterworld_157420728\maps\bspsrc\blenderout\concretewall003a.png
+
+newmtl concrete/concretewall007a
+Ns 20.000000
+Ka 0.000000 0.000000 0.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.000000 0.000000 0.000000
+Ni 0.000000
+d 1.000000
+illum 1
+map_Kd C:\Users\Anders\Desktop\waterworld\ttt_waterworld_157420728\maps\bspsrc\blenderout\concretewall007a.png
+
+newmtl concrete/concretewall041a
+Ns 20.000000
+Ka 0.000000 0.000000 0.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.000000 0.000000 0.000000
+Ni 0.000000
+d 1.000000
+illum 1
+map_Kd C:\Users\Anders\Desktop\waterworld\ttt_waterworld_157420728\maps\bspsrc\blenderout\concretewall041a.png
+
+newmtl decals/decalmetalgrate017a
+Ns 20.000000
+Ka 0.000000 0.000000 0.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.000000 0.000000 0.000000
+Ni 0.000000
+d 1.000000
+illum 1
+map_Kd C:\Users\Anders\Desktop\waterworld\ttt_waterworld_157420728\maps\bspsrc\blenderout\decalmetalgrate017a.png
+
+newmtl dev/dev_blendmeasure
+Ns 20.000000
+Ka 0.000000 0.000000 0.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.000000 0.000000 0.000000
+Ni 0.000000
+d 1.000000
+illum 1
+map_Kd C:\Users\Anders\Desktop\waterworld\ttt_waterworld_157420728\maps\bspsrc\blenderout\metalwall001a.png
+
+newmtl dglz/dglz_plastic_blue
+Ns 10.000000
+Ka 0.000000 0.000000 0.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.000000 0.000000 0.000000
+Ni 0.000000
+d 1.000000
+illum 1
+map_Kd C:\Users\Anders\Desktop\waterworld\ttt_waterworld_157420728\maps\bspsrc\blenderout\dglz_plastic_blue.png
+
+newmtl dglz/dglz_plastic_yellow
+Ns 10.000000
+Ka 0.000000 0.000000 0.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.000000 0.000000 0.000000
+Ni 0.000000
+d 1.000000
+illum 1
+map_Kd C:\Users\Anders\Desktop\waterworld\ttt_waterworld_157420728\maps\bspsrc\blenderout\dglz_plastic_yellow.png
+
+newmtl dglz/dglz_tiles_blue_01
+Ns 10.000000
+Ka 0.000000 0.000000 0.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.000000 0.000000 0.000000
+Ni 0.000000
+d 1.000000
+illum 1
+map_Kd C:\Users\Anders\Desktop\waterworld\ttt_waterworld_157420728\maps\bspsrc\blenderout\dglz_tiles_blue_01.png
+
+newmtl dglz/dglz_tiles_blue_03
+Ns 10.000000
+Ka 0.000000 0.000000 0.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.000000 0.000000 0.000000
+Ni 0.000000
+d 1.000000
+illum 1
+map_Kd C:\Users\Anders\Desktop\waterworld\ttt_waterworld_157420728\maps\bspsrc\blenderout\dglz_tiles_blue_03.png
+
+newmtl dglz/dglz_tiles_white_01
+Ns 10.000000
+Ka 0.000000 0.000000 0.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.000000 0.000000 0.000000
+Ni 0.000000
+d 1.000000
+illum 1
+map_Kd C:\Users\Anders\Desktop\waterworld\ttt_waterworld_157420728\maps\bspsrc\blenderout\dglz_tiles_white_01.png
+
+newmtl glass/combineglass001a
+Ns 20.000000
+Ka 0.000000 0.000000 0.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.000000 0.000000 0.000000
+Ni 0.000000
+d 1.000000
+illum 1
+map_Kd C:\Users\Anders\Desktop\waterworld\ttt_waterworld_157420728\maps\bspsrc\blenderout\combineglass001a.png
+
+newmtl glass/glasswindowbreak070a
+Ns 20.000000
+Ka 0.000000 0.000000 0.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.000000 0.000000 0.000000
+Ni 0.000000
+d 1.000000
+illum 1
+map_Kd C:\Users\Anders\Desktop\waterworld\ttt_waterworld_157420728\maps\bspsrc\blenderout\glasswindowbreak070a.png
+
+newmtl metal/citadel_metalwall101b
+Ns 20.000000
+Ka 0.000000 0.000000 0.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.000000 0.000000 0.000000
+Ni 0.000000
+d 1.000000
+illum 1
+map_Kd C:\Users\Anders\Desktop\waterworld\ttt_waterworld_157420728\maps\bspsrc\blenderout\citadel_metalwall101b.png
+
+newmtl metal/metalbar001c
+Ns 20.000000
+Ka 0.000000 0.000000 0.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.000000 0.000000 0.000000
+Ni 0.000000
+d 1.000000
+illum 1
+map_Kd C:\Users\Anders\Desktop\waterworld\ttt_waterworld_157420728\maps\bspsrc\blenderout\metalbar001c.png
+
+newmtl metal/metalfence001a
+Ns 20.000000
+Ka 0.000000 0.000000 0.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.000000 0.000000 0.000000
+Ni 0.000000
+d 1.000000
+illum 1
+map_Kd C:\Users\Anders\Desktop\waterworld\ttt_waterworld_157420728\maps\bspsrc\blenderout\metalfence001a.png
+
+newmtl metal/metalhull010b
+Ns 20.000000
+Ka 0.000000 0.000000 0.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.000000 0.000000 0.000000
+Ni 0.000000
+d 1.000000
+illum 1
+map_Kd C:\Users\Anders\Desktop\waterworld\ttt_waterworld_157420728\maps\bspsrc\blenderout\metalhull010b.png
+
+newmtl metal/metalpipe006a
+Ns 20.000000
+Ka 0.000000 0.000000 0.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.000000 0.000000 0.000000
+Ni 0.000000
+d 1.000000
+illum 1
+map_Kd C:\Users\Anders\Desktop\waterworld\ttt_waterworld_157420728\maps\bspsrc\blenderout\metalpipe006a.png
+
+newmtl metal/metalpipe007a
+Ns 20.000000
+Ka 0.000000 0.000000 0.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.000000 0.000000 0.000000
+Ni 0.000000
+d 1.000000
+illum 1
+map_Kd C:\Users\Anders\Desktop\waterworld\ttt_waterworld_157420728\maps\bspsrc\blenderout\metalpipe007a.png
+
+newmtl metal/metalpipe009b
+Ns 20.000000
+Ka 0.000000 0.000000 0.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.000000 0.000000 0.000000
+Ni 0.000000
+d 1.000000
+illum 1
+map_Kd C:\Users\Anders\Desktop\waterworld\ttt_waterworld_157420728\maps\bspsrc\blenderout\metalpipe009b.png
+
+newmtl metal/metalvent001a
+Ns 20.000000
+Ka 0.000000 0.000000 0.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.000000 0.000000 0.000000
+Ni 0.000000
+d 1.000000
+illum 1
+map_Kd C:\Users\Anders\Desktop\waterworld\ttt_waterworld_157420728\maps\bspsrc\blenderout\metalvent001a.png
+
+newmtl metal/metalwall001a
+Ns 20.000000
+Ka 0.000000 0.000000 0.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.000000 0.000000 0.000000
+Ni 0.000000
+d 1.000000
+illum 1
+map_Kd C:\Users\Anders\Desktop\waterworld\ttt_waterworld_157420728\maps\bspsrc\blenderout\metalwall001a.png
+
+newmtl metal/metalwall004a
+Ns 20.000000
+Ka 0.000000 0.000000 0.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.000000 0.000000 0.000000
+Ni 0.000000
+d 1.000000
+illum 1
+map_Kd C:\Users\Anders\Desktop\waterworld\ttt_waterworld_157420728\maps\bspsrc\blenderout\metalwall004a.png
+
+newmtl metal/metalwall020a
+Ns 20.000000
+Ka 0.000000 0.000000 0.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.000000 0.000000 0.000000
+Ni 0.000000
+d 1.000000
+illum 1
+map_Kd C:\Users\Anders\Desktop\waterworld\ttt_waterworld_157420728\maps\bspsrc\blenderout\metalwall020a.png
+
+newmtl metal/metalwall061e
+Ns 20.000000
+Ka 0.000000 0.000000 0.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.000000 0.000000 0.000000
+Ni 0.000000
+d 1.000000
+illum 1
+map_Kd C:\Users\Anders\Desktop\waterworld\ttt_waterworld_157420728\maps\bspsrc\blenderout\metalwall061e.png
+
+newmtl metal/metalwall086a
+Ns 20.000000
+Ka 0.000000 0.000000 0.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.000000 0.000000 0.000000
+Ni 0.000000
+d 1.000000
+illum 1
+map_Kd C:\Users\Anders\Desktop\waterworld\ttt_waterworld_157420728\maps\bspsrc\blenderout\metalwall086a.png
+
+newmtl plaster/plasterwall005c
+Ns 20.000000
+Ka 0.000000 0.000000 0.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.000000 0.000000 0.000000
+Ni 0.000000
+d 1.000000
+illum 1
+map_Kd C:\Users\Anders\Desktop\waterworld\ttt_waterworld_157420728\maps\bspsrc\blenderout\plasterwall005c.png
+
+newmtl props/doorbutton002a
+Ns 20.000000
+Ka 0.000000 0.000000 0.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.000000 0.000000 0.000000
+Ni 0.000000
+d 1.000000
+illum 1
+map_Kd C:\Users\Anders\Desktop\waterworld\ttt_waterworld_157420728\maps\bspsrc\blenderout\doorbutton002a.png
+
+newmtl sprites/combineball_glow_red_1
+Ns 20.000000
+Ka 0.000000 0.000000 0.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.000000 0.000000 0.000000
+Ni 0.000000
+d 1.000000
+illum 1
+map_Kd C:\Users\Anders\Desktop\waterworld\ttt_waterworld_157420728\maps\bspsrc\blenderout\combineball_glow_red_1.png
+
+newmtl tile/tilefloor003a
+Ns 20.000000
+Ka 0.000000 0.000000 0.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.000000 0.000000 0.000000
+Ni 0.000000
+d 1.000000
+illum 1
+map_Kd C:\Users\Anders\Desktop\waterworld\ttt_waterworld_157420728\maps\bspsrc\blenderout\tilefloor003a.png
+
+newmtl tile/tilefloor009a
+Ns 20.000000
+Ka 0.000000 0.000000 0.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.000000 0.000000 0.000000
+Ni 0.000000
+d 1.000000
+illum 1
+map_Kd C:\Users\Anders\Desktop\waterworld\ttt_waterworld_157420728\maps\bspsrc\blenderout\tilefloor009a.png
+
+newmtl tile/tilefloor010a
+Ns 20.000000
+Ka 0.000000 0.000000 0.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.000000 0.000000 0.000000
+Ni 0.000000
+d 1.000000
+illum 1
+map_Kd C:\Users\Anders\Desktop\waterworld\ttt_waterworld_157420728\maps\bspsrc\blenderout\tilefloor010a.png
+
+newmtl tile/tilefloor012a
+Ns 20.000000
+Ka 0.000000 0.000000 0.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.000000 0.000000 0.000000
+Ni 0.000000
+d 1.000000
+illum 1
+map_Kd C:\Users\Anders\Desktop\waterworld\ttt_waterworld_157420728\maps\bspsrc\blenderout\tilefloor012a.png
+
+newmtl tile/tilefloor019a
+Ns 20.000000
+Ka 0.000000 0.000000 0.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.000000 0.000000 0.000000
+Ni 0.000000
+d 1.000000
+illum 1
+map_Kd C:\Users\Anders\Desktop\waterworld\ttt_waterworld_157420728\maps\bspsrc\blenderout\tilefloor019a.png
+
+newmtl tile/tilewall009d
+Ns 20.000000
+Ka 0.000000 0.000000 0.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.000000 0.000000 0.000000
+Ni 0.000000
+d 1.000000
+illum 1
+map_Kd C:\Users\Anders\Desktop\waterworld\ttt_waterworld_157420728\maps\bspsrc\blenderout\tilewall009d.png

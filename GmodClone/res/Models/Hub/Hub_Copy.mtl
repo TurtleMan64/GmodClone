@@ -1,0 +1,112 @@
+# Blender MTL File: 'None'
+# Material Count: 11
+
+newmtl None
+Ns 20.000000
+Ka 0.000000 0.000000 0.000000
+Kd 0.640000 0.640000 0.640000
+Ks 0.000000 0.000000 0.000000
+Ni 0.000000
+d 1.000000
+illum 1
+map_Kd D:\CWorkspace\GmodClone\GmodClone\res\Images\SharedTextures\Rubber.png
+
+newmtl None_BedDudleyTex0.png
+Ns 20.000000
+Ka 0.000000 0.000000 0.000000
+Kd 0.640000 0.640000 0.640000
+Ks 0.000000 0.000000 0.000000
+Ni 0.000000
+d 1.000000
+illum 1
+map_Kd BedDudleyTex0.png
+
+newmtl None_Tile.png
+Ns 20.000000
+Ka 0.000000 0.000000 0.000000
+Kd 0.640000 0.640000 0.640000
+Ks 0.000000 0.000000 0.000000
+Ni 0.000000
+d 1.000000
+illum 1
+map_Kd Sus.png
+
+newmtl None_Tile.png_Tile_N.png
+Ns 20.000000
+Ka 0.000000 0.000000 0.000000
+Kd 0.640000 0.640000 0.640000
+Ks 0.000000 0.000000 0.000000
+Ni 0.000000
+d 1.000000
+illum 1
+map_Kd D:\CWorkspace\GmodClone\GmodClone\res\Images\SharedTextures\Tile\Tile_Black.png
+
+newmtl None_Tile_Aqua.png
+Ns 20.000000
+Ka 0.000000 0.000000 0.000000
+Kd 0.640000 0.640000 0.640000
+Ks 0.000000 0.000000 0.000000
+Ni 0.000000
+d 1.000000
+illum 1
+map_Kd D:\CWorkspace\GmodClone\GmodClone\res\Images\SharedTextures\Tile\Tile_Aqua.png
+
+newmtl None_Tile_Blue.png
+Ns 20.000000
+Ka 0.000000 0.000000 0.000000
+Kd 0.640000 0.640000 0.640000
+Ks 0.000000 0.000000 0.000000
+Ni 0.000000
+d 1.000000
+illum 1
+map_Kd D:\CWorkspace\GmodClone\GmodClone\res\Images\SharedTextures\Tile\Tile_Blue.png
+
+newmtl None_Tile_Green.png
+Ns 20.000000
+Ka 0.000000 0.000000 0.000000
+Kd 0.640000 0.640000 0.640000
+Ks 0.000000 0.000000 0.000000
+Ni 0.000000
+d 1.000000
+illum 1
+map_Kd D:\CWorkspace\GmodClone\GmodClone\res\Images\SharedTextures\Tile\Tile_Green.png
+
+newmtl None_Tile_Orange.png
+Ns 20.000000
+Ka 0.000000 0.000000 0.000000
+Kd 0.640000 0.640000 0.640000
+Ks 0.000000 0.000000 0.000000
+Ni 0.000000
+d 1.000000
+illum 1
+map_Kd D:\CWorkspace\GmodClone\GmodClone\res\Images\SharedTextures\Tile\Tile_Orange.png
+
+newmtl None_Tile_Red.png
+Ns 20.000000
+Ka 0.000000 0.000000 0.000000
+Kd 0.640000 0.640000 0.640000
+Ks 0.000000 0.000000 0.000000
+Ni 0.000000
+d 1.000000
+illum 1
+map_Kd D:\CWorkspace\GmodClone\GmodClone\res\Images\SharedTextures\Tile\Tile_Red.png
+
+newmtl None_Tile_Yellow.png
+Ns 20.000000
+Ka 0.000000 0.000000 0.000000
+Kd 0.640000 0.640000 0.640000
+Ks 0.000000 0.000000 0.000000
+Ni 0.000000
+d 1.000000
+illum 1
+map_Kd D:\CWorkspace\GmodClone\GmodClone\res\Images\SharedTextures\Tile\Tile_Yellow.png
+
+newmtl Tex_0007_0.001
+Ns 20.000000
+Ka 0.000000 0.000000 0.000000
+Kd 0.640000 0.640000 0.640000
+Ks 0.000000 0.000000 0.000000
+Ni 0.000000
+d 1.000000
+illum 1
+map_Kd Tex_0007_0.png

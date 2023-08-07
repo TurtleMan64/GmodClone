@@ -26,6 +26,28 @@ Ball::Ball(std::string name, Vector3f pos, Vector3f vel)
 
     entitiesToRender.push_back(this);
 
+    rotYs.push_back(0);
+    rotYs.push_back(0);
+    rotYs.push_back(0);
+    rotYs.push_back(0);
+    rotYs.push_back(0);
+    rotYs.push_back(0);
+    rotYs.push_back(0);
+    rotYs.push_back(0);
+    rotYs.push_back(0);
+    rotYs.push_back(0);
+    rotYs.push_back(0);
+    rotYs.push_back(0);
+    rotYs.push_back(0);
+    rotYs.push_back(0);
+    rotYs.push_back(0);
+    rotYs.push_back(0);
+    rotYs.push_back(0);
+    rotYs.push_back(0);
+    rotYs.push_back(0);
+    rotYs.push_back(0);
+    rotYs.push_back(0);
+
     //src = AudioPlayer::play(12, &position, 1.0f, true);
 }
 
@@ -143,7 +165,18 @@ void Ball::step()
     Vector3f rotP = vel;
     rotP.y = 0;
     rotZ -= 150*rotP.length()*dt;
-    rotY = Maths::toDegrees(atan2f(-vel.z, vel.x));
+    float newRotY = Maths::toDegrees(atan2f(-vel.z, vel.x));
+
+    rotYs[currentRotY] = newRotY;
+    currentRotY = (currentRotY + 1) % (int)rotYs.size();
+
+    float sum = 0;
+    for (float r : rotYs)
+    {
+        sum += r;
+    }
+
+    rotY = sum / (int)rotYs.size();
 
     //if (src != nullptr)
     //{
@@ -250,6 +283,76 @@ void Ball::movingBlocksAreDone()
 
             //printf("frictionAmount = %f\n\n", frictionAmount);
             //printf("frictionDir = %f %f %f\n\n", frictionVec.x, frictionVec.y, frictionVec.z);
+        }
+    }
+}
+
+void Ball::bounceOffOtherBalls(std::vector<Ball*>* balls)
+{
+    int size = (int)balls->size();
+
+    for (int i = 0; i < size; i++)
+    {
+        Ball* other = balls->at(i);
+
+        if (other == this)
+        {
+            continue;
+        }
+
+        Vector3f diff = other->position - position;
+        float dist = diff.length();
+        if (dist < scale*2)
+        {
+            Vector3f storedOtherVel = other->vel;
+
+            // Do calculations as if the other ball is stationary.
+            vel = vel - storedOtherVel;
+            other->vel = other->vel - storedOtherVel;
+
+            Vector3f axisH = diff;
+            axisH.setLength(1);
+
+            Vector3f vel1 = vel;
+            vel1.setLength(1);
+
+            if (ballsCollidedWith.find(other) != ballsCollidedWith.end())
+            {
+                //printf("already collided with this ball\n");
+                vel = vel + storedOtherVel;
+                other->vel = other->vel + storedOtherVel;
+                continue;
+            }
+            
+            if (vel1.dot(&axisH) <= 0.0f)
+            {
+                //printf("already moving away from this ball\n");
+                vel = vel + storedOtherVel;
+                other->vel = other->vel + storedOtherVel;
+                continue;
+            }
+
+            Vector3f blueBig = Maths::projectAlongLine(&vel, &axisH);
+            Vector3f blueSmall = Maths::projectOntoPlane(&vel, &axisH);
+
+            //printf("axisH = %f %f %f\n", axisH.x, axisH.y, axisH.z);
+            //printf("storedOtherVel = %f %f %f\n", storedOtherVel.x, storedOtherVel.y, storedOtherVel.z);
+            //printf("blueBig = %f %f %f\n", blueBig.x, blueBig.y, blueBig.z);
+            //printf("blueSmall = %f %f %f\n", blueSmall.x, blueSmall.y, blueSmall.z);
+
+            vel = blueSmall + storedOtherVel;
+            other->vel = blueBig + storedOtherVel;
+
+            float distToMove = (scale*2 - dist)*0.5f;
+
+            position        =        position - axisH.scaleCopy(distToMove);
+            other->position = other->position + axisH.scaleCopy(distToMove);
+
+            //printf("vel = %f %f %f\n", vel.x, vel.y, vel.z);
+            //printf("other->vel = %f %f %f\n\n", other->vel.x, other->vel.y, other->vel.z);
+
+            ballsCollidedWith.insert(other);
+            other->ballsCollidedWith.insert(this);
         }
     }
 }

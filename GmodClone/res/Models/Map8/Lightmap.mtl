@@ -1,0 +1,84 @@
+# Material Count: 11
+
+newmtl Fence
+Ns 20.000000
+Ni 0.3
+Tr 0
+renderOrder 2
+d 1.000000
+map_Ka FenceLightmap.png
+map_Kd ../../Images/SharedTextures/Fence.png ../../Images/SharedTextures/Fence_N.png
+
+newmtl Black
+Ns 20
+Ni 0.3
+d 1
+map_Ka TilesMixed.png
+map_Kd ../../Images/SharedTextures/Tile/Tile_Black.png ../../Images/SharedTextures/Tile/Tile_N.png
+
+newmtl White
+Ns 20
+Ni 0.0
+glow 1
+type nohook
+d 1
+map_Ka TilesMixed.png
+map_Kd White.png
+
+newmtl Blue
+Ns 20
+Ni 0.3
+d 1
+map_Ka TilesMixed.png
+map_Kd ../../Images/SharedTextures/Tile/Tile_Blue.png ../../Images/SharedTextures/Tile/Tile_N.png
+
+newmtl Green
+Ns 20
+Ni 0.3
+d 1
+map_Ka TilesMixed.png
+map_Kd ../../Images/SharedTextures/Tile/Tile_Green.png ../../Images/SharedTextures/Tile/Tile_N.png
+
+newmtl Orange
+Ns 20
+Ni 0.3
+d 1
+map_Ka TilesMixed.png
+map_Kd ../../Images/SharedTextures/Tile/Tile_Orange.png ../../Images/SharedTextures/Tile/Tile_N.png
+
+newmtl Yellow
+Ns 20
+Ni 0.3
+d 1
+map_Ka TilesMixed.png
+map_Kd ../../Images/SharedTextures/Tile/Tile_Yellow.png ../../Images/SharedTextures/Tile/Tile_N.png
+
+newmtl Grass
+Ns 20
+Ni 0.0
+sound grass
+d 1
+map_Ka GrassMixed.png
+map_Kd Grass.jpg
+
+newmtl Red
+Ns 20
+Ni 0.3
+d 1
+map_Ka TilesMixed.png
+map_Kd ../../Images/SharedTextures/Tile/Tile_Red.png ../../Images/SharedTextures/Tile/Tile_N.png
+
+newmtl Rubber
+Ns 20
+Ni 0.3
+type bounce
+d 1
+map_Ka TilesMixed.png
+map_Kd ../../Images/SharedTextures/Rubber.png ../../Images/SharedTextures/Rubber_N.png
+
+newmtl Aqua
+Ns 20
+Ni 0.3
+d 1
+map_Ka TilesMixed.png
+map_Kd ../../Images/SharedTextures/Tile/Tile_Aqua.png ../../Images/SharedTextures/Tile/Tile_N.png

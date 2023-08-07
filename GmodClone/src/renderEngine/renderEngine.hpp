@@ -2,6 +2,8 @@
 #define RENDERENGINE_H
 
 class ShaderProgram;
+class StageShader;
+class SkyboxShader;
 class Entity;
 class Matrix4f;
 class Light;
@@ -70,6 +72,15 @@ public:
                               std::vector<float>* tangents,
                               std::vector<int>* indices);
 
+    //For 3D models with normal maps and light map
+    static RawModel loadToVAO(std::vector<float>* positions,
+        std::vector<float>* textureCoordsDiffuse,
+        std::vector<float>* textureCoordsLight,
+        std::vector<float>* normals,
+        std::vector<float>* vertexColors,
+        std::vector<float>* tangents,
+        std::vector<int>* indices);
+
     //for text
     //returns a std::vector<int> where the first entry is the vao and the rest are vbos
     static std::vector<int> loadToVAO(std::vector<float>* positions, std::vector<float>* textureCoords);
@@ -90,10 +101,15 @@ public:
     //Loads a texture without any interpolation
     static GLuint loadTextureNoInterpolation(const char* fileName);
 
+    //load a texture without any mipmap
+    static GLuint loadTextureNoMipmap(const char* fileName);
+
     //Loads a texture into GPU memory, returns the GLuint id
     static GLuint loadTexture3D(const char* filename);
 
     static GLuint loadTextureShadowMap(const char* filename);
+
+    static GLuint loadCubeMap(std::vector<std::string> filenames);
 
     static void cleanUp();
 
@@ -171,6 +187,49 @@ public:
     void render(Entity*);
 
     void render(std::unordered_map<TexturedModel*, std::list<Entity*>>* entities, Matrix4f* toShadowSpaceFar, Matrix4f* toShadowSpaceClose);
+
+    void updateProjectionMatrix(Matrix4f* projectionMatrix);
+
+};
+
+// Stage Renderer
+class StageRenderer
+{
+private:
+    float clockTime = 0.0f;
+
+    StageShader* shader = nullptr;
+
+    void prepareTexturedModel(TexturedModel* model, GLuint* currentLightmapId);
+
+    void unbindTexturedModel();
+
+    void prepareInstance(Entity* entity, unsigned int entityId);
+
+public:
+    StageRenderer();
+
+    void render(LightModel* lightModel, float clipX, float clipY, float clipZ, float clipW);
+
+    void updateProjectionMatrix(Matrix4f* projectionMatrix);
+
+};
+
+class SkyboxRenderer
+{
+private:
+    static constexpr float SIZE = 500.0f;
+
+    static float VERTICES[];
+
+    RawModel cube;
+    GLuint texture;
+    SkyboxShader* shader = nullptr;
+
+public:
+    SkyboxRenderer();
+
+    void render(float clipX, float clipY, float clipZ, float clipW);
 
     void updateProjectionMatrix(Matrix4f* projectionMatrix);
 

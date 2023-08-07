@@ -1,0 +1,28 @@
+newmtl Wall
+Ni 0.3
+d 1
+map_Ka light_mixed.png
+map_Kd Wall.png Wall_N.png
+
+newmtl Moss
+Ni 0.3
+d 1.000000
+map_Ka light_mixed.png
+map_Kd Moss.png Moss_N.png
+
+newmtl Rock1
+Ni 0.3
+d 1.000000
+map_Ka light_mixed.png
+map_Kd ../../Images/SharedTextures/Rock/Rock1.png ../../Images/SharedTextures/Rock/Rock1_N.png
+
+newmtl Wood
+map_Ka light_mixed.png
+map_Kd Wood.png
+
+newmtl Pebbles
+Ni 0.3
+d 1
+map_Ka light_mixed.png
+map_Kd Pebbles.png Pebbles_N.png
+
