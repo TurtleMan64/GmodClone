@@ -35,7 +35,7 @@
 
 //#ifdef _WIN32
 
-InputStruct Input::inputs{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+InputStruct Input::inputs{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
 
 //vars for use by us
 double mousePreviousX = 0;
@@ -524,8 +524,8 @@ void Input::keyboardCallback(GLFWwindow* /**/, int key, int /**/, int action, in
                 {
                     try
                     {
-                        if (Input::chatLength >= 5 && strncmp("fov ", Input::chatInput, 4) == 0 ||
-                            Input::chatLength >= 5 && strncmp("FOV ", Input::chatInput, 4) == 0)
+                        if ((Input::chatLength >= 5 && strncmp("fov ", Input::chatInput, 4) == 0) ||
+                            (Input::chatLength >= 5 && strncmp("FOV ", Input::chatInput, 4) == 0))
                         {
                             std::vector<std::string> tokens = split(Input::chatInput, ' ');
                             if (tokens.size() > 1)
@@ -535,10 +535,10 @@ void Input::keyboardCallback(GLFWwindow* /**/, int key, int /**/, int action, in
                                 Master_makeProjectionMatrix();
                             }
                         }
-                        else if (Input::chatLength >= 9 && strncmp("fps_cap ", Input::chatInput, 8) == 0 ||
-                                 Input::chatLength >= 9 && strncmp("FPS_CAP ", Input::chatInput, 8) == 0 ||
-                                 Input::chatLength >= 9 && strncmp("fps-cap ", Input::chatInput, 8) == 0 ||
-                                 Input::chatLength >= 9 && strncmp("FPS-CAP ", Input::chatInput, 8) == 0)
+                        else if ((Input::chatLength >= 9 && strncmp("fps_cap ", Input::chatInput, 8) == 0) ||
+                                 (Input::chatLength >= 9 && strncmp("FPS_CAP ", Input::chatInput, 8) == 0) ||
+                                 (Input::chatLength >= 9 && strncmp("fps-cap ", Input::chatInput, 8) == 0) ||
+                                 (Input::chatLength >= 9 && strncmp("FPS-CAP ", Input::chatInput, 8) == 0))
                         {
                             std::vector<std::string> tokens = split(Input::chatInput, ' ');
                             if (tokens.size() > 1)
@@ -554,8 +554,8 @@ void Input::keyboardCallback(GLFWwindow* /**/, int key, int /**/, int action, in
                                 }
                             }
                         }
-                        else if (Input::chatLength >= 7 && strncmp("vsync ", Input::chatInput, 6) == 0 ||
-                                 Input::chatLength >= 7 && strncmp("VSYNC ", Input::chatInput, 6) == 0)
+                        else if ((Input::chatLength >= 7 && strncmp("vsync ", Input::chatInput, 6) == 0) ||
+                                 (Input::chatLength >= 7 && strncmp("VSYNC ", Input::chatInput, 6) == 0))
                         {
                             std::vector<std::string> tokens = split(Input::chatInput, ' ');
                             if (tokens.size() > 1)
@@ -571,10 +571,10 @@ void Input::keyboardCallback(GLFWwindow* /**/, int key, int /**/, int action, in
                                 }
                             }
                         }
-                        else if (Input::chatLength >= 10 && strncmp("fps-show ", Input::chatInput, 9) == 0 ||
-                                 Input::chatLength >= 10 && strncmp("FPS-SHOW ", Input::chatInput, 9) == 0 ||
-                                 Input::chatLength >= 10 && strncmp("fps_show ", Input::chatInput, 9) == 0 ||
-                                 Input::chatLength >= 10 && strncmp("FPS_SHOW ", Input::chatInput, 9) == 0)
+                        else if ((Input::chatLength >= 10 && strncmp("fps-show ", Input::chatInput, 9) == 0) ||
+                                 (Input::chatLength >= 10 && strncmp("FPS-SHOW ", Input::chatInput, 9) == 0) ||
+                                 (Input::chatLength >= 10 && strncmp("fps_show ", Input::chatInput, 9) == 0) ||
+                                 (Input::chatLength >= 10 && strncmp("FPS_SHOW ", Input::chatInput, 9) == 0))
                         {
                             std::vector<std::string> tokens = split(Input::chatInput, ' ');
                             if (tokens.size() > 1)
@@ -590,10 +590,10 @@ void Input::keyboardCallback(GLFWwindow* /**/, int key, int /**/, int action, in
                                 }
                             }
                         }
-                        else if (Input::chatLength >= 10 && strncmp("load-map ", Input::chatInput, 9) == 0 ||
-                                 Input::chatLength >= 10 && strncmp("LOAD-MAP ", Input::chatInput, 9) == 0 ||
-                                 Input::chatLength >= 10 && strncmp("load_map ", Input::chatInput, 9) == 0 ||
-                                 Input::chatLength >= 10 && strncmp("LOAD_MAP ", Input::chatInput, 9) == 0)
+                        else if ((Input::chatLength >= 10 && strncmp("load-map ", Input::chatInput, 9) == 0) ||
+                                 (Input::chatLength >= 10 && strncmp("LOAD-MAP ", Input::chatInput, 9) == 0) ||
+                                 (Input::chatLength >= 10 && strncmp("load_map ", Input::chatInput, 9) == 0) ||
+                                 (Input::chatLength >= 10 && strncmp("LOAD_MAP ", Input::chatInput, 9) == 0))
                         {
                             if (!Global::serverClient->isOpen())
                             {
@@ -606,8 +606,8 @@ void Input::keyboardCallback(GLFWwindow* /**/, int key, int /**/, int action, in
                                 }
                             }
                         }
-                        else if (Input::chatLength >= 6 && strncmp("heal ", Input::chatInput, 5) == 0 ||
-                                 Input::chatLength >= 6 && strncmp("HEAL ", Input::chatInput, 5) == 0)
+                        else if ((Input::chatLength >= 6 && strncmp("heal ", Input::chatInput, 5) == 0) ||
+                                 (Input::chatLength >= 6 && strncmp("HEAL ", Input::chatInput, 5) == 0))
                         {
                             std::vector<std::string> tokens = split(Input::chatInput, ' ');
                             if (tokens.size() > 1 && !Global::serverClient->isOpen())
@@ -615,17 +615,17 @@ void Input::keyboardCallback(GLFWwindow* /**/, int key, int /**/, int action, in
                                 Global::player->health = (char)Maths::clamp(0, (int)Global::player->health + stoi(tokens[1]), 100);
                             }
                         }
-                        else if (Input::chatLength == 4 && strncmp("quit",  Input::chatInput, 4) == 0 ||
-                                 Input::chatLength == 4 && strncmp("QUIT",  Input::chatInput, 4) == 0 ||
-                                 Input::chatLength == 4 && strncmp("exit",  Input::chatInput, 4) == 0 ||
-                                 Input::chatLength == 4 && strncmp("EXIT",  Input::chatInput, 4) == 0 ||
-                                 Input::chatLength == 5 && strncmp("close", Input::chatInput, 5) == 0 ||
-                                 Input::chatLength == 5 && strncmp("CLOSE", Input::chatInput, 5) == 0)
+                        else if ((Input::chatLength == 4 && strncmp("quit",  Input::chatInput, 4) == 0) ||
+                                 (Input::chatLength == 4 && strncmp("QUIT",  Input::chatInput, 4) == 0) ||
+                                 (Input::chatLength == 4 && strncmp("exit",  Input::chatInput, 4) == 0) ||
+                                 (Input::chatLength == 4 && strncmp("EXIT",  Input::chatInput, 4) == 0) ||
+                                 (Input::chatLength == 5 && strncmp("close", Input::chatInput, 5) == 0) ||
+                                 (Input::chatLength == 5 && strncmp("CLOSE", Input::chatInput, 5) == 0))
                         {
                             Global::gameState = GAME_STATE_EXITING;
                         }
                     }
-                    catch (std::exception e)
+                    catch (...)
                     {
 
                     }

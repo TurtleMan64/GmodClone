@@ -664,7 +664,7 @@ int main(int argc, char** argv)
 
         Master_render(&cam, 0, 0, 0, 0, 0.0f);
 
-        if (Global::gameWaterTiles.size() >= 0)
+        if (Global::gameWaterTiles.size() > 0)
         {
             //glDisable(GL_MULTISAMPLE);
             for (WaterTile* tile : Global::gameWaterTiles)
