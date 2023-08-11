@@ -110,6 +110,7 @@ std::vector<std::string> Global::serverSettings;
 TcpClient* Global::serverClient = nullptr;
 int Global::pingToServer = 0;
 int Global::nextPingNumber = 0;
+std::shared_mutex Global::serverPingTimesSharedMutex;
 std::unordered_map<int, double> Global::serverPingTimes;
 
 std::shared_mutex Global::gameEntitiesSharedMutex;
@@ -1656,13 +1657,17 @@ void Global::readThreadBehavoir(TcpClient* client)
                     numRead = client->read(&pingNumber, 4, 5); CHECK_CONNECTION_R(4, "Could not read pingNumber");
 
                     double currentTime = glfwGetTime();
+
+                    Global::serverPingTimesSharedMutex.lock();
+
                     double sentTime = Global::serverPingTimes[pingNumber];
+                    Global::serverPingTimes.erase(pingNumber);
+
+                    Global::serverPingTimesSharedMutex.unlock();
 
                     double diff = currentTime - sentTime;
 
                     Global::pingToServer = (int)(diff*1000);
-
-                    Global::serverPingTimes.erase(pingNumber);
 
                     break;
                 }
@@ -1742,7 +1747,9 @@ void Global::writeThreadBehavior(TcpClient* client)
             numWritten = client->write(&Global::nextPingNumber, 4, 5); CHECK_CONNECTION_W(4, "Could not write ping timing number to server");
 
             // Store what time we sent the number to the server
+            Global::serverPingTimesSharedMutex.lock();
             Global::serverPingTimes[Global::nextPingNumber] = glfwGetTime();
+            Global::serverPingTimesSharedMutex.unlock();
 
             // Also send our ping so that other players can see who has bad connections :)
             cmd = 18;

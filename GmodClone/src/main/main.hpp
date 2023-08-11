@@ -166,6 +166,7 @@ public:
     static TcpClient* serverClient;
     static int pingToServer;
     static int nextPingNumber;
+    static std::shared_mutex serverPingTimesSharedMutex;
     static std::unordered_map<int, double> serverPingTimes;
 
     static void addChatMessage(std::string msg, Vector3f color);
