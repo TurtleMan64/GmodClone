@@ -115,7 +115,14 @@ void LevelLoader::loadLevel(std::string mapName)
     }
     else
     {
-        Global::timeUntilRoundStarts = 1.0f; //12
+        if (Global::serverClient->isOpen())
+        {
+            Global::timeUntilRoundStarts = 12.0f;
+        }
+        else
+        {
+            Global::timeUntilRoundStarts = 1.0f;
+        }
     }
 
     if (Global::levelId == LVL_MAP6)

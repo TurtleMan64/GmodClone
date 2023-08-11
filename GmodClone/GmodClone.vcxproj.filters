@@ -620,7 +620,7 @@
     <ClInclude Include="src\entities\collisionblock2.hpp">
       <Filter>Source Files\entities</Filter>
     </ClInclude>
-    <ClInclude Include="src\shaders\StageShader.hpp">
+    <ClInclude Include="src\shaders\stageshader.hpp">
       <Filter>Source Files\shaders</Filter>
     </ClInclude>
     <ClInclude Include="src\water\waterframebuffers.hpp">
@@ -635,7 +635,7 @@
     <ClInclude Include="src\water\watertile.hpp">
       <Filter>Source Files\water</Filter>
     </ClInclude>
-    <ClInclude Include="src\skybox\SkyboxShader.hpp">
+    <ClInclude Include="src\skybox\skyboxshader.hpp">
       <Filter>Source Files\skybox</Filter>
     </ClInclude>
   </ItemGroup>

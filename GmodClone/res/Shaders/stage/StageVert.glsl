@@ -8,7 +8,7 @@ in vec3 tangent;
 in vec2 textureCoordsLightmap;
 
 out vec3 toCameraVector;
-out vec3 toLightVector[4];
+out vec3 toLightVector[1];
 out vec2 pass_textureCoords;
 out vec4 pass_vertexColor;
 //out vec4 pass_worldCoords;
@@ -57,9 +57,9 @@ void main(void)
 	);
     
     toLightVector[0] = toTangentSpace * (lightPositionEyeSpace[0] - positionRelativeToCam.xyz);
-    toLightVector[1] = toTangentSpace * (lightPositionEyeSpace[1] - positionRelativeToCam.xyz);
-    toLightVector[2] = toTangentSpace * (lightPositionEyeSpace[2] - positionRelativeToCam.xyz);
-    toLightVector[3] = toTangentSpace * (lightPositionEyeSpace[3] - positionRelativeToCam.xyz);
+    //toLightVector[1] = toTangentSpace * (lightPositionEyeSpace[1] - positionRelativeToCam.xyz);
+    //toLightVector[2] = toTangentSpace * (lightPositionEyeSpace[2] - positionRelativeToCam.xyz);
+    //toLightVector[3] = toTangentSpace * (lightPositionEyeSpace[3] - positionRelativeToCam.xyz);
 	
 	toCameraVector = toTangentSpace * (-positionRelativeToCam.xyz);
 

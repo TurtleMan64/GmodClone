@@ -109,6 +109,8 @@ std::vector<GUIText*> Global::gameOnlinePlayerPingTexts;
 std::vector<std::string> Global::serverSettings;
 TcpClient* Global::serverClient = nullptr;
 int Global::pingToServer = 0;
+int Global::nextPingNumber = 0;
+std::unordered_map<int, double> Global::serverPingTimes;
 
 std::shared_mutex Global::gameEntitiesSharedMutex;
 std::unordered_set<Entity*> Global::gameEntities;
@@ -1523,7 +1525,7 @@ void Global::readThreadBehavoir(TcpClient* client)
                     {
                         p = 0;
                     }
-                    Global::pingToServer = p;
+                    //Global::pingToServer = p;
                     break;
                 }
 
@@ -1648,6 +1650,23 @@ void Global::readThreadBehavoir(TcpClient* client)
                     break;
                 }
 
+                case 17: // server has seen our ping timer message
+                {
+                    int pingNumber;
+                    numRead = client->read(&pingNumber, 4, 5); CHECK_CONNECTION_R(4, "Could not read pingNumber");
+
+                    double currentTime = glfwGetTime();
+                    double sentTime = Global::serverPingTimes[pingNumber];
+
+                    double diff = currentTime - sentTime;
+
+                    Global::pingToServer = (int)(diff*1000);
+
+                    Global::serverPingTimes.erase(pingNumber);
+
+                    break;
+                }
+
                 default:
                 {
                     printf("Error: Received unknown command %d from server\n", cmd);
@@ -1716,6 +1735,19 @@ void Global::writeThreadBehavior(TcpClient* client)
 
             double currTime = glfwGetTime() + Global::serverTimeOffset;
             numWritten = client->write(&currTime, 8, 5); CHECK_CONNECTION_W(8, "Could not write time to server");
+
+            // Send the ping timing message
+            cmd = 17;
+            numWritten = client->write(&cmd, 1, 5); CHECK_CONNECTION_W(1, "Could not write ping timing command to server");
+            numWritten = client->write(&Global::nextPingNumber, 4, 5); CHECK_CONNECTION_W(4, "Could not write ping timing number to server");
+
+            // Store what time we sent the number to the server
+            Global::serverPingTimes[Global::nextPingNumber] = glfwGetTime();
+
+            // Also send our ping so that other players can see who has bad connections :)
+            cmd = 18;
+            numWritten = client->write(&cmd, 1, 5); CHECK_CONNECTION_W(1, "Could not write ping command to server");
+            numWritten = client->write(&Global::pingToServer, 4, 5); CHECK_CONNECTION_W(4, "Could not write ping number to server");
 
             lastSentTimeMsg = glfwGetTime();
         }

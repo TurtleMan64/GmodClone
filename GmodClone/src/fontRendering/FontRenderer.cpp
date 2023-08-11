@@ -9,7 +9,7 @@
 
 FontRenderer::FontRenderer()
 {
-    shader = new FontShader("res/Shaders/fontRendering/fontVertex.txt", "res/Shaders/fontRendering/fontFragment.txt"); INCR_NEW("FontShader");
+    shader = new FontShader("res/Shaders/font/FontVert.glsl", "res/Shaders/font/FontFrag.glsl"); INCR_NEW("FontShader");
 }
 
 void FontRenderer::render(
@@ -72,7 +72,7 @@ void FontRenderer::renderText(GUIText* text)
 
     float ratio = ((float)SCR_HEIGHT)/SCR_WIDTH;
 
-    shader->loadRatio(ratio);
+    shader->loadScreenRatio(ratio);
     shader->loadFontHeight(text->fontSize);
     shader->loadColor(text->getColor());
 

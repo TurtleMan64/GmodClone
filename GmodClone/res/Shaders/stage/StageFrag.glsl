@@ -1,7 +1,7 @@
 #version 400 core
 
 in vec3 toCameraVector;
-in vec3 toLightVector[4];
+in vec3 toLightVector[1];
 in vec2 pass_textureCoords;
 in vec4 pass_vertexColor;
 //in vec4 pass_worldCoords; //only needed for light map
@@ -127,7 +127,7 @@ void main(void)
         float specularFactor = max(dot(reflectedLightDirection, unitVectorToCamera), 0.0);
         float dampedFactor = pow(specularFactor, 20.0); //shineDamper
         
-        totalSpecular = totalSpecular + (dampedFactor*reflectivity*lightColor[i])/attFactor;
+        totalSpecular = totalSpecular + ((dampedFactor*reflectivity*lightColor[i])/attFactor)*((light.r + light.g + light.b)*0.333333);
     }
 
     out_Color = rawTextureColor + vec4(totalSpecular, rawTextureColor.a);

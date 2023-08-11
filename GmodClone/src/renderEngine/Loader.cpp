@@ -492,7 +492,8 @@ GLuint Loader::loadCubeMap(std::vector<std::string> filenames)
     for (std::string fname : filenames)
     {
         int width, height, channels;
-        unsigned char* image = SOIL_load_image((Global::pathToEXE + fname).c_str(), &width, &height, &channels, SOIL_LOAD_RGB);
+        //TODO shouldnt have to use RGBA here, but some textures are buggy when trying just RGB (sky 3)
+        unsigned char* image = SOIL_load_image((Global::pathToEXE + fname).c_str(), &width, &height, &channels, SOIL_LOAD_RGBA);
 
         if (image == nullptr)
         {
@@ -501,7 +502,17 @@ GLuint Loader::loadCubeMap(std::vector<std::string> filenames)
             return GL_NONE;
         }
 
-        glTexImage2D(side, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
+        //int type = GL_RGBA;
+        //if (channels == 3)
+        //{
+        //    type = GL_RGB;
+        //}
+        //else if (channels == 4)
+        //{
+        //    type = GL_RGBA;
+        //}
+
+        glTexImage2D(side, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, image);
         side++;
 
         SOIL_free_image_data(image);

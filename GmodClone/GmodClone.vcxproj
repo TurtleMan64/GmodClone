@@ -324,8 +324,8 @@
     <ClInclude Include="src\openglObjects\vbo.hpp" />
     <ClInclude Include="src\renderEngine\renderEngine.hpp" />
     <ClInclude Include="src\shaders\shaderprogram.hpp" />
-    <ClInclude Include="src\shaders\StageShader.hpp" />
-    <ClInclude Include="src\skybox\SkyboxShader.hpp" />
+    <ClInclude Include="src\shaders\stageshader.hpp" />
+    <ClInclude Include="src\skybox\skyboxshader.hpp" />
     <ClInclude Include="src\textures\modeltexture.hpp" />
     <ClInclude Include="src\toolbox\getline.hpp" />
     <ClInclude Include="src\toolbox\input.hpp" />

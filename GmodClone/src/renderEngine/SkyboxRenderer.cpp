@@ -69,15 +69,15 @@ SkyboxRenderer::SkyboxRenderer()
     cube = Loader::loadToVAO(&verts, 3);
 
     std::vector<std::string> fnames;
-    fnames.push_back("res/Images/Sky/2/px.png");
-    fnames.push_back("res/Images/Sky/2/nx.png");
-    fnames.push_back("res/Images/Sky/2/py.png");
-    fnames.push_back("res/Images/Sky/2/ny.png");
-    fnames.push_back("res/Images/Sky/2/pz.png");
-    fnames.push_back("res/Images/Sky/2/nz.png");
+    fnames.push_back("res/Images/Sky/3/px.png");
+    fnames.push_back("res/Images/Sky/3/nx.png");
+    fnames.push_back("res/Images/Sky/3/py.png");
+    fnames.push_back("res/Images/Sky/3/ny.png");
+    fnames.push_back("res/Images/Sky/3/pz.png");
+    fnames.push_back("res/Images/Sky/3/nz.png");
 
     texture = Loader::loadCubeMap(fnames);
-    shader = new SkyboxShader("res/Shaders/skybox/SkyVertex.glsl", "res/Shaders/skybox/SkyFrag.glsl");
+    shader = new SkyboxShader("res/Shaders/skybox/SkyVert.glsl", "res/Shaders/skybox/SkyFrag.glsl");
     shader->start();
     shader->loadProjectionMatrix(Master_getProjectionMatrix());
     shader->connectTextureUnits();
@@ -86,10 +86,9 @@ SkyboxRenderer::SkyboxRenderer()
 
 void SkyboxRenderer::render(float clipX, float clipY, float clipZ, float clipW)
 {
-    //glEnable(GL_MULTISAMPLE);
-    //glEnable(GL_BLEND);
-    //glEnable(GL_DEPTH_TEST);
     glEnable(GL_CLIP_DISTANCE0);
+
+    glDepthMask(GL_FALSE);
 
     shader->start();
     shader->loadViewMatrix(Global::gameCamera);
@@ -103,6 +102,8 @@ void SkyboxRenderer::render(float clipX, float clipY, float clipZ, float clipW)
     glDisableVertexAttribArray(0);
     glBindVertexArray(0);
     shader->stop();
+
+    glDepthMask(GL_TRUE);
 }
 
 void SkyboxRenderer::updateProjectionMatrix(Matrix4f* projectionMatrix)

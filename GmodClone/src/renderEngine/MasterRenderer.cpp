@@ -65,7 +65,7 @@ extern unsigned int SCR_HEIGHT;
 
 void Master_init()
 {
-    shader = new ShaderProgram("res/Shaders/entity/Vertex.glsl", "res/Shaders/entity/Fragment.glsl"); INCR_NEW("ShaderProgram");
+    shader = new ShaderProgram("res/Shaders/entity/EntityVert.glsl", "res/Shaders/entity/EntityFrag.glsl"); INCR_NEW("ShaderProgram");
 
     projectionMatrix = new Matrix4f; INCR_NEW("Matrix4f");
 

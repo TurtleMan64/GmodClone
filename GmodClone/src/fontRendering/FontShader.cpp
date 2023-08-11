@@ -62,7 +62,7 @@ void FontShader::getAllUniformLocations()
     location_color = getUniformLocation("color");
     location_translation = getUniformLocation("translation");
     location_fontHeight = getUniformLocation("fontHeight");
-    location_ratio = getUniformLocation("ratio");
+    location_screenRatio = getUniformLocation("screenRatio");
     location_alpha = getUniformLocation("alpha");
 }
 
@@ -86,9 +86,9 @@ void FontShader::loadFontHeight(float fontHeight)
     loadFloat(location_fontHeight, fontHeight);
 }
 
-void FontShader::loadRatio(float ratio)
+void FontShader::loadScreenRatio(float ratio)
 {
-    loadFloat(location_ratio, ratio);
+    loadFloat(location_screenRatio, ratio);
 }
 
 int FontShader::getUniformLocation(const char* uniformName)

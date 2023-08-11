@@ -10,8 +10,8 @@
 
 AnimatedModelShader::AnimatedModelShader()
 {
-    vertexShaderId   = Loader::loadShader("res/Shaders/animation/animatedEntityVert.glsl", GL_VERTEX_SHADER);
-    fragmentShaderId = Loader::loadShader("res/Shaders/animation/animatedEntityFrag.glsl", GL_FRAGMENT_SHADER);
+    vertexShaderId   = Loader::loadShader("res/Shaders/animated/AnimatedVert.glsl", GL_VERTEX_SHADER);
+    fragmentShaderId = Loader::loadShader("res/Shaders/animated/AnimatedFrag.glsl", GL_FRAGMENT_SHADER);
     programId = glCreateProgram();
     glAttachShader(programId, vertexShaderId);
     glAttachShader(programId, fragmentShaderId);

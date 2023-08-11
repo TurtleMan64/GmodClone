@@ -19,7 +19,7 @@ GLuint whiteLightMapId = GL_NONE;
 
 StageRenderer::StageRenderer()
 {
-    shader = new StageShader("res/Shaders/stage/Vertex.glsl", "res/Shaders/stage/Fragment.glsl");
+    shader = new StageShader("res/Shaders/stage/StageVert.glsl", "res/Shaders/stage/StageFrag.glsl");
     shader->start();
     shader->loadProjectionMatrix(Master_getProjectionMatrix());
     shader->connectTextureUnits();
