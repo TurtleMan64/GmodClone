@@ -73,6 +73,7 @@ void FontRenderer::renderText(GUIText* text)
     float ratio = ((float)SCR_HEIGHT)/SCR_WIDTH;
 
     shader->loadScreenRatio(ratio);
+    shader->loadScreenHeight(SCR_HEIGHT);
     shader->loadFontHeight(text->fontSize);
     shader->loadColor(text->getColor());
 

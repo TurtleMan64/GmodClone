@@ -20,6 +20,7 @@ private:
     int location_translation;
     int location_fontHeight;
     int location_screenRatio;
+    int location_screenHeight;
     int location_alpha;
 
 public:
@@ -41,6 +42,8 @@ public:
 
     void loadScreenRatio(float ratio);
 
+    void loadScreenHeight(int height);
+
 protected:
     void bindAttributes();
 
@@ -51,6 +54,8 @@ protected:
     int getUniformLocation(const char*);
 
     void loadFloat(int, float);
+
+    void loadInt(int, int);
 
     void loadVector(int, Vector3f*);
 

@@ -876,6 +876,8 @@ int main(int argc, char** argv)
         }
         Global::levelMutex.unlock();
 
+        Global::msgCondVar.notify_all();
+
         //std::fprintf(stdout, "dt: %f\n", dt);
 
         ANALYSIS_DONE("Frame Time");

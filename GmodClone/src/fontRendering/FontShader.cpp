@@ -63,6 +63,7 @@ void FontShader::getAllUniformLocations()
     location_translation = getUniformLocation("translation");
     location_fontHeight = getUniformLocation("fontHeight");
     location_screenRatio = getUniformLocation("screenRatio");
+    location_screenHeight = getUniformLocation("screenHeightPixels");
     location_alpha = getUniformLocation("alpha");
 }
 
@@ -91,6 +92,11 @@ void FontShader::loadScreenRatio(float ratio)
     loadFloat(location_screenRatio, ratio);
 }
 
+void FontShader::loadScreenHeight(int height)
+{
+    loadInt(location_screenHeight, height);
+}
+
 int FontShader::getUniformLocation(const char* uniformName)
 {
     return glGetUniformLocation(programId, uniformName);
@@ -99,6 +105,11 @@ int FontShader::getUniformLocation(const char* uniformName)
 void FontShader::loadFloat(int location, float value)
 {
     glUniform1f(location, value);
+}
+
+void FontShader::loadInt(int location, int value)
+{
+    glUniform1i(location, value);
 }
 
 void FontShader::loadVector(int location, Vector3f* vect)

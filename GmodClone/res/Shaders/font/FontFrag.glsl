@@ -8,10 +8,9 @@ uniform vec3 color;
 uniform float alpha;
 uniform sampler2D fontAtlas;
 uniform float fontHeight;
+uniform int screenHeightPixels;
 
 const float width = 0.45;
-const float edge = 0.2;
-
 
 float smoothlyStep(float edge0, float edge1, float x)
 {
@@ -22,7 +21,10 @@ float smoothlyStep(float edge0, float edge1, float x)
 void main(void)
 {
 	float dist = 1.0 - texture(fontAtlas, pass_textureCoords).a;
-	float edgeAlpha = 1.0 - smoothlyStep(width, width + edge/(fontHeight*60), dist);
-	
+    
+    float edge = min(0.7, 4.0/(float(screenHeightPixels)*fontHeight));
+    
+	float edgeAlpha = 1.0 - smoothlyStep(width, width + edge, dist);
+    
 	out_color = vec4(color, alpha*edgeAlpha);
 }
