@@ -108,7 +108,8 @@ std::vector<GUIText*> Global::gameOnlinePlayerPingTexts;
 
 std::vector<std::string> Global::serverSettings;
 TcpClient* Global::serverClient = nullptr;
-int Global::pingToServer = 0;
+std::vector<int> Global::pingToServerHistory;
+int Global::pingToServerHistoryIndex = 0;
 int Global::nextPingNumber = 0;
 std::shared_mutex Global::serverPingTimesSharedMutex;
 std::unordered_map<int, double> Global::serverPingTimes;
@@ -195,10 +196,15 @@ int main(int argc, char** argv)
 
     increaseProcessPriority();
 
-    //Maths::initRandom((unsigned long)time(nullptr));
-    Maths::initRandom(0);
+    Maths::initRandom((unsigned long)time(nullptr));
+    //Maths::initRandom(0);
 
     Maths::random();
+
+    for (int i = 0; i < 10; i++)
+    {
+        Global::pingToServerHistory.push_back(0);
+    }
 
     Global::nickname = readFileLines("Nickname.ini")[0];
     if (Global::nickname == "nickname")
@@ -728,7 +734,8 @@ int main(int argc, char** argv)
             {
                 {
                     std::string t = Global::nickname;
-                    int p = Global::pingToServer;
+
+                    int p = Global::calculateAveragePing();
 
                     int spacesToDraw = 22 - ((int)t.size() + Maths::numDigits(p));
 
@@ -1093,6 +1100,18 @@ void Global::performanceAnalysisReport()
     }
     operationStartTimes.clear();
     operationTotalTimes.clear();
+}
+
+int Global::calculateAveragePing()
+{
+    int avgPing = 0;
+    for (int p : Global::pingToServerHistory)
+    {
+        avgPing += p;
+    }
+    avgPing /= (int)Global::pingToServerHistory.size();
+
+    return avgPing;
 }
 
 double Global::serverTimeOffset = 0.0;
@@ -1669,7 +1688,8 @@ void Global::readThreadBehavoir(TcpClient* client)
 
                     double diff = currentTime - sentTime;
 
-                    Global::pingToServer = (int)(diff*1000);
+                    Global::pingToServerHistory[Global::pingToServerHistoryIndex] = (int)(diff * 1000);
+                    Global::pingToServerHistoryIndex = (Global::pingToServerHistoryIndex + 1) % Global::pingToServerHistory.size();
 
                     break;
                 }
@@ -1707,6 +1727,7 @@ void Global::writeThreadBehavior(TcpClient* client)
     numWritten = client->write(Global::nickname.c_str(), nameLen, 5); CHECK_CONNECTION_W(nameLen, "Could not write name to server");
 
     double lastSentTimeMsg = glfwGetTime();
+    double lastSentPingMsg = glfwGetTime();
     double lastSentPlayerMsg = glfwGetTime();
 
     const double PLAYER_UPDATE_INTERVAL = 0.01;
@@ -1725,11 +1746,16 @@ void Global::writeThreadBehavior(TcpClient* client)
 
         if (Global::messagesToSend.size() > 0)
         {
-            for (Message msg : Global::messagesToSend)
-            {
-                numWritten = client->write(msg.buf, msg.length, 5); CHECK_CONNECTION_W(msg.length, "Could not write command " + std::to_string(msg.buf[0]) + " to the server");
-            }
-            Global::messagesToSend.clear();
+            //Global::msgOutMutex.lock();
+            //if (Global::messagesToSend.size() > 0)
+            //{
+                for (Message msg : Global::messagesToSend)
+                {
+                    numWritten = client->write(msg.buf, msg.length, 5); CHECK_CONNECTION_W(msg.length, "Could not write command " + std::to_string(msg.buf[0]) + " to the server");
+                }
+                Global::messagesToSend.clear();
+            //}
+            //Global::msgOutMutex.unlock();
         }
 
         lock.unlock();
@@ -1743,8 +1769,13 @@ void Global::writeThreadBehavior(TcpClient* client)
             double currTime = glfwGetTime() + Global::serverTimeOffset;
             numWritten = client->write(&currTime, 8, 5); CHECK_CONNECTION_W(8, "Could not write time to server");
 
+            lastSentTimeMsg = glfwGetTime();
+        }
+
+        if (glfwGetTime() - lastSentPingMsg > 0.1)
+        {
             // Send the ping timing message
-            cmd = 17;
+            char cmd = 17;
             numWritten = client->write(&cmd, 1, 5); CHECK_CONNECTION_W(1, "Could not write ping timing command to server");
             numWritten = client->write(&Global::nextPingNumber, 4, 5); CHECK_CONNECTION_W(4, "Could not write ping timing number to server");
 
@@ -1752,13 +1783,15 @@ void Global::writeThreadBehavior(TcpClient* client)
             Global::serverPingTimesSharedMutex.lock();
             Global::serverPingTimes[Global::nextPingNumber] = glfwGetTime();
             Global::serverPingTimesSharedMutex.unlock();
+            Global::nextPingNumber++;
 
             // Also send our ping so that other players can see who has bad connections :)
             cmd = 18;
+            int avgPing = Global::calculateAveragePing();
             numWritten = client->write(&cmd, 1, 5); CHECK_CONNECTION_W(1, "Could not write ping command to server");
-            numWritten = client->write(&Global::pingToServer, 4, 5); CHECK_CONNECTION_W(4, "Could not write ping number to server");
+            numWritten = client->write(&avgPing, 4, 5); CHECK_CONNECTION_W(4, "Could not write ping number to server");
 
-            lastSentTimeMsg = glfwGetTime();
+            lastSentPingMsg = glfwGetTime();
         }
 
         if (glfwGetTime() - lastSentPlayerMsg > PLAYER_UPDATE_INTERVAL)

@@ -157,6 +157,8 @@ public:
 
     static void performanceAnalysisReport();
 
+    static int calculateAveragePing();
+
     static std::string nickname;
     static std::shared_mutex gameOnlinePlayersSharedMutex;
     static std::unordered_map<std::string, OnlinePlayer*> gameOnlinePlayers;
@@ -164,7 +166,8 @@ public:
     static std::vector<GUIText*> gameOnlinePlayerPingTexts;
     static std::vector<std::string> serverSettings;
     static TcpClient* serverClient;
-    static int pingToServer;
+    static std::vector<int> pingToServerHistory;
+    static int pingToServerHistoryIndex;
     static int nextPingNumber;
     static std::shared_mutex serverPingTimesSharedMutex;
     static std::unordered_map<int, double> serverPingTimes;
